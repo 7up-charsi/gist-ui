@@ -1,0 +1,14 @@
+dist
+node_modules
+plop
+coverage
+.changeset
+.next
+build
+scripts
+pnpm-lock.yaml
+!.storybook
+!.lintstagedrc.cjs
+!react-shim.js
+!tsup.config.ts
+*.hbs
