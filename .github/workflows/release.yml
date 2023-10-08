@@ -2,11 +2,11 @@ name: release
 
 on:
   push:
+    paths:
+      - ".changeset/**"
+      - "packages/**"
     branches:
       - main
-    paths:
-      - ".changset/**"
-      - "packages/**"
 
 jobs:
   release:
@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install
-        uses: ./github/common-actions/install
+        uses: ./github/common-actions/install.yml
 
       - name: Build
         run: pnpm build
