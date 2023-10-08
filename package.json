@@ -2,7 +2,6 @@
   "name": "frontplus-ui",
   "private": true,
   "packageManager": "pnpm@8.6.10",
-  "type": "module",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
