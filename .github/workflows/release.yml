@@ -1,0 +1,34 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".changset/**"
+      - "packages/**"
+
+jobs:
+  release:
+    name: Release
+    runs-on: windows-latest
+    setps:
+      - name: Switch branch
+        uses: actions/checkout@v3
+
+      - name: Install
+        uses: ./github/common-actions/install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Create release pull request or publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          title: "ci(changesets): :package: version packages"
+          commit: "ci(changesets): version packages"
+          setupGitUser: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
