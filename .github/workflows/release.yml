@@ -12,7 +12,7 @@ jobs:
   release:
     name: Release
     runs-on: windows-latest
-    setps:
+    steps:
       - name: Switch branch
         uses: actions/checkout@v3
 
