@@ -13,5 +13,3 @@ coverage
 .next
 build
 !.lintstagedrc.mjs
-!plopfile.js
-!tsup.config.ts

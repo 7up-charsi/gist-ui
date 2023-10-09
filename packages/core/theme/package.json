@@ -1,8 +1,8 @@
 {
-  "name": "@frontplus-ui/{{hookName}}",
+  "name": "@frontplus-ui/theme",
   "version": "1.0.0",
   "keywords": [
-    "{{hookName}}"
+    "theme"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontplus/frontplus-ui.git",
-    "directory": "packages/{{outDir}}/{{hookName}}"
+    "directory": "packages/core/theme"
   },
   "bugs": {
     "url": "https://github.com/frontplus/frontplus-ui/issues"
@@ -42,9 +42,6 @@
   },
   "peerDependencies": {
     "react": ">=18"
-  },
-  "dependencies": {
-    "@frontplus-ui/theme": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0",

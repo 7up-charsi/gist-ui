@@ -1,8 +1,8 @@
 {
-  "name": "@frontplus-ui/{{hookName}}",
+  "name": "@frontplus-ui/button",
   "version": "1.0.0",
   "keywords": [
-    "{{hookName}}"
+    "button"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,13 +18,11 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontplus/frontplus-ui.git",
-    "directory": "packages/{{outDir}}/{{hookName}}"
+    "directory": "packages/components/button"
   },
   "bugs": {
     "url": "https://github.com/frontplus/frontplus-ui/issues"
   },
-  "types": "./src/index.ts",
-  "main": "./src/index.js",
   "exports": {
     ".": {
       "types": "./src/index.ts",
