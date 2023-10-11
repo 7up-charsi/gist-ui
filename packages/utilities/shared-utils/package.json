@@ -1,8 +1,8 @@
 {
-  "name": "@frontplus-ui/{{packageName}}",
+  "name": "@frontplus-ui/shared-utils",
   "version": "1.0.0",
   "keywords": [
-    "{{packageName}}"
+    "shared-utils"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontplus/frontplus-ui.git",
-    "directory": "packages/{{outDir}}/{{packageName}}"
+    "directory": "packages/utilities/shared-utils"
   },
   "bugs": {
     "url": "https://github.com/frontplus/frontplus-ui/issues"

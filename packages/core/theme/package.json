@@ -24,24 +24,30 @@
     "url": "https://github.com/frontplus/frontplus-ui/issues"
   },
   "types": "./src/index.ts",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "import": "./src/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsup src --dts",
     "build:fast": "tsup src",
-    "dev": "pnpm build:fast -- --watch",
+    "dev": "pnpm build:fast --watch",
     "clean": "rimraf dist .turbo",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "@frontplus-ui/shared-utils": "workspace:*",
+    "@radix-ui/colors": "^3.0.0"
   },
   "devDependencies": {
     "clean-package": "^2.2.0",

@@ -12,8 +12,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const styles = button(props);
 
+  // TODO: add useMediaQuery/useIsTouchDevice for data-hoverabe
+
   return (
-    <button ref={ref} className={styles}>
+    <button ref={ref} className={styles} data-hoverable={true}>
       {startIcon}
       {props.children}
       {endIcon}

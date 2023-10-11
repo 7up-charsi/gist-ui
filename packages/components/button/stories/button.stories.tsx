@@ -1,7 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { button } from "@frontplus-ui/theme";
-import omit from "lodash.omit";
 
 import { Button, ButtonProps } from "../src";
 
@@ -41,7 +40,8 @@ export const Size: StoryObj<ButtonProps> = {
     </div>
   ),
   args: {
-    ...omit(defaultProps, "size"),
+    ...defaultProps,
+    size: undefined,
   },
 };
 

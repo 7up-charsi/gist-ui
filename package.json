@@ -6,7 +6,6 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "typecheck": "turbo typecheck",
-    "postinstall": "husky install",
     "version": "changeset version",
     "publish": "changeset publish",
     "turbo:clean": "turbo clean && rimraf ./node_modules/.cache/turbo",
@@ -27,8 +26,6 @@
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@storybook/react": "^7.4.6",
-    "@storybook/react-vite": "^7.4.6",
-    "@types/lodash.omit": "^4.5.7",
     "@types/react": "^18.2.25",
     "@types/react-dom": "^18.2.11",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -42,7 +39,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
     "plop": "^4.0.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
@@ -51,7 +47,6 @@
     "turbo": "latest"
   },
   "dependencies": {
-    "lodash.omit": "^4.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

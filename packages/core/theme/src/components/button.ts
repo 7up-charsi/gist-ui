@@ -1,6 +1,5 @@
 import { VariantProps, tv } from "tailwind-variants";
 import { dataFocusVisible } from "../utils/classes";
-import { colorVariants } from "../utils/variants";
 
 const button = tv({
   base: [
@@ -25,10 +24,10 @@ const button = tv({
     variant: {
       solid: "",
       flat: "",
-      shadow: "",
-      border: "border bg-transparent",
-      light:
-        "bg-transparent transistion-[background] ease-in-out duration-200 motion-reduce:transition-none",
+      shadow: "shadow-lg",
+      border: "border-2 bg-transparent",
+      light: "bg-transparent",
+      //  transistion-[background] ease-in-out duration-200 motion-reduce:transition-none
     },
     color: {
       neutral: "",
@@ -71,185 +70,190 @@ const button = tv({
     {
       variant: "solid",
       color: "neutral",
-      class: colorVariants.solid.neutral,
+      class: "bg-neutral-9 text-neutral-1 data-[hoverable=true]:hover:bg-neutral-10",
     },
     {
       variant: "solid",
       color: "primary",
-      class: colorVariants.solid.primary,
+      class: "bg-primary-9 text-primary-1 data-[hoverable=true]:hover:bg-primary-10",
     },
     {
       variant: "solid",
       color: "secondary",
-      class: colorVariants.solid.secondary,
+      class: "bg-secondary-9 text-secondary-1 data-[hoverable=true]:hover:bg-secondary-10",
     },
     {
       variant: "solid",
       color: "success",
-      class: colorVariants.solid.success,
+      class: "bg-success-9 text-success-1 data-[hoverable=true]:hover:bg-success-10",
     },
     {
       variant: "solid",
       color: "info",
-      class: colorVariants.solid.info,
+      class: "bg-info-9 text-info-1 data-[hoverable=true]:hover:bg-info-10",
     },
     {
       variant: "solid",
       color: "warning",
-      class: colorVariants.solid.warning,
+      class: "bg-warning-9 text-warning-12 data-[hoverable=true]:hover:bg-warning-10",
     },
     {
       variant: "solid",
       color: "danger",
-      class: colorVariants.solid.danger,
+      class: "bg-danger-9 text-danger-1 data-[hoverable=true]:hover:bg-danger-10",
     },
 
     // color / border
     {
       variant: "border",
       color: "neutral",
-      class: colorVariants.border.neutral,
+      class: "border-neutral-7 data-[hoverable=true]:hover:border-neutral-8 text-neutral-12",
     },
     {
       variant: "border",
       color: "primary",
-      class: colorVariants.border.primary,
+      class: "border-primary-7 data-[hoverable=true]:hover:border-primary-8 text-primary-12",
     },
     {
       variant: "border",
       color: "secondary",
-      class: colorVariants.border.secondary,
+      class: "border-secondary-7 data-[hoverable=true]:hover:border-secondary-8 text-secondary-12",
     },
     {
       variant: "border",
       color: "success",
-      class: colorVariants.border.success,
+      class: "border-success-7 data-[hoverable=true]:hover:border-success-8 text-success-12",
     },
     {
       variant: "border",
       color: "info",
-      class: colorVariants.border.info,
+      class: "border-info-7 data-[hoverable=true]:hover:border-info-8 text-info-12",
     },
     {
       variant: "border",
       color: "warning",
-      class: colorVariants.border.warning,
+      class: "border-warning-7 data-[hoverable=true]:hover:border-warning-8 text-warning-12",
     },
     {
       variant: "border",
       color: "danger",
-      class: colorVariants.border.danger,
+      class: "border-danger-7 data-[hoverable=true]:hover:border-danger-8 text-danger-12",
     },
 
     // color / flat
     {
       variant: "flat",
       color: "neutral",
-      class: colorVariants.flat.neutral,
+      class: "bg-neutral-4 data-[hoverable=true]:hover:bg-neutral-5 text-neutral-12",
     },
     {
       variant: "flat",
       color: "primary",
-      class: colorVariants.flat.primary,
+      class: "bg-primary-4 data-[hoverable=true]:hover:bg-primary-5 text-primary-12",
     },
     {
       variant: "flat",
       color: "secondary",
-      class: colorVariants.flat.secondary,
+      class: "bg-secondary-4 data-[hoverable=true]:hover:bg-secondary-5 text-secondary-12",
     },
     {
       variant: "flat",
       color: "success",
-      class: colorVariants.flat.success,
+      class: "bg-success-4 data-[hoverable=true]:hover:bg-success-5 text-success-12",
     },
     {
       variant: "flat",
       color: "info",
-      class: colorVariants.flat.info,
+      class: "bg-info-4 data-[hoverable=true]:hover:bg-info-5 text-info-12",
     },
     {
       variant: "flat",
       color: "warning",
-      class: colorVariants.flat.warning,
+      class: "bg-warning-4 data-[hoverable=true]:hover:bg-warning-5 text-warning-12",
     },
     {
       variant: "flat",
       color: "danger",
-      class: colorVariants.flat.danger,
+      class: "bg-danger-4 data-[hoverable=true]:hover:bg-danger-5 text-danger-12",
     },
 
-    // color / flat
+    // color / shadow
     {
       variant: "shadow",
       color: "neutral",
-      class: colorVariants.shadow.neutral,
+      class:
+        "bg-neutral-9 text-neutral-1 data-[hoverable=true]:hover:bg-neutral-10 shadow-neutral-7",
     },
     {
       variant: "shadow",
       color: "primary",
-      class: colorVariants.shadow.primary,
+      class:
+        "bg-primary-9 text-primary-1 data-[hoverable=true]:hover:bg-primary-10 shadow-primary-7",
     },
     {
       variant: "shadow",
       color: "secondary",
-      class: colorVariants.shadow.secondary,
+      class:
+        "bg-secondary-9 text-secondary-1 data-[hoverable=true]:hover:bg-secondary-10 shadow-secondary-7",
     },
     {
       variant: "shadow",
       color: "success",
-      class: colorVariants.shadow.success,
+      class:
+        "bg-success-9 text-success-1 data-[hoverable=true]:hover:bg-success-10 shadow-success-7",
     },
     {
       variant: "shadow",
       color: "info",
-      class: colorVariants.shadow.info,
+      class: "bg-info-9 text-info-1 data-[hoverable=true]:hover:bg-info-10 shadow-info-7",
     },
     {
       variant: "shadow",
       color: "warning",
-      class: colorVariants.shadow.warning,
+      class:
+        "bg-warning-9 text-warning-12 data-[hoverable=true]:hover:bg-warning-10 shadow-warning-7",
     },
     {
       variant: "shadow",
       color: "danger",
-      class: colorVariants.shadow.danger,
+      class: "bg-danger-9 text-danger-1 data-[hoverable=true]:hover:bg-danger-10 shadow-danger-7",
     },
 
     // color / light
     {
       variant: "light",
       color: "neutral",
-      class: [colorVariants.light.neutral, "data-[hover=true]:bg-neutral/20"],
+      class: "data-[hoverable=true]:hover:bg-neutral-4 text-neutral-12",
     },
     {
       variant: "light",
       color: "primary",
-      class: [colorVariants.light.primary, "data-[hover=true]:bg-primary/20"],
+      class: "data-[hoverable=true]:hover:bg-primary-3 text-primary-10",
     },
     {
       variant: "light",
       color: "secondary",
-      class: [colorVariants.light.secondary, "data-[hover=true]:bg-secondary/20"],
+      class: "data-[hoverable=true]:hover:bg-secondary-3 text-secondary-10",
     },
     {
       variant: "light",
       color: "success",
-      class: [colorVariants.light.success, "data-[hover=true]:bg-success/20"],
+      class: "data-[hoverable=true]:hover:bg-success-3 text-success-10",
     },
     {
       variant: "light",
       color: "info",
-      class: [colorVariants.light.info, "data-[hover=true]:bg-info/20"],
+      class: "data-[hoverable=true]:hover:bg-info-3 text-info-10",
     },
     {
       variant: "light",
       color: "warning",
-      class: [colorVariants.light.warning, "data-[hover=true]:bg-warning/20"],
+      class: "data-[hoverable=true]:hover:bg-warning-3 text-warning-10",
     },
     {
       variant: "light",
       color: "danger",
-      class: [colorVariants.light.danger, "data-[hover=true]:bg-danger/20"],
+      class: "data-[hoverable=true]:hover:bg-danger-3 text-danger-10",
     },
   ],
 });
