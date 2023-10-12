@@ -18,6 +18,7 @@ const button = tv({
     "subpixel-antialiased",
     "overflow-hidden",
     "tap-highlight-transparent",
+    "[&>svg]:fill-current",
     ...dataFocusVisible,
   ],
   variants: {
