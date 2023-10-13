@@ -56,7 +56,7 @@ const button = tv({
     fullWidth: {
       true: "w-full",
     },
-    isDisabled: {
+    disabled: {
       true: "opacity-50 pointer-events-none",
     },
   },
@@ -66,7 +66,7 @@ const button = tv({
     variant: "solid",
     color: "primary",
     fullWidth: false,
-    isDisabled: false,
+    disabled: false,
   },
   compoundVariants: [
     // color / solid
