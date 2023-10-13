@@ -1,5 +1,14 @@
 # @frontplus-ui/button
 
+## 1.0.4
+
+### Patch Changes
+
+- fix ripple issue
+- Updated dependencies
+  - @frontplus-ui/react-utils@1.1.2
+  - @frontplus-ui/use-ripple@1.0.2
+
 ## 1.0.3
 
 ### Patch Changes

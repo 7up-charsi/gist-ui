@@ -6,8 +6,6 @@ export const mergeRefs = <T extends HTMLElement>(
   return (node) => {
     const filtered = refs.filter(Boolean);
 
-    if (filtered.length === 1) return filtered[0] || null;
-
     return filtered.forEach((ref) => {
       if (typeof ref === "function") {
         ref(node);

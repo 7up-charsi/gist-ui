@@ -13,26 +13,38 @@ export interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  const { startIcon, endIcon, rippleProps, ...restProps } = props;
+  const {
+    startIcon,
+    endIcon,
+    rippleProps,
+    className,
+    color,
+    fullWidth,
+    disabled,
+    rounded,
+    size,
+    variant,
+    ...restProps
+  } = props;
 
   const styles = button({
-    className: props.className,
-    color: props.color,
-    fullWidth: props.fullWidth,
-    disabled: props.disabled,
-    rounded: props.rounded,
-    size: props.size,
-    variant: props.variant,
+    className,
+    color,
+    fullWidth,
+    disabled,
+    rounded,
+    size,
+    variant,
   });
 
-  const [rippleRef, event] = useRipple(rippleProps);
+  const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(rippleProps);
 
   return (
     <button
       ref={mergeRefs(ref, rippleRef) as LegacyRef<HTMLButtonElement>}
       data-hoverable={!isTouchDevice()}
-      {...mergeEvents({ onPointerDown: event }, { onPointerDown: restProps.onPointerDown })}
       {...restProps}
+      {...mergeEvents({ onPointerDown: rippleEvent }, { onPointerDown: restProps.onPointerDown })}
       className={styles}
     >
       {startIcon}

@@ -1,5 +1,11 @@
 # @frontplus-ui/react-utils
 
+## 1.1.2
+
+### Patch Changes
+
+- fix mergeRef issues
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useRef } from "react";
 
-export interface UseRippleProps {
+interface Props {
   duration: number;
   timingFunction: string;
   disabled: boolean;
   completedFactor: number;
 }
+
+export interface UseRippleProps extends Partial<Props> {}
 
 export interface MinimalEvent {
   clientX: number;
@@ -13,10 +15,10 @@ export interface MinimalEvent {
   button: number;
 }
 
-export function useRipple<T extends HTMLElement>(props: Partial<UseRippleProps> = {}) {
+export function useRipple<T extends HTMLElement>(props: Partial<Props> = {}) {
   const ref = useRef<T>(null);
 
-  const options: UseRippleProps = useMemo(
+  const options: Props = useMemo(
     () => ({
       duration: 500,
       timingFunction: "cubic-bezier(.42,.36,.28,.88)",
@@ -62,11 +64,7 @@ export function useRipple<T extends HTMLElement>(props: Partial<UseRippleProps> 
   return [ref, event] as const;
 }
 
-const createRipple = (
-  target: HTMLElement,
-  event: MinimalEvent,
-  options: UseRippleProps,
-): HTMLElement => {
+const createRipple = (target: HTMLElement, event: MinimalEvent, options: Props): HTMLElement => {
   const { clientX, clientY } = event;
   const { height, width, top, left } = target.getBoundingClientRect();
   const maxHeight = Math.max(clientY - top, height - clientY + top);
