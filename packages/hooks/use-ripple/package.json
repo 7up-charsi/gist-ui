@@ -1,8 +1,8 @@
 {
-  "name": "@frontplus-ui/button",
+  "name": "@frontplus-ui/use-ripple",
   "version": "1.0.0",
   "keywords": [
-    "button"
+    "use-ripple"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontplus/frontplus-ui.git",
-    "directory": "packages/components/button"
+    "directory": "packages/hooks/use-ripple"
   },
   "bugs": {
     "url": "https://github.com/frontplus/frontplus-ui/issues"
@@ -45,15 +45,8 @@
   "peerDependencies": {
     "react": ">=18"
   },
-  "dependencies": {
-    "@frontplus-ui/theme": "workspace:*",
-    "@frontplus-ui/shared-utils": "workspace:*",
-    "@frontplus-ui/react-utils": "workspace:*",
-    "@frontplus-ui/use-ripple": "workspace:*"
-  },
   "devDependencies": {
-    "clean-package": "^2.2.0",
-    "react": "^18.2.0"
+    "clean-package": "^2.2.0"
   },
   "clean-package": "../../../clean-package.config.json"
 }

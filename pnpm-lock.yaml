@@ -121,12 +121,18 @@ importers:
 
   packages/components/button:
     dependencies:
+      '@frontplus-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
       '@frontplus-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
       '@frontplus-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@frontplus-ui/use-ripple':
+        specifier: workspace:*
+        version: link:../../hooks/use-ripple
     devDependencies:
       clean-package:
         specifier: ^2.2.0
@@ -166,12 +172,15 @@ importers:
 
   packages/hooks/use-ripple:
     dependencies:
-      '@frontplus-ui/shared-utils':
-        specifier: workspace:*
-        version: link:../../utilities/shared-utils
       react:
         specifier: '>=18'
         version: 18.2.0
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/utilities/react-utils:
     devDependencies:
       clean-package:
         specifier: ^2.2.0

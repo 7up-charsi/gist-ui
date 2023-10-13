@@ -1,6 +1,8 @@
-import { forwardRef, ReactNode } from "react";
+import { forwardRef, LegacyRef, ReactNode } from "react";
 import { button, ButtonVariantProps } from "@frontplus-ui/theme";
 import { isTouchDevice } from "@frontplus-ui/shared-utils";
+import { useRipple } from "@frontplus-ui/use-ripple";
+import { mergeRefs } from "@frontplus-ui/react-utils";
 
 export interface ButtonProps extends ButtonVariantProps {
   children: string;
@@ -10,11 +12,17 @@ export interface ButtonProps extends ButtonVariantProps {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const { startIcon, endIcon } = props;
+  const styles = button({ ...props, class: "relative" });
 
-  const styles = button(props);
+  const [rippleRef, event] = useRipple();
 
   return (
-    <button ref={ref} className={styles} data-hoverable={!isTouchDevice()}>
+    <button
+      ref={mergeRefs(ref, rippleRef) as LegacyRef<HTMLButtonElement>}
+      className={styles}
+      data-hoverable={!isTouchDevice()}
+      onPointerDown={event}
+    >
       {startIcon}
       {props.children}
       {endIcon}
