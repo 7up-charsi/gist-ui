@@ -1,5 +1,11 @@
 # @frontplus-ui/react-utils
 
+## 1.1.1
+
+### Patch Changes
+
+- fix all build related issue
+
 ## 1.1.0
 
 ### Minor Changes

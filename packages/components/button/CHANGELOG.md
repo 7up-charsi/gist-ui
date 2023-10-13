@@ -1,5 +1,14 @@
 # @frontplus-ui/button
 
+## 1.0.3
+
+### Patch Changes
+
+- fix all build related issue
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.3
+  - @frontplus-ui/react-utils@1.1.1
+
 ## 1.0.2
 
 ### Patch Changes
