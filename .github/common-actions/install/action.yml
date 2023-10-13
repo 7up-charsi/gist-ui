@@ -1,28 +1,27 @@
-name: install
-description: sets up node.js and runs install
-
-on: workflow_call
+name: "Install"
+description: "Sets up Node.js and runs install"
 
 runs:
+  using: composite
   steps:
-    - name: setup pnpm
-      uses: pnpm/action-setup@v4
+    - name: Install dependencies
+      uses: pnpm/action-setup@v2.2.4
       with:
-        version: 8.8.0
+        version: 8
 
-    - name: setup node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version-file: ".nvmrc"
         registry-url: "https://registry.npmjs.org"
         cache: "pnpm"
 
-    - name: setup git user
+    - name: Setup Git User
       shell: bash
       run: |
-        git config --global user.name mzeeshan
-        git config --global user.email mzeeshan3597@gmail.com
+        git config --global user.email "mzeeshan3596@gmail.com"
+        git config --global user.name "muhammad zeeshan"
 
-    - name: install dependencies
+    - name: Install dependencies
       shell: bash
       run: pnpm install
