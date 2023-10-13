@@ -1,5 +1,4 @@
 import { VariantProps, tv } from "tailwind-variants";
-import { dataFocusVisible } from "../utils/classes";
 
 const button = tv({
   base: [
@@ -21,7 +20,6 @@ const button = tv({
     "[&>svg]:fill-current",
     "transition-[background,border-color]",
     "duration-100",
-    ...dataFocusVisible,
   ],
   variants: {
     variant: {
@@ -42,22 +40,22 @@ const button = tv({
       danger: "",
     },
     size: {
-      sm: "px-3 h-8 min-w-[64px] text-sm gap-2",
-      md: "px-4 h-10 min-w-[80px] gap-2",
-      lg: "px-6 h-12 min-w-[96px] text-lg gap-3",
+      sm: "px-3 h-8 min-w-[64px] text-tiny gap-2",
+      md: "px-4 h-10 min-w-[80px] text-small gap-2",
+      lg: "px-6 h-12 min-w-[96px] text-medium gap-3",
     },
     rounded: {
       none: "rounded-none",
-      sm: "rounded-md",
-      md: "rounded-xl",
-      lg: "rounded-2xl",
+      sm: "rounded-small",
+      md: "rounded-medium",
+      lg: "rounded-large",
       full: "rounded-full",
     },
     fullWidth: {
       true: "w-full",
     },
     disabled: {
-      true: "opacity-50 pointer-events-none",
+      true: "disabled",
     },
   },
   defaultVariants: {
