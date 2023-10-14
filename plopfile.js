@@ -82,7 +82,7 @@ module.exports = function main(plop) {
         actions.push({
           type: "addMany",
           templateFiles: `plop/${gen}/**`,
-          destination: `./packages/{{outDir}}/{{dashCase ${gen}Name}}`,
+          destination: `./packages/{{outDir}}/{{dashCase name}}`,
           base: `plop/${gen}`,
           data,
           abortOnFail: true,
