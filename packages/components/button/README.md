@@ -9,9 +9,9 @@ Buttons allow users to perform actions and choose with a single tap.
 ```sh
 pnpm add @frontplus-ui/button
 # or
-yarn add @nextui-org/button
+yarn add @frontplus-ui/button
 # or
-npm i @nextui-org/button
+npm i @frontplus-ui/button
 ```
 
 ## Licence

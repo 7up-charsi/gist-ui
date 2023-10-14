@@ -1,18 +1,14 @@
-# @frontplus-ui/
+# @frontplus-ui/use-ripple
 
-A Quick description of the component
-
-> This is an internal utility, not intended for public usage.
-
-
- 
 ## Installation
 
 ```sh
-pnpm add @frontplus-ui/
+pnpm add @frontplus-ui/use-ripple
+# or
+yarn add @frontplus-ui/use-ripple
+# or
+npm i @frontplus-ui/use-ripple
 ```
-
-## Contribution
 
 ## Licence
 

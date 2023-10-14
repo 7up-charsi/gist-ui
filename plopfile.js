@@ -74,7 +74,7 @@ module.exports = function main(plop) {
         const { description, outDir, name } = answers;
 
         const data = {
-          [`${gen}Name`]: name,
+          name,
           description,
           outDir,
         };

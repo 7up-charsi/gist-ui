@@ -1,18 +1,18 @@
-# @frontplus-ui/
+# @frontplus-ui/theme
 
-A Quick description of the component
+A Quick description of the package
 
-> This is an internal utility, not intended for public usage.
+Here you can find the TailwindCSS plugin and component styles.
 
-this package contains theme ( tailwind-variants )
- 
 ## Installation
 
 ```sh
-pnpm add @frontplus-ui/
+pnpm add @frontplus-ui/theme
+# or
+yarn add @frontplus-ui/theme
+# or
+npm i @frontplus-ui/theme
 ```
-
-## Contribution
 
 ## Licence
 

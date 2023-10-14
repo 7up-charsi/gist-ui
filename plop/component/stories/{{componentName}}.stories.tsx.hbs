@@ -1,23 +1,23 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { {{componentName}} } from "@frontplus/theme";
+import { {{name}} } from "@frontplus/theme";
 
-import { {{capitalize componentName}}, {{capitalize componentName}}Props } from "../src";
+import { {{capitalize name}}, {{capitalize name}}Props } from "../src";
 
 const meta: Meta<typeof Button> = {
-  title: "Components/{{capitalize componentName}}",
-  component: {{capitalize componentName}},
+  title: "Components/{{capitalize name}}",
+  component: {{capitalize name}},
 };
 
 export default meta;
 
 const defaultProps = {
-  ...{{componentName}}.defaultVariants,
+  ...{{name}}.defaultVariants,
 };
 
-const Template = (args: {{capitalize componentName}}Props) => <{{capitalize componentName}} {...args} />;
+const Template = (args: {{capitalize name}}Props) => <{{capitalize name}} {...args} />;
 
-export const Default: StoryObj<{{capitalize componentName}}Props> = {
+export const Default: StoryObj<{{capitalize name}}Props> = {
   render: Template,
   args: {
     ...defaultProps,
