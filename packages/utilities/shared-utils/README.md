@@ -4,13 +4,17 @@ This package contains common used utilities
 
 ## Installation
 
-```sh
+```bash
 pnpm add @frontplus-ui/shared-utils
 # or
 yarn add @frontplus-ui/shared-utils
 # or
 npm i @frontplus-ui/shared-utils
 ```
+
+## API Reference
+
+is in progress
 
 ## Licence
 

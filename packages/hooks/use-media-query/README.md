@@ -6,13 +6,17 @@ The useMediaQuery hook leverages the window.matchMedia API to subscribe to CSS m
 
 ## Installation
 
-```sh
+```bash
 pnpm add @frontplus-ui/use-media-query
 # or
 yarn add @frontplus-ui/use-media-query
 # or
 npm i @frontplus-ui/use-media-query
 ```
+
+## API Reference
+
+is in progress
 
 ## Licence
 

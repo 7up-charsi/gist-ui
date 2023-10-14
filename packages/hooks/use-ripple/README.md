@@ -7,13 +7,17 @@ This hook is used to add ripple effect in all elements except void elements
 
 ## Installation
 
-```sh
+```bash
 pnpm add @frontplus-ui/use-ripple
 # or
 yarn add @frontplus-ui/use-ripple
 # or
 npm i @frontplus-ui/use-ripple
 ```
+
+## API Reference
+
+is in progress
 
 ## Licence
 
