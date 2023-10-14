@@ -1,6 +1,6 @@
 {
   "name": "@frontplus-ui/button",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "keywords": [
     "button"
   ],
@@ -47,7 +47,6 @@
   },
   "dependencies": {
     "@frontplus-ui/theme": "workspace:*",
-    "@frontplus-ui/shared-utils": "workspace:*",
     "@frontplus-ui/react-utils": "workspace:*",
     "@frontplus-ui/use-ripple": "workspace:*"
   },

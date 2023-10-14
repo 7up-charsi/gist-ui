@@ -1,5 +1,11 @@
 # @frontplus-ui/button
 
+## 1.0.5
+
+### Patch Changes
+
+- add react-aria and mange focus state
+
 ## 1.0.4
 
 ### Patch Changes
