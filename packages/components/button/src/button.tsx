@@ -1,15 +1,15 @@
-import { ButtonHTMLAttributes, forwardRef, LegacyRef, ReactNode } from "react";
+import { forwardRef, LegacyRef, ReactNode, useRef } from "react";
 import { button, ButtonVariantProps } from "@frontplus-ui/theme";
-import { isTouchDevice } from "@frontplus-ui/shared-utils";
 import { useRipple, UseRippleProps } from "@frontplus-ui/use-ripple";
 import { mergeRefs, mergeEvents } from "@frontplus-ui/react-utils";
+import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
 
-export interface ButtonProps
-  extends ButtonVariantProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
+export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   rippleProps?: UseRippleProps;
+  className?: string;
+  children?: ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
@@ -24,7 +24,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     rounded,
     size,
     variant,
-    ...restProps
   } = props;
 
   const styles = button({
@@ -37,19 +36,34 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     variant,
   });
 
+  const innerRef = useRef<HTMLButtonElement>(null);
+
   const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(rippleProps);
+
+  const { buttonProps } = useButton(props, innerRef);
+
+  const { focusProps, isFocusVisible } = useFocusRing();
 
   return (
     <button
-      ref={mergeRefs(ref, rippleRef) as LegacyRef<HTMLButtonElement>}
-      data-hoverable={!isTouchDevice()}
-      {...restProps}
-      {...mergeEvents({ onPointerDown: rippleEvent }, { onPointerDown: restProps.onPointerDown })}
+      ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
+      {...buttonProps}
+      {...mergeEvents(
+        { onPointerDown: rippleEvent },
+        { onPointerDown: buttonProps.onPointerDown },
+        { onFocus: focusProps.onFocus, onBlur: focusProps.onBlur },
+        { onFocus: buttonProps.onFocus, onBlur: buttonProps.onBlur },
+      )}
       className={styles}
     >
       {startIcon}
       {props.children}
       {endIcon}
+
+      <span
+        data-visible={isFocusVisible}
+        className="rounded-full absolute origin-center animate-none hidden data-[visible=true]:inline-block data-[visible=true]:animate-focusRipple bg-[var(--rippleBg)] w-[var(--focusRippleSize)] h-[var(--focusRippleSize)]"
+      ></span>
     </button>
   );
 });

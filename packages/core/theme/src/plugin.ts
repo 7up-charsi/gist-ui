@@ -40,6 +40,19 @@ export const frontplusui = () => {
             medium: "12px",
             large: "14px",
           },
+          keyframes: {
+            focusRipple: {
+              "50%": {
+                scale: ".9",
+              },
+              "100%": {
+                scale: "1",
+              },
+            },
+          },
+          animation: {
+            focusRipple: "focusRipple 3s ease-in-out infinite",
+          },
         },
       },
     },
