@@ -1,7 +1,5 @@
 # @frontplus-ui/shared-utils
 
-A Quick description of the package
-
 This package contains common used utilities
 
 ## Installation

@@ -1,8 +1,6 @@
 # @frontplus-ui/theme
 
-A Quick description of the package
-
-Here you can find the TailwindCSS plugin and component styles.
+In this package you can find the TailwindCSS plugin and component styles.
 
 ## Installation
 

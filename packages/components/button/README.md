@@ -1,7 +1,5 @@
 # @frontplus-ui/button
 
-A Quick description of the component
-
 Buttons allow users to perform actions and choose with a single tap.
 
 ## Installation

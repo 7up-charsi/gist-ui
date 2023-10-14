@@ -1,7 +1,5 @@
 # @frontplus-ui/react-utils
 
-A Quick description of the package
-
 This package contains utilities for react
 
 ## Installation
