@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frontplus/frontplus-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/frontplus-ui.git",
     "directory": "packages/hooks/use-media-query"
   },
   "bugs": {
-    "url": "https://github.com/frontplus/frontplus-ui/issues"
+    "url": "https://github.com/mzeeshan3597/frontplus-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
