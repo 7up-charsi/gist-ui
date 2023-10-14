@@ -1,13 +1,11 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 
-interface Props {
-  duration: number;
-  timingFunction: string;
-  disabled: boolean;
-  completedFactor: number;
+export interface UseRippleProps {
+  duration?: number;
+  timingFunction?: string;
+  disabled?: boolean;
+  completedFactor?: number;
 }
-
-export interface UseRippleProps extends Partial<Props> {}
 
 export interface MinimalEvent {
   clientX: number;
@@ -15,21 +13,17 @@ export interface MinimalEvent {
   button: number;
 }
 
-export function useRipple<T extends HTMLElement>(props: Partial<Props> = {}) {
+export function useRipple<T extends HTMLElement>(
+  props: UseRippleProps = {
+    duration: 500,
+    timingFunction: "cubic-bezier(.42,.36,.28,.88)",
+    disabled: false,
+    completedFactor: 0.5,
+  },
+) {
   const ref = useRef<T>(null);
 
-  const options: Props = useMemo(
-    () => ({
-      duration: 500,
-      timingFunction: "cubic-bezier(.42,.36,.28,.88)",
-      disabled: false,
-      completedFactor: 0.5,
-      ...(props ?? {}),
-    }),
-    [props],
-  );
-
-  const { disabled, duration, completedFactor } = options;
+  const { disabled, duration, completedFactor } = props as Required<UseRippleProps>;
 
   const event = useCallback((event: MinimalEvent) => {
     if (!ref.current || disabled || event.button !== 0) return;
@@ -38,7 +32,7 @@ export function useRipple<T extends HTMLElement>(props: Partial<Props> = {}) {
 
     requestAnimationFrame(() => {
       const begun = Date.now();
-      const ripple = createRipple(target, event, options);
+      const ripple = createRipple(target, event, props);
       target.appendChild(ripple);
 
       const removeRipple = () => {
@@ -64,7 +58,11 @@ export function useRipple<T extends HTMLElement>(props: Partial<Props> = {}) {
   return [ref, event] as const;
 }
 
-const createRipple = (target: HTMLElement, event: MinimalEvent, options: Props): HTMLElement => {
+const createRipple = (
+  target: HTMLElement,
+  event: MinimalEvent,
+  options: UseRippleProps,
+): HTMLElement => {
   const { clientX, clientY } = event;
   const { height, width, top, left } = target.getBoundingClientRect();
   const maxHeight = Math.max(clientY - top, height - clientY + top);
@@ -72,6 +70,8 @@ const createRipple = (target: HTMLElement, event: MinimalEvent, options: Props):
   const size = Math.hypot(maxHeight, maxWidth) * 2;
 
   const element = document.createElement("span");
+
+  const { duration, timingFunction } = options as Required<UseRippleProps>;
 
   element.style.cssText = `
     position: absolute;
@@ -84,9 +84,7 @@ const createRipple = (target: HTMLElement, event: MinimalEvent, options: Props):
     border-radius: 50%;
     background-color: var(--rippleBg);
     scale: 0;
-    transition: scale ${options.duration}ms ${options.timingFunction}, opacity ${
-      options.duration * 0.7
-    }ms ease-in-out;
+    transition: scale ${duration}ms ${timingFunction}, opacity ${duration * 0.7}ms ease-in-out;
     `;
 
   requestAnimationFrame(() => {
