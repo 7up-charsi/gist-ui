@@ -1,5 +1,11 @@
 # @frontplus-ui/react-utils
 
+## 1.1.3
+
+### Patch Changes
+
+- update readme
+
 ## 1.1.2
 
 ### Patch Changes

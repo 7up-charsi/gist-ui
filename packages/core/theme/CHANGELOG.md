@@ -1,5 +1,13 @@
 # @frontplus-ui/theme
 
+## 1.0.5
+
+### Patch Changes
+
+- update readme
+- Updated dependencies
+  - @frontplus-ui/shared-utils@1.0.2
+
 ## 1.0.4
 
 ### Patch Changes

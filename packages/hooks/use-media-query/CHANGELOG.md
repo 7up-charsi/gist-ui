@@ -1,5 +1,11 @@
 # @frontplus-ui/use-media-query
 
+## 1.0.2
+
+### Patch Changes
+
+- update readme
+
 ## 1.0.1
 
 ### Patch Changes

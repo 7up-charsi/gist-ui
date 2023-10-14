@@ -1,5 +1,16 @@
 # @frontplus-ui/button
 
+## 1.0.7
+
+### Patch Changes
+
+- fix keyboard focus circle animation
+- update readme
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.5
+  - @frontplus-ui/use-ripple@1.0.3
+  - @frontplus-ui/react-utils@1.1.3
+
 ## 1.0.6
 
 ### Patch Changes
