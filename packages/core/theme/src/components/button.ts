@@ -40,9 +40,9 @@ const button = tv({
       danger: "",
     },
     size: {
-      sm: "px-3 h-8 min-w-[64px] text-tiny gap-2 [--focusRippleSize:45px]",
-      md: "px-4 h-10 min-w-[80px] text-small gap-2 [--focusRippleSize:65px]",
-      lg: "px-6 h-12 min-w-[96px] text-medium gap-3 [--focusRippleSize:75px]",
+      sm: "px-3 h-8 min-w-[64px] text-tiny gap-2",
+      md: "px-4 h-10 min-w-[80px] text-small gap-2",
+      lg: "px-6 h-12 min-w-[96px] text-medium gap-3",
     },
     rounded: {
       none: "rounded-none",

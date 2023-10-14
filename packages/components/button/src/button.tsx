@@ -42,7 +42,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const { buttonProps } = useButton(props, innerRef);
 
-  const { focusProps, isFocusVisible } = useFocusRing();
+  const { focusProps, isFocusVisible, isFocused } = useFocusRing();
 
   return (
     <button
@@ -61,8 +61,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       {endIcon}
 
       <span
-        data-visible={isFocusVisible}
-        className="rounded-full absolute origin-center animate-none hidden data-[visible=true]:inline-block data-[visible=true]:animate-focusRipple bg-[var(--rippleBg)] w-[var(--focusRippleSize)] h-[var(--focusRippleSize)]"
+        data-visible={isFocusVisible && isFocused}
+        className="rounded-full absolute origin-center animate-none scale-0 opacity-20 transition-[transform,opacity] data-[visible=true]:opacity-100 data-[visible=true]:scale-100 data-[visible=true]:animate-focusRipple bg-[var(--rippleBg)] w-[calc(100%_-_10px)] aspect-square"
       ></span>
     </button>
   );
