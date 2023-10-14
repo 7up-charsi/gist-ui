@@ -1,5 +1,12 @@
 # @frontplus-ui/button
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.4
+
 ## 1.0.5
 
 ### Patch Changes

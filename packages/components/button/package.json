@@ -1,6 +1,6 @@
 {
   "name": "@frontplus-ui/button",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "keywords": [
     "button"
   ],
@@ -48,7 +48,8 @@
   "dependencies": {
     "@frontplus-ui/theme": "workspace:*",
     "@frontplus-ui/react-utils": "workspace:*",
-    "@frontplus-ui/use-ripple": "workspace:*"
+    "@frontplus-ui/use-ripple": "workspace:*",
+    "react-aria": "^3.29.0"
   },
   "devDependencies": {
     "clean-package": "^2.2.0",

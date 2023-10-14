@@ -1,5 +1,11 @@
 # @frontplus-ui/theme
 
+## 1.0.4
+
+### Patch Changes
+
+- fix button styles
+
 ## 1.0.3
 
 ### Patch Changes
