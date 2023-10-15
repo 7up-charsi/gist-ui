@@ -12,14 +12,15 @@
     "@frontplus-ui/theme": "workspace:*"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.0",
     "@storybook/addon-essentials": "^7.4.6",
     "@storybook/addon-links": "^7.4.6",
     "@storybook/cli": "^7.4.6",
-    "eslint-plugin-storybook": "^0.6.15",
     "@storybook/react-vite": "^7.4.6",
-    "vite": "^4.4.11",
     "autoprefixer": "^10.4.16",
+    "eslint-plugin-storybook": "^0.6.15",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.11"
   }
 }
