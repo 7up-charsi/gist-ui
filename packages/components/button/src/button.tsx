@@ -26,7 +26,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     variant,
   } = props;
 
-  const styles = button({
+  const { base, focusVisible } = button({
     className,
     color,
     fullWidth,
@@ -54,16 +54,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         { onFocus: focusProps.onFocus, onBlur: focusProps.onBlur },
         { onFocus: buttonProps.onFocus, onBlur: buttonProps.onBlur },
       )}
-      className={styles}
+      className={base()}
     >
       {startIcon}
       {props.children}
       {endIcon}
 
-      <span
-        data-visible={isFocusVisible && isFocused}
-        className="rounded-full absolute origin-center animate-none scale-0 opacity-20 transition-[transform,opacity] data-[visible=true]:opacity-100 data-[visible=true]:scale-100 data-[visible=true]:animate-focusRipple bg-[var(--rippleBg)] w-[calc(100%_-_10px)] aspect-square"
-      ></span>
+      <span data-visible={isFocusVisible && isFocused} className={focusVisible()}></span>
     </button>
   );
 });
