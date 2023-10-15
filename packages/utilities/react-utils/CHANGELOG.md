@@ -1,5 +1,23 @@
 # @frontplus-ui/react-utils
 
+## 1.1.6
+
+### Patch Changes
+
+- empty version bump
+
+## 1.1.5
+
+### Patch Changes
+
+- empty bump version
+
+## 1.1.4
+
+### Patch Changes
+
+- empty version bump
+
 ## 1.1.3
 
 ### Patch Changes

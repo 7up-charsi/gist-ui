@@ -1,5 +1,29 @@
 # @frontplus-ui/workshop
 
+## 1.0.8
+
+### Patch Changes
+
+- empty version bump
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.8
+
+## 1.0.7
+
+### Patch Changes
+
+- empty bump version
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- empty version bump
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes
