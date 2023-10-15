@@ -1,0 +1,52 @@
+{
+  "name": "@frontplus-ui/react",
+  "version": "1.0.0",
+  "keywords": [
+    "react"
+  ],
+  "author": {
+    "name": "Muhammad Zeeshan",
+    "email": "mzeeshan3597@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzeeshan3597/frontplus-ui.git",
+    "directory": "packages/core/react"
+  },
+  "bugs": {
+    "url": "https://github.com/mzeeshan3597/frontplus-ui/issues"
+  },
+  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src --dts",
+    "build:fast": "tsup src",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "dependencies": {
+    "@frontplus-ui/button": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "^2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}

@@ -144,14 +144,11 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
-  packages/components/spinner:
+  packages/core/react:
     dependencies:
-      '@frontplus-ui/theme':
+      '@frontplus-ui/button':
         specifier: workspace:*
-        version: link:../../core/theme
-      react:
-        specifier: '>=18'
-        version: 18.2.0
+        version: link:../../components/button
     devDependencies:
       clean-package:
         specifier: ^2.2.0
