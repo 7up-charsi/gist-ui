@@ -1,5 +1,11 @@
 # @frontplus-ui/theme
 
+## 1.0.9
+
+### Patch Changes
+
+- add slots in theme
+
 ## 1.0.8
 
 ### Patch Changes

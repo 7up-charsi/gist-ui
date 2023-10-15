@@ -1,5 +1,13 @@
 # @frontplus-ui/button
 
+## 1.0.11
+
+### Patch Changes
+
+- add slots in theme
+- Updated dependencies
+  - @frontplus-ui/theme@1.0.9
+
 ## 1.0.10
 
 ### Patch Changes
