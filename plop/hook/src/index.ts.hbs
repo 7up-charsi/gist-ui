@@ -1,9 +1,11 @@
 export interface {{capitalize name}}Props {}
 
-export function {{camelCase name}}(props: {{capitalize name}}Props = {}) {
+const {{camelCase name}} = (props: {{capitalize name}}Props = {}) => {
   const { ...otherProps } = props;
 
   return { ...otherProps };
-}
+};
 
 export type {{capitalize name}}Return = ReturnType<typeof {{camelCase name}}>;
+
+export { {{camelCase name}} };

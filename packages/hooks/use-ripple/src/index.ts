@@ -13,14 +13,14 @@ export interface MinimalEvent {
   button: number;
 }
 
-export function useRipple<T extends HTMLElement>(
+const useRipple = <T extends HTMLElement>(
   props: UseRippleProps = {
     duration: 500,
     timingFunction: "cubic-bezier(.42,.36,.28,.88)",
     disabled: false,
     completedFactor: 0.5,
   },
-) {
+) => {
   const ref = useRef<T>(null);
 
   const { disabled, duration, completedFactor } = props as Required<UseRippleProps>;
@@ -56,7 +56,7 @@ export function useRipple<T extends HTMLElement>(
   }, []);
 
   return [ref, event] as const;
-}
+};
 
 const createRipple = (
   target: HTMLElement,
@@ -95,3 +95,5 @@ const createRipple = (
 };
 
 export type UseRippleReturn = ReturnType<typeof useRipple>;
+
+export { useRipple };
