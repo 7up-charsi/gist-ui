@@ -15,7 +15,7 @@ concurrency:
 jobs:
   release:
     name: Release
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Switch branch
         uses: actions/checkout@v3
