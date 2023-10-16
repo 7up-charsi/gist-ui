@@ -1,26 +1,22 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { button } from "@frontplus-ui/theme";
-
 import { Button, ButtonProps } from "../src";
+import { Bars, Circles } from "react-loader-spinner";
 
 const meta: Meta<typeof Button> = {
   title: "Components/Button",
   component: Button,
+  args: button.defaultVariants,
 };
 
 export default meta;
-
-const defaultProps = {
-  ...button.defaultVariants,
-};
 
 const Template = (args: ButtonProps) => <Button {...args} />;
 
 export const Default: StoryObj<ButtonProps> = {
   render: Template,
   args: {
-    ...defaultProps,
     children: "default",
   },
 };
@@ -40,7 +36,6 @@ export const Size: StoryObj<ButtonProps> = {
     </div>
   ),
   args: {
-    ...defaultProps,
     size: undefined,
   },
 };
@@ -68,9 +63,16 @@ export const WithIcons: StoryObj<ButtonProps> = {
     </Button>
   ),
   args: {
-    ...defaultProps,
     startIcon: true,
     endIcon: true,
     children: "with icons",
+  },
+};
+
+export const WithSpinner: StoryObj<ButtonProps> = {
+  render: (args) => <Button {...args}>with spinner</Button>,
+  args: {
+    startIcon: <Bars color="white" width={20} />,
+    endIcon: <Circles color="white" width={20} />,
   },
 };

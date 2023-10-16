@@ -7,19 +7,13 @@ import { {{capitalize name}}, {{capitalize name}}Props } from "../src";
 const meta: Meta<typeof {{capitalize name}}> = {
   title: "Components/{{capitalize name}}",
   component: {{capitalize name}},
+  args: {{name}}.defaultVariants
 };
 
 export default meta;
-
-const defaultProps = {
-  ...{{name}}.defaultVariants,
-};
 
 const Template = (args: {{capitalize name}}Props) => <{{capitalize name}} {...args} />;
 
 export const Default: StoryObj<{{capitalize name}}Props> = {
   render: Template,
-  args: {
-    ...defaultProps,
-  }
 }
