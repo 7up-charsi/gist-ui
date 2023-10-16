@@ -24,6 +24,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     rounded,
     size,
     variant,
+    isIconOnly,
   } = props;
 
   const { base, focusVisible } = button({
@@ -34,6 +35,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     rounded,
     size,
     variant,
+    isIconOnly,
   });
 
   const innerRef = useRef<HTMLButtonElement>(null);
@@ -46,8 +48,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   return (
     <button
-      ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
       {...buttonProps}
+      ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
       {...mergeEvents(
         { onPointerDown: rippleEvent },
         { onPointerDown: buttonProps.onPointerDown },
@@ -56,9 +58,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       )}
       className={base()}
     >
-      {startIcon}
+      {!isIconOnly ? startIcon : null}
       {props.children}
-      {endIcon}
+      {!isIconOnly ? endIcon : null}
 
       <span data-visible={isFocusVisible && isFocused} className={focusVisible()}></span>
     </button>

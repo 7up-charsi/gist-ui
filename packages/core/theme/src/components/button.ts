@@ -18,7 +18,7 @@ const button = tv({
       "subpixel-antialiased",
       "overflow-hidden",
       "tap-highlight-transparent",
-      "[&>svg]:fill-current",
+      "[&_svg]:fill-current",
       "transition-[background,border-color]",
       "duration-150",
       "outline-none",
@@ -75,6 +75,9 @@ const button = tv({
     disabled: {
       true: { base: "disabled" },
     },
+    isIconOnly: {
+      true: "px-0",
+    },
   },
   defaultVariants: {
     size: "md",
@@ -83,6 +86,7 @@ const button = tv({
     color: "primary",
     fullWidth: false,
     disabled: false,
+    isIconOnly: false,
   },
   compoundVariants: [
     // color / solid
@@ -334,6 +338,23 @@ const button = tv({
       variant: "light",
       color: "danger",
       class: { base: "hover:bg-danger-3 text-danger-10 [--rippleBg:theme(colors.danger.9/20%)]" },
+    },
+
+    // size / isIconOnly
+    {
+      isIconOnly: true,
+      size: "sm",
+      class: "min-w-[32px] w-8 h-8",
+    },
+    {
+      isIconOnly: true,
+      size: "md",
+      class: "min-w-[40px] w-10 h-10",
+    },
+    {
+      isIconOnly: true,
+      size: "lg",
+      class: "min-w-[48px] w-12 h-12",
     },
   ],
 });
