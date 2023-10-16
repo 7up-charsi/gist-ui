@@ -1,5 +1,13 @@
 # @front-ui/button
 
+## 1.0.2
+
+### Patch Changes
+
+- add isIconOnly support
+- Updated dependencies
+  - @front-ui/theme@1.0.2
+
 ## 1.0.11
 
 ### Patch Changes
