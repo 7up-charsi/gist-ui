@@ -147,19 +147,6 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/components/icon-button:
-    dependencies:
-      '@front-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
   packages/core/react:
     dependencies:
       '@front-ui/button':
