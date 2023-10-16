@@ -1,7 +1,7 @@
 import plugin from "tailwindcss/plugin";
 import { neutral, primary, secondary, success, info, warning, danger } from "./colors";
 
-export const frontplusui = () => {
+export const frontui = () => {
   return plugin(
     ({ addUtilities }) => {
       addUtilities({
