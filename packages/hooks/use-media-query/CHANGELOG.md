@@ -1,4 +1,4 @@
-# @frontplus-ui/use-media-query
+# @front-ui/use-media-query
 
 ## 1.0.5
 

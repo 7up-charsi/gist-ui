@@ -1,15 +1,15 @@
-# @frontplus-ui/react-utils
+# @front-ui/react-utils
 
 This package contains utilities for react
 
 ## Installation
 
 ```bash
-pnpm add @frontplus-ui/react-utils
+pnpm add @front-ui/react-utils
 # or
-yarn add @frontplus-ui/react-utils
+yarn add @front-ui/react-utils
 # or
-npm i @frontplus-ui/react-utils
+npm i @front-ui/react-utils
 ```
 
 ## API Reference

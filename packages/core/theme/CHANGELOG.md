@@ -1,4 +1,4 @@
-# @frontplus-ui/theme
+# @front-ui/theme
 
 ## 1.0.9
 
@@ -12,7 +12,7 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.5
+  - @front-ui/shared-utils@1.0.5
 
 ## 1.0.7
 
@@ -20,7 +20,7 @@
 
 - empty bump version
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.4
+  - @front-ui/shared-utils@1.0.4
 
 ## 1.0.6
 
@@ -28,7 +28,7 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.3
+  - @front-ui/shared-utils@1.0.3
 
 ## 1.0.5
 
@@ -36,7 +36,7 @@
 
 - update readme
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.2
+  - @front-ui/shared-utils@1.0.2
 
 ## 1.0.4
 
@@ -62,11 +62,11 @@
 
 - fix REACT import issue
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.1
+  - @front-ui/shared-utils@1.0.1
 
 ## 1.0.0
 
 ### First release
 
 - Updated dependencies
-  - @frontplus-ui/shared-utils@1.0.0
+  - @front-ui/shared-utils@1.0.0

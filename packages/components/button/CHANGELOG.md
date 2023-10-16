@@ -1,4 +1,4 @@
-# @frontplus-ui/button
+# @front-ui/button
 
 ## 1.0.11
 
@@ -6,7 +6,7 @@
 
 - add slots in theme
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.9
+  - @front-ui/theme@1.0.9
 
 ## 1.0.10
 
@@ -14,9 +14,9 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/react-utils@1.1.6
-  - @frontplus-ui/use-ripple@1.0.6
-  - @frontplus-ui/theme@1.0.8
+  - @front-ui/react-utils@1.1.6
+  - @front-ui/use-ripple@1.0.6
+  - @front-ui/theme@1.0.8
 
 ## 1.0.9
 
@@ -24,9 +24,9 @@
 
 - empty bump version
 - Updated dependencies
-  - @frontplus-ui/react-utils@1.1.5
-  - @frontplus-ui/use-ripple@1.0.5
-  - @frontplus-ui/theme@1.0.7
+  - @front-ui/react-utils@1.1.5
+  - @front-ui/use-ripple@1.0.5
+  - @front-ui/theme@1.0.7
 
 ## 1.0.8
 
@@ -34,9 +34,9 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.6
-  - @frontplus-ui/use-ripple@1.0.4
-  - @frontplus-ui/react-utils@1.1.4
+  - @front-ui/theme@1.0.6
+  - @front-ui/use-ripple@1.0.4
+  - @front-ui/react-utils@1.1.4
 
 ## 1.0.7
 
@@ -45,16 +45,16 @@
 - fix keyboard focus circle animation
 - update readme
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.5
-  - @frontplus-ui/use-ripple@1.0.3
-  - @frontplus-ui/react-utils@1.1.3
+  - @front-ui/theme@1.0.5
+  - @front-ui/use-ripple@1.0.3
+  - @front-ui/react-utils@1.1.3
 
 ## 1.0.6
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.4
+  - @front-ui/theme@1.0.4
 
 ## 1.0.5
 
@@ -68,8 +68,8 @@
 
 - fix ripple issue
 - Updated dependencies
-  - @frontplus-ui/react-utils@1.1.2
-  - @frontplus-ui/use-ripple@1.0.2
+  - @front-ui/react-utils@1.1.2
+  - @front-ui/use-ripple@1.0.2
 
 ## 1.0.3
 
@@ -77,8 +77,8 @@
 
 - fix all build related issue
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.3
-  - @frontplus-ui/react-utils@1.1.1
+  - @front-ui/theme@1.0.3
+  - @front-ui/react-utils@1.1.1
 
 ## 1.0.2
 
@@ -89,8 +89,8 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/react-utils@1.1.0
-  - @frontplus-ui/theme@1.1.0
+  - @front-ui/react-utils@1.1.0
+  - @front-ui/theme@1.1.0
 
 ## 1.0.1
 
@@ -98,17 +98,17 @@
 
 - fix REACT import issue
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.1
-  - @frontplus-ui/use-ripple@1.0.1
-  - @frontplus-ui/react-utils@1.0.1
-  - @frontplus-ui/shared-utils@1.0.1
+  - @front-ui/theme@1.0.1
+  - @front-ui/use-ripple@1.0.1
+  - @front-ui/react-utils@1.0.1
+  - @front-ui/shared-utils@1.0.1
 
 ## 1.0.0
 
 ### First release
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.0
-  - @frontplus-ui/use-ripple@1.0.0
-  - @frontplus-ui/react-utils@1.0.0
-  - @frontplus-ui/shared-utils@1.0.0
+  - @front-ui/theme@1.0.0
+  - @front-ui/use-ripple@1.0.0
+  - @front-ui/react-utils@1.0.0
+  - @front-ui/shared-utils@1.0.0

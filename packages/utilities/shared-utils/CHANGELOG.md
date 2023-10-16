@@ -1,4 +1,4 @@
-# @frontplus-ui/shared-utils
+# @front-ui/shared-utils
 
 ## 1.0.5
 

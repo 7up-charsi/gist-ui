@@ -1,4 +1,4 @@
-import { mapKeys } from "@frontplus-ui/shared-utils";
+import { mapKeys } from "@front-ui/shared-utils";
 import { blue, green, mauve, amber, plum, red, violet } from "@radix-ui/colors";
 import { ColorScale } from "./types";
 

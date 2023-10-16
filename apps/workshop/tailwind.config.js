@@ -1,4 +1,4 @@
-import { frontplusui } from "@frontplus-ui/theme";
+import { frontplusui } from "@front-ui/theme";
 
 /** @type {import('tailwindcss').Config} */
 export default {

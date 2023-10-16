@@ -1,5 +1,5 @@
 {
-  "name": "frontplus-ui",
+  "name": "front-ui",
   "private": true,
   "packageManager": "pnpm@8.6.10",
   "scripts": {

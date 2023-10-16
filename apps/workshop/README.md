@@ -1,1 +1,1 @@
-# @frontplus-ui workshop
+# @front-ui workshop

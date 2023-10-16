@@ -1,5 +1,5 @@
 {
-  "name": "@frontplus-ui/theme",
+  "name": "@front-ui/theme",
   "version": "1.0.9",
   "keywords": [
     "theme"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/frontplus-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
     "directory": "packages/core/theme"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/frontplus-ui/issues"
+    "url": "https://github.com/mzeeshan3597/front-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
@@ -46,7 +46,7 @@
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
-    "@frontplus-ui/shared-utils": "workspace:*",
+    "@front-ui/shared-utils": "workspace:*",
     "@radix-ui/colors": "^3.0.0"
   },
   "devDependencies": {

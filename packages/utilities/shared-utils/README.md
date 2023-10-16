@@ -1,15 +1,15 @@
-# @frontplus-ui/shared-utils
+# @front-ui/shared-utils
 
 This package contains common used utilities
 
 ## Installation
 
 ```bash
-pnpm add @frontplus-ui/shared-utils
+pnpm add @front-ui/shared-utils
 # or
-yarn add @frontplus-ui/shared-utils
+yarn add @front-ui/shared-utils
 # or
-npm i @frontplus-ui/shared-utils
+npm i @front-ui/shared-utils
 ```
 
 ## API Reference

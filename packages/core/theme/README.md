@@ -1,15 +1,15 @@
-# @frontplus-ui/theme
+# @front-ui/theme
 
 In this package you can find the TailwindCSS plugin and component styles.
 
 ## Installation
 
 ```bash
-pnpm add @frontplus-ui/theme
+pnpm add @front-ui/theme
 # or
-yarn add @frontplus-ui/theme
+yarn add @front-ui/theme
 # or
-npm i @frontplus-ui/theme
+npm i @front-ui/theme
 ```
 
 ## API Reference
@@ -20,10 +20,10 @@ is in progress
 
 ```js
 // file: tailwind.config.js
-import { frontplusui } from "@frontplus-ui/theme";
+import { frontplusui } from "@front-ui/theme";
 
 export default {
-  // add plugin because @frontplus-ui uses custom configurations
+  // add plugin because @front-ui uses custom configurations
   plugins: [frontplusui()],
 };
 ```

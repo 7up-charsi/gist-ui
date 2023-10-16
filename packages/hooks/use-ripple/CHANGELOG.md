@@ -1,4 +1,4 @@
-# @frontplus-ui/use-ripple
+# @front-ui/use-ripple
 
 ## 1.0.6
 

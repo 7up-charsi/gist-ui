@@ -1,4 +1,4 @@
-# @frontplus-ui/react-utils
+# @front-ui/react-utils
 
 ## 1.1.6
 

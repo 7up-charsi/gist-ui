@@ -1,8 +1,8 @@
-# @frontplus-ui/button
+# @front-ui/button
 
 A button allows a user to perform an action, with mouse, touch, and keyboard interactions.
 
-This component heavilly depends on `@frontplus-ui/theme`. Because theme package contains all component styles and TailwindCSS plugin.
+This component heavilly depends on `@front-ui/theme`. Because theme package contains all component styles and TailwindCSS plugin.
 
 ## Features
 
@@ -18,14 +18,14 @@ for more details refer to this [blog post](https://react-spectrum.adobe.com/blog
 
     ```js
     // file: tailwind.config.js
-    import { frontplusui } from "@frontplus-ui/theme";
+    import { frontplusui } from "@front-ui/theme";
 
     export default {
       content: [
         // includes theme package so tailwindcss generate component styles],
-        "./node_modules/@frontplus-ui/theme/dist/**/*.{js,jsx}",
+        "./node_modules/@front-ui/theme/dist/**/*.{js,jsx}",
       ],
-      // add plugin because @frontplus-ui uses custom configurations
+      // add plugin because @front-ui uses custom configurations
       plugins: [frontplusui()],
     };
     ```
@@ -33,11 +33,11 @@ for more details refer to this [blog post](https://react-spectrum.adobe.com/blog
 3.  install button component
 
     ```bash
-    pnpm add @frontplus-ui/button
+    pnpm add @front-ui/button
     # or
-    yarn add @frontplus-ui/button
+    yarn add @front-ui/button
     # or
-    npm i @frontplus-ui/button
+    npm i @front-ui/button
     ```
 
 ## API Reference
@@ -47,7 +47,7 @@ is in progress
 ## Usage/Examples
 
 ```js
-import { Button } from "@frontplus-ui/button";
+import { Button } from "@front-ui/button";
 
 function App() {
   return <Button>frontplus ui</Button>;

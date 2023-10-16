@@ -1,7 +1,7 @@
 import { forwardRef, LegacyRef, ReactNode, useRef } from "react";
-import { button, ButtonVariantProps } from "@frontplus-ui/theme";
-import { useRipple, UseRippleProps } from "@frontplus-ui/use-ripple";
-import { mergeRefs, mergeEvents } from "@frontplus-ui/react-utils";
+import { button, ButtonVariantProps } from "@front-ui/theme";
+import { useRipple, UseRippleProps } from "@front-ui/use-ripple";
+import { mergeRefs, mergeEvents } from "@front-ui/react-utils";
 import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
 
 export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
@@ -65,6 +65,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   );
 });
 
-Button.displayName = "frontplus.Button";
+Button.displayName = "front-ui.Button";
 
 export default Button;

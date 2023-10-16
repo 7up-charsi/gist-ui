@@ -1,11 +1,11 @@
-# @frontplus-ui/workshop
+# @front-ui/workshop
 
 ## 1.0.9
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.9
+  - @front-ui/theme@1.0.9
 
 ## 1.0.8
 
@@ -13,7 +13,7 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.8
+  - @front-ui/theme@1.0.8
 
 ## 1.0.7
 
@@ -21,7 +21,7 @@
 
 - empty bump version
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.7
+  - @front-ui/theme@1.0.7
 
 ## 1.0.6
 
@@ -29,35 +29,35 @@
 
 - empty version bump
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.6
+  - @front-ui/theme@1.0.6
 
 ## 1.0.5
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.5
+  - @front-ui/theme@1.0.5
 
 ## 1.0.4
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.4
+  - @front-ui/theme@1.0.4
 
 ## 1.0.3
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.3
+  - @front-ui/theme@1.0.3
 
 ## 1.0.2
 
 ### Patch Changes
 
 - Updated dependencies
-  - @frontplus-ui/theme@1.1.0
+  - @front-ui/theme@1.1.0
 
 ## 1.0.1
 
@@ -65,4 +65,4 @@
 
 - fix REACT import issue
 - Updated dependencies
-  - @frontplus-ui/theme@1.0.1
+  - @front-ui/theme@1.0.1

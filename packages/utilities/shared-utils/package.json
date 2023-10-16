@@ -1,5 +1,5 @@
 {
-  "name": "@frontplus-ui/shared-utils",
+  "name": "@front-ui/shared-utils",
   "version": "1.0.5",
   "keywords": [
     "shared-utils"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/frontplus-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
     "directory": "packages/utilities/shared-utils"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/frontplus-ui/issues"
+    "url": "https://github.com/mzeeshan3597/front-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",

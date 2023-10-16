@@ -1,5 +1,5 @@
 {
-  "name": "@frontplus-ui/workshop",
+  "name": "@front-ui/workshop",
   "private": true,
   "version": "1.0.9",
   "type": "module",
@@ -9,7 +9,7 @@
     "start": "pnpm dlx http-server storybook-static"
   },
   "dependencies": {
-    "@frontplus-ui/theme": "workspace:*"
+    "@front-ui/theme": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.1.0",
