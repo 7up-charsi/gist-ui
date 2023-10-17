@@ -165,6 +165,9 @@ importers:
       '@radix-ui/colors':
         specifier: ^3.0.0
         version: 3.0.0
+      tailwind-variants:
+        specifier: ^0.1.14
+        version: 0.1.14(tailwindcss@3.3.3)
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3(ts-node@10.9.1)
@@ -172,9 +175,6 @@ importers:
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
 
   packages/hooks/use-media-query:
     dependencies:
@@ -11543,7 +11543,6 @@ packages:
 
   /tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
-    dev: true
 
   /tailwind-variants@0.1.14(tailwindcss@3.3.3):
     resolution: {integrity: sha512-qfOkSGP+cSolTTkJboldGmiM+w5uE77pazCRkwixEBsuaml9CmhN0E8qgH7QnZNmOTVSsgRK1tn/MsKOvOKVWA==}
@@ -11553,7 +11552,6 @@ packages:
     dependencies:
       tailwind-merge: 1.14.0
       tailwindcss: 3.3.3(ts-node@10.9.1)
-    dev: true
 
   /tailwindcss@3.3.3(ts-node@10.9.1):
     resolution: {integrity: sha512-A0KgSkef7eE4Mf+nKJ83i75TMyq8HqY3qmFIJSWy8bNt0v1lG7jUcpGpoTFxAwYcWOphcTBLPPJg+bDfhDf52w==}
