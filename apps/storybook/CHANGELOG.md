@@ -1,4 +1,4 @@
-# @front-ui/workshop
+# @front-ui/storybook
 
 ## 1.0.4
 

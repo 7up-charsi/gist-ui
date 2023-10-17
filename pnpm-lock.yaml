@@ -85,7 +85,7 @@ importers:
         specifier: latest
         version: 1.10.15
 
-  apps/workshop:
+  apps/storybook:
     dependencies:
       '@front-ui/theme':
         specifier: workspace:*
