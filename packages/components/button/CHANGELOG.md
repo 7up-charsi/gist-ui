@@ -1,5 +1,13 @@
 # @front-ui/button
 
+## 1.0.4
+
+### Patch Changes
+
+- fix button gets focus while disabled
+- Updated dependencies
+  - @front-ui/theme@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes
