@@ -1,1 +1,1 @@
-# @front-ui storybook
+# front-ui storybook

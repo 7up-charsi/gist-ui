@@ -6,8 +6,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "typecheck": "turbo typecheck",
-    "version": "changeset version",
-    "publish": "changeset publish",
+    "release:prepare": "changeset && pnpm clean && pnpm build",
+    "release:bump": "changeset version",
+    "release": "changeset publish",
     "turbo:clean": "turbo clean && rimraf ./node_modules/.cache/turbo",
     "clean": "pnpm turbo:clean && pnpm clean:node-modules && pnpm clean:lock && pnpm install",
     "clean:node-modules": "rimraf ./apps/**/node_modules ./packages/**/**/node_modules -g && rm -rf ./node_modules",
@@ -26,6 +27,7 @@
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@storybook/react": "^7.4.6",
+    "@types/node": "^20.8.6",
     "@types/react": "^18.2.25",
     "@types/react-dom": "^18.2.11",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -36,6 +38,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
     "plop": "^4.0.0",
@@ -44,10 +47,5 @@
     "tailwind-variants": "^0.1.14",
     "tsup": "^7.2.0",
     "turbo": "latest"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-aria": "^3.29.0",
-    "react-dom": "^18.2.0"
   }
 }

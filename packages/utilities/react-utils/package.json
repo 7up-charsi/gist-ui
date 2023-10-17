@@ -33,9 +33,6 @@
       "require": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "react": ">=18"
-  },
   "scripts": {
     "build": "tsup src --dts",
     "build:fast": "tsup src",
@@ -44,6 +41,10 @@
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
