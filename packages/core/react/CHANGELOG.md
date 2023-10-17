@@ -1,5 +1,11 @@
 # @front-ui/react
 
+## 1.0.6
+
+### Patch Changes
+
+- @front-ui/button@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

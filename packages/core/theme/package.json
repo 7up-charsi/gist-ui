@@ -1,6 +1,6 @@
 {
   "name": "@front-ui/theme",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "keywords": [
     "theme"
   ],
@@ -47,11 +47,11 @@
   },
   "dependencies": {
     "@front-ui/shared-utils": "workspace:*",
-    "@radix-ui/colors": "^3.0.0"
+    "@radix-ui/colors": "^3.0.0",
+    "tailwind-variants": "^0.1.14"
   },
   "devDependencies": {
-    "clean-package": "^2.2.0",
-    "react": "^18.2.0"
+    "clean-package": "^2.2.0"
   },
   "clean-package": "../../../clean-package.config.json"
 }

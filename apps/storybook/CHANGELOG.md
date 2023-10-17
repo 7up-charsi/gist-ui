@@ -1,5 +1,12 @@
 # @front-ui/storybook
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @front-ui/theme@1.0.6
+
 ## 1.0.4
 
 ### Patch Changes

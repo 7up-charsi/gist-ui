@@ -1,5 +1,11 @@
 # @front-ui/theme
 
+## 1.0.6
+
+### Patch Changes
+
+- add tailwind-variants as dependency
+
 ## 1.0.5
 
 ### Patch Changes
