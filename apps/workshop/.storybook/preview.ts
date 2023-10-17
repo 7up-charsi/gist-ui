@@ -22,7 +22,7 @@ const preview = {
       options: ["solid", "border", "light", "flat", "shadow"],
       if: { arg: "variant", exists: true },
     },
-    disabled: {
+    isDisabled: {
       control: {
         type: "boolean",
         if: { arg: "isDisabled", exists: true },
