@@ -1,5 +1,13 @@
 # @front-ui/button
 
+## 1.0.5
+
+### Patch Changes
+
+- fix: disable button gets focus with keyboard
+- Updated dependencies
+  - @front-ui/theme@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
