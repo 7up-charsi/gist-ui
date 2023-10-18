@@ -1,0 +1,57 @@
+{
+  "name": "@front-ui/input",
+  "version": "1.0.0",
+  "keywords": [
+    "input"
+  ],
+  "author": {
+    "name": "Muhammad Zeeshan",
+    "email": "mzeeshan3597@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
+    "directory": "packages/components/input"
+  },
+  "bugs": {
+    "url": "https://github.com/mzeeshan3597/front-ui/issues"
+  },
+  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src --dts",
+    "build:fast": "tsup src",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@front-ui/theme": "workspace:*",
+    "react-aria": "^3.29.0"
+  },
+  "devDependencies": {
+    "clean-package": "^2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}
