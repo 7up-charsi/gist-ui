@@ -1,5 +1,11 @@
 # @front-ui/button
 
+## 1.0.7
+
+### Patch Changes
+
+- rename start/end icon to start/end content
+
 ## 1.0.6
 
 ### Patch Changes
