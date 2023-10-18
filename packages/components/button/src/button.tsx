@@ -5,8 +5,8 @@ import { mergeRefs, mergeEvents } from "@front-ui/react-utils";
 import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
 
 export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
-  startIcon?: ReactNode;
-  endIcon?: ReactNode;
+  startContent?: ReactNode;
+  endContent?: ReactNode;
   rippleProps?: UseRippleProps;
   className?: string;
   children?: ReactNode;
@@ -14,8 +14,8 @@ export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"butt
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
-    startIcon,
-    endIcon,
+    startContent,
+    endContent,
     rippleProps,
     className,
     color,
@@ -58,9 +58,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       )}
       className={base()}
     >
-      {!isIconOnly ? startIcon : null}
+      {!isIconOnly ? startContent : null}
       {props.children}
-      {!isIconOnly ? endIcon : null}
+      {!isIconOnly ? endContent : null}
 
       <span data-visible={isFocusVisible && isFocused} className={focusVisible()}></span>
     </button>
