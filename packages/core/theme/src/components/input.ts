@@ -16,24 +16,13 @@ const input = tv({
       flat: {},
     },
     color: {
-      neutral: {
-        inputWrapper: "bg-neutral-3", // TODO: remove it
-      },
+      neutral: {},
       primary: {},
       secondary: {},
       success: {},
       info: {},
       warning: {},
       danger: {},
-    },
-    size: {
-      sm: {},
-      md: {
-        inputWrapper: "h-10 px-2",
-        label: "text-small",
-        input: "text-small",
-      },
-      lg: {},
     },
     rounded: {
       none: { inputWrapper: "rounded-none" },
@@ -50,6 +39,16 @@ const input = tv({
         inputWrapper: "rounded-full px-3",
       },
     },
+    size: {
+      sm: {},
+      md: {
+        inputWrapper: "h-10 px-2",
+        label: "text-small",
+        input: "!text-small",
+        helperText: "!text-tiny",
+      },
+      lg: {},
+    },
     fullWidth: {
       true: {
         innerWrapper: "w-full",
@@ -58,9 +57,6 @@ const input = tv({
     isDisabled: {
       true: { innerWrapper: "disabled" },
     },
-    error: {
-      true: {},
-    },
     labelPlacement: {
       "inside-left": {
         label: "-order-1 pointer-events-none select-none",
@@ -68,7 +64,7 @@ const input = tv({
       "inside-top": {
         inputWrapper: "relative pt-[10px]",
         label:
-          "absolute top-1/2 -translate-y-1/2 pointer-events-none select-none group-data-[focused=true]/main:-translate-y-[calc(50%+10px)] group-data-[focused=true]/main:text-tiny group-data-[filled=true]/main:-translate-y-[calc(50%+10px)] group-data-[filled=true]/main:text-tiny transition-transform ",
+          "absolute top-1/2 -translate-y-1/2 pointer-events-none select-none group-data-[focused=true]/main:-translate-y-[calc(50%+10px)] group-data-[focused=true]/main:text-tiny group-data-[filled=true]/main:-translate-y-[calc(50%+10px)] group-data-[filled=true]/main:text-tiny transition-all ",
       },
       "inside-right": {
         label: "order-1 pointer-events-none select-none",
@@ -89,7 +85,6 @@ const input = tv({
   },
   defaultVariants: {
     color: "neutral",
-    error: false,
     fullWidth: false,
     isDisabled: false,
     rounded: "md",
@@ -113,6 +108,18 @@ const input = tv({
       size: "md",
       class: {
         label: "mt-[10px]",
+      },
+    },
+
+    // flat
+    {
+      variant: "flat",
+      color: "neutral",
+      class: {
+        inputWrapper: "bg-neutral-3",
+        helperText: "text-neutral-11",
+        label: "text-neutral-12",
+        input: "text-neutral-12",
       },
     },
   ],

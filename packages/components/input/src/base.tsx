@@ -21,6 +21,7 @@ export interface BaseInputProps
   errorMessage?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
+  error?: boolean;
 }
 
 const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
@@ -54,7 +55,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   } = input({
     className,
     color,
-    error,
     fullWidth,
     isDisabled,
     rounded,
