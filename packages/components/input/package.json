@@ -48,10 +48,13 @@
   },
   "dependencies": {
     "@front-ui/theme": "workspace:*",
+    "@front-ui/react-utils": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json"
+  "clean-package": {
+    "extends": "../../../../../../clean-package.config.json"
+  }
 }

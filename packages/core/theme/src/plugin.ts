@@ -3,13 +3,18 @@ import { neutral, primary, secondary, success, info, warning, danger } from "./c
 
 export const frontui = () => {
   return plugin(
-    ({ addUtilities }) => {
+    ({ addUtilities, addVariant }) => {
       addUtilities({
         ".disabled": {
           opacity: "0.5",
           pointerEvents: "none",
         },
+        ".border-test": {
+          border: "1px solid red",
+        },
       });
+
+      addVariant("svg", "&>svg");
     },
     {
       theme: {

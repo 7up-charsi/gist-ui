@@ -1,9 +1,18 @@
-import { InputHTMLAttributes, ReactNode, forwardRef, useId } from "react";
+import {
+  FocusEvent,
+  InputHTMLAttributes,
+  LegacyRef,
+  ReactNode,
+  forwardRef,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { input, InputVariantProps } from "@front-ui/theme";
-import { mergeProps, useFocusRing, useHover } from "react-aria";
+import { mergeEvents, mergeRefs } from "@front-ui/react-utils";
 
 export interface BaseInputProps
-  extends InputVariantProps,
+  extends Omit<InputVariantProps, "startContent">,
     Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size"> {
   isClearable?: boolean;
   label?: string;
@@ -18,7 +27,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   const {
     label,
     type,
-    labelPlacement = "inside",
     id,
     description,
     error,
@@ -32,6 +40,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     variant,
     startContent,
     endContent,
+    labelPlacement,
     ...restProps
   } = props;
 
@@ -40,51 +49,74 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     label: labelStyles,
     input: inputStyles,
     helperText,
-    mainWrapper,
+    innerWrapper,
+    outerWrapper,
   } = input({
     className,
     color,
     error,
     fullWidth,
     isDisabled,
-    labelPlacement,
     rounded,
     size,
     variant,
+    labelPlacement,
   });
 
   const labelId = useId();
+  const innerRef = useRef<HTMLInputElement>(null);
+  const [state, setState] = useState({ isFocused: false, value: "" });
 
-  const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
-  const { hoverProps, isHovered } = useHover(props);
+  // const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
+  // const { hoverProps, isHovered } = useHover(props);
+
+  const labelHTML = (
+    <label htmlFor={id || labelId} className={labelStyles()}>
+      {label}
+    </label>
+  );
 
   return (
     <div
-      className={mainWrapper()}
-      data-focused={isFocused}
-      data-keyboard-focus={isFocusVisible && isFocused}
-      data-hovered={isHovered}
-      {...hoverProps}
+      className={outerWrapper()}
+      data-focused={state.isFocused}
+      data-filled={!!state.value.length}
     >
-      <label htmlFor={id || labelId} className={labelStyles()}>
-        {label}
-      </label>
+      {labelPlacement?.includes("outside") && labelHTML}
 
-      <div className={inputWrapper()}>
-        {startContent}
-        <input
-          {...restProps}
-          type={type}
-          className={inputStyles()}
-          ref={ref}
-          id={id || labelId}
-          {...mergeProps(focusProps)}
-        />
-        {endContent}
+      <div className={innerWrapper()}>
+        <div
+          className={inputWrapper()}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            innerRef.current?.focus();
+            setState((prev) => ({ ...prev, isFocused: true }));
+          }}
+        >
+          {startContent}
+          <input
+            {...restProps}
+            type={type}
+            className={inputStyles()}
+            ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
+            id={id || labelId}
+            {...mergeEvents(
+              {
+                onBlur: (e: FocusEvent<HTMLInputElement>) => {
+                  setState((prev) => ({ ...prev, isFocused: false, value: e.target.value }));
+                },
+              },
+              { onBlur: props.onBlur },
+            )}
+          />
+          {labelPlacement?.includes("inside") && labelHTML}
+
+          {endContent}
+        </div>
+
+        {description && !error && <div className={helperText()}>{description} </div>}
+        {error && <div className={helperText()}>{errorMessage} </div>}
       </div>
-
-      {description && !error && <div className={helperText()}>{description} </div>}
-      {error && <div className={helperText()}>{errorMessage} </div>}
     </div>
   );
 });
