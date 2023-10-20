@@ -1,1 +1,1 @@
-export * from "@front-ui/button";
+export * from "@gist-ui/button";

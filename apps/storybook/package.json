@@ -1,5 +1,5 @@
 {
-  "name": "@front-ui/storybook",
+  "name": "@gist-ui/storybook",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
-    "@front-ui/theme": "workspace:*",
+    "@gist-ui/theme": "workspace:*",
     "@storybook/addon-actions": "^7.5.0",
     "@storybook/addon-essentials": "^7.5.0",
     "@storybook/addon-interactions": "^7.5.0",

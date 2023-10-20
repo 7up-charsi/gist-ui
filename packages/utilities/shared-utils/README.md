@@ -1,15 +1,15 @@
-# @front-ui/shared-utils
+# @gist-ui/shared-utils
 
 This package contains common used utilities
 
 ## Installation
 
 ```bash
-pnpm add @front-ui/shared-utils
+pnpm add @gist-ui/shared-utils
 # or
-yarn add @front-ui/shared-utils
+yarn add @gist-ui/shared-utils
 # or
-npm i @front-ui/shared-utils
+npm i @gist-ui/shared-utils
 ```
 
 ## API Reference

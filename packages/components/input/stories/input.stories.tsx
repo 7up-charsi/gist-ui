@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { input } from "@front-ui/theme";
+import { input } from "@gist-ui/theme";
 
 import { Input, InputProps } from "../src";
 

@@ -1,15 +1,15 @@
-# @front-ui/input
+# @gist-ui/input
 
 Input is a component that allows users to enter text. It can be used to get user inputs in forms, search fields, and more.
 
 ## Installation
 
 ```bash
-pnpm add @front-ui/input
+pnpm add @gist-ui/input
 # or
-yarn add @front-ui/input
+yarn add @gist-ui/input
 # or
-npm i @front-ui/input
+npm i @gist-ui/input
 ```
 
 ## Licence

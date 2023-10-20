@@ -13,6 +13,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return "input type not supported";
 });
 
-Input.displayName = "front-ui.Input";
+Input.displayName = "gist-ui.Input";
 
 export default Input;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { button } from "@front-ui/theme";
+import { button } from "@gist-ui/theme";
 import { Button, ButtonProps } from "../src";
 import { Bars, Circles } from "react-loader-spinner";
 

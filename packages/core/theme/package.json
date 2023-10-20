@@ -1,5 +1,5 @@
 {
-  "name": "@front-ui/theme",
+  "name": "@gist-ui/theme",
   "version": "1.0.6",
   "keywords": [
     "theme"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
     "directory": "packages/core/theme"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/front-ui/issues"
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
@@ -46,7 +46,7 @@
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
-    "@front-ui/shared-utils": "workspace:*",
+    "@gist-ui/shared-utils": "workspace:*",
     "@radix-ui/colors": "^3.0.0",
     "tailwind-variants": "^0.1.14"
   },

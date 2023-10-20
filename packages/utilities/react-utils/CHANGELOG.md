@@ -1,4 +1,4 @@
-# @front-ui/react-utils
+# @gist-ui/react-utils
 
 ## 1.1.6
 

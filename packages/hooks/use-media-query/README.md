@@ -1,4 +1,4 @@
-# @front-ui/use-media-query
+# @gist-ui/use-media-query
 
 Subscribe and respond to media query changes with useMediaQuery.
 
@@ -7,11 +7,11 @@ The useMediaQuery hook leverages the window.matchMedia API to subscribe to CSS m
 ## Installation
 
 ```bash
-pnpm add @front-ui/use-media-query
+pnpm add @gist-ui/use-media-query
 # or
-yarn add @front-ui/use-media-query
+yarn add @gist-ui/use-media-query
 # or
-npm i @front-ui/use-media-query
+npm i @gist-ui/use-media-query
 ```
 
 ## API Reference

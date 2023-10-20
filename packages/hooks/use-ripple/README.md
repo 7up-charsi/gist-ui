@@ -1,4 +1,4 @@
-# @front-ui/use-ripple
+# @gist-ui/use-ripple
 
 This hook is used to add ripple effect in all elements except void elements
 
@@ -8,11 +8,11 @@ This hook is used to add ripple effect in all elements except void elements
 ## Installation
 
 ```bash
-pnpm add @front-ui/use-ripple
+pnpm add @gist-ui/use-ripple
 # or
-yarn add @front-ui/use-ripple
+yarn add @gist-ui/use-ripple
 # or
-npm i @front-ui/use-ripple
+npm i @gist-ui/use-ripple
 ```
 
 ## API Reference

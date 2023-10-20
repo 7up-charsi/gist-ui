@@ -1,4 +1,4 @@
-# @front-ui/theme
+# @gist-ui/theme
 
 ## 1.0.6
 
@@ -42,7 +42,7 @@
 
 - empty version bump
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.5
+  - @gist-ui/shared-utils@1.0.5
 
 ## 1.0.7
 
@@ -50,7 +50,7 @@
 
 - empty bump version
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.4
+  - @gist-ui/shared-utils@1.0.4
 
 ## 1.0.6
 
@@ -58,7 +58,7 @@
 
 - empty version bump
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.3
+  - @gist-ui/shared-utils@1.0.3
 
 ## 1.0.5
 
@@ -66,7 +66,7 @@
 
 - update readme
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.2
+  - @gist-ui/shared-utils@1.0.2
 
 ## 1.0.4
 
@@ -92,11 +92,11 @@
 
 - fix REACT import issue
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.1
+  - @gist-ui/shared-utils@1.0.1
 
 ## 1.0.0
 
 ### First release
 
 - Updated dependencies
-  - @front-ui/shared-utils@1.0.0
+  - @gist-ui/shared-utils@1.0.0

@@ -86,7 +86,7 @@ importers:
       '@babel/core':
         specifier: ^7.23.2
         version: 7.23.2
-      '@front-ui/theme':
+      '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../packages/core/theme
       '@storybook/addon-actions':
@@ -134,13 +134,13 @@ importers:
 
   packages/components/button:
     dependencies:
-      '@front-ui/react-utils':
+      '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
-      '@front-ui/theme':
+      '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
-      '@front-ui/use-ripple':
+      '@gist-ui/use-ripple':
         specifier: workspace:*
         version: link:../../hooks/use-ripple
       react:
@@ -162,10 +162,10 @@ importers:
 
   packages/components/input:
     dependencies:
-      '@front-ui/react-utils':
+      '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
-      '@front-ui/theme':
+      '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
       react:
@@ -184,7 +184,7 @@ importers:
 
   packages/core/react:
     dependencies:
-      '@front-ui/button':
+      '@gist-ui/button':
         specifier: workspace:*
         version: link:../../components/button
     devDependencies:
@@ -194,7 +194,7 @@ importers:
 
   packages/core/theme:
     dependencies:
-      '@front-ui/shared-utils':
+      '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
       '@radix-ui/colors':

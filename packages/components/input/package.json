@@ -1,5 +1,5 @@
 {
-  "name": "@front-ui/input",
+  "name": "@gist-ui/input",
   "version": "1.0.0",
   "keywords": [
     "input"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
     "directory": "packages/components/input"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/front-ui/issues"
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
@@ -47,8 +47,8 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@front-ui/theme": "workspace:*",
-    "@front-ui/react-utils": "workspace:*",
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/react-utils": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {

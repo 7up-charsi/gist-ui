@@ -1,4 +1,4 @@
-# @front-ui/shared-utils
+# @gist-ui/shared-utils
 
 ## 1.0.5
 

@@ -1,4 +1,4 @@
-# @front-ui/use-media-query
+# @gist-ui/use-media-query
 
 ## 1.0.5
 

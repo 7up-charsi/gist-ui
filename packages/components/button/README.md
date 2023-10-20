@@ -1,8 +1,8 @@
-# @front-ui/button
+# @gist-ui/button
 
 A button allows a user to perform an action, with mouse, touch, and keyboard interactions.
 
-This component heavilly depends on `@front-ui/theme`. Because theme package contains all component styles and TailwindCSS plugin.
+This component heavilly depends on `@gist-ui/theme`. Because theme package contains all component styles and TailwindCSS plugin.
 
 ## Features
 
@@ -18,26 +18,26 @@ for more details refer to this [blog post](https://react-spectrum.adobe.com/blog
 
     ```js
     // file: tailwind.config.js
-    import { frontplusui } from "@front-ui/theme";
+    import { gistui } from "@gist-ui/theme";
 
     export default {
       content: [
         // includes theme package so tailwindcss generate component styles],
-        "./node_modules/@front-ui/theme/dist/**/*.{js,jsx}",
+        "./node_modules/@gist-ui/theme/dist/**/*.{js,jsx}",
       ],
-      // add plugin because @front-ui uses custom configurations
-      plugins: [frontplusui()],
+      // add plugin because @gist-ui uses custom configurations
+      plugins: [gistui()],
     };
     ```
 
 3.  install button component
 
     ```bash
-    pnpm add @front-ui/button
+    pnpm add @gist-ui/button
     # or
-    yarn add @front-ui/button
+    yarn add @gist-ui/button
     # or
-    npm i @front-ui/button
+    npm i @gist-ui/button
     ```
 
 ## API Reference
@@ -47,10 +47,10 @@ is in progress
 ## Usage/Examples
 
 ```js
-import { Button } from "@front-ui/button";
+import { Button } from "@gist-ui/button";
 
 function App() {
-  return <Button>frontplus ui</Button>;
+  return <Button>gist ui</Button>;
 }
 ```
 

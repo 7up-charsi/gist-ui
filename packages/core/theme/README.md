@@ -1,15 +1,15 @@
-# @front-ui/theme
+# @gist-ui/theme
 
 In this package you can find the TailwindCSS plugin and component styles.
 
 ## Installation
 
 ```bash
-pnpm add @front-ui/theme
+pnpm add @gist-ui/theme
 # or
-yarn add @front-ui/theme
+yarn add @gist-ui/theme
 # or
-npm i @front-ui/theme
+npm i @gist-ui/theme
 ```
 
 ## API Reference
@@ -20,11 +20,11 @@ is in progress
 
 ```js
 // file: tailwind.config.js
-import { frontplusui } from "@front-ui/theme";
+import { gistui } from "@gist-ui/theme";
 
 export default {
-  // add plugin because @front-ui uses custom configurations
-  plugins: [frontplusui()],
+  // add plugin because @gist-ui uses custom configurations
+  plugins: [gistui()],
 };
 ```
 

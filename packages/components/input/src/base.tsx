@@ -8,8 +8,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { input, InputVariantProps } from "@front-ui/theme";
-import { mergeEvents, mergeRefs } from "@front-ui/react-utils";
+import { input, InputVariantProps } from "@gist-ui/theme";
+import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
 
 export interface BaseInputProps
   extends Omit<InputVariantProps, "startContent">,
@@ -121,6 +121,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   );
 });
 
-BaseInput.displayName = "front-ui.BaseInput";
+BaseInput.displayName = "gist-ui.BaseInput";
 
 export default BaseInput;

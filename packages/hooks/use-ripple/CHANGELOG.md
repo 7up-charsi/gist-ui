@@ -1,4 +1,4 @@
-# @front-ui/use-ripple
+# @gist-ui/use-ripple
 
 ## 1.0.6
 

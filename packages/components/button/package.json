@@ -1,5 +1,5 @@
 {
-  "name": "@front-ui/button",
+  "name": "@gist-ui/button",
   "version": "1.0.7",
   "keywords": [
     "button"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
     "directory": "packages/components/button"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/front-ui/issues"
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
@@ -47,9 +47,9 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@front-ui/react-utils": "workspace:*",
-    "@front-ui/theme": "workspace:*",
-    "@front-ui/use-ripple": "workspace:*",
+    "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/use-ripple": "workspace:*",
     "react-aria": "^3.29.0",
     "react-loader-spinner": "^5.4.5"
   },

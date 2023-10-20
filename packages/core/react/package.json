@@ -1,5 +1,5 @@
 {
-  "name": "@front-ui/react",
+  "name": "@gist-ui/react",
   "version": "1.0.7",
   "keywords": [
     "react"
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mzeeshan3597/front-ui.git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
     "directory": "packages/core/react"
   },
   "bugs": {
-    "url": "https://github.com/mzeeshan3597/front-ui/issues"
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
   },
   "types": "./src/index.ts",
   "main": "./dist/index.js",
@@ -43,7 +43,7 @@
     "postpack": "clean-package restore"
   },
   "dependencies": {
-    "@front-ui/button": "workspace:*"
+    "@gist-ui/button": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
