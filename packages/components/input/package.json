@@ -49,6 +49,7 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/button": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {

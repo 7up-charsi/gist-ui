@@ -4,10 +4,10 @@ const input = tv({
   slots: {
     outerWrapper: "overflow-hidden flex gap-2 group/main",
     innerWrapper: "overflow-hidden w-52",
-    inputWrapper: "overflow-hidden w-full flex gap-2 items-center cursor-text",
-    input: "appearance-none bg-transparent outline-none min-w-0 grow",
-    label: "first-letter:uppercase whitespace-nowrap",
-    helperText: "px-1",
+    inputWrapper: "overflow-hidden relative w-full flex gap-2 items-center cursor-text",
+    input: "appearance-none bg-transparent outline-none min-w-0 grow text-sm",
+    label: "first-letter:uppercase whitespace-nowrap text-sm",
+    helperText: "px-1 text-xs",
   },
   variants: {
     variant: {
@@ -25,29 +25,32 @@ const input = tv({
       danger: {},
     },
     rounded: {
-      none: { inputWrapper: "rounded-none" },
+      none: { inputWrapper: "rounded-none px-3" },
       sm: {
-        inputWrapper: "rounded-small",
+        inputWrapper: "rounded-small px-3",
       },
       md: {
-        inputWrapper: "rounded-medium",
+        inputWrapper: "rounded-medium px-3",
       },
       lg: {
-        inputWrapper: "rounded-large",
+        inputWrapper: "rounded-large px-3",
       },
       full: {
-        inputWrapper: "rounded-full px-3",
+        inputWrapper: "rounded-full px-5",
       },
     },
     size: {
-      sm: {},
-      md: {
-        inputWrapper: "h-10 px-2",
-        label: "text-small",
-        input: "!text-small",
-        helperText: "!text-tiny",
+      sm: {
+        inputWrapper: "h-10 px-3 py-[6px]",
       },
-      lg: {},
+      md: {
+        inputWrapper: "h-12 px-3 py-2",
+      },
+      lg: {
+        inputWrapper: "h-14",
+        label: "text-md",
+        input: "text-md",
+      },
     },
     fullWidth: {
       true: {
@@ -59,12 +62,11 @@ const input = tv({
     },
     labelPlacement: {
       "inside-left": {
-        label: "-order-1 pointer-events-none select-none",
+        label: "-order-1 pointer-events-none select-none text-sm",
       },
       "inside-top": {
-        inputWrapper: "relative pt-[10px]",
         label:
-          "absolute top-1/2 -translate-y-1/2 pointer-events-none select-none group-data-[focused=true]/main:-translate-y-[calc(50%+10px)] group-data-[focused=true]/main:text-tiny group-data-[filled=true]/main:-translate-y-[calc(50%+10px)] group-data-[filled=true]/main:text-tiny transition-all ",
+          "absolute top-1/2 -translate-y-1/2 pointer-events-none select-none group-data-[filled-within=true]/main:translate-y-0 ",
       },
       "inside-right": {
         label: "order-1 pointer-events-none select-none",
@@ -82,6 +84,12 @@ const input = tv({
         input: "[direction:rtl]",
       },
     },
+    isLabelFloating: {
+      true: {},
+    },
+    isLabelPlaceholder: {
+      true: {},
+    },
   },
   defaultVariants: {
     color: "neutral",
@@ -93,6 +101,29 @@ const input = tv({
     labelPlacement: "inside-top",
   },
   compoundVariants: [
+    // size = sm + md / labelPlacement = inside-top
+    {
+      labelPlacement: "inside-top",
+      size: ["sm", "md"],
+      class: {
+        input: "pt-[15px]",
+        label:
+          "group-data-[filled-within=true]/main:top-[6px] group-data-[filled-within=true]/main:text-xs group-data-[filled-within=true]/main:font-medium transition-all",
+      },
+    },
+
+    // size = lg / labelPlacement = inside-top
+    {
+      labelPlacement: "inside-top",
+      size: "lg",
+      class: {
+        inputWrapper: "pt-[15px]",
+        input: "text-md",
+        label:
+          "group-data-[filled=true]/main:-translate-y-0 group-data-[focused=true]/main:top-[8px] group-data-[focused=true]/main:text-sm group-data-[filled=true]/main:top-[8px] group-data-[focused=true]/main:font-medium group-data-[filled=true]/main:text-sm group-data-[filled=true]/main:font-medium transition-all",
+      },
+    },
+
     // size = md / labelPlacement = outside-left
     {
       labelPlacement: "outside-left",
@@ -102,7 +133,7 @@ const input = tv({
       },
     },
 
-    // size = sm / labelPlacement = outside-right
+    // size = md / labelPlacement = outside-right
     {
       labelPlacement: "outside-right",
       size: "md",
@@ -110,6 +141,8 @@ const input = tv({
         label: "mt-[10px]",
       },
     },
+
+    // isLabelPlaceholder = true / labelPlacement = inside-top // TODO: add support for placeholder
 
     // flat
     {

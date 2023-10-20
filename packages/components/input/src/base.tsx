@@ -10,9 +10,10 @@ import {
 } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
+import { useFocusWithin } from "react-aria";
 
 export interface BaseInputProps
-  extends Omit<InputVariantProps, "startContent">,
+  extends Omit<InputVariantProps, "isLabelFloating" | "placeholder">,
     Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size"> {
   isClearable?: boolean;
   label?: string;
@@ -42,6 +43,10 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     startContent,
     endContent,
     labelPlacement,
+    placeholder,
+    value,
+    defaultValue,
+    onBlur,
     ...restProps
   } = props;
 
@@ -61,14 +66,20 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     size,
     variant,
     labelPlacement,
+    isLabelPlaceholder: !placeholder && !startContent,
   });
 
   const labelId = useId();
   const innerRef = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState({ isFocused: false, value: "" });
+  const [focusWithin, setFocusWithin] = useState(!!defaultValue);
+  const [filled, setFilled] = useState(false);
 
   // const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
   // const { hoverProps, isHovered } = useHover(props);
+
+  const { focusWithinProps } = useFocusWithin({
+    onFocusWithinChange: setFocusWithin,
+  });
 
   const labelHTML = (
     <label htmlFor={id || labelId} className={labelStyles()}>
@@ -77,25 +88,25 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   );
 
   return (
-    <div
-      className={outerWrapper()}
-      data-focused={state.isFocused}
-      data-filled={!!state.value.length}
-    >
+    <div className={outerWrapper()} data-filled-within={focusWithin || filled || !!defaultValue}>
       {labelPlacement?.includes("outside") && labelHTML}
 
       <div className={innerWrapper()}>
         <div
           className={inputWrapper()}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            innerRef.current?.focus();
-            setState((prev) => ({ ...prev, isFocused: true }));
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              innerRef.current?.focus();
+            }
           }}
+          {...focusWithinProps}
         >
           {startContent}
           <input
             {...restProps}
+            value={value}
+            defaultValue={defaultValue}
+            placeholder={placeholder}
             type={type}
             className={inputStyles()}
             ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
@@ -103,10 +114,12 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
             {...mergeEvents(
               {
                 onBlur: (e: FocusEvent<HTMLInputElement>) => {
-                  setState((prev) => ({ ...prev, isFocused: false, value: e.target.value }));
+                  setFilled(!!e.target.value.length);
                 },
               },
-              { onBlur: props.onBlur },
+              {
+                onBlur,
+              },
             )}
           />
           {labelPlacement?.includes("inside") && labelHTML}

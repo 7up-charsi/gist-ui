@@ -28,7 +28,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   } = props;
 
   const { base, focusVisible } = button({
-    className,
     color,
     fullWidth,
     isDisabled,
@@ -56,7 +55,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         { onFocus: focusProps.onFocus, onBlur: focusProps.onBlur },
         { onFocus: buttonProps.onFocus, onBlur: buttonProps.onBlur },
       )}
-      className={base()}
+      className={base({ className })}
     >
       {!isIconOnly ? startContent : null}
       {props.children}
