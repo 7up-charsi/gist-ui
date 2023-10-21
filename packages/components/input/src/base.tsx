@@ -13,7 +13,7 @@ import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
 import { useFocusWithin } from "react-aria";
 
 export interface BaseInputProps
-  extends Omit<InputVariantProps, "isLabelFloating" | "placeholder">,
+  extends Omit<InputVariantProps, "startContent" | "placeholder">,
     Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size"> {
   isClearable?: boolean;
   label?: string;
@@ -55,8 +55,8 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     label: labelStyles,
     input: inputStyles,
     helperText,
-    innerWrapper,
-    outerWrapper,
+    base,
+    wrapper,
   } = input({
     className,
     color,
@@ -66,13 +66,13 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     size,
     variant,
     labelPlacement,
-    isLabelPlaceholder: !placeholder && !startContent,
+    startContent: !!startContent,
   });
 
   const labelId = useId();
   const innerRef = useRef<HTMLInputElement>(null);
   const [focusWithin, setFocusWithin] = useState(!!defaultValue);
-  const [filled, setFilled] = useState(false);
+  const [filled, setFilled] = useState(!!defaultValue);
 
   // const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
   // const { hoverProps, isHovered } = useHover(props);
@@ -88,10 +88,15 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   );
 
   return (
-    <div className={outerWrapper()} data-filled-within={focusWithin || filled || !!defaultValue}>
+    <div
+      className={base()}
+      data-focused={focusWithin}
+      data-filled={filled}
+      data-filled-within={focusWithin || filled || !!placeholder}
+    >
       {labelPlacement?.includes("outside") && labelHTML}
 
-      <div className={innerWrapper()}>
+      <div className={wrapper()}>
         <div
           className={inputWrapper()}
           onClick={(e) => {
@@ -101,6 +106,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
           }}
           {...focusWithinProps}
         >
+          {labelPlacement?.includes("inside") && labelHTML}
           {startContent}
           <input
             {...restProps}
@@ -122,8 +128,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
               },
             )}
           />
-          {labelPlacement?.includes("inside") && labelHTML}
-
           {endContent}
         </div>
 

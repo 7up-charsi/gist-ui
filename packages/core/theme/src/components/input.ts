@@ -2,10 +2,10 @@ import { VariantProps, tv } from "tailwind-variants";
 
 const input = tv({
   slots: {
-    outerWrapper: "overflow-hidden flex gap-2 group/main",
-    innerWrapper: "overflow-hidden w-52",
-    inputWrapper: "overflow-hidden relative w-full flex gap-2 items-center cursor-text",
-    input: "appearance-none bg-transparent outline-none min-w-0 grow text-sm",
+    base: "overflow-hidden flex gap-2 w-64 group/base",
+    wrapper: "grow",
+    inputWrapper: "overflow-hidden w-full flex gap-2 flex-wrap cursor-text",
+    input: "appearance-none bg-transparent outline-none min-w-[25px] w-0 grow text-sm",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
   },
@@ -25,69 +25,64 @@ const input = tv({
       danger: {},
     },
     rounded: {
-      none: { inputWrapper: "rounded-none px-3" },
+      none: {
+        inputWrapper: "rounded-none",
+      },
       sm: {
-        inputWrapper: "rounded-small px-3",
+        inputWrapper: "rounded-small",
       },
       md: {
-        inputWrapper: "rounded-medium px-3",
+        inputWrapper: "rounded-medium",
       },
       lg: {
-        inputWrapper: "rounded-large px-3",
+        inputWrapper: "rounded-large",
       },
       full: {
-        inputWrapper: "rounded-full px-5",
+        inputWrapper: "rounded-full",
       },
     },
     size: {
       sm: {
-        inputWrapper: "h-10 px-3 py-[6px]",
+        inputWrapper: "h-12 px-3 py-1",
       },
       md: {
-        inputWrapper: "h-12 px-3 py-2",
+        inputWrapper: "h-14 px-3 py-2",
       },
-      lg: {
-        inputWrapper: "h-14",
-        label: "text-md",
-        input: "text-md",
-      },
+      lg: {},
     },
     fullWidth: {
       true: {
-        innerWrapper: "w-full",
+        base: "w-full",
       },
     },
     isDisabled: {
-      true: { innerWrapper: "disabled" },
+      true: { base: "disabled" },
     },
     labelPlacement: {
       "inside-left": {
-        label: "-order-1 pointer-events-none select-none text-sm",
+        // label: "-order-1 pointer-events-none select-none text-sm",
       },
       "inside-top": {
-        label:
-          "absolute top-1/2 -translate-y-1/2 pointer-events-none select-none group-data-[filled-within=true]/main:translate-y-0 ",
+        inputWrapper: "relative",
+        label: "absolute text-xs pointer-events-none select-none",
       },
       "inside-right": {
-        label: "order-1 pointer-events-none select-none",
-        input: "[direction:rtl]",
+        // label: "order-1 pointer-events-none select-none",
+        // input: "[direction:rtl]",
       },
       "outside-left": {
-        label: "-order-1",
+        // label: "-order-1",
       },
       "outside-top": {
-        outerWrapper: "flex-col items-start gap-1",
-        label: "ml-2",
+        // outerWrapper: "flex-col items-start gap-1",
+        // label: "ml-2",
       },
       "outside-right": {
-        label: "order-1",
-        input: "[direction:rtl]",
+        // label: "order-1",
+        // input: "[direction:rtl]",
       },
     },
-    isLabelFloating: {
-      true: {},
-    },
-    isLabelPlaceholder: {
+    startContent: {
       true: {},
     },
   },
@@ -101,48 +96,32 @@ const input = tv({
     labelPlacement: "inside-top",
   },
   compoundVariants: [
-    // size = sm + md / labelPlacement = inside-top
     {
       labelPlacement: "inside-top",
       size: ["sm", "md"],
       class: {
-        input: "pt-[15px]",
+        input: "pt-[18px]",
         label:
-          "group-data-[filled-within=true]/main:top-[6px] group-data-[filled-within=true]/main:text-xs group-data-[filled-within=true]/main:font-medium transition-all",
+          "top-1/2 -translate-y-1/2 text-sm transition-all group-data-[filled-within=true]/base:-translate-y-[calc(50%_+_10px)]",
+
+        /*  group-data-[filled-within=true]/base:translate-y-0 group-data-[filled-within=true]/base:text-xs group-data-[filled-within=true]/base:font-medium */
       },
     },
 
-    // size = lg / labelPlacement = inside-top
     {
       labelPlacement: "inside-top",
-      size: "lg",
+      size: "sm",
       class: {
-        inputWrapper: "pt-[15px]",
-        input: "text-md",
-        label:
-          "group-data-[filled=true]/main:-translate-y-0 group-data-[focused=true]/main:top-[8px] group-data-[focused=true]/main:text-sm group-data-[filled=true]/main:top-[8px] group-data-[focused=true]/main:font-medium group-data-[filled=true]/main:text-sm group-data-[filled=true]/main:font-medium transition-all",
+        inputWrapper: "py-1",
       },
     },
-
-    // size = md / labelPlacement = outside-left
     {
-      labelPlacement: "outside-left",
+      labelPlacement: "inside-top",
       size: "md",
       class: {
-        label: "mt-[10px]",
+        inputWrapper: "py-2",
       },
     },
-
-    // size = md / labelPlacement = outside-right
-    {
-      labelPlacement: "outside-right",
-      size: "md",
-      class: {
-        label: "mt-[10px]",
-      },
-    },
-
-    // isLabelPlaceholder = true / labelPlacement = inside-top // TODO: add support for placeholder
 
     // flat
     {
@@ -150,9 +129,6 @@ const input = tv({
       color: "neutral",
       class: {
         inputWrapper: "bg-neutral-3",
-        helperText: "text-neutral-11",
-        label: "text-neutral-12",
-        input: "text-neutral-12",
       },
     },
   ],
