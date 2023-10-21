@@ -38,7 +38,7 @@ const input = tv({
         inputWrapper: "rounded-large",
       },
       full: {
-        inputWrapper: "rounded-full",
+        inputWrapper: "rounded-full !px-4",
       },
     },
     size: {
@@ -48,7 +48,9 @@ const input = tv({
       md: {
         inputWrapper: "h-14 px-3 py-2",
       },
-      lg: {},
+      lg: {
+        inputWrapper: "h-16 px-3 py-3",
+      },
     },
     fullWidth: {
       true: {
@@ -60,26 +62,28 @@ const input = tv({
     },
     labelPlacement: {
       "inside-left": {
-        // label: "-order-1 pointer-events-none select-none text-sm",
+        inputWrapper: "items-center",
+        label: "-order-1 pointer-events-none select-none text-sm",
       },
       "inside-top": {
         inputWrapper: "relative",
         label: "absolute text-xs pointer-events-none select-none",
       },
       "inside-right": {
-        // label: "order-1 pointer-events-none select-none",
-        // input: "[direction:rtl]",
+        inputWrapper: "items-center",
+        input: "[direction:rtl]",
+        label: "order-1 pointer-events-none select-none",
       },
       "outside-left": {
-        // label: "-order-1",
+        label: "-order-1 translate-y-[14px]",
       },
       "outside-top": {
-        // outerWrapper: "flex-col items-start gap-1",
-        // label: "ml-2",
+        base: "flex-col items-start gap-[2px]",
+        label: "ml-2",
       },
       "outside-right": {
-        // label: "order-1",
-        // input: "[direction:rtl]",
+        label: "order-1 translate-y-[14px]",
+        input: "[direction:rtl]",
       },
     },
     startContent: {
@@ -102,9 +106,16 @@ const input = tv({
       class: {
         input: "pt-[18px]",
         label:
-          "top-1/2 -translate-y-1/2 text-sm transition-all group-data-[filled-within=true]/base:-translate-y-[calc(50%_+_10px)]",
-
-        /*  group-data-[filled-within=true]/base:translate-y-0 group-data-[filled-within=true]/base:text-xs group-data-[filled-within=true]/base:font-medium */
+          "top-1/2 -translate-y-1/2 text-sm transition-all group-data-[filled-within=true]/base:-translate-y-[calc(50%_+_10px)] group-data-[filled-within=true]/base:font-medium group-data-[filled-within=true]/base:text-xs",
+      },
+    },
+    {
+      labelPlacement: "inside-top",
+      size: "lg",
+      class: {
+        input: "pt-[16px] text-md",
+        label:
+          "top-1/2 -translate-y-1/2 text-md transition-all group-data-[filled-within=true]/base:-translate-y-[calc(50%_+_11px)] group-data-[filled-within=true]/base:font-medium group-data-[filled-within=true]/base:text-sm",
       },
     },
 
