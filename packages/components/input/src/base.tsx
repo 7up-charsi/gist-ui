@@ -10,7 +10,7 @@ import {
 } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
-import { useFocusWithin } from "react-aria";
+import { useFocusWithin, useHover } from "react-aria";
 
 export interface BaseInputProps
   extends Omit<InputVariantProps, "startContent" | "placeholder">,
@@ -71,11 +71,11 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
 
   const labelId = useId();
   const innerRef = useRef<HTMLInputElement>(null);
-  const [focusWithin, setFocusWithin] = useState(!!defaultValue);
+  const [focusWithin, setFocusWithin] = useState(false);
   const [filled, setFilled] = useState(!!defaultValue);
 
   // const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
-  // const { hoverProps, isHovered } = useHover(props);
+  const { hoverProps, isHovered } = useHover(props);
 
   const { focusWithinProps } = useFocusWithin({
     onFocusWithinChange: setFocusWithin,
@@ -93,6 +93,8 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
       data-focused={focusWithin}
       data-filled={filled}
       data-filled-within={focusWithin || filled || !!placeholder}
+      data-hovered={isHovered}
+      {...hoverProps}
     >
       {labelPlacement?.includes("outside") && labelHTML}
 

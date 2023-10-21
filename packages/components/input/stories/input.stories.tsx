@@ -9,6 +9,10 @@ const meta: Meta<InputProps> = {
   component: Input,
   args: { ...input.defaultVariants, placeholder: "" },
   argTypes: {
+    variant: {
+      control: { type: "select" },
+      options: ["flat", "border", "underline"],
+    },
     labelPlacement: {
       name: "label placement",
       control: { type: "select" },
@@ -37,6 +41,6 @@ export const Default: StoryObj<InputProps> = {
   args: {
     description: "Consectetur elit sint incididunt sunt.",
     label: "label",
-    defaultValue: "JFGYUR:yytyty3887",
+    defaultValue: "tytytytytytyABC",
   },
 };
