@@ -1,7 +1,7 @@
-import Button from "./button";
+import * as button from "./button";
 
 // export types
 export type { ButtonProps } from "./button";
 
 // export component
-export { Button };
+export const Button = button.default;

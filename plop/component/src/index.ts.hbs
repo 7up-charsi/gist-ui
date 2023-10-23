@@ -1,7 +1,7 @@
-import {{capitalize name}} from "./{{name}}";
+import * as {{name}} from "./{{name}}";
 
 // export types
 export type { {{capitalize name}}Props } from "./{{name}}";
 
 // export component
-export { {{capitalize name}} };
+export const {{capitalize name}} = {{name}}.default;
