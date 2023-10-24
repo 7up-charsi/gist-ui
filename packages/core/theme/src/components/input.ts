@@ -12,7 +12,6 @@ const input = tv({
   },
   variants: {
     variant: {
-      underline: {},
       border: {},
       flat: {},
     },
