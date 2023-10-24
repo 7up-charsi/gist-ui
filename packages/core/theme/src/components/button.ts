@@ -58,9 +58,9 @@ const button = tv({
       danger: { base: "" },
     },
     size: {
-      sm: { base: "px-3 h-8 min-w-[64px] text-tiny gap-2" },
-      md: { base: "px-4 h-10 min-w-[80px] text-small gap-2" },
-      lg: { base: "px-6 h-12 min-w-[96px] text-medium gap-3" },
+      sm: { base: "px-3 h-8 min-w-[64px] text-sm gap-2" },
+      md: { base: "px-4 h-10 min-w-[80px] text-sm gap-2" },
+      lg: { base: "px-6 h-12 min-w-[96px] text-normal gap-3" },
     },
     rounded: {
       none: { base: "rounded-none" },
