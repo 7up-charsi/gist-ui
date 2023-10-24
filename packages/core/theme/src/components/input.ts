@@ -204,7 +204,7 @@ const input = tv({
         wrapper:
           "border-2 border-warning-6 group-data-[hovered=true]:border-warning-7 group-data-[focused=true]:border-warning-8 text-warning-11",
         label: "text-warning-11",
-        input: "text-warning-12 placeholder:text-warning-9",
+        input: "text-warning-12 placeholder:text-warning-10",
         helperText: "text-warning-11",
       },
     },
