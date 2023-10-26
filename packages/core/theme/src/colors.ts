@@ -9,5 +9,19 @@ const success = mapKeys(green, (_key, _value, i) => i + 1) as ColorScale;
 const info = mapKeys(blue, (_key, _value, i) => i + 1) as ColorScale;
 const warning = mapKeys(amber, (_key, _value, i) => i + 1) as ColorScale;
 const danger = mapKeys(red, (_key, _value, i) => i + 1) as ColorScale;
+const foreground = "#333333";
+const background = "#ffffff";
+const outline = primary[10];
 
-export { neutral, primary, secondary, success, info, warning, danger };
+export {
+  neutral,
+  primary,
+  secondary,
+  success,
+  info,
+  warning,
+  danger,
+  foreground,
+  background,
+  outline,
+};

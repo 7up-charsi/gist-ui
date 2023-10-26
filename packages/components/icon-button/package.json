@@ -1,8 +1,8 @@
 {
-  "name": "@gist-ui/input",
+  "name": "@gist-ui/icon-button",
   "version": "1.0.0",
   "keywords": [
-    "input"
+    "icon-button"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
-    "directory": "packages/components/input"
+    "directory": "packages/components/icon-button"
   },
   "bugs": {
     "url": "https://github.com/mzeeshan3597/gist-ui/issues"
@@ -48,11 +48,9 @@
   },
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
+    "@gist-ui/use-ripple": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
-    "@gist-ui/button": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
-    "@gist-ui/icon-button": "workspace:*",
-    "react-aria": "^3.29.0"
+    "@gist-ui/icon": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

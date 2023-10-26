@@ -5,6 +5,7 @@ export interface UseRippleProps {
   timingFunction?: string;
   disabled?: boolean;
   completedFactor?: number;
+  pointerCenter?: boolean;
 }
 
 export interface MinimalEvent {
@@ -13,15 +14,17 @@ export interface MinimalEvent {
   button: number;
 }
 
-const useRipple = <T extends HTMLElement>(
-  props: UseRippleProps = {
+const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
+  const ref = useRef<T>(null);
+
+  const props = {
     duration: 500,
     timingFunction: "cubic-bezier(.42,.36,.28,.88)",
     disabled: false,
     completedFactor: 0.5,
-  },
-) => {
-  const ref = useRef<T>(null);
+    pointerCenter: true,
+    ...(_props || {}),
+  };
 
   const { disabled, duration, completedFactor } = props as Required<UseRippleProps>;
 
@@ -75,10 +78,10 @@ const createRipple = (
 
   element.style.cssText = `
     position: absolute;
-    top: ${event.clientY - top}px;
-    left: ${event.clientX - left}px;
-    height: ${size}px;
-    width: ${size}px;
+    top: ${options.pointerCenter ? `${event.clientY - top}px` : "50%"};
+    left: ${options.pointerCenter ? `${event.clientX - left}px` : "50%"};
+    height: ${options.pointerCenter ? `${size}px` : `${Math.max(height, width)}px`};
+    width:  ${options.pointerCenter ? `${size}px` : `${Math.max(height, width)}px`};
     translate: -50% -50%;
     pointer-events: none;
     border-radius: 50%;

@@ -4,7 +4,8 @@
   "packageManager": "pnpm@8.6.10",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev:pkg": "turbo run dev --filter \"./packages/**\"",
+    "dev:storybook": "turbo run dev --filter @gist-ui/storybook",
     "typecheck": "turbo typecheck",
     "release:prepare": "changeset && pnpm clean && pnpm build",
     "release:bump": "changeset version",

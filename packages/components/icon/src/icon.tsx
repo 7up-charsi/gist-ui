@@ -7,14 +7,15 @@ export interface IconProps {
   size?: Size;
   fill?: boolean;
   children?: ReactNode;
+  priority?: boolean;
 }
 
 export const IconContext = createContext<{ size?: Size }>({});
 
-const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children }, ref) => {
+const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, priority }, ref) => {
   const context = useContext(IconContext);
 
-  const styles = icon({ size: context.size || size, fill });
+  const styles = icon({ size: priority ? size || context.size : context.size || size, fill });
 
   return (
     <div ref={ref} className={styles}>

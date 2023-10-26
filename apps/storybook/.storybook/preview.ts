@@ -17,11 +17,6 @@ const preview = {
       options: ["sm", "md", "lg"],
       if: { arg: "size", exists: true },
     },
-    variant: {
-      control: { type: "select" },
-      options: ["solid", "border", "light", "flat", "shadow"],
-      if: { arg: "variant", exists: true },
-    },
     isDisabled: {
       control: {
         type: "boolean",

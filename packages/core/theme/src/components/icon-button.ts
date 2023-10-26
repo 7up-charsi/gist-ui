@@ -1,7 +1,7 @@
 import { VariantProps, tv } from "tailwind-variants";
 import { dataFocusVisible } from "../classes";
 
-const button = tv({
+const iconButton = tv({
   slots: {
     base: [
       "z-0",
@@ -21,6 +21,7 @@ const button = tv({
       "tap-highlight-transparent",
       "transition-[background,border-color]",
       "duration-150",
+      "rounded-full",
       "outline-none",
       ...dataFocusVisible,
     ],
@@ -43,19 +44,9 @@ const button = tv({
       danger: { base: "" },
     },
     size: {
-      sm: { base: "px-3 h-8 min-w-[64px] text-sm gap-2" },
-      md: { base: "px-4 h-10 min-w-[80px] text-sm gap-2" },
-      lg: { base: "px-6 h-12 min-w-[96px] text-normal gap-3" },
-    },
-    rounded: {
-      none: { base: "rounded-none" },
-      sm: { base: "rounded-small" },
-      md: { base: "rounded-medium" },
-      lg: { base: "rounded-large" },
-      full: { base: "rounded-full" },
-    },
-    fullWidth: {
-      true: { base: "w-full" },
+      sm: "min-w-[32px] w-8 h-8",
+      md: "min-w-[40px] w-10 h-10",
+      lg: "min-w-[48px] w-12 h-12",
     },
     isDisabled: {
       true: { base: "disabled" },
@@ -63,10 +54,8 @@ const button = tv({
   },
   defaultVariants: {
     size: "md",
-    rounded: "md",
     variant: "solid",
     color: "primary",
-    fullWidth: false,
     isDisabled: false,
   },
   compoundVariants: [
@@ -327,6 +316,6 @@ const button = tv({
   ],
 });
 
-export type ButtonVariantProps = VariantProps<typeof button>;
+export type IconButtonVariantProps = VariantProps<typeof iconButton>;
 
-export { button };
+export { iconButton };

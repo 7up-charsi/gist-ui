@@ -1,5 +1,16 @@
 import plugin from "tailwindcss/plugin";
-import { neutral, primary, secondary, success, info, warning, danger } from "./colors";
+import {
+  neutral,
+  primary,
+  secondary,
+  success,
+  info,
+  warning,
+  danger,
+  foreground,
+  background,
+  outline,
+} from "./colors";
 
 export const gistui = () => {
   return plugin(
@@ -27,36 +38,14 @@ export const gistui = () => {
             info,
             warning,
             danger,
-          },
-          fontSize: {
-            tiny: "0.75rem",
-            small: "0.875rem",
-            medium: "1rem",
-            large: "1.125rem",
-          },
-          lineHeight: {
-            tiny: "1rem",
-            small: "1.25rem",
-            medium: "1.5rem",
-            large: "1.75rem",
+            foreground,
+            background,
+            outline,
           },
           borderRadius: {
             small: "8px",
             medium: "12px",
             large: "14px",
-          },
-          keyframes: {
-            focusRipple: {
-              "50%": {
-                scale: ".9",
-              },
-              "100%": {
-                scale: "1",
-              },
-            },
-          },
-          animation: {
-            focusRipple: "focusRipple 3s ease-in-out infinite",
           },
         },
       },
