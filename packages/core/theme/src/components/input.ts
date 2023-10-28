@@ -1,9 +1,13 @@
 import { VariantProps, tv } from "tailwind-variants";
+import { inputDataFocusVisible } from "../classes";
 
 const input = tv({
   slots: {
     base: "flex flex-col gap-1 w-64 group",
-    wrapper: "overflow-hidden w-full flex gap-2 cursor-text transition-[background,border]",
+    wrapper: [
+      "w-full flex gap-2 cursor-text transition-[background,border]",
+      inputDataFocusVisible,
+    ],
     inputWrapper: "flex flex-wrap gap-2 items-center grow",
     endWrapper: "flex items-center justify-end",
     input: "appearance-none bg-transparent outline-none min-w-[50px] max-h-[24px] w-0 grow text-sm",
@@ -44,10 +48,10 @@ const input = tv({
     },
     labelPlacement: {
       inside: {
-        label: "-order-1 pointer-events-none select-none text-sm mr-2 font-medium",
+        label: "-order-1 pointer-events-none select-none text-sm mr-2 font-medium cursor-text",
       },
       outside: {
-        label: "ml-2 font-medium",
+        label: "ml-2 font-medium cursor-pointer",
       },
     },
   },
@@ -67,7 +71,7 @@ const input = tv({
       color: "neutral",
       class: {
         wrapper:
-          "border border-neutral-5 bg-neutral-3 group-data-[hovered=true]:bg-neutral-4 group-data-[hovered=true]:group-data-[focused=true]:bg-neutral-3 group-data-[focused=true]:border-neutral-9 text-neutral-11",
+          "border border-neutral-5 bg-neutral-3 group-data-[hovered=true]:bg-neutral-4 group-data-[hovered=true]:group-data-[focused=true]:bg-neutral-3 group-data-[focused=true]:group-data-[focus-visible=false]:border-neutral-9 text-neutral-11",
         label: "text-neutral-11",
         input: "text-neutral-12 placeholder:text-neutral-9",
         helperText: "text-neutral-11",

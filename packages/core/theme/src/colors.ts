@@ -11,7 +11,7 @@ const warning = mapKeys(amber, (_key, _value, i) => i + 1) as ColorScale;
 const danger = mapKeys(red, (_key, _value, i) => i + 1) as ColorScale;
 const foreground = "#333333";
 const background = "#ffffff";
-const outline = primary[10];
+const outline = blue.blue10;
 
 export {
   neutral,

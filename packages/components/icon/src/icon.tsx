@@ -1,5 +1,5 @@
 import { icon } from "@gist-ui/theme";
-import { ReactNode, createContext, forwardRef, useContext } from "react";
+import { ReactNode, forwardRef } from "react";
 
 type Size = "lg" | "md" | "sm";
 
@@ -10,12 +10,8 @@ export interface IconProps {
   priority?: boolean;
 }
 
-export const IconContext = createContext<{ size?: Size }>({});
-
-const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, priority }, ref) => {
-  const context = useContext(IconContext);
-
-  const styles = icon({ size: priority ? size || context.size : context.size || size, fill });
+const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children }, ref) => {
+  const styles = icon({ size, fill });
 
   return (
     <div ref={ref} className={styles}>

@@ -22,6 +22,7 @@ const button = tv({
       "transition-[background,border-color]",
       "duration-150",
       "outline-none",
+      "data-[key-pressed=true]:scale-90",
       ...dataFocusVisible,
     ],
   },
@@ -59,6 +60,9 @@ const button = tv({
     },
     isDisabled: {
       true: { base: "disabled" },
+    },
+    isIconOnly: {
+      true: {},
     },
   },
   defaultVariants: {
@@ -322,6 +326,29 @@ const button = tv({
       color: "danger",
       class: {
         base: "data-[hovered=true]:bg-danger-3 text-danger-11 [--rippleBg:theme(colors.danger.9/20%)]",
+      },
+    },
+
+    // icIconOnly
+    {
+      isIconOnly: true,
+      size: "sm",
+      class: {
+        base: "min-w-[32px] w-8 h-8",
+      },
+    },
+    {
+      isIconOnly: true,
+      size: "md",
+      class: {
+        base: "min-w-[40px] w-10 h-10",
+      },
+    },
+    {
+      isIconOnly: true,
+      size: "lg",
+      class: {
+        base: "min-w-[48px] w-12 h-12",
       },
     },
   ],

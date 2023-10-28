@@ -2,7 +2,7 @@ import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { input } from "@gist-ui/theme";
 import { Icon } from "@gist-ui/icon";
-import { IconButton } from "@gist-ui/icon-button";
+import { Button } from "@gist-ui/button";
 
 import { Input, InputProps } from "../src";
 
@@ -62,8 +62,8 @@ export const Default: StoryObj<InputProps> = {
       </Icon>
     ),
     endContent: (
-      <IconButton size="sm" variant="border" color="neutral">
-        <Icon>
+      <Button size="sm" variant="text" isIconOnly color="primary" rounded="full">
+        <Icon size="sm">
           <svg
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@ export const Default: StoryObj<InputProps> = {
             />
           </svg>
         </Icon>
-      </IconButton>
+      </Button>
     ),
   },
 };

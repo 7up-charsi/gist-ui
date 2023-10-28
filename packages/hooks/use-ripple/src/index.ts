@@ -66,8 +66,11 @@ const createRipple = (
   event: MinimalEvent,
   options: UseRippleProps,
 ): HTMLElement => {
-  const { clientX, clientY } = event;
   const { height, width, top, left } = target.getBoundingClientRect();
+  const { clientX, clientY } = options.pointerCenter
+    ? event
+    : { clientX: left + width / 2, clientY: top + height / 2 };
+
   const maxHeight = Math.max(clientY - top, height - clientY + top);
   const maxWidth = Math.max(clientX - left, width - clientX + left);
   const size = Math.hypot(maxHeight, maxWidth) * 2;
@@ -80,8 +83,8 @@ const createRipple = (
     position: absolute;
     top: ${options.pointerCenter ? `${event.clientY - top}px` : "50%"};
     left: ${options.pointerCenter ? `${event.clientX - left}px` : "50%"};
-    height: ${options.pointerCenter ? `${size}px` : `${Math.max(height, width)}px`};
-    width:  ${options.pointerCenter ? `${size}px` : `${Math.max(height, width)}px`};
+    height: ${size}px;
+    width: ${size}px;
     translate: -50% -50%;
     pointer-events: none;
     border-radius: 50%;

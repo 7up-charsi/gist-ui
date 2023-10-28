@@ -58,6 +58,11 @@
     "clean-package": "^2.2.0"
   },
   "clean-package": {
-    "extends": "../../../../../../clean-package.config.json"
+    "extends": "../../../../../../clean-package.config.json",
+    "remove": [
+      "dependencies.@gist-ui/button",
+      "dependencies.@gist-ui/icon",
+      "dependencies.@gist-ui/icon-button"
+    ]
   }
 }

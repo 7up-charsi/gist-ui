@@ -1,5 +1,4 @@
 import {
-  FocusEvent,
   InputHTMLAttributes,
   LegacyRef,
   ReactNode,
@@ -10,8 +9,7 @@ import {
 } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
-import { useFocusWithin, useHover } from "react-aria";
-import { IconContext } from "@gist-ui/icon";
+import { useFocus, useFocusRing, useHover } from "react-aria";
 
 export interface BaseInputProps
   extends InputVariantProps,
@@ -50,6 +48,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     defaultValue,
     chips,
     onBlur,
+    onFocus,
     ...restProps
   } = props;
 
@@ -74,76 +73,77 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
 
   const labelId = useId();
   const innerRef = useRef<HTMLInputElement>(null);
-  const [focusWithin, setFocusWithin] = useState(false);
   const [filled, setFilled] = useState(!!defaultValue);
 
-  // const { focusProps, isFocusVisible, isFocused } = useFocusRing(props);
+  const {
+    focusProps: focusRingProps,
+    isFocusVisible,
+    isFocused,
+  } = useFocusRing({ isTextInput: true });
+
   const { hoverProps, isHovered } = useHover(props);
 
-  const { focusWithinProps } = useFocusWithin({
-    onFocusWithinChange: setFocusWithin,
+  const { focusProps } = useFocus<HTMLInputElement>({
+    onFocus: (e) => {
+      onFocus?.(e);
+      focusRingProps.onFocus?.(e);
+    },
+    onBlur: (e) => {
+      setFilled(!!e.target.value.length);
+      onBlur?.(e);
+      focusRingProps.onBlur?.(e);
+    },
   });
 
   return (
-    <IconContext.Provider value={{ size }}>
+    <div
+      className={base()}
+      data-focused={isFocused}
+      data-focus-visible={isFocusVisible && isFocused}
+      data-filled={filled}
+      data-filled-within={isFocused || filled || !!placeholder || !!startContent}
+      data-hovered={isHovered}
+    >
+      {labelPlacement?.includes("outside") && (
+        <label htmlFor={id || labelId} className={labelStyles()}>
+          {label}
+        </label>
+      )}
+
       <div
-        className={base()}
-        data-focused={focusWithin}
-        data-filled={filled}
-        data-filled-within={focusWithin || filled || !!placeholder || !!startContent}
-        data-hovered={isHovered}
+        className={wrapper()}
+        onClick={() => {
+          innerRef.current?.focus();
+        }}
+        {...hoverProps}
       >
-        {labelPlacement?.includes("outside") && (
-          <label htmlFor={id || labelId} className={labelStyles()}>
-            {label}
-          </label>
-        )}
-
-        <div
-          className={wrapper()}
-          onClick={() => {
-            innerRef.current?.focus();
-          }}
-          {...focusWithinProps}
-          {...hoverProps}
-        >
-          <div className={inputWrapper()}>
-            {labelPlacement?.includes("inside") && (
-              <label htmlFor={id || labelId} className={labelStyles()}>
-                {label}
-              </label>
-            )}
-            {startContent}
-            {chips}
-            <input
-              {...restProps}
-              value={value}
-              defaultValue={defaultValue}
-              placeholder={placeholder}
-              type={type}
-              className={inputStyles()}
-              ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
-              id={id || labelId}
-              {...mergeEvents(
-                {
-                  onBlur: (e: FocusEvent<HTMLInputElement>) => {
-                    setFilled(!!e.target.value.length);
-                  },
-                },
-                {
-                  onBlur,
-                },
-              )}
-            />
-          </div>
-
-          <div className={endWrapper()}>{endContent}</div>
+        <div className={inputWrapper()}>
+          {labelPlacement?.includes("inside") && (
+            <label htmlFor={id || labelId} className={labelStyles()}>
+              {label}
+            </label>
+          )}
+          {startContent}
+          {chips}
+          <input
+            {...restProps}
+            value={value}
+            defaultValue={defaultValue}
+            placeholder={placeholder}
+            type={type}
+            className={inputStyles()}
+            ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
+            id={id || labelId}
+            {...mergeEvents(focusProps as never)}
+          />
         </div>
 
-        {description && !error && <div className={helperText()}>{description} </div>}
-        {error && <div className={helperText()}>{errorMessage} </div>}
+        <div className={endWrapper()}>{endContent}</div>
       </div>
-    </IconContext.Provider>
+
+      {description && !error && <div className={helperText()}>{description} </div>}
+      {error && <div className={helperText()}>{errorMessage} </div>}
+    </div>
   );
 });
 

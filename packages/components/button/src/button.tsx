@@ -3,7 +3,6 @@ import { button, ButtonVariantProps } from "@gist-ui/theme";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { AriaButtonOptions, mergeProps, useButton, useFocusRing, useHover } from "react-aria";
-import { IconContext } from "@gist-ui/icon";
 
 export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
   startContent?: ReactNode;
@@ -25,6 +24,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     rounded,
     size,
     variant,
+    isIconOnly,
   } = props;
 
   const { base } = button({
@@ -34,33 +34,39 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     rounded,
     size,
     variant,
+    isIconOnly,
   });
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
-  const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(rippleProps);
+  const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>({
+    ...rippleProps,
+    pointerCenter: !isIconOnly,
+    duration: isIconOnly ? 450 : 500,
+  });
 
-  const { buttonProps } = useButton(props, innerRef);
+  const { buttonProps, isPressed } = useButton(props, innerRef);
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
+
   const { hoverProps, isHovered } = useHover(props);
 
   return (
-    <IconContext.Provider value={{ size }}>
-      <button
-        data-hovered={isHovered}
-        data-focused={isFocused}
-        data-focus-visible={isFocusVisible}
-        {...buttonProps}
-        ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
-        {...mergeProps({ onPointerDown: rippleEvent }, buttonProps, focusProps, hoverProps)}
-        className={base({ className })}
-      >
-        {startContent}
-        {props.children}
-        {endContent}
-      </button>
-    </IconContext.Provider>
+    <button
+      data-pressed={isPressed}
+      data-key-pressed={isPressed && isFocusVisible && isFocused}
+      data-hovered={isHovered}
+      data-focused={isFocused}
+      data-focus-visible={isFocusVisible && isFocused}
+      {...buttonProps}
+      ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
+      {...mergeProps({ onPointerDown: rippleEvent }, buttonProps, focusProps, hoverProps)}
+      className={base({ className })}
+    >
+      {!isIconOnly && startContent}
+      {props.children}
+      {!isIconOnly && endContent}
+    </button>
   );
 });
 
