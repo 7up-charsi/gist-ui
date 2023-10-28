@@ -12,7 +12,7 @@ import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
 import { useFocus, useFocusRing, useHover } from "react-aria";
 
 export interface BaseInputProps
-  extends InputVariantProps,
+  extends Omit<InputVariantProps, "chips">,
     Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size"> {
   isClearable?: boolean;
   label?: string;
@@ -69,6 +69,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     size,
     variant,
     labelPlacement,
+    chips: !!chips,
   });
 
   const labelId = useId();

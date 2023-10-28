@@ -36,9 +36,9 @@ const input = tv({
       full: { wrapper: "rounded-full !px-4" },
     },
     size: {
-      sm: { wrapper: "min-h-[40px] px-3 py-1", input: "text-sm" },
-      md: { wrapper: "min-h-[48px] px-3 py-2", input: "text-md" },
-      lg: { wrapper: "min-h-[64px] px-3 py-3", input: "text-md" },
+      sm: { wrapper: "h-[40px] min-h-[40px] max-h-[40px] px-3 py-1", input: "text-sm" },
+      md: { wrapper: "h-[48px] min-h-[48px] max-h-[48px] px-3 py-2", input: "text-md" },
+      lg: { wrapper: "h-[64px] min-h-[64px] max-h-[64px] px-3 py-3", input: "text-md" },
     },
     fullWidth: {
       true: { base: "w-full" },
@@ -53,6 +53,9 @@ const input = tv({
       outside: {
         label: "ml-2 font-medium cursor-pointer",
       },
+    },
+    chips: {
+      true: {},
     },
   },
   defaultVariants: {
@@ -221,6 +224,22 @@ const input = tv({
         input: "text-danger-12 placeholder:text-danger-9",
         helperText: "text-danger-11",
       },
+    },
+
+    {
+      chips: true,
+      size: "sm",
+      class: { wrapper: "h-auto min-h-[40px] max-h-[auto]" },
+    },
+    {
+      chips: true,
+      size: "md",
+      class: { wrapper: "h-auto min-h-[48px] max-h-[auto]" },
+    },
+    {
+      chips: true,
+      size: "lg",
+      class: { wrapper: "h-auto min-h-[64px] max-h-[auto]" },
     },
   ],
 });
