@@ -50,18 +50,12 @@
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-ripple": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
-    "react-aria": "^3.29.0",
-    "react-loader-spinner": "^5.4.5"
+    "react-aria": "^3.29.0"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
   },
   "clean-package": {
-    "extends": "../../../../../../clean-package.config.json",
-    "remove": [
-      "dependencies.react-loader-spinner",
-      "dependencies.@gist-ui/icon"
-    ]
+    "extends": "../../../../../../clean-package.config.json"
   }
 }

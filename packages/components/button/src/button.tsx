@@ -1,8 +1,8 @@
 import { forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonVariantProps } from "@gist-ui/theme";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
-import { mergeRefs } from "@gist-ui/react-utils";
-import { AriaButtonOptions, mergeProps, useButton, useFocusRing, useHover } from "react-aria";
+import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import { AriaButtonOptions, useButton, useFocusRing, useHover } from "react-aria";
 
 export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
   startContent?: ReactNode;
@@ -60,7 +60,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       data-focus-visible={isFocusVisible && isFocused}
       {...buttonProps}
       ref={mergeRefs(ref, rippleRef, innerRef)}
-      {...mergeProps({ onPointerDown: rippleEvent }, buttonProps, focusProps, hoverProps)}
+      {...mergeProps(
+        { onPointerDown: rippleEvent },
+        { ...buttonProps },
+        { ...focusProps },
+        { ...hoverProps },
+      )}
       className={base({ className })}
     >
       {!isIconOnly && startContent}

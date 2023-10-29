@@ -51,5 +51,8 @@
   },
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0"
   }
 }

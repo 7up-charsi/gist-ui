@@ -49,20 +49,12 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
-    "@gist-ui/button": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
-    "@gist-ui/icon-button": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
   },
   "clean-package": {
-    "extends": "../../../../../../clean-package.config.json",
-    "remove": [
-      "dependencies.@gist-ui/button",
-      "dependencies.@gist-ui/icon",
-      "dependencies.@gist-ui/icon-button"
-    ]
+    "extends": "../../../../../../clean-package.config.json"
   }
 }

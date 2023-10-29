@@ -1,2 +1,2 @@
 export * from "./mergeRefs";
-export * from "./mergeEvents";
+export * from "./mergeProps";
