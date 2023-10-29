@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
-import { mergeEvents, mergeRefs } from "@gist-ui/react-utils";
+import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { useFocus, useFocusRing, useHover } from "react-aria";
 
 export interface BaseInputProps
@@ -135,7 +135,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
             className={inputStyles()}
             ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
             id={id || labelId}
-            {...mergeEvents(focusProps as never)}
+            {...mergeProps(focusProps as never)}
           />
         </div>
 
