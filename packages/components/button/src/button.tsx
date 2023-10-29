@@ -1,4 +1,4 @@
-import { forwardRef, LegacyRef, ReactNode, useRef } from "react";
+import { forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonVariantProps } from "@gist-ui/theme";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs } from "@gist-ui/react-utils";
@@ -59,7 +59,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       {...buttonProps}
-      ref={mergeRefs(ref, rippleRef, innerRef) as LegacyRef<HTMLButtonElement>}
+      ref={mergeRefs(ref, rippleRef, innerRef)}
       {...mergeProps({ onPointerDown: rippleEvent }, buttonProps, focusProps, hoverProps)}
       className={base({ className })}
     >

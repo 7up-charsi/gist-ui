@@ -1,16 +1,16 @@
-import { MutableRefObject, Ref, RefCallback } from "react";
+import { ForwardedRef } from "react";
 
-export const mergeRefs = <T extends HTMLElement>(
-  ...refs: Ref<T | null>[]
-): Ref<T> | RefCallback<T> => {
+export const mergeRefs = <T extends HTMLElement>(...refs: ForwardedRef<T>[]): ForwardedRef<T> => {
+  if (refs.length === 1) return refs[0];
+
   return (node) => {
     const filtered = refs.filter(Boolean);
 
-    return filtered.forEach((ref) => {
+    filtered.forEach((ref) => {
       if (typeof ref === "function") {
         ref(node);
-      } else {
-        (ref as MutableRefObject<T | null>).current = node;
+      } else if (ref !== null) {
+        ref.current = node;
       }
     });
   };
