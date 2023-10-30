@@ -2,7 +2,7 @@ import plugin from "tailwindcss/plugin";
 import omit from "lodash.omit";
 import deepmerge from "deepmerge";
 import Color from "color";
-import { semanticColors } from "./colors";
+import { semanticColors } from "./colors/semantic";
 import { flattenThemeObject } from "./utils/objects";
 import { ConfigTheme, ConfigThemes, DefaultThemeType, GistuiConfig } from "./types";
 

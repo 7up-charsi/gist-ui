@@ -1,7 +1,12 @@
-import { zinc, blue, purple, green, yellow, red, fuchsia, white } from "tailwindcss/colors";
-import { readableColor } from "color2k";
-import { SemanticBaseColors, ThemeColors } from "./types";
-import { swapColorValues } from "./utils/objects";
+import { SemanticBaseColors, ThemeColors } from "../types";
+import { swapColorValues } from "../utils/objects";
+import { amber } from "./amber";
+import { amethyst } from "./amethyst";
+import { blue } from "./blue";
+import { emerald } from "./emerald";
+import { rose } from "./rose";
+import { saffronMango } from "./saffronMango";
+import { zinc } from "./zinc";
 
 const base: SemanticBaseColors = {
   light: {
@@ -26,12 +31,12 @@ const base: SemanticBaseColors = {
       foreground: "#11181C",
     },
     content2: {
-      DEFAULT: zinc[100],
+      DEFAULT: zinc[50],
       foreground: zinc[800],
     },
     content3: {
       DEFAULT: zinc[200],
-      foreground: zinc[700],
+      foreground: zinc[500],
     },
     content4: {
       DEFAULT: zinc[300],
@@ -61,10 +66,10 @@ const base: SemanticBaseColors = {
     },
     content2: {
       DEFAULT: zinc[800],
-      foreground: zinc[100],
+      foreground: zinc[50],
     },
     content3: {
-      DEFAULT: zinc[700],
+      DEFAULT: zinc[500],
       foreground: zinc[200],
     },
     content4: {
@@ -78,77 +83,77 @@ export const lightTheme: ThemeColors = {
   ...base.light,
   default: {
     ...zinc,
-    foreground: readableColor(zinc[300]),
+    foreground: zinc[600],
     DEFAULT: zinc[300],
   },
   primary: {
-    ...fuchsia,
-    foreground: readableColor(blue[500]),
-    DEFAULT: blue[500],
+    ...amethyst,
+    foreground: amethyst[50],
+    DEFAULT: amethyst[500],
   },
   secondary: {
-    ...purple,
-    foreground: readableColor(purple[500]),
-    DEFAULT: purple[500],
+    ...saffronMango,
+    foreground: saffronMango[50],
+    DEFAULT: saffronMango[500],
   },
   success: {
-    ...green,
-    foreground: readableColor(green[500]),
-    DEFAULT: green[500],
+    ...emerald,
+    foreground: emerald[50],
+    DEFAULT: emerald[500],
   },
   info: {
     ...blue,
-    foreground: readableColor(blue[500]),
+    foreground: blue[50],
     DEFAULT: blue[500],
   },
   warning: {
-    ...yellow,
-    foreground: readableColor(yellow[500]),
-    DEFAULT: yellow[500],
+    ...amber,
+    foreground: amber[800],
+    DEFAULT: amber[400],
   },
   danger: {
-    ...red,
-    foreground: white,
-    DEFAULT: red[500],
+    ...rose,
+    foreground: rose[50],
+    DEFAULT: rose[500],
   },
 };
 
 export const darkTheme: ThemeColors = {
   ...base.dark,
   default: {
-    ...swapColorValues(zinc),
-    foreground: readableColor(zinc[300]),
+    ...zinc,
+    foreground: zinc[600],
     DEFAULT: zinc[300],
   },
   primary: {
-    ...swapColorValues(fuchsia),
-    foreground: readableColor(blue[500]),
-    DEFAULT: blue[500],
+    ...swapColorValues(amethyst),
+    foreground: amethyst[50],
+    DEFAULT: amethyst[500],
   },
   secondary: {
-    ...swapColorValues(purple),
-    foreground: readableColor(purple[500]),
-    DEFAULT: purple[500],
+    ...swapColorValues(saffronMango),
+    foreground: saffronMango[50],
+    DEFAULT: saffronMango[500],
   },
   success: {
-    ...swapColorValues(green),
-    foreground: readableColor(green[500]),
-    DEFAULT: green[500],
+    ...swapColorValues(emerald),
+    foreground: emerald[50],
+    DEFAULT: emerald[500],
   },
   info: {
     ...swapColorValues(blue),
-    foreground: readableColor(blue[500]),
+    foreground: blue[50],
     DEFAULT: blue[500],
   },
   warning: {
-    ...swapColorValues(yellow),
-    foreground: readableColor(yellow[500]),
-    DEFAULT: yellow[500],
+    ...swapColorValues(amber),
+    foreground: amber[800],
+    DEFAULT: amber[400],
   },
   danger: {
-    ...swapColorValues(red),
-    foreground: white,
-    DEFAULT: red[500],
+    ...swapColorValues(rose),
+    foreground: rose[50],
+    DEFAULT: rose[500],
   },
 };
 

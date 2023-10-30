@@ -35,7 +35,7 @@ const button = tv({
       text: { base: "bg-transparent" },
     },
     color: {
-      neutral: { base: "" },
+      default: { base: "" },
       primary: { base: "" },
       secondary: { base: "" },
       success: { base: "" },
@@ -45,8 +45,8 @@ const button = tv({
     },
     size: {
       sm: { base: "px-3 h-8 min-w-[64px] text-sm gap-2" },
-      md: { base: "px-4 h-10 min-w-[80px] text-sm gap-2" },
-      lg: { base: "px-6 h-12 min-w-[96px] text-normal gap-3" },
+      md: { base: "px-4 h-10 min-w-[80px] gap-2" },
+      lg: { base: "px-6 h-12 min-w-[96px] text-lg gap-3" },
     },
     rounded: {
       none: { base: "rounded-none" },
@@ -77,60 +77,60 @@ const button = tv({
     // color / solid
     {
       variant: "solid",
-      color: "neutral",
+      color: "default",
       class: {
-        base: "bg-neutral-9 text-neutral-1 data-[hovered=true]:bg-neutral-10 [--rippleBg:theme(colors.neutral.1/40%)]",
+        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)]",
       },
     },
     {
       variant: "solid",
       color: "primary",
       class: {
-        base: "bg-primary-9 text-primary-1 data-[hovered=true]:bg-primary-10 [--rippleBg:theme(colors.primary.1/40%)]",
+        base: "bg-primary text-primary-foreground [--rippleBg:theme(colors.primary-foreground/40%)]",
       },
     },
     {
       variant: "solid",
       color: "secondary",
       class: {
-        base: "bg-secondary-9 text-secondary-1 data-[hovered=true]:bg-secondary-10 [--rippleBg:theme(colors.secondary.1/40%)]",
+        base: "bg-secondary text-secondary-foreground [--rippleBg:theme(colors.secondary-foreground/40%)]",
       },
     },
     {
       variant: "solid",
       color: "success",
       class: {
-        base: "bg-success-9 text-success-1 data-[hovered=true]:bg-success-10 [--rippleBg:theme(colors.success.1/40%)]",
+        base: "bg-success text-success-foreground [--rippleBg:theme(colors.success-foreground/40%)]",
       },
     },
     {
       variant: "solid",
       color: "info",
       class: {
-        base: "bg-info-9 text-info-1 data-[hovered=true]:bg-info-10 [--rippleBg:theme(colors.info.1/40%)]",
+        base: "bg-info text-info-foreground [--rippleBg:theme(colors.info-foreground/40%)]",
       },
     },
     {
       variant: "solid",
       color: "warning",
       class: {
-        base: "bg-warning-9 text-warning-12 data-[hovered=true]:bg-warning-10 [--rippleBg:theme(colors.warning.1/40%)]",
+        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/40%)]",
       },
     },
     {
       variant: "solid",
       color: "danger",
       class: {
-        base: "bg-danger-9 text-danger-1 data-[hovered=true]:bg-danger-10 [--rippleBg:theme(colors.danger.1/40%)]",
+        base: "bg-danger text-danger-foreground [--rippleBg:theme(colors.danger-foreground/40%)]",
       },
     },
 
     // color / border
     {
       variant: "border",
-      color: "neutral",
+      color: "default",
       class: {
-        base: "border-neutral-7 data-[hovered=true]:border-neutral-8 data-[hovered=true]:bg-neutral-2 text-neutral-11 [--rippleBg:theme(colors.neutral.9/20%)]",
+        base: "bg-transparent border-default text-foreground data-[hovered=true]:border-default-8 data-[hovered=true]:bg-default-2 [--rippleBg:theme(colors.default-400/20%)]",
       },
     },
     {
@@ -179,9 +179,9 @@ const button = tv({
     // color / flat
     {
       variant: "flat",
-      color: "neutral",
+      color: "default",
       class: {
-        base: "bg-neutral-3 data-[hovered=true]:bg-neutral-4 text-neutral-11 [--rippleBg:theme(colors.neutral.9/20%)]",
+        base: "bg-default-3 data-[hovered=true]:bg-default-4 text-default-11 [--rippleBg:theme(colors.default.9/20%)]",
       },
     },
     {
@@ -230,9 +230,9 @@ const button = tv({
     // color / shadow
     {
       variant: "shadow",
-      color: "neutral",
+      color: "default",
       class: {
-        base: "bg-neutral-9 text-neutral-1 data-[hovered=true]:bg-neutral-10 shadow-neutral-7 [--rippleBg:theme(colors.neutral.1/40%)]",
+        base: "bg-default-9 text-default-1 data-[hovered=true]:bg-default-10 shadow-default-7 [--rippleBg:theme(colors.default.1/40%)]",
       },
     },
     {
@@ -281,9 +281,9 @@ const button = tv({
     // color / text
     {
       variant: "text",
-      color: "neutral",
+      color: "default",
       class: {
-        base: "data-[hovered=true]:bg-neutral-4 text-neutral-11 [--rippleBg:theme(colors.neutral.9/20%)]",
+        base: "data-[hovered=true]:bg-default-4 text-default-11 [--rippleBg:theme(colors.default.9/20%)]",
       },
     },
     {
