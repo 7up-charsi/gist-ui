@@ -4,7 +4,7 @@ const preview = {
   argTypes: {
     color: {
       control: { type: "select" },
-      options: ["neutral", "primary", "secondary", "success", "info", "warning", "danger"],
+      options: ["default", "primary", "secondary", "success", "info", "warning", "danger"],
       if: { arg: "color", exists: true },
     },
     rounded: {

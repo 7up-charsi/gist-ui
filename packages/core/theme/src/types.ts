@@ -1,14 +1,59 @@
-export type ColorScale = {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
-  7: string;
-  8: string;
-  9: string;
-  10: string;
-  11: string;
-  12: string;
+export type ColorScale =
+  | Partial<{
+      50: string;
+      100: string;
+      200: string;
+      300: string;
+      400: string;
+      500: string;
+      600: string;
+      700: string;
+      800: string;
+      900: string;
+      950: string;
+      foreground: string;
+      DEFAULT: string;
+    }>
+  | string;
+
+export type BaseColors = {
+  background: ColorScale;
+  foreground: ColorScale;
+  divider: ColorScale;
+  overlay: ColorScale;
+  focus: ColorScale;
+  content1: ColorScale;
+  content2: ColorScale;
+  content3: ColorScale;
+  content4: ColorScale;
 };
+
+export type ThemeColors = BaseColors & {
+  default: ColorScale;
+  primary: ColorScale;
+  secondary: ColorScale;
+  success: ColorScale;
+  info: ColorScale;
+  warning: ColorScale;
+  danger: ColorScale;
+};
+
+export type SemanticBaseColors = {
+  light: BaseColors;
+  dark: BaseColors;
+};
+
+export type DefaultThemeType = "light" | "dark";
+
+export type ConfigTheme = {
+  extend?: "light" | "dark";
+  colors?: Partial<ThemeColors>;
+};
+
+export type ConfigThemes = Record<string, ConfigTheme>;
+
+export interface GistuiConfig {
+  themes: ConfigThemes;
+  defaultTheme: DefaultThemeType;
+  defaultExtendTheme: DefaultThemeType;
+}

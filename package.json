@@ -51,8 +51,8 @@
     "turbo": "latest"
   },
   "dependencies": {
-    "react-loader-spinner": "^5.4.5",
+    "@gist-ui/button": "workspace:*",
     "@gist-ui/icon": "workspace:*",
-    "@gist-ui/button": "workspace:*"
+    "react-loader-spinner": "^5.4.5"
   }
 }
