@@ -232,14 +232,14 @@ const button = tv({
       variant: "shadow",
       color: "default",
       class: {
-        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)] ",
+        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)] shadow-default-300",
       },
     },
     {
       variant: "shadow",
       color: "primary",
       class: {
-        base: "bg-primary text-primary-foreground [--rippleBg:theme(colors.primary-foreground/40%)] shadow-red-500",
+        base: "bg-primary text-primary-foreground [--rippleBg:theme(colors.primary-foreground/40%)] shadow-primary-400",
       },
     },
     {
@@ -283,49 +283,49 @@ const button = tv({
       variant: "text",
       color: "default",
       class: {
-        base: "data-[hovered=true]:bg-default-4 text-default-11 [--rippleBg:theme(colors.default.9/20%)]",
+        base: "data-[hovered=true]:bg-default-200 text-default-700 [--rippleBg:theme(colors.default-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "primary",
       class: {
-        base: "data-[hovered=true]:bg-primary-3 text-primary-11 [--rippleBg:theme(colors.primary.9/20%)]",
+        base: "data-[hovered=true]:bg-primary-100 text-primary-700 [--rippleBg:theme(colors.primary-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "secondary",
       class: {
-        base: "data-[hovered=true]:bg-secondary-3 text-secondary-11 [--rippleBg:theme(colors.secondary.9/20%)]",
+        base: "data-[hovered=true]:bg-secondary-100 text-secondary-700 [--rippleBg:theme(colors.secondary-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "success",
       class: {
-        base: "data-[hovered=true]:bg-success-3 text-success-11 [--rippleBg:theme(colors.success.9/20%)]",
+        base: "data-[hovered=true]:bg-success-100 text-success-700 [--rippleBg:theme(colors.success-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "info",
       class: {
-        base: "data-[hovered=true]:bg-info-3 text-info-11 [--rippleBg:theme(colors.info.9/20%)]",
+        base: "data-[hovered=true]:bg-info-100 text-info-700 [--rippleBg:theme(colors.info-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "warning",
       class: {
-        base: "data-[hovered=true]:bg-warning-3 text-warning-11 [--rippleBg:theme(colors.warning.9/20%)]",
+        base: "data-[hovered=true]:bg-warning-100 text-warning-700 [--rippleBg:theme(colors.warning-700/15%)]",
       },
     },
     {
       variant: "text",
       color: "danger",
       class: {
-        base: "data-[hovered=true]:bg-danger-3 text-danger-11 [--rippleBg:theme(colors.danger.9/20%)]",
+        base: "data-[hovered=true]:bg-danger-100 text-danger-700 [--rippleBg:theme(colors.danger-700/15%)]",
       },
     },
 
