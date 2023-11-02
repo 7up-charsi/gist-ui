@@ -31,7 +31,7 @@ const button = tv({
       solid: { base: "" },
       flat: { base: "" },
       shadow: { base: "shadow-lg" },
-      border: { base: "border-2 bg-transparent" },
+      border: { base: "border bg-transparent" },
       text: { base: "bg-transparent" },
     },
     color: {
@@ -50,9 +50,9 @@ const button = tv({
     },
     rounded: {
       none: { base: "rounded-none" },
-      sm: { base: "rounded-small" },
-      md: { base: "rounded-medium" },
-      lg: { base: "rounded-large" },
+      sm: { base: "rounded-sm" },
+      md: { base: "rounded-md" },
+      lg: { base: "rounded-lg" },
       full: { base: "rounded-full" },
     },
     fullWidth: {
@@ -100,7 +100,7 @@ const button = tv({
       variant: "solid",
       color: "success",
       class: {
-        base: "bg-success text-success-foreground [--rippleBg:theme(colors.success-foreground/40%)]",
+        base: "bg-success text-success-foreground [--rippleBg:theme(colors.success-foreground/20%)]",
       },
     },
     {
@@ -114,7 +114,7 @@ const button = tv({
       variant: "solid",
       color: "warning",
       class: {
-        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/40%)]",
+        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/20%)]",
       },
     },
     {
@@ -130,49 +130,49 @@ const button = tv({
       variant: "border",
       color: "default",
       class: {
-        base: "bg-transparent border-default text-foreground data-[hovered=true]:border-default-8 data-[hovered=true]:bg-default-2 [--rippleBg:theme(colors.default-400/20%)]",
+        base: "border-default-700 text-default-800 [--rippleBg:theme(colors.default-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "primary",
       class: {
-        base: "border-primary-7 data-[hovered=true]:border-primary-8 data-[hovered=true]:bg-primary-2  text-primary-11 [--rippleBg:theme(colors.primary.9/20%)]",
+        base: "border-primary-700 text-primary-800 [--rippleBg:theme(colors.primary-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "secondary",
       class: {
-        base: "border-secondary-7 data-[hovered=true]:border-secondary-8 data-[hovered=true]:bg-secondary-2  text-secondary-11 [--rippleBg:theme(colors.secondary.9/20%)]",
+        base: "border-secondary-700 text-secondary-800 [--rippleBg:theme(colors.secondary-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "success",
       class: {
-        base: "border-success-7 data-[hovered=true]:border-success-8 data-[hovered=true]:bg-success-2  text-success-11 [--rippleBg:theme(colors.success.9/20%)]",
+        base: "border-success-700 text-success-800 [--rippleBg:theme(colors.success-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "info",
       class: {
-        base: "border-info-7 data-[hovered=true]:border-info-8 data-[hovered=true]:bg-info-2  text-info-11 [--rippleBg:theme(colors.info.9/20%)]",
+        base: "border-info-700 text-info-800 [--rippleBg:theme(colors.info-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "warning",
       class: {
-        base: "border-warning-7 data-[hovered=true]:border-warning-8 data-[hovered=true]:bg-warning-2  text-warning-11 [--rippleBg:theme(colors.warning.9/20%)]",
+        base: "border-warning-700 text-warning-800 [--rippleBg:theme(colors.warning-800/20%)]",
       },
     },
     {
       variant: "border",
       color: "danger",
       class: {
-        base: "border-danger-7 data-[hovered=true]:border-danger-8 data-[hovered=true]:bg-danger-2  text-danger-11 [--rippleBg:theme(colors.danger.9/20%)]",
+        base: "border-danger-700 text-danger-800 [--rippleBg:theme(colors.danger-800/20%)]",
       },
     },
 
@@ -181,49 +181,49 @@ const button = tv({
       variant: "flat",
       color: "default",
       class: {
-        base: "bg-default-3 data-[hovered=true]:bg-default-4 text-default-11 [--rippleBg:theme(colors.default.9/20%)]",
+        base: "bg-default-200 text-default-800 [--rippleBg:theme(colors.default-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "primary",
       class: {
-        base: "bg-primary-3 data-[hovered=true]:bg-primary-4 text-primary-11 [--rippleBg:theme(colors.primary.9/20%)]",
+        base: "bg-primary-100 text-primary-800 [--rippleBg:theme(colors.primary-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "secondary",
       class: {
-        base: "bg-secondary-3 data-[hovered=true]:bg-secondary-4 text-secondary-11 [--rippleBg:theme(colors.secondary.9/20%)]",
+        base: "bg-secondary-100 text-secondary-800 [--rippleBg:theme(colors.secondary-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "success",
       class: {
-        base: "bg-success-3 data-[hovered=true]:bg-success-4 text-success-11 [--rippleBg:theme(colors.success.9/20%)]",
+        base: "bg-success-100 text-success-800 [--rippleBg:theme(colors.success-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "info",
       class: {
-        base: "bg-info-3 data-[hovered=true]:bg-info-4 text-info-11 [--rippleBg:theme(colors.info.9/20%)]",
+        base: "bg-info-100 text-info-800 [--rippleBg:theme(colors.info-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "warning",
       class: {
-        base: "bg-warning-3 data-[hovered=true]:bg-warning-4 text-warning-11 [--rippleBg:theme(colors.warning.9/20%)]",
+        base: "bg-warning-100 text-warning-800 [--rippleBg:theme(colors.warning-800/15%)]",
       },
     },
     {
       variant: "flat",
       color: "danger",
       class: {
-        base: "bg-danger-3 data-[hovered=true]:bg-danger-4 text-danger-11 [--rippleBg:theme(colors.danger.9/20%)]",
+        base: "bg-danger-100 text-danger-800 [--rippleBg:theme(colors.danger-800/15%)]",
       },
     },
 
@@ -232,49 +232,49 @@ const button = tv({
       variant: "shadow",
       color: "default",
       class: {
-        base: "bg-default-9 text-default-1 data-[hovered=true]:bg-default-10 shadow-default-7 [--rippleBg:theme(colors.default.1/40%)]",
+        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)] ",
       },
     },
     {
       variant: "shadow",
       color: "primary",
       class: {
-        base: "bg-primary-9 text-primary-1 data-[hovered=true]:bg-primary-10 shadow-primary-7 [--rippleBg:theme(colors.primary.1/40%)]",
+        base: "bg-primary text-primary-foreground [--rippleBg:theme(colors.primary-foreground/40%)] shadow-red-500",
       },
     },
     {
       variant: "shadow",
       color: "secondary",
       class: {
-        base: "bg-secondary-9 text-secondary-1 data-[hovered=true]:bg-secondary-10 shadow-secondary-7 [--rippleBg:theme(colors.secondary.1/40%)]",
+        base: "bg-secondary text-secondary-foreground [--rippleBg:theme(colors.secondary-foreground/40%)]",
       },
     },
     {
       variant: "shadow",
       color: "success",
       class: {
-        base: "bg-success-9 text-success-1 data-[hovered=true]:bg-success-10 shadow-success-7 [--rippleBg:theme(colors.success.1/40%)]",
+        base: "bg-success text-success-foreground [--rippleBg:theme(colors.success-foreground/20%)]",
       },
     },
     {
       variant: "shadow",
       color: "info",
       class: {
-        base: "bg-info-9 text-info-1 data-[hovered=true]:bg-info-10 shadow-info-7 [--rippleBg:theme(colors.info.1/40%)]",
+        base: "bg-info text-info-foreground [--rippleBg:theme(colors.info-foreground/40%)]",
       },
     },
     {
       variant: "shadow",
       color: "warning",
       class: {
-        base: "bg-warning-9 text-warning-12 data-[hovered=true]:bg-warning-10 shadow-warning-7 [--rippleBg:theme(colors.warning.1/40%)]",
+        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/20%)]",
       },
     },
     {
       variant: "shadow",
       color: "danger",
       class: {
-        base: "bg-danger-9 text-danger-1 data-[hovered=true]:bg-danger-10 shadow-danger-7 [--rippleBg:theme(colors.danger.1/40%)]",
+        base: "bg-danger text-danger-foreground [--rippleBg:theme(colors.danger-foreground/40%)]",
       },
     },
 

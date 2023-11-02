@@ -10,7 +10,6 @@ export type ColorScale =
       700: string;
       800: string;
       900: string;
-      950: string;
       foreground: string;
       DEFAULT: string;
     }>
@@ -42,32 +41,3 @@ export type SemanticBaseColors = {
   light: BaseColors;
   dark: BaseColors;
 };
-
-export type BaseThemeUnit = {
-  sm?: string;
-  md?: string;
-  lg?: string;
-};
-
-export interface LayoutTheme {
-  borderRadius?: BaseThemeUnit;
-  disabledOpacity?: string | number;
-  dividerWeight?: string;
-}
-
-export type DefaultThemeType = "light" | "dark";
-
-export type ConfigTheme = {
-  extend?: "light" | "dark";
-  colors?: Partial<ThemeColors>;
-  layout?: LayoutTheme;
-};
-
-export type ConfigThemes = Record<string, ConfigTheme>;
-
-export interface GistuiConfig {
-  themes?: ConfigThemes;
-  layout?: LayoutTheme;
-  defaultTheme?: DefaultThemeType;
-  defaultExtendTheme?: DefaultThemeType;
-}

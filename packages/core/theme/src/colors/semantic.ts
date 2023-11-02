@@ -1,12 +1,6 @@
-import { SemanticBaseColors, ThemeColors } from "../types";
-import { swapColorValues } from "../utils/objects";
-import { amber } from "./amber";
-import { amethyst } from "./amethyst";
-import { blue } from "./blue";
-import { emerald } from "./emerald";
-import { rose } from "./rose";
-import { saffronMango } from "./saffronMango";
-import { zinc } from "./zinc";
+import type { ThemeColors, SemanticBaseColors } from "./types";
+import { swapColorValues } from "../utils/object";
+import { commonColors as common } from "./common";
 
 const base: SemanticBaseColors = {
   light: {
@@ -14,14 +8,14 @@ const base: SemanticBaseColors = {
       DEFAULT: "#FFFFFF",
     },
     foreground: {
-      ...zinc,
+      ...common.zinc,
       DEFAULT: "#11181C",
     },
     divider: {
       DEFAULT: "rgba(17, 17, 17, 0.15)",
     },
     focus: {
-      DEFAULT: blue[500],
+      DEFAULT: common.blue[500],
     },
     overlay: {
       DEFAULT: "#000000",
@@ -31,28 +25,28 @@ const base: SemanticBaseColors = {
       foreground: "#11181C",
     },
     content2: {
-      DEFAULT: zinc[50],
-      foreground: zinc[800],
+      DEFAULT: common.zinc[100],
+      foreground: common.zinc[800],
     },
     content3: {
-      DEFAULT: zinc[200],
-      foreground: zinc[500],
+      DEFAULT: common.zinc[200],
+      foreground: common.zinc[700],
     },
     content4: {
-      DEFAULT: zinc[300],
-      foreground: zinc[600],
+      DEFAULT: common.zinc[300],
+      foreground: common.zinc[600],
     },
   },
   dark: {
     background: {
-      DEFAULT: "#000000",
+      DEFAULT: "#333333",
     },
     foreground: {
-      ...swapColorValues(zinc),
+      ...swapColorValues(common.zinc),
       DEFAULT: "#ECEDEE",
     },
     focus: {
-      DEFAULT: blue[500],
+      DEFAULT: common.blue[500],
     },
     overlay: {
       DEFAULT: "#000000",
@@ -61,103 +55,103 @@ const base: SemanticBaseColors = {
       DEFAULT: "rgba(255, 255, 255, 0.15)",
     },
     content1: {
-      DEFAULT: zinc[900],
-      foreground: zinc[50],
+      DEFAULT: common.zinc[900],
+      foreground: common.zinc[50],
     },
     content2: {
-      DEFAULT: zinc[800],
-      foreground: zinc[50],
+      DEFAULT: common.zinc[800],
+      foreground: common.zinc[100],
     },
     content3: {
-      DEFAULT: zinc[500],
-      foreground: zinc[200],
+      DEFAULT: common.zinc[700],
+      foreground: common.zinc[200],
     },
     content4: {
-      DEFAULT: zinc[600],
-      foreground: zinc[300],
+      DEFAULT: common.zinc[600],
+      foreground: common.zinc[300],
     },
   },
 };
 
-export const lightTheme: ThemeColors = {
+export const themeColorsLight: ThemeColors = {
   ...base.light,
   default: {
-    ...zinc,
-    foreground: zinc[600],
-    DEFAULT: zinc[300],
+    ...common.zinc,
+    foreground: "#ffffff",
+    DEFAULT: common.zinc[500],
   },
   primary: {
-    ...amethyst,
-    foreground: amethyst[50],
-    DEFAULT: amethyst[500],
+    ...common.blue,
+    foreground: "#ffffff",
+    DEFAULT: common.blue[500],
   },
   secondary: {
-    ...saffronMango,
-    foreground: saffronMango[50],
-    DEFAULT: saffronMango[500],
+    ...common.purple,
+    foreground: "#ffffff",
+    DEFAULT: common.purple[500],
   },
   success: {
-    ...emerald,
-    foreground: emerald[50],
-    DEFAULT: emerald[500],
+    ...common.green,
+    foreground: "#000000",
+    DEFAULT: common.green[500],
   },
   info: {
-    ...blue,
-    foreground: blue[50],
-    DEFAULT: blue[500],
+    ...common.blue,
+    foreground: "#ffffff",
+    DEFAULT: common.blue[500],
   },
   warning: {
-    ...amber,
-    foreground: amber[800],
-    DEFAULT: amber[400],
+    ...common.yellow,
+    foreground: "#000000",
+    DEFAULT: common.yellow[500],
   },
   danger: {
-    ...rose,
-    foreground: rose[50],
-    DEFAULT: rose[500],
+    ...common.red,
+    foreground: common.white,
+    DEFAULT: common.red[500],
   },
 };
 
-export const darkTheme: ThemeColors = {
+export const themeColorsDark: ThemeColors = {
   ...base.dark,
   default: {
-    ...zinc,
-    foreground: zinc[600],
-    DEFAULT: zinc[300],
+    ...swapColorValues(common.zinc),
+    foreground: "#ffffff",
+    DEFAULT: common.zinc[500],
   },
   primary: {
-    ...swapColorValues(amethyst),
-    foreground: amethyst[50],
-    DEFAULT: amethyst[500],
+    ...swapColorValues(common.blue),
+    foreground: "#ffffff",
+    DEFAULT: common.blue[500],
   },
   secondary: {
-    ...swapColorValues(saffronMango),
-    foreground: saffronMango[50],
-    DEFAULT: saffronMango[500],
+    ...swapColorValues(common.purple),
+    foreground: "#ffffff",
+    DEFAULT: common.purple[500],
   },
   success: {
-    ...swapColorValues(emerald),
-    foreground: emerald[50],
-    DEFAULT: emerald[500],
+    ...swapColorValues(common.green),
+    foreground: "#000000",
+    DEFAULT: common.green[500],
   },
   info: {
-    ...swapColorValues(blue),
-    foreground: blue[50],
-    DEFAULT: blue[500],
+    ...swapColorValues(common.blue),
+    foreground: "#ffffff",
+    DEFAULT: common.blue[500],
   },
   warning: {
-    ...swapColorValues(amber),
-    foreground: amber[800],
-    DEFAULT: amber[400],
+    ...swapColorValues(common.yellow),
+    foreground: "#000000",
+    DEFAULT: common.yellow[500],
   },
   danger: {
-    ...swapColorValues(rose),
-    foreground: rose[50],
-    DEFAULT: rose[500],
+    ...swapColorValues(common.red),
+    foreground: common.white,
+    DEFAULT: common.red[500],
   },
 };
 
 export const semanticColors = {
-  light: lightTheme,
-  dark: darkTheme,
+  light: themeColorsLight,
+  dark: themeColorsDark,
 };
