@@ -3,7 +3,7 @@ import omit from "lodash.omit";
 import kebabCase from "lodash.kebabcase";
 import deepmerge from "deepmerge";
 import Color from "color";
-import { semanticColors } from "./colors/semantic";
+import { semanticColors } from "./semantic";
 import { flattenThemeObject } from "./utils/object";
 import { ConfigTheme, ConfigThemes, DefaultThemeType, GistuiConfig } from "./types";
 import { defaultLayout, lightLayout, darkLayout } from "./layout";

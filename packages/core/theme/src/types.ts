@@ -1,3 +1,9 @@
+export type BaseThemeUnit = {
+  sm?: string;
+  md?: string;
+  lg?: string;
+};
+
 export type ColorScale =
   | Partial<{
       50: string;
@@ -10,7 +16,6 @@ export type ColorScale =
       700: string;
       800: string;
       900: string;
-      950: string;
       foreground: string;
       DEFAULT: string;
     }>
@@ -41,12 +46,6 @@ export type ThemeColors = BaseColors & {
 export type SemanticBaseColors = {
   light: BaseColors;
   dark: BaseColors;
-};
-
-export type BaseThemeUnit = {
-  sm?: string;
-  md?: string;
-  lg?: string;
 };
 
 export interface LayoutTheme {
