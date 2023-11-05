@@ -1,4 +1,4 @@
-import { zinc, emerald, yellow, red, blue } from "tailwindcss/colors";
+import { zinc, emerald, amber, red, blue } from "tailwindcss/colors";
 import type { ThemeColors, SemanticBaseColors } from "./types";
 import { swapColorValues } from "./utils/object";
 
@@ -131,9 +131,9 @@ export const themeColorsLight: ThemeColors = {
     DEFAULT: blue[500],
   },
   warning: {
-    ...yellow,
+    ...amber,
     foreground: "#000000",
-    DEFAULT: yellow[500],
+    DEFAULT: amber[500],
   },
   danger: {
     ...red,
@@ -170,9 +170,9 @@ export const themeColorsDark: ThemeColors = {
     DEFAULT: blue[500],
   },
   warning: {
-    ...swapColorValues(yellow),
+    ...swapColorValues(amber),
     foreground: "#000000",
-    DEFAULT: yellow[500],
+    DEFAULT: amber[500],
   },
   danger: {
     ...swapColorValues(red),
