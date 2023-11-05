@@ -1,9 +1,3 @@
-export type BaseThemeUnit = {
-  sm?: string;
-  md?: string;
-  lg?: string;
-};
-
 export type ColorScale =
   | Partial<{
       50: string;
@@ -20,6 +14,12 @@ export type ColorScale =
       DEFAULT: string;
     }>
   | string;
+
+export type BaseThemeUnit = {
+  sm?: string;
+  md?: string;
+  lg?: string;
+};
 
 export type BaseColors = {
   background: ColorScale;

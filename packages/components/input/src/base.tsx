@@ -1,28 +1,22 @@
-import {
-  InputHTMLAttributes,
-  LegacyRef,
-  ReactNode,
-  forwardRef,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { useFocus, useFocusRing, useHover } from "react-aria";
 
+type ClassNames = { [key in keyof typeof input.slots]?: string };
+
 export interface BaseInputProps
-  extends Omit<InputVariantProps, "chips">,
-    Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size"> {
+  extends InputVariantProps,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size" | "className"> {
   isClearable?: boolean;
   label?: string;
   type?: string;
-  description?: string;
+  helperText?: string;
   errorMessage?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
   error?: boolean;
-  chips?: ReactNode;
+  classNames?: ClassNames;
 }
 
 const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
@@ -30,7 +24,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     label,
     type,
     id,
-    description,
+    helperText,
     error,
     errorMessage,
     color,
@@ -38,7 +32,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     rounded,
     fullWidth,
     isDisabled,
-    className,
     variant,
     startContent,
     endContent,
@@ -46,9 +39,9 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     placeholder,
     value,
     defaultValue,
-    chips,
     onBlur,
     onFocus,
+    classNames,
     ...restProps
   } = props;
 
@@ -57,11 +50,8 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     inputWrapper,
     label: labelStyles,
     input: inputStyles,
-    helperText,
-    endWrapper,
-    wrapper,
+    helperText: helperTextStyles,
   } = input({
-    className,
     color,
     fullWidth,
     isDisabled,
@@ -69,7 +59,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     size,
     variant,
     labelPlacement,
-    chips: !!chips,
   });
 
   const labelId = useId();
@@ -98,7 +87,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
 
   return (
     <div
-      className={base()}
+      className={base({ className: classNames?.base })}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
@@ -106,44 +95,43 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
       data-hovered={isHovered}
     >
       {labelPlacement?.includes("outside") && (
-        <label htmlFor={id || labelId} className={labelStyles()}>
+        <label htmlFor={id || labelId} className={labelStyles({ className: classNames?.label })}>
           {label}
         </label>
       )}
 
       <div
-        className={wrapper()}
+        className={inputWrapper({ className: classNames?.inputWrapper })}
         onClick={() => {
           innerRef.current?.focus();
         }}
         {...hoverProps}
       >
-        <div className={inputWrapper()}>
-          {labelPlacement?.includes("inside") && (
-            <label htmlFor={id || labelId} className={labelStyles()}>
-              {label}
-            </label>
-          )}
-          {startContent}
-          {chips}
-          <input
-            {...restProps}
-            value={value}
-            defaultValue={defaultValue}
-            placeholder={placeholder}
-            type={type}
-            className={inputStyles()}
-            ref={mergeRefs(ref, innerRef) as LegacyRef<HTMLInputElement>}
-            id={id || labelId}
-            {...mergeProps(focusProps as never)}
-          />
-        </div>
+        {labelPlacement?.includes("inside") && (
+          <label htmlFor={id || labelId} className={labelStyles()}>
+            {label}
+          </label>
+        )}
 
-        <div className={endWrapper()}>{endContent}</div>
+        {startContent}
+        <input
+          {...restProps}
+          value={value}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          type={type}
+          className={inputStyles({ className: classNames?.input })}
+          ref={mergeRefs(ref, innerRef)}
+          id={id || labelId}
+          {...mergeProps(focusProps as never)}
+        />
+        {endContent}
       </div>
 
-      {description && !error && <div className={helperText()}>{description} </div>}
-      {error && <div className={helperText()}>{errorMessage} </div>}
+      {helperText && !error && (
+        <div className={helperTextStyles({ className: classNames?.helperText })}>{helperText} </div>
+      )}
+      {error && <div className={helperTextStyles()}>{errorMessage} </div>}
     </div>
   );
 });

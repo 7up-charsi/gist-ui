@@ -1,17 +1,12 @@
-import { icon } from "@gist-ui/theme";
 import { ReactNode, forwardRef } from "react";
+import { IconVariantProps, icon } from "@gist-ui/theme";
 
-type Size = "lg" | "md" | "sm";
-
-export interface IconProps {
-  size?: Size;
-  fill?: boolean;
+export interface IconProps extends IconVariantProps {
   children?: ReactNode;
-  priority?: boolean;
 }
 
-const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children }, ref) => {
-  const styles = icon({ size, fill });
+const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, color }, ref) => {
+  const styles = icon({ size, fill, color });
 
   return (
     <div ref={ref} className={styles}>

@@ -28,28 +28,12 @@ export default meta;
 const Template = (args: InputProps) => <Input {...args} />;
 
 export const Default: StoryObj<InputProps> = {
-  render: (args) => (
-    <div className="w-full h-screen flex items-center justify-center">
-      <Template
-        {...args}
-        chips={Array.from({ length: args.chips as number }).map((_, i) => (
-          <div
-            key={i}
-            style={{ width: Math.random() * (20 + i) + 20 }}
-            className="h-5 rounded-medium flex items-center justify-center bg-neutral-7"
-          >
-            {i + 1}
-          </div>
-        ))}
-      />
-    </div>
-  ),
+  render: (args) => <Template {...args} autoComplete="" />,
   args: {
-    description: "Consectetur elit sint incididunt sunt.",
+    helperText: "Consectetur elit sint incididunt sunt.",
     label: "label",
-    chips: 0,
     startContent: (
-      <Icon>
+      <Icon color="default">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
           <path
             stroke="currentColor"
