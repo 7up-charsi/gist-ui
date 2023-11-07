@@ -1,22 +1,30 @@
 import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
-import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
-import { useFocus, useFocusRing, useHover } from "react-aria";
+import { mergeRefs } from "@gist-ui/react-utils";
+import { __DEV__ } from "@gist-ui/shared-utils";
+import { HoverEvents, useFocus, useFocusRing, useHover } from "react-aria";
+import { InputProps } from "./types";
 
 type ClassNames = { [key in keyof typeof input.slots]?: string };
 
 export interface BaseInputProps
   extends InputVariantProps,
-    Omit<InputHTMLAttributes<HTMLInputElement>, "color" | "size" | "className"> {
-  isClearable?: boolean;
-  label?: string;
+    HoverEvents,
+    Pick<
+      InputHTMLAttributes<HTMLInputElement>,
+      "id" | "placeholder" | "value" | "defaultValue" | "onBlur" | "onFocus" | "name" | "onChange"
+    > {
+  label: string;
   type?: string;
   helperText?: string;
+  error?: boolean;
   errorMessage?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
-  error?: boolean;
   classNames?: ClassNames;
+  hideLabel?: boolean;
+  feedback?: "polite" | "assertive";
+  inputProps?: InputProps;
 }
 
 const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
@@ -28,11 +36,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     error,
     errorMessage,
     color,
-    size,
-    rounded,
-    fullWidth,
-    isDisabled,
-    variant,
+    disabled,
     startContent,
     endContent,
     labelPlacement,
@@ -42,7 +46,15 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     onBlur,
     onFocus,
     classNames,
-    ...restProps
+    name,
+    hideLabel,
+    required,
+    feedback = "polite",
+    inputProps,
+    onChange,
+    onHoverChange,
+    onHoverEnd,
+    onHoverStart,
   } = props;
 
   const {
@@ -51,17 +63,18 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     label: labelStyles,
     input: inputStyles,
     helperText: helperTextStyles,
+    required: requiredStyles,
   } = input({
-    color,
-    fullWidth,
-    isDisabled,
-    rounded,
-    size,
-    variant,
-    labelPlacement,
+    ...props,
+    disabled,
+    color: error ? "danger" : color,
   });
 
   const labelId = useId();
+  const helperTextId = useId();
+  const errorMessageId = useId();
+  const inputId = id || labelId;
+
   const innerRef = useRef<HTMLInputElement>(null);
   const [filled, setFilled] = useState(!!defaultValue);
 
@@ -71,7 +84,12 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     isFocused,
   } = useFocusRing({ isTextInput: true });
 
-  const { hoverProps, isHovered } = useHover(props);
+  const { hoverProps, isHovered } = useHover({
+    onHoverChange,
+    onHoverEnd,
+    onHoverStart,
+    isDisabled: disabled,
+  });
 
   const { focusProps } = useFocus<HTMLInputElement>({
     onFocus: (e) => {
@@ -85,6 +103,15 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     },
   });
 
+  const labelHTML = (
+    <label htmlFor={id || labelId} className={labelStyles({ className: classNames?.label })}>
+      {label}
+      {required && <span className={requiredStyles({ className: classNames?.required })}>*</span>}
+    </label>
+  );
+
+  if (__DEV__ && !label) throw new Error('Gist-ui input: "label" must be passed');
+
   return (
     <div
       className={base({ className: classNames?.base })}
@@ -93,12 +120,9 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
       data-filled={filled}
       data-filled-within={isFocused || filled || !!placeholder || !!startContent}
       data-hovered={isHovered}
+      data-disabled={disabled}
     >
-      {labelPlacement?.includes("outside") && (
-        <label htmlFor={id || labelId} className={labelStyles({ className: classNames?.label })}>
-          {label}
-        </label>
-      )}
+      {!hideLabel && labelPlacement?.includes("outside") && label && labelHTML}
 
       <div
         className={inputWrapper({ className: classNames?.inputWrapper })}
@@ -107,31 +131,45 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
         }}
         {...hoverProps}
       >
-        {labelPlacement?.includes("inside") && (
-          <label htmlFor={id || labelId} className={labelStyles()}>
-            {label}
-          </label>
-        )}
+        {!hideLabel && labelPlacement?.includes("inside") && label && labelHTML}
+        {hideLabel && label && labelHTML}
 
         {startContent}
         <input
-          {...restProps}
+          {...inputProps}
+          {...focusProps}
           value={value}
+          name={name}
           defaultValue={defaultValue}
           placeholder={placeholder}
           type={type}
+          onChange={onChange}
+          aria-describedby={error ? errorMessageId : helperTextId}
+          aria-required={required}
+          aria-invalid={error}
           className={inputStyles({ className: classNames?.input })}
           ref={mergeRefs(ref, innerRef)}
-          id={id || labelId}
-          {...mergeProps(focusProps as never)}
+          id={inputId}
+          disabled={disabled}
         />
         {endContent}
       </div>
 
       {helperText && !error && (
-        <div className={helperTextStyles({ className: classNames?.helperText })}>{helperText} </div>
+        <div id={helperTextId} className={helperTextStyles({ className: classNames?.helperText })}>
+          {helperText}
+        </div>
       )}
-      {error && <div className={helperTextStyles()}>{errorMessage} </div>}
+
+      {error && errorMessage && (
+        <div
+          id={errorMessageId}
+          aria-live={feedback}
+          className={helperTextStyles({ className: classNames?.helperText })}
+        >
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 });

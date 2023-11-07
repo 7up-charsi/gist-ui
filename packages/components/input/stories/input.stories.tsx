@@ -28,42 +28,40 @@ export default meta;
 const Template = (args: InputProps) => <Input {...args} />;
 
 export const Default: StoryObj<InputProps> = {
-  render: (args) => <Template {...args} autoComplete="" />,
-  args: {
-    helperText: "Consectetur elit sint incididunt sunt.",
-    label: "label",
-    startContent: (
-      <Icon>
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m7 10 2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>
-      </Icon>
-    ),
-    endContent: (
-      <Button size="sm" variant="text" isIconOnly rounded="full">
-        <Icon size="sm">
+  render: (args) => (
+    <Template
+      {...args}
+      endContent={
+        <Button size="sm" variant="text" rounded="full" className="data-[hovered=true]:bg-white">
+          show all
+        </Button>
+      }
+      startContent={
+        <Icon>
           <svg
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            viewBox="0 0 12 20"
+            viewBox="0 0 20 20"
           >
             <path
               stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M10.335 6.514 6.91 1.464a1.122 1.122 0 0 0-1.818 0l-3.426 5.05a.988.988 0 0 0 .91 1.511h6.851a.988.988 0 0 0 .91-1.511Zm-8.67 6.972 3.426 5.05a1.121 1.121 0 0 0 1.818 0l3.426-5.05a.988.988 0 0 0-.909-1.511H2.574a.987.987 0 0 0-.909 1.511Z"
+              d="m7 10 2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
             />
           </svg>
         </Icon>
-      </Button>
-    ),
+      }
+    />
+  ),
+  args: {
+    helperText: "helper text",
+    errorMessage: "error message",
+    label: "label",
+    error: false,
+    required: true,
+    hideLabel: false,
   },
 };

@@ -6,11 +6,9 @@ export interface InputProps extends BaseInputProps {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { type = "text" } = props;
+  // const { type } = props;
 
-  if (type === "text") return <BaseInput ref={ref} {...props} />;
-
-  return "input type not supported";
+  return <BaseInput ref={ref} {...props} type="text" />;
 });
 
 Input.displayName = "gist-ui.Input";
