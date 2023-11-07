@@ -20,10 +20,6 @@ export interface NumberInputProps extends Omit<BaseInputProps, "type"> {
   decreaseButtonProps?: Omit<ButtonProps, "onPress">;
   increaseIconProps?: IconProps;
   decreaseIconProps?: IconProps;
-  onDecreaseStart?: () => void;
-  onDecreaseEnd?: () => void;
-  onIncreaseStart?: () => void;
-  onIncreaseEnd?: () => void;
 }
 
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
@@ -42,10 +38,6 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     hideButtons,
     increaseContent,
     decreaseContent,
-    onDecreaseStart,
-    onDecreaseEnd,
-    onIncreaseStart,
-    onIncreaseEnd,
     increaseButtonProps,
     decreaseButtonProps,
     increaseIconProps,
@@ -57,8 +49,6 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   const innerRef = useRef<HTMLInputElement>(null);
 
   const handleDecrease = useCallback(() => {
-    onDecreaseStart?.();
-
     const target = innerRef.current;
 
     if (!target) return;
@@ -75,13 +65,9 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     } else {
       target.value = invalidValue + "";
     }
-
-    onDecreaseEnd?.();
   }, []);
 
   const handleIncrease = useCallback(() => {
-    onIncreaseStart?.();
-
     const target = innerRef.current;
 
     if (!target) return;
@@ -98,8 +84,6 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     } else {
       target.value = invalidValue + "";
     }
-
-    onIncreaseEnd?.();
   }, []);
 
   const buttons = (

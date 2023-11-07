@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useState } from "react";
+import { ReactNode, forwardRef, useCallback, useState } from "react";
 import BaseInput, { BaseInputProps } from "./base-input";
 import { Button, ButtonProps } from "@gist-ui/button";
 import { Icon, IconProps } from "@gist-ui/icon";
@@ -8,7 +8,7 @@ export interface PasswordInputProps extends Omit<BaseInputProps, "type"> {
   startContentPosition?: "left" | "right";
   toggleButtonPoition?: "start" | "end";
   hideToggleButton?: boolean;
-  toggleButtonProps?: ButtonProps;
+  toggleButtonProps?: Omit<ButtonProps, "onPress">;
   toggleIconProps?: IconProps;
   showIcon?: ReactNode;
   hideIcon?: ReactNode;
@@ -31,6 +31,10 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, r
     ...rest
   } = props;
 
+  const handleToggle = useCallback(() => {
+    setShow((p) => !p);
+  }, []);
+
   const button = (
     <Button
       isIconOnly
@@ -38,10 +42,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, r
       rounded="full"
       variant="text"
       {...toggleButtonProps}
-      onPress={(e) => {
-        toggleButtonProps?.onPress?.(e);
-        setShow((p) => !p);
-      }}
+      onPress={handleToggle}
     >
       <Icon size="sm" {...toggleIconProps}>
         {show
