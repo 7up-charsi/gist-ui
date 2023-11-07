@@ -4,7 +4,14 @@ import { input } from "@gist-ui/theme";
 import { Icon } from "@gist-ui/icon";
 import { Button } from "@gist-ui/button";
 
-import { PasswordInput, PasswordInputProps, TextInput, TextInputProps } from "../src";
+import {
+  NumberInput,
+  NumberInputProps,
+  PasswordInput,
+  PasswordInputProps,
+  TextInput,
+  TextInputProps,
+} from "../src";
 
 const meta: Meta = {
   title: "Components/Input",
@@ -73,5 +80,18 @@ export const Password: StoryObj<PasswordInputProps> = {
     required: true,
     hideLabel: false,
     hideToggleButton: false,
+  },
+};
+
+export const Number: StoryObj<NumberInputProps> = {
+  render: (args) => <NumberInput {...args} />,
+  args: {
+    helperText: "helper text",
+    errorMessage: "error message",
+    label: "label",
+    error: false,
+    required: true,
+    hideLabel: false,
+    hideButtons: false,
   },
 };

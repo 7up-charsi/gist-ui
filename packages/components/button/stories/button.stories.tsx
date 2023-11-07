@@ -29,10 +29,7 @@ const Template = (args: ButtonProps) => <Button {...args} />;
 export const Default: StoryObj<ButtonProps> = {
   render: (args) => {
     return (
-      <div
-        data-theme={args.dark ? "dark" : "light"}
-        className="p-5 flex flex-col gap-6 items-center data-[theme=dark]:bg-background"
-      >
+      <div className="p-5 flex flex-col gap-6 items-center data-[theme=dark]:bg-background">
         {(Object.keys(button.variants.variant) as [keyof typeof button.variants.variant]).map(
           (variant, idx) => (
             <div key={idx} className="flex flex-col gap-2">
@@ -57,7 +54,6 @@ export const Default: StoryObj<ButtonProps> = {
     color: undefined,
     variant: undefined,
     fullWidth: undefined,
-    dark: false,
   },
 };
 

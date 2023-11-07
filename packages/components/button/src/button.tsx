@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useRef } from "react";
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonVariantProps } from "@gist-ui/theme";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
@@ -10,6 +10,7 @@ export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"butt
   rippleProps?: UseRippleProps;
   className?: string;
   children?: ReactNode;
+  nativeButtonProps?: ButtonHTMLAttributes<HTMLButtonElement>;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
@@ -25,6 +26,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     size,
     variant,
     isIconOnly,
+    nativeButtonProps,
   } = props;
 
   const { base } = button({
@@ -65,6 +67,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         { ...buttonProps },
         { ...focusProps },
         { ...hoverProps },
+        { ...(nativeButtonProps || {}) },
       )}
       className={base({ className })}
     >
