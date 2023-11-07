@@ -69,7 +69,7 @@ const button = tv({
     size: "md",
     rounded: "md",
     variant: "solid",
-    color: "primary",
+    color: "default",
     fullWidth: false,
     isDisabled: false,
   },

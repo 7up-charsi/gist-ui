@@ -1,4 +1,4 @@
-import { zinc, emerald, amber, red, blue } from "tailwindcss/colors";
+import { zinc, emerald, amber, red, blue, sky } from "tailwindcss/colors";
 import type { ThemeColors, SemanticBaseColors } from "./types";
 import { swapColorValues } from "./utils/object";
 
@@ -45,7 +45,7 @@ const base: SemanticBaseColors = {
       DEFAULT: "rgba(17, 17, 17, 0.15)",
     },
     focus: {
-      DEFAULT: blue[500],
+      DEFAULT: sky[500],
     },
     overlay: {
       DEFAULT: "#000000",
@@ -76,7 +76,7 @@ const base: SemanticBaseColors = {
       DEFAULT: "#ECEDEE",
     },
     focus: {
-      DEFAULT: blue[500],
+      DEFAULT: sky[500],
     },
     overlay: {
       DEFAULT: "#000000",

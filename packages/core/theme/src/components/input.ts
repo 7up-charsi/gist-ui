@@ -1,20 +1,20 @@
 import { VariantProps, tv } from "tailwind-variants";
-import { inputDataFocusVisible } from "../classes";
+import { groupDataFocusVisible } from "../classes";
 
 const input = tv({
   slots: {
     base: "flex flex-col gap-1 w-64 group",
     inputWrapper: [
       "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2",
-      inputDataFocusVisible,
+      groupDataFocusVisible,
     ],
-    input: "appearance-none !bg-transparent outline-none h-full grow text-inherit",
-    label: "first-letter:uppercase whitespace-nowrap text-sm place-self-start",
+    input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0",
+    label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
   },
   variants: {
     variant: {
-      border: {},
+      border: { inputWrapper: "border-2" },
       flat: {},
     },
     color: {
@@ -40,7 +40,7 @@ const input = tv({
       },
       md: {
         inputWrapper: "h-[40px]",
-        input: "text-sm",
+        input: "",
       },
       lg: {
         inputWrapper: "h-[48px]",
@@ -58,7 +58,7 @@ const input = tv({
         label: "-order-1 pointer-events-none select-none text-sm mr-2 font-medium cursor-text",
       },
       outside: {
-        label: "ml-2 font-medium cursor-pointer",
+        label: "ml-2 font-medium cursor-pointer place-self-start",
       },
     },
   },
@@ -157,10 +157,10 @@ const input = tv({
       color: "default",
       class: {
         inputWrapper:
-          "border-2 border-default-6 group-data-[hovered=true]:border-default-7 group-data-[focused=true]:border-default-8 text-default-11",
-        label: "text-default-11",
-        input: "text-default-12 placeholder:text-default-9",
-        helperText: "text-default-11",
+          "border-default-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-default-600 text-default-600",
+        label: "text-default-600",
+        input: "placeholder:text-default-400",
+        helperText: "text-default-600",
       },
     },
     {
@@ -168,10 +168,10 @@ const input = tv({
       color: "primary",
       class: {
         inputWrapper:
-          "border-2 border-primary-6 group-data-[hovered=true]:border-primary-7 group-data-[focused=true]:border-primary-8 text-primary-11",
-        label: "text-primary-11",
-        input: "text-primary-12 placeholder:text-primary-9",
-        helperText: "text-primary-11",
+          "border-primary-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-primary-600 text-primary-600",
+        label: "text-primary-600",
+        input: "placeholder:text-primary-400",
+        helperText: "text-primary-600",
       },
     },
     {
@@ -179,10 +179,10 @@ const input = tv({
       color: "secondary",
       class: {
         inputWrapper:
-          "border-2 border-secondary-6 group-data-[hovered=true]:border-secondary-7 group-data-[focused=true]:border-secondary-8 text-secondary-11",
-        label: "text-secondary-11",
-        input: "text-secondary-12 placeholder:text-secondary-9",
-        helperText: "text-secondary-11",
+          "border-secondary-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-secondary-600 text-secondary-600",
+        label: "text-secondary-600",
+        input: "placeholder:text-secondary-400",
+        helperText: "text-secondary-600",
       },
     },
     {
@@ -190,10 +190,10 @@ const input = tv({
       color: "success",
       class: {
         inputWrapper:
-          "border-2 border-success-6 group-data-[hovered=true]:border-success-7 group-data-[focused=true]:border-success-8 text-success-11",
-        label: "text-success-11",
-        input: "text-success-12 placeholder:text-success-9",
-        helperText: "text-success-11",
+          "border-success-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-success-600 text-success-600",
+        label: "text-success-600",
+        input: "placeholder:text-success-400",
+        helperText: "text-success-600",
       },
     },
     {
@@ -201,10 +201,10 @@ const input = tv({
       color: "info",
       class: {
         inputWrapper:
-          "border-2 border-info-6 group-data-[hovered=true]:border-info-7 group-data-[focused=true]:border-info-8 text-info-11",
-        label: "text-info-11",
-        input: "text-info-12 placeholder:text-info-9",
-        helperText: "text-info-11",
+          "border-info-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-info-600 text-info-600",
+        label: "text-info-600",
+        input: "placeholder:text-info-400",
+        helperText: "text-info-600",
       },
     },
     {
@@ -212,10 +212,10 @@ const input = tv({
       color: "warning",
       class: {
         inputWrapper:
-          "border-2 border-warning-6 group-data-[hovered=true]:border-warning-7 group-data-[focused=true]:border-warning-8 text-warning-11",
-        label: "text-warning-11",
-        input: "text-warning-12 placeholder:text-warning-10",
-        helperText: "text-warning-11",
+          "border-warning-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-warning-600 text-warning-600",
+        label: "text-warning-600",
+        input: "placeholder:text-warning-400",
+        helperText: "text-warning-600",
       },
     },
     {
@@ -223,10 +223,10 @@ const input = tv({
       color: "danger",
       class: {
         inputWrapper:
-          "border-2 border-danger-6 group-data-[hovered=true]:border-danger-7 group-data-[focused=true]:border-danger-8 text-danger-11",
-        label: "text-danger-11",
-        input: "text-danger-12 placeholder:text-danger-9",
-        helperText: "text-danger-11",
+          "border-danger-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-danger-600 text-danger-600",
+        label: "text-danger-600",
+        input: "placeholder:text-danger-400",
+        helperText: "text-danger-600",
       },
     },
   ],

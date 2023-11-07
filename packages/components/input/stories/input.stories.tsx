@@ -33,7 +33,7 @@ export const Default: StoryObj<InputProps> = {
     helperText: "Consectetur elit sint incididunt sunt.",
     label: "label",
     startContent: (
-      <Icon color="default">
+      <Icon>
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
           <path
             stroke="currentColor"
@@ -46,7 +46,7 @@ export const Default: StoryObj<InputProps> = {
       </Icon>
     ),
     endContent: (
-      <Button size="sm" variant="text" isIconOnly color="primary" rounded="full">
+      <Button size="sm" variant="text" isIconOnly rounded="full">
         <Icon size="sm">
           <svg
             aria-hidden="true"
