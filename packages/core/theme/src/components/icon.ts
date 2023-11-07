@@ -23,7 +23,7 @@ const icon = tv({
   defaultVariants: {
     fill: false,
     size: "md",
-    color: "inherit",
+    color: "default",
   },
   compoundVariants: [
     {

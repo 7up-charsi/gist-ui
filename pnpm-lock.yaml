@@ -185,6 +185,12 @@ importers:
 
   packages/components/input:
     dependencies:
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils

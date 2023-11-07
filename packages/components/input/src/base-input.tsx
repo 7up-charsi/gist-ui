@@ -12,10 +12,17 @@ export interface BaseInputProps
     HoverEvents,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
-      "id" | "placeholder" | "value" | "defaultValue" | "onBlur" | "onFocus" | "name" | "onChange"
+      | "id"
+      | "placeholder"
+      | "value"
+      | "defaultValue"
+      | "onBlur"
+      | "onFocus"
+      | "name"
+      | "onChange"
+      | "type"
     > {
   label: string;
-  type?: string;
   helperText?: string;
   error?: boolean;
   errorMessage?: string;
@@ -110,7 +117,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     </label>
   );
 
-  if (__DEV__ && !label) throw new Error('Gist-ui input: "label" must be passed');
+  if (__DEV__ && !label) throw new Error('Gist-ui BaseInput: "label" must be passed');
 
   return (
     <div

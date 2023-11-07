@@ -1,7 +1,11 @@
-import Input from "./input";
+import BaseInput from "./base-input";
+import TextInput from "./text-input";
+import PasswordInput from "./password-input";
 
 // export types
-export type { InputProps } from "./input";
+export type { BaseInputProps } from "./base-input";
+export type { TextInputProps } from "./text-input";
+export type { PasswordInputProps } from "./password-input";
 
 // export component
-export { Input };
+export { BaseInput, TextInput, PasswordInput };

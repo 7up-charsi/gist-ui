@@ -4,11 +4,10 @@ import { input } from "@gist-ui/theme";
 import { Icon } from "@gist-ui/icon";
 import { Button } from "@gist-ui/button";
 
-import { Input, InputProps } from "../src";
+import { PasswordInput, PasswordInputProps, TextInput, TextInputProps } from "../src";
 
-const meta: Meta<InputProps> = {
+const meta: Meta = {
   title: "Components/Input",
-  component: Input,
   args: { ...input.defaultVariants, placeholder: "" },
   argTypes: {
     variant: {
@@ -25,11 +24,9 @@ const meta: Meta<InputProps> = {
 
 export default meta;
 
-const Template = (args: InputProps) => <Input {...args} />;
-
-export const Default: StoryObj<InputProps> = {
+export const Text: StoryObj<TextInputProps> = {
   render: (args) => (
-    <Template
+    <TextInput
       {...args}
       endContent={
         <Button size="sm" variant="text" rounded="full" className="data-[hovered=true]:bg-white">
@@ -63,5 +60,18 @@ export const Default: StoryObj<InputProps> = {
     error: false,
     required: true,
     hideLabel: false,
+  },
+};
+
+export const Password: StoryObj<PasswordInputProps> = {
+  render: (args) => <PasswordInput {...args} />,
+  args: {
+    helperText: "helper text",
+    errorMessage: "error message",
+    label: "label",
+    error: false,
+    required: true,
+    hideLabel: false,
+    hideToggleButton: false,
   },
 };
