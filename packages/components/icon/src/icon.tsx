@@ -3,10 +3,11 @@ import { IconVariantProps, icon } from "@gist-ui/theme";
 
 export interface IconProps extends IconVariantProps {
   children?: ReactNode;
+  className?: string;
 }
 
-const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, color }, ref) => {
-  const styles = icon({ size, fill, color });
+const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, className }, ref) => {
+  const styles = icon({ size, fill, className });
 
   return (
     <div ref={ref} className={styles}>

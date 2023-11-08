@@ -334,21 +334,21 @@ const button = tv({
       isIconOnly: true,
       size: "sm",
       class: {
-        base: "min-w-[32px] w-8 h-8",
+        base: "min-w-[32px] min-h-[32px] w-8 h-8",
       },
     },
     {
       isIconOnly: true,
       size: "md",
       class: {
-        base: "min-w-[40px] w-10 h-10",
+        base: "min-w-[40px] min-h-[40px] w-10 h-10",
       },
     },
     {
       isIconOnly: true,
       size: "lg",
       class: {
-        base: "min-w-[48px] w-12 h-12",
+        base: "min-w-[48px] min-h-[48px] w-12 h-12",
       },
     },
   ],

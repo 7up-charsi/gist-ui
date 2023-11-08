@@ -80,6 +80,7 @@ export const IsIconOnly: StoryObj<ButtonProps> = {
   render: Template,
   args: {
     isIconOnly: true,
+    "aria-label": "house button",
     children: (
       <Icon fill>
         <svg viewBox="0 0 24 24">

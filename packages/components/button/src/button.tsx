@@ -53,6 +53,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const { hoverProps, isHovered } = useHover(props);
 
+  if (isIconOnly && !props["aria-label"] && !props["aria-labelledby"])
+    console.warn('Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"');
+
   return (
     <button
       data-pressed={isPressed}

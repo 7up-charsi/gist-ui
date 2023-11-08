@@ -67,14 +67,10 @@ export const Input: StoryObj<InputProps> = {
 
 export const Password: StoryObj<PasswordInputProps> = {
   render: (args) => <PasswordInput {...args} />,
-  args: {
-    disableToggleButton: false,
-  },
+  args: {},
 };
 
 export const Number: StoryObj<NumberInputProps> = {
   render: (args) => <NumberInput {...args} />,
-  args: {
-    disableButtons: false,
-  },
+  args: {},
 };

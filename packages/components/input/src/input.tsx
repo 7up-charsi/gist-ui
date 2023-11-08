@@ -63,7 +63,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     label: labelStyles,
     input: inputStyles,
     helperText: helperTextStyles,
-    required: requiredStyles,
   } = input({
     ...props,
     disabled,
@@ -102,7 +101,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const labelHTML = (
     <label htmlFor={id || labelId} className={labelStyles({ className: classNames?.label })}>
       {label}
-      {required && <span className={requiredStyles({ className: classNames?.required })}>*</span>}
     </label>
   );
 
