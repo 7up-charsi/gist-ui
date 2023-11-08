@@ -3,11 +3,11 @@ import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { HoverEvents, useFocus, useFocusRing, useHover } from "react-aria";
-import { InputProps } from "./types";
+import { NativeInputProps } from "./types";
 
 type ClassNames = { [key in keyof typeof input.slots]?: string };
 
-export interface BaseInputProps
+export interface InputProps
   extends InputVariantProps,
     HoverEvents,
     Pick<
@@ -31,13 +31,13 @@ export interface BaseInputProps
   classNames?: ClassNames;
   hideLabel?: boolean;
   feedback?: "polite" | "assertive";
-  inputProps?: InputProps;
+  inputProps?: NativeInputProps;
 }
 
-const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const {
     label,
-    type,
+    type = "text",
     id,
     helperText,
     error,
@@ -89,7 +89,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     focusProps: focusRingProps,
     isFocusVisible,
     isFocused,
-  } = useFocusRing({ isTextInput: true });
+  } = useFocusRing({ isTextInput: true, within: true });
 
   const { hoverProps, isHovered } = useHover({
     onHoverChange,
@@ -99,14 +99,10 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   });
 
   const { focusProps } = useFocus<HTMLInputElement>({
-    onFocus: (e) => {
-      onFocus?.(e);
-      focusRingProps.onFocus?.(e);
-    },
+    onFocus,
     onBlur: (e) => {
       setFilled(!!e.target.value.length);
       onBlur?.(e);
-      focusRingProps.onBlur?.(e);
     },
   });
 
@@ -117,7 +113,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
     </label>
   );
 
-  if (__DEV__ && !label) throw new Error('Gist-ui BaseInput: "label" must be passed');
+  if (__DEV__ && !label) throw new Error('Gist-ui Input: "label" must be passed');
 
   return (
     <div
@@ -137,6 +133,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
           innerRef.current?.focus();
         }}
         {...hoverProps}
+        {...focusRingProps}
       >
         {!hideLabel && labelPlacement?.includes("inside") && label && labelHTML}
         {hideLabel && label && labelHTML}
@@ -181,6 +178,6 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
   );
 });
 
-BaseInput.displayName = "gist-ui.BaseInput";
+Input.displayName = "gist-ui.Input";
 
-export default BaseInput;
+export default Input;

@@ -2,15 +2,14 @@ import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { input } from "@gist-ui/theme";
 import { Icon } from "@gist-ui/icon";
-import { Button } from "@gist-ui/button";
 
 import {
   NumberInput,
   NumberInputProps,
   PasswordInput,
   PasswordInputProps,
-  TextInput,
-  TextInputProps,
+  Input as InputComp,
+  InputProps,
 } from "../src";
 
 const meta: Meta = {
@@ -31,15 +30,10 @@ const meta: Meta = {
 
 export default meta;
 
-export const Text: StoryObj<TextInputProps> = {
+export const Input: StoryObj<InputProps> = {
   render: (args) => (
-    <TextInput
+    <InputComp
       {...args}
-      endContent={
-        <Button size="sm" variant="text" rounded="full" className="data-[hovered=true]:bg-white">
-          show all
-        </Button>
-      }
       startContent={
         <Icon>
           <svg

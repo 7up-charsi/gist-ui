@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from "react";
 
-export type InputProps = Omit<
+export type NativeInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   | "onBlur"
   | "onFocus"

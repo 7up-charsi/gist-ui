@@ -1,10 +1,11 @@
 import { ReactNode, forwardRef, useCallback, useRef } from "react";
-import BaseInput, { BaseInputProps } from "./base-input";
+import Input, { InputProps } from "./input";
 import { Button, ButtonProps } from "@gist-ui/button";
+import { NumberInputVariantProps, numberInput } from "@gist-ui/theme";
 import { Icon, IconProps } from "@gist-ui/icon";
 import { mergeRefs } from "@gist-ui/react-utils";
 
-export interface NumberInputProps extends Omit<BaseInputProps, "type"> {
+export interface NumberInputProps extends NumberInputVariantProps, Omit<InputProps, "type"> {
   inputMode?: "decimal" | "numeric";
   min?: number;
   max?: number;
@@ -20,6 +21,7 @@ export interface NumberInputProps extends Omit<BaseInputProps, "type"> {
   decreaseButtonProps?: Omit<ButtonProps, "onPress">;
   increaseIconProps?: IconProps;
   decreaseIconProps?: IconProps;
+  classNames?: InputProps["classNames"] & { buttons?: string };
 }
 
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
@@ -42,9 +44,13 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     decreaseButtonProps,
     increaseIconProps,
     decreaseIconProps,
+    showOnHover,
+    classNames,
 
     ...rest
   } = props;
+
+  const { buttons: buttonsStyles } = numberInput({ showOnHover });
 
   const innerRef = useRef<HTMLInputElement>(null);
 
@@ -86,8 +92,8 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     }
   }, []);
 
-  const buttons = (
-    <div>
+  const buttons = !hideButtons && (
+    <div className={buttonsStyles({ className: classNames?.buttons })}>
       {/* decrease */}
       <Button
         isIconOnly
@@ -149,7 +155,8 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   );
 
   return (
-    <BaseInput
+    <Input
+      classNames={classNames}
       ref={mergeRefs(ref, innerRef)}
       {...rest}
       type="text"
@@ -160,14 +167,14 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       startContent={
         <>
           {startContentPosition === "left" && startContent}
-          {!hideButtons && buttonsPosition === "start" && buttons}
+          {buttonsPosition === "start" && buttons}
           {startContentPosition === "right" && startContent}
         </>
       }
       endContent={
         <>
           {endContentPosition === "left" && endContent}
-          {!hideButtons && buttonsPosition === "end" && buttons}
+          {buttonsPosition === "end" && buttons}
           {endContentPosition === "right" && endContent}
         </>
       }

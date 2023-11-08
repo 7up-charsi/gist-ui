@@ -1,9 +1,9 @@
 import { ReactNode, forwardRef, useCallback, useState } from "react";
-import BaseInput, { BaseInputProps } from "./base-input";
+import Input, { InputProps } from "./input";
 import { Button, ButtonProps } from "@gist-ui/button";
 import { Icon, IconProps } from "@gist-ui/icon";
 
-export interface PasswordInputProps extends Omit<BaseInputProps, "type"> {
+export interface PasswordInputProps extends Omit<InputProps, "type"> {
   endContentPosition?: "left" | "right";
   startContentPosition?: "left" | "right";
   toggleButtonPoition?: "start" | "end";
@@ -85,7 +85,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, r
   );
 
   return (
-    <BaseInput
+    <Input
       ref={ref}
       {...rest}
       type={show ? "text" : "password"}
