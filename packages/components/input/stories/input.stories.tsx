@@ -26,12 +26,12 @@ const meta: Meta = {
   },
   argTypes: {
     variant: {
-      control: { type: "select" },
+      control: "select",
       options: Object.keys(input.variants.variant),
     },
     labelPlacement: {
       name: "label placement",
-      control: { type: "select" },
+      control: "select",
       options: Object.keys(input.variants.labelPlacement),
     },
   },
