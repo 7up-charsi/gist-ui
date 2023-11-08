@@ -14,7 +14,16 @@ import {
 
 const meta: Meta = {
   title: "Components/Input",
-  args: { ...input.defaultVariants, placeholder: "" },
+  args: {
+    ...input.defaultVariants,
+    placeholder: "",
+    helperText: "helper text",
+    errorMessage: "error message",
+    label: "label",
+    error: false,
+    required: true,
+    hideLabel: false,
+  },
   argTypes: {
     variant: {
       control: { type: "select" },
@@ -54,38 +63,18 @@ export const Input: StoryObj<InputProps> = {
       }
     />
   ),
-  args: {
-    helperText: "helper text",
-    errorMessage: "error message",
-    label: "label",
-    error: false,
-    required: true,
-    hideLabel: false,
-  },
 };
 
 export const Password: StoryObj<PasswordInputProps> = {
   render: (args) => <PasswordInput {...args} />,
   args: {
-    helperText: "helper text",
-    errorMessage: "error message",
-    label: "label",
-    error: false,
-    required: true,
-    hideLabel: false,
-    hideToggleButton: false,
+    disableToggleButton: false,
   },
 };
 
 export const Number: StoryObj<NumberInputProps> = {
   render: (args) => <NumberInput {...args} />,
   args: {
-    helperText: "helper text",
-    errorMessage: "error message",
-    label: "label",
-    error: false,
-    required: true,
-    hideLabel: false,
-    hideButtons: false,
+    disableButtons: false,
   },
 };

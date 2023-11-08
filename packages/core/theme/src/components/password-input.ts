@@ -1,13 +1,13 @@
 import { VariantProps, tv } from "tailwind-variants";
 
-const numberInput = tv({
+const passwordInput = tv({
   slots: {
-    buttonsWrapper: "h-full flex items-center",
+    toggleButtonWrapper: "h-full flex items-center",
   },
   variants: {
     showOnHover: {
       true: {
-        buttonsWrapper:
+        toggleButtonWrapper:
           "invisible group-data-[hovered=true]:visible group-data-[focused=true]:visible group-data-[focus-visible=true]:visible",
       },
     },
@@ -17,6 +17,6 @@ const numberInput = tv({
   },
 });
 
-export type NumberInputVariantProps = VariantProps<typeof numberInput>;
+export type PasswordInputVariantProps = VariantProps<typeof passwordInput>;
 
-export { numberInput };
+export { passwordInput };

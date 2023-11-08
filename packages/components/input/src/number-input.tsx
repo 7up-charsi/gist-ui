@@ -14,14 +14,14 @@ export interface NumberInputProps extends NumberInputVariantProps, Omit<InputPro
   buttonsPosition?: "start" | "end";
   startContentPosition?: "left" | "right";
   endContentPosition?: "left" | "right";
-  hideButtons?: boolean;
-  increaseContent?: ReactNode;
-  decreaseContent?: ReactNode;
+  disableButtons?: boolean;
+  increaseIcon?: ReactNode;
+  decreaseIcon?: ReactNode;
   increaseButtonProps?: Omit<ButtonProps, "onPress">;
   decreaseButtonProps?: Omit<ButtonProps, "onPress">;
   increaseIconProps?: IconProps;
   decreaseIconProps?: IconProps;
-  classNames?: InputProps["classNames"] & { buttons?: string };
+  classNames?: InputProps["classNames"] & { buttonsWrapper?: string };
 }
 
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
@@ -37,9 +37,9 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     startContent,
     endContentPosition = "left",
     startContentPosition = "left",
-    hideButtons,
-    increaseContent,
-    decreaseContent,
+    disableButtons,
+    increaseIcon,
+    decreaseIcon,
     increaseButtonProps,
     decreaseButtonProps,
     increaseIconProps,
@@ -50,7 +50,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     ...rest
   } = props;
 
-  const { buttons: buttonsStyles } = numberInput({ showOnHover });
+  const { buttonsWrapper } = numberInput({ showOnHover });
 
   const innerRef = useRef<HTMLInputElement>(null);
 
@@ -92,8 +92,8 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     }
   }, []);
 
-  const buttons = !hideButtons && (
-    <div className={buttonsStyles({ className: classNames?.buttons })}>
+  const buttons = !disableButtons && (
+    <div className={buttonsWrapper({ className: classNames?.buttonsWrapper })}>
       {/* decrease */}
       <Button
         isIconOnly
@@ -104,7 +104,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
         onPress={handleDecrease}
       >
         <Icon size="sm" color="default" {...decreaseIconProps}>
-          {decreaseContent || (
+          {decreaseIcon || (
             <svg
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +133,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
         onPress={handleIncrease}
       >
         <Icon size="sm" color="default" {...increaseIconProps}>
-          {increaseContent || (
+          {increaseIcon || (
             <svg
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
