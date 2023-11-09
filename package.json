@@ -14,7 +14,7 @@
     "turbo:clean": "turbo clean && rimraf ./node_modules/.cache/turbo",
     "clean": "pnpm turbo:clean && pnpm clean:node-modules && pnpm clean:lock && pnpm install",
     "clean:node-modules": "rimraf ./apps/**/node_modules ./packages/**/**/node_modules -g && rm -rf ./node_modules",
-    "clean:changelogs": "rimraf ./packages/**/**/CHANGELOG.md",
+    "clean:changelogs": "rimraf ./packages/**/**/CHANGELOG.md -g",
     "clean:lock": "rm -rf ./pnpm-lock.yaml",
     "format:check": "prettier --check ./packages/**/**/src --cache",
     "format:write": "prettier --write ./packages/**/**/src --cache",
