@@ -6,6 +6,7 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
   inputMode?: "decimal" | "numeric";
   min?: number;
   max?: number;
+  step?: number;
 }
 
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
@@ -17,7 +18,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     <Input
       {...rest}
       ref={mergeRefs(ref, innerRef)}
-      type="text"
+      type="number"
       inputProps={{
         ...inputProps,
         inputMode,

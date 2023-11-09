@@ -14,7 +14,7 @@ export interface InputProps
       InputHTMLAttributes<HTMLInputElement>,
       "id" | "placeholder" | "value" | "defaultValue" | "onBlur" | "onFocus" | "name" | "onChange"
     > {
-  type: "text" | "email" | "password" | "tel" | "url";
+  type: "text" | "number" | "email" | "password" | "tel" | "url";
   label: string;
   helperText?: string;
   error?: boolean;
