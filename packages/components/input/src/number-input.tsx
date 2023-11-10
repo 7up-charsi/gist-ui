@@ -28,6 +28,7 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
   min?: number;
   max?: number;
   step?: number;
+  largeStep?: number;
   repeatRate?: number;
   threshold?: number;
 }
@@ -44,6 +45,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     min,
     max,
     step = 1,
+    largeStep = 5,
     repeatRate = 100,
     threshold = 500,
 
@@ -60,7 +62,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     repeatedEvent?: boolean;
   }>({});
 
-  const handleStepUp = () => {
+  const handleStepUp = (normalStep = true) => {
     const target = innerRef.current;
 
     if (!target) return;
@@ -79,10 +81,13 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       return;
     }
 
-    target.value = max && value + step > max ? max + "" : `${value + step}`;
+    target.value =
+      max && value + (normalStep ? step : largeStep) > max
+        ? max + ""
+        : `${value + (normalStep ? step : largeStep)}`;
   };
 
-  const handleStepDown = () => {
+  const handleStepDown = (normalStep = true) => {
     const target = innerRef.current;
 
     if (!target) return;
@@ -101,15 +106,22 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       return;
     }
 
-    target.value = min && value - step < min ? min + "" : `${value - step}`;
+    target.value =
+      min && value - (normalStep ? step : largeStep) < min
+        ? min + ""
+        : `${value - (normalStep ? step : largeStep)}`;
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     const ArrowUp = e.key === "ArrowUp";
     const ArrowDown = e.key === "ArrowDown";
+    const PageUp = e.key === "PageUp";
+    const PageDown = e.key === "PageDown";
+    const Home = e.key === "Home";
+    const End = e.key === "End";
     const repeatEvent = e.repeat;
 
-    if (ArrowUp || ArrowDown) e.preventDefault();
+    if (ArrowUp || ArrowDown || PageUp || PageDown || Home || End) e.preventDefault();
 
     if (ArrowUp && !repeatEvent) {
       handleStepUp();
@@ -121,19 +133,63 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       return;
     }
 
+    if (PageUp && !repeatEvent) {
+      handleStepUp(false);
+      return;
+    }
+
+    if (PageDown && !repeatEvent) {
+      handleStepDown(false);
+      return;
+    }
+
     if (ArrowUp && repeatEvent && !state.current.repeatedEvent) {
       state.current.repeatedEvent = true;
-
       state.current.keyDownInterval = setInterval(handleStepUp, repeatRate);
-
       return;
     }
 
     if (ArrowDown && repeatEvent && !state.current.repeatedEvent) {
       state.current.repeatedEvent = true;
-
       state.current.keyDownInterval = setInterval(handleStepDown, repeatRate);
+      return;
+    }
 
+    if (PageUp && repeatEvent && !state.current.repeatedEvent) {
+      state.current.repeatedEvent = true;
+
+      state.current.keyDownInterval = setInterval(() => {
+        handleStepUp(false);
+      }, repeatRate);
+
+      return;
+    }
+
+    if (PageDown && repeatEvent && !state.current.repeatedEvent) {
+      state.current.repeatedEvent = true;
+
+      state.current.keyDownInterval = setInterval(() => {
+        handleStepDown(false);
+      }, repeatRate);
+
+      return;
+    }
+
+    const target = innerRef.current;
+    if (!target) return;
+
+    if (Home && min) {
+      target.value = min + "";
+      return;
+    }
+
+    if (Home && !min) {
+      target.value = "0";
+      return;
+    }
+
+    if (End && max) {
+      target.value = max + "";
       return;
     }
   };
@@ -141,11 +197,15 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   const handleKeyUp: KeyboardEventHandler<HTMLInputElement> = (e) => {
     const ArrowUp = e.key === "ArrowUp";
     const ArrowDown = e.key === "ArrowDown";
+    const PageUp = e.key === "PageUp";
+    const PageDown = e.key === "PageDown";
 
-    if (ArrowUp || ArrowDown) {
+    if (ArrowUp || ArrowDown || PageUp || PageDown) {
       clearInterval(state.current.keyDownInterval);
       state.current.repeatedEvent = undefined;
       state.current.keyDownInterval = undefined;
+
+      return;
     }
   };
 
