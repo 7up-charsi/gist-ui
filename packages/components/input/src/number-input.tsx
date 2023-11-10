@@ -5,6 +5,7 @@ import { numberInput } from "@gist-ui/theme";
 import { Button, ButtonProps } from "@gist-ui/button";
 import { Icon, IconProps } from "@gist-ui/icon";
 import { mergeProps, useLongPress, usePress } from "react-aria";
+import { __DEV__ } from "@gist-ui/shared-utils";
 
 type ClassNames = { [key in keyof typeof numberInput.slots]?: string };
 
@@ -300,6 +301,11 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       </Button>
     </div>
   );
+
+  if (__DEV__ && min && max && min > max)
+    console.warn('Gist-ui input[number]: "min" must be lower than "max"');
+  if (__DEV__ && step > largeStep)
+    console.warn('Gist-ui input[number]: "step" must be lower than "largeStep"');
 
   return (
     <Input
