@@ -28,6 +28,8 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
   min?: number;
   max?: number;
   step?: number;
+  repeatRate?: number;
+  threshold?: number;
 }
 
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
@@ -42,6 +44,8 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     min,
     max,
     step = 1,
+    repeatRate = 100,
+    threshold = 500,
 
     ...rest
   } = props;
@@ -51,12 +55,10 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   const { base, button, icon } = numberInput();
 
   const state = useRef<{
-    stepUpInterval?: NodeJS.Timeout;
-    stepDownInterval?: NodeJS.Timeout;
-  }>({
-    stepUpInterval: undefined,
-    stepDownInterval: undefined,
-  });
+    longPressInterval?: NodeJS.Timeout;
+    keyDownInterval?: NodeJS.Timeout;
+    repeatedEvent?: boolean;
+  }>({});
 
   const handleStepUp = () => {
     const target = innerRef.current;
@@ -103,56 +105,81 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.defaultPrevented) return;
+    const ArrowUp = e.key === "ArrowUp";
+    const ArrowDown = e.key === "ArrowDown";
+    const repeatEvent = e.repeat;
 
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
+    if (ArrowUp || ArrowDown) e.preventDefault();
+
+    if (ArrowUp && !repeatEvent) {
       handleStepUp();
-
-      console.log("ArrowUP");
+      return;
     }
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
+    if (ArrowDown && !repeatEvent) {
       handleStepDown();
+      return;
+    }
+
+    if (ArrowUp && repeatEvent && !state.current.repeatedEvent) {
+      state.current.repeatedEvent = true;
+
+      state.current.keyDownInterval = setInterval(handleStepUp, repeatRate);
+
+      return;
+    }
+
+    if (ArrowDown && repeatEvent && !state.current.repeatedEvent) {
+      state.current.repeatedEvent = true;
+
+      state.current.keyDownInterval = setInterval(handleStepDown, repeatRate);
+
+      return;
+    }
+  };
+
+  const handleKeyUp: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    const ArrowUp = e.key === "ArrowUp";
+    const ArrowDown = e.key === "ArrowDown";
+
+    if (ArrowUp || ArrowDown) {
+      clearInterval(state.current.keyDownInterval);
+      state.current.repeatedEvent = undefined;
+      state.current.keyDownInterval = undefined;
     }
   };
 
   const { longPressProps: stepUpLongPressProps } = useLongPress({
+    threshold,
     accessibilityDescription: "long press to increase speedly",
-    onLongPressStart: () => {
-      state.current.stepUpInterval = setInterval(() => {
-        handleStepUp();
-      }, 100);
+    onLongPressStart: handleStepUp,
+    onLongPress: () => {
+      state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
     },
   });
 
   const { pressProps: stepUpPressProps } = usePress({
-    onPress: (e) => {
-      stepUpButtonProps?.onPress?.(e);
-      handleStepUp();
-    },
+    onPress: stepUpButtonProps?.onPress,
     onPressUp: () => {
-      clearInterval(state.current?.stepUpInterval);
+      clearInterval(state.current.longPressInterval);
+      state.current.longPressInterval = undefined;
     },
   });
 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
+    threshold,
     accessibilityDescription: "long press to decrease speedly",
-    onLongPressStart: () => {
-      state.current.stepDownInterval = setInterval(() => {
-        handleStepDown();
-      }, 100);
+    onLongPressStart: handleStepDown,
+    onLongPress: () => {
+      state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
     },
   });
 
   const { pressProps: stepDownPressProps } = usePress({
-    onPress: (e) => {
-      stepDownButtonProps?.onPress?.(e);
-      handleStepDown();
-    },
+    onPress: stepDownButtonProps?.onPress,
     onPressUp: () => {
-      clearInterval(state.current?.stepDownInterval);
+      clearInterval(state.current.longPressInterval);
+      state.current.longPressInterval = undefined;
     },
   });
 
@@ -216,6 +243,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       inputProps={{
         ...inputProps,
         onKeyDown: handleKeyDown,
+        onKeyUp: handleKeyUp,
         inputMode,
         min,
         max,
