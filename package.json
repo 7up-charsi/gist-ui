@@ -50,9 +50,5 @@
     "tsup": "^7.2.0",
     "turbo": "latest"
   },
-  "dependencies": {
-    "@gist-ui/button": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
-    "react-loader-spinner": "^5.4.5"
-  }
+  "dependencies": {}
 }

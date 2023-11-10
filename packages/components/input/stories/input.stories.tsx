@@ -72,5 +72,8 @@ export const Password: StoryObj<PasswordInputProps> = {
 
 export const Number: StoryObj<NumberInputProps> = {
   render: (args) => <NumberInput {...args} />,
-  args: {},
+  args: {
+    min: 20,
+    max: 60,
+  },
 };

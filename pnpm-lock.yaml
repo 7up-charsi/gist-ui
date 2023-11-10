@@ -7,16 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@gist-ui/button':
-        specifier: workspace:*
-        version: link:packages/components/button
-      '@gist-ui/icon':
-        specifier: workspace:*
-        version: link:packages/components/icon
-      react-loader-spinner:
-        specifier: ^5.4.5
-        version: 5.4.5(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@changesets/cli':
         specifier: ^2.26.2
@@ -147,6 +137,9 @@ importers:
 
   packages/components/button:
     dependencies:
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -165,6 +158,9 @@ importers:
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
+      react-loader-spinner:
+        specifier: ^5.4.5
+        version: 5.4.5(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       clean-package:
         specifier: ^2.2.0
@@ -209,22 +205,6 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
-  packages/components/spin-button:
-    dependencies:
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
-      react:
-        specifier: '>=18'
-        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)

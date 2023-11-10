@@ -1,4 +1,12 @@
-import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from "react";
+import {
+  ChangeEventHandler,
+  FocusEventHandler,
+  ReactNode,
+  forwardRef,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { input, InputVariantProps } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
@@ -7,14 +15,16 @@ import { NativeInputProps } from "./types";
 
 type ClassNames = { [key in keyof typeof input.slots]?: string };
 
-export interface InputProps
-  extends InputVariantProps,
-    HoverEvents,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      "id" | "placeholder" | "value" | "defaultValue" | "onBlur" | "onFocus" | "name" | "onChange"
-    > {
-  type: "text" | "number" | "email" | "password" | "tel" | "url";
+export interface InputProps extends InputVariantProps, HoverEvents {
+  type?: "text" | "number" | "email" | "password" | "tel" | "url";
+  id?: string;
+  placeholder?: string;
+  value?: string;
+  defaultValue?: string;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  name?: string;
   label: string;
   helperText?: string;
   error?: boolean;
@@ -81,7 +91,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     focusProps: focusRingProps,
     isFocusVisible,
     isFocused,
-  } = useFocusRing({ isTextInput: true, within: true });
+  } = useFocusRing({ isTextInput: true });
 
   const { hoverProps, isHovered } = useHover({
     onHoverChange,
@@ -91,15 +101,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   });
 
   const { focusProps } = useFocus<HTMLInputElement>({
-    onFocus,
+    onFocus: (e) => {
+      onFocus?.(e);
+      focusRingProps.onFocus?.(e);
+    },
     onBlur: (e) => {
       setFilled(!!e.target.value.length);
       onBlur?.(e);
+      focusRingProps.onBlur?.(e);
     },
   });
 
-  const labelHTML = (
-    <label htmlFor={id || labelId} className={labelStyles({ className: classNames?.label })}>
+  const labelHTML = !!label && (
+    <label htmlFor={inputId} className={labelStyles({ className: classNames?.label })}>
       {label}
     </label>
   );
@@ -116,7 +130,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       data-hovered={isHovered}
       data-disabled={disabled}
     >
-      {!hideLabel && labelPlacement?.includes("outside") && label && labelHTML}
+      {!hideLabel && labelPlacement?.includes("outside") && labelHTML}
 
       <div
         className={inputWrapper({ className: classNames?.inputWrapper })}
@@ -124,10 +138,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           innerRef.current?.focus();
         }}
         {...hoverProps}
-        {...focusRingProps}
       >
-        {!hideLabel && labelPlacement?.includes("inside") && label && labelHTML}
-        {hideLabel && label && labelHTML}
+        {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
+        {hideLabel && labelHTML}
 
         {startContent}
         <input
