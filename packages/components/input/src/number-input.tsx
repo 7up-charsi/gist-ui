@@ -49,6 +49,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     largeStep = 5,
     repeatRate = 100,
     threshold = 500,
+    endContent,
 
     ...rest
   } = props;
@@ -262,7 +263,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
         size="sm"
         variant="text"
         rounded="none"
-        className={button({ className: classNames?.stepButton.button })}
+        className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
         nativeButtonProps={mergeProps(stepUpPressProps, stepUpLongPressProps)}
       >
         <Icon
@@ -286,7 +287,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
         size="sm"
         variant="text"
         rounded="none"
-        className={button({ className: classNames?.stepButton.button })}
+        className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
         nativeButtonProps={mergeProps(stepDownPressProps, stepDownLongPressProps)}
       >
         <Icon
@@ -313,11 +314,22 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
       classNames={classNames}
       ref={mergeRefs(ref, innerRef)}
       type="number"
-      endContent={buttons}
+      endContent={
+        <>
+          {endContent}
+          {buttons}
+        </>
+      }
       inputProps={{
         ...inputProps,
-        onKeyDown: handleKeyDown,
-        onKeyUp: handleKeyUp,
+        onKeyDown: (e) => {
+          inputProps?.onKeyDown?.(e);
+          handleKeyDown(e);
+        },
+        onKeyUp: (e) => {
+          inputProps?.onKeyUp?.(e);
+          handleKeyUp(e);
+        },
         inputMode,
         min,
         max,
