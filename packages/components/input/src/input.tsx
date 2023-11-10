@@ -24,6 +24,7 @@ export interface InputProps extends InputVariantProps, HoverEvents {
   onFocus?: FocusEventHandler<HTMLInputElement>;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  required?: boolean;
   name?: string;
   label: string;
   helperText?: string;
@@ -73,6 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     label: labelStyles,
     input: inputStyles,
     helperText: helperTextStyles,
+    required: requiredStyles,
   } = input({
     ...props,
     disabled,
@@ -115,10 +117,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const labelHTML = !!label && (
     <label htmlFor={inputId} className={labelStyles({ className: classNames?.label })}>
       {label}
+      {required && (
+        <span className={requiredStyles({ className: classNames?.required })} aria-hidden="true">
+          *
+        </span>
+      )}
     </label>
   );
 
-  if (__DEV__ && !label) throw new Error('Gist-ui Input: "label" must be passed');
+  if (__DEV__ && !label)
+    throw new Error(
+      'Gist-ui Input: "label" prop is required. if you want to hide label then pass "hideLabel" prop as well',
+    );
 
   return (
     <div

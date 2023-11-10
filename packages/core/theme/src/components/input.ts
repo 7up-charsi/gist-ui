@@ -11,6 +11,7 @@ const input = tv({
     input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
+    required: "text-danger ml-1",
   },
   variants: {
     variant: {
@@ -59,11 +60,6 @@ const input = tv({
       },
       outside: {
         label: "ml-2 font-medium cursor-pointer place-self-start",
-      },
-    },
-    required: {
-      true: {
-        label: "after:content-['*'] after:text-danger after:ml-0.5",
       },
     },
     hideLabel: {
