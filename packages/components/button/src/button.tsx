@@ -4,7 +4,9 @@ import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { AriaButtonOptions, useButton, useFocusRing, useHover } from "react-aria";
 
-export interface ButtonProps extends ButtonVariantProps, AriaButtonOptions<"button"> {
+export interface ButtonProps
+  extends ButtonVariantProps,
+    AriaButtonOptions<"button" | "div" | "a" | "span"> {
   startContent?: ReactNode;
   endContent?: ReactNode;
   rippleProps?: UseRippleProps;
@@ -27,6 +29,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     variant,
     isIconOnly,
     nativeButtonProps,
+    elementType: Comp = "button",
   } = props;
 
   const { base } = button({
@@ -57,13 +60,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     console.warn('Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"');
 
   return (
-    <button
+    <Comp
       data-pressed={isPressed}
       data-key-pressed={isPressed && isFocusVisible && isFocused}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
-      {...buttonProps}
       ref={mergeRefs(ref, rippleRef, innerRef)}
       {...mergeProps(
         { onPointerDown: rippleEvent },
@@ -77,7 +79,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       {!isIconOnly && startContent}
       {props.children}
       {!isIconOnly && endContent}
-    </button>
+    </Comp>
   );
 });
 

@@ -152,7 +152,10 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   const { longPressProps: stepUpLongPressProps } = useLongPress({
     threshold,
     accessibilityDescription: "long press to increase speedly",
-    onLongPressStart: handleStepUp,
+    onLongPressStart: () => {
+      innerRef.current?.focus();
+      handleStepUp();
+    },
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
     },
@@ -169,7 +172,10 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
     threshold,
     accessibilityDescription: "long press to decrease speedly",
-    onLongPressStart: handleStepDown,
+    onLongPressStart: () => {
+      innerRef.current?.focus();
+      handleStepDown();
+    },
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
     },
@@ -187,6 +193,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     <div ref={ref} className={base({ className: classNames?.stepButton.base })}>
       {/* step up */}
       <Button
+        elementType="span"
         aria-label="increase value"
         {...stepUpButtonProps}
         excludeFromTabOrder
@@ -210,6 +217,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
 
       {/* step down */}
       <Button
+        elementType="span"
         aria-label="decrease value"
         {...stepDownButtonProps}
         excludeFromTabOrder
