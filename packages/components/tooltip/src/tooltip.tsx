@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
-import { tooltip } from "@gist-ui/theme";
+import { TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import Arrow, { ArrowProps } from "./arrow";
 import {
   Children,
@@ -34,7 +34,7 @@ type ClassNames = {
   [key in keyof typeof tooltip.slots]?: string;
 };
 
-export interface TooltipProps {
+export interface TooltipProps extends TooltipVariantProps {
   children?: ReactNode;
   title?: string;
   disabled?: boolean;
@@ -51,6 +51,10 @@ export interface TooltipProps {
   showDelay?: number;
   hideDelay?: number;
   trigger?: "hover" | "focus";
+  onOpen?: (isOpen: true) => void;
+  onClose?: (isOpen: false) => void;
+  defaultOpen?: boolean;
+  arrowHide?: boolean;
 }
 
 const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -66,9 +70,13 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     hideDelay = 300,
     trigger,
     disableInteractive,
+    onClose,
+    onOpen,
+    defaultOpen = false,
+    arrowHide,
   } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const tooltipId = useId();
   const arrowRef = useRef<SVGSVGElement>(null);
@@ -88,9 +96,11 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     if (!immediate && showDelay > 0) {
       showTimeout.current = setTimeout(() => {
         setIsOpen(true);
+        onOpen?.(true);
       }, showDelay);
     } else {
       setIsOpen(true);
+      onOpen?.(true);
     }
   };
 
@@ -105,9 +115,11 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       clearTimeout(hideTimeout.current);
       hideTimeout.current = undefined;
       setIsOpen(false);
+      onClose?.(false);
     } else {
       hideTimeout.current = setTimeout(() => {
         setIsOpen(false);
+        onClose?.(false);
       }, hideDelay);
     }
 
@@ -157,9 +169,14 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     placement: position,
     middleware: [
       offset(middlewareOptions?.offset || 10),
-      shift({ limiter: limitShift(), ...middlewareOptions?.shift }),
+      shift({
+        limiter: limitShift(({ elements }) => ({
+          offset: elements.reference.getBoundingClientRect().width / 2,
+        })),
+        ...middlewareOptions?.shift,
+      }),
       flip(middlewareOptions?.flip),
-      arrow({ element: arrowRef }),
+      arrow({ element: arrowRef, padding: 10 }),
       hide(middlewareOptions?.hide),
     ],
   });
@@ -217,9 +234,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     },
   });
 
-  const { base: baseStyles } = tooltip({
-    arrowHide: middlewareData.hide?.escaped,
-  });
+  const { base: baseStyles } = tooltip(props);
 
   if (!Children.only(children)) throw new Error("Gist-ui tooltip: must have only one child");
 
@@ -244,19 +259,24 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
             ref={mergeRefs(ref, refs.setFloating)}
             className={baseStyles({ className: classNames?.base })}
             id={tooltipId}
-            style={floatingStyles}
+            style={{
+              ...floatingStyles,
+              visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
+            }}
             role="tooltip"
             {...tooltipHoverProps}
           >
             {title}
 
-            <Arrow
-              {...arrowProps}
-              placement={placement}
-              arrowData={middlewareData.arrow}
-              ref={arrowRef}
-              floatingElement={elements.floating}
-            />
+            {!arrowHide && (
+              <Arrow
+                {...arrowProps}
+                placement={placement}
+                arrowData={middlewareData.arrow}
+                ref={arrowRef}
+                floatingElement={elements.floating}
+              />
+            )}
           </div>,
           document.body,
         )}
