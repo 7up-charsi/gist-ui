@@ -1,4 +1,8 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
+import { usePress } from "react-aria";
+import { createPortal } from "react-dom";
+import { mergeProps } from "@gist-ui/react-utils";
+import { DialogVariantProps, dialog } from "@gist-ui/theme";
 import {
   Children,
   ReactNode,
@@ -8,18 +12,21 @@ import {
   isValidElement,
   useCallback,
   useContext,
+  useId,
 } from "react";
-import { usePress } from "react-aria";
-import { createPortal } from "react-dom";
-import { mergeProps } from "@gist-ui/react-utils";
 
-export interface DialogProps {
+export interface DialogProps extends DialogVariantProps {
   trigger?: ReactNode;
-  children?: ReactNode;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   defaultOpen?: boolean;
   modal?: boolean;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  header?: string;
+  body?: ReactNode;
+  footer?: ReactNode;
 }
 
 interface Context {
@@ -32,7 +39,18 @@ const SCOPE_NAME = "Dialog";
 const context = createContext<Context>({});
 
 const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
-  const { trigger, children, modal = true, isOpen: isOpenProp, defaultOpen, onOpenChange } = props;
+  const {
+    trigger,
+    modal = true,
+    isOpen: isOpenProp,
+    defaultOpen,
+    onOpenChange,
+    header,
+    body,
+    footer,
+  } = props;
+
+  const labelledbyId = useId();
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -52,6 +70,17 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     onPress: handleOpen,
   });
 
+  const {
+    base,
+    container,
+    backdrop,
+    header: headerStyles,
+    body: bodyStyles,
+    footer: footerStyles,
+  } = dialog({
+    ...props,
+  });
+
   if (!trigger) throw new Error("Gist-ui dialog: trigger is required");
   if (!Children.only(trigger)) throw new Error("Gist-ui dialog: trigger must be only child");
   if (!isValidElement(trigger)) throw new Error("Gist-ui dialog: trigger must be valid element");
@@ -60,15 +89,33 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     ...pressProps,
   });
 
-  const dialog = (
+  const dialogHTML = (
     <context.Provider
       value={{
         scopeName: SCOPE_NAME,
         handleClose,
       }}
     >
-      <div ref={ref} role="dialog" aria-modal={modal}>
-        {children}
+      <div className={container()}>
+        <div className={backdrop()}></div>
+
+        <div
+          ref={ref}
+          role="dialog"
+          aria-modal={modal}
+          className={base()}
+          aria-label={props["aria-label"]}
+          aria-labelledby={header ? labelledbyId : props["aria-labelledby"]}
+          aria-describedby={props["aria-describedby"]}
+        >
+          {header && (
+            <div className={headerStyles()} id={labelledbyId}>
+              {header}
+            </div>
+          )}
+          {body && <div className={bodyStyles()}>{body}</div>}
+          {footer && <div className={footerStyles()}>{footer}</div>}
+        </div>
       </div>
     </context.Provider>
   );
@@ -77,7 +124,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     <>
       {triggerClone}
 
-      {isOpen && createPortal(dialog, document.body)}
+      {isOpen && createPortal(dialogHTML, document.body)}
     </>
   );
 });
