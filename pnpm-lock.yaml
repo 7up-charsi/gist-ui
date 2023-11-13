@@ -227,6 +227,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
       react:
         specifier: '>=18'
         version: 18.2.0

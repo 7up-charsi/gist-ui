@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import { useControllableState } from "@gist-ui/use-controllable-state";
 import { TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import Arrow, { ArrowProps } from "./arrow";
 import {
@@ -12,7 +13,6 @@ import {
   useEffect,
   useId,
   useRef,
-  useState,
 } from "react";
 import {
   useFloating,
@@ -51,10 +51,10 @@ export interface TooltipProps extends TooltipVariantProps {
   showDelay?: number;
   hideDelay?: number;
   trigger?: "hover" | "focus";
-  onOpen?: (isOpen: true) => void;
-  onClose?: (isOpen: false) => void;
-  defaultOpen?: boolean;
   arrowHide?: boolean;
+  isOpen?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -70,13 +70,17 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     hideDelay = 300,
     trigger,
     disableInteractive,
-    onClose,
-    onOpen,
+    isOpen: isOpenProp,
+    onOpenChange,
     defaultOpen = false,
     arrowHide,
   } = props;
 
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [isOpen, setIsOpen] = useControllableState({
+    value: isOpenProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
 
   const tooltipId = useId();
   const arrowRef = useRef<SVGSVGElement>(null);
@@ -96,11 +100,9 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     if (!immediate && showDelay > 0) {
       showTimeout.current = setTimeout(() => {
         setIsOpen(true);
-        onOpen?.(true);
       }, showDelay);
     } else {
       setIsOpen(true);
-      onOpen?.(true);
     }
   };
 
@@ -115,11 +117,9 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       clearTimeout(hideTimeout.current);
       hideTimeout.current = undefined;
       setIsOpen(false);
-      onClose?.(false);
     } else {
       hideTimeout.current = setTimeout(() => {
         setIsOpen(false);
-        onClose?.(false);
       }, hideDelay);
     }
 
