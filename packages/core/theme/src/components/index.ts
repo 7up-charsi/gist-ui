@@ -3,3 +3,4 @@ export * from "./input";
 export * from "./icon";
 export * from "./number-input";
 export * from "./tooltip";
+export * from "./dialog";
