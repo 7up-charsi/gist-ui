@@ -2,7 +2,7 @@ import { VariantProps, tv } from "tailwind-variants";
 
 const tooltip = tv({
   slots: {
-    base: "px-3 py-1 cursor-pointer text-sm",
+    base: "px-2 py-1 cursor-pointer text-sm",
   },
   variants: {
     color: {

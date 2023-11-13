@@ -15,11 +15,7 @@ export default meta;
 const Template = (args: TooltipProps) => <Tooltip {...args} />;
 
 export const Default: StoryObj<TooltipProps> = {
-  render: (args) => (
-    <div className="h-[300vh] w-[300vw] flex items-center justify-center">
-      <Template {...args} />
-    </div>
-  ),
+  render: Template,
   args: {
     children: <button>button</button>,
     title: "i'm tooltip text content",
