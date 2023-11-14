@@ -33,7 +33,6 @@ export interface DialogProps extends DialogVariantProps {
   footer?: ReactNode;
   classNames?: DialogClassNames;
   disableEscapeKey?: boolean;
-  disableBackdropClose?: boolean;
   disableClickOutside?: boolean;
   onClickOutside?: () => void;
 }

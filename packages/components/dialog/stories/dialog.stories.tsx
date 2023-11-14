@@ -105,7 +105,7 @@ export const Default: StoryObj<DialogProps> = {
   args: {
     defaultOpen: true,
     modal: true,
-    disableBackdropClose: false,
     disableEscapeKey: false,
+    disableClickOutside: false,
   },
 };
