@@ -2,10 +2,9 @@ import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants
 
 const dialog = tv({
   slots: {
-    container: "w-screen h-[100dvh] fixed inset-0 z-[99999]",
-    backdrop: "w-full h-full fixed",
-    wrapper: "w-full h-full flex relative",
-    base: "flex flex-col relative bg-white z-50 w-full box-border outline-none m-5 overflow-hidden",
+    backdrop: "w-screen h-screen fixed inset-0 z-50",
+    container: "w-screen h-[100dvh] fixed inset-0 z-50 flex",
+    base: "flex flex-col bg-white w-full max-h-[calc(100%_-_7.5rem)] box-border outline-none m-5 overflow-hidden",
     header:
       "grow-0 shrink-0 min-h-[55px] flex items-center justify-start py-2 px-6 text-large font-semibold",
     body: "flex-1 px-6 py-2",
@@ -28,31 +27,31 @@ const dialog = tv({
     },
     placement: {
       "top-left": {
-        wrapper: "items-start justify-start",
+        container: "items-start justify-start",
       },
       "top-center": {
-        wrapper: "items-start justify-center",
+        container: "items-start justify-center",
       },
       "top-right": {
-        wrapper: "items-start justify-end",
+        container: "items-start justify-end",
       },
       "bottom-left": {
-        wrapper: "items-end justify-start",
+        container: "items-end justify-start",
       },
       "bottom-center": {
-        wrapper: "items-end justify-center",
+        container: "items-end justify-center",
       },
       "bottom-right": {
-        wrapper: "items-end justify-end",
+        container: "items-end justify-end",
       },
       "center-left": {
-        wrapper: "items-center justify-start",
+        container: "items-center justify-start",
       },
       center: {
-        wrapper: "items-center justify-center",
+        container: "items-center justify-center",
       },
       "center-right": {
-        wrapper: "items-center justify-end",
+        container: "items-center justify-end",
       },
     },
     backdrop: {
@@ -66,12 +65,12 @@ const dialog = tv({
     },
     scrollBehavior: {
       inside: {
-        base: "max-h-[calc(100%_-_7.5rem)]",
-        body: "overflow-y-auto",
+        base: "overflow-hidden",
+        body: "overflow-auto",
       },
       outside: {
-        wrapper: "items-start overflow-y-auto",
-        base: "my-16",
+        container: "overflow-y-auto items-start",
+        base: "max-h-max overflow-visible",
       },
     },
     shadow: {

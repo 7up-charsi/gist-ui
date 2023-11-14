@@ -13,6 +13,7 @@ import {
   isValidElement,
   useCallback,
   useContext,
+  useEffect,
   useId,
 } from "react";
 
@@ -25,10 +26,13 @@ export interface DialogProps extends DialogVariantProps {
   "aria-label"?: string;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
-  header?: string;
+  header?: ReactNode;
   body?: ReactNode;
   footer?: ReactNode;
   classNames?: DialogClassNames;
+  disableEscapeKey?: boolean;
+  disableBackdropClose?: boolean;
+  onBackdropClick?: () => void;
 }
 
 interface Context {
@@ -51,6 +55,9 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     body,
     footer,
     classNames,
+    disableEscapeKey,
+    disableBackdropClose,
+    onBackdropClick,
   } = props;
 
   const labelledbyId = useId();
@@ -69,14 +76,37 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     setIsOpen(false);
   }, []);
 
-  const { pressProps } = usePress({
+  const { pressProps: triggerPressProps } = usePress({
     onPress: handleOpen,
   });
+
+  const { pressProps: backdropPressProps } = usePress({
+    isDisabled: disableBackdropClose,
+    onPress: () => {
+      onBackdropClick?.();
+      handleClose();
+    },
+  });
+
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen && !disableEscapeKey) {
+      document.addEventListener("keydown", handleKeydown, true);
+
+      return () => {
+        document.removeEventListener("keydown", handleKeydown, true);
+      };
+    }
+  }, [isOpen]);
 
   const {
     base,
     container,
-    wrapper,
     backdrop,
     header: headerStyles,
     body: bodyStyles,
@@ -90,8 +120,10 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
   if (!isValidElement(trigger)) throw new Error("Gist-ui dialog: trigger must be valid element");
 
   const triggerClone = cloneElement(trigger, {
-    ...pressProps,
+    ...triggerPressProps,
   });
+
+  const isStringHeader = typeof header === "string";
 
   const dialogHTML = (
     <context.Provider
@@ -100,21 +132,29 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
         handleClose,
       }}
     >
-      <div className={container({ className: classNames?.container })}>
-        <div className={backdrop({ className: classNames?.backdrop })}></div>
+      <div>
+        {props.backdrop === "transparent" ? null : (
+          <div
+            className={backdrop({ className: classNames?.backdrop })}
+            {...backdropPressProps}
+          ></div>
+        )}
 
-        <div className={wrapper({ className: classNames?.wrapper })}>
+        <div className={container({ className: classNames?.container })}>
           <div
             ref={ref}
             role="dialog"
             aria-modal={modal}
             className={base({ className: classNames?.base })}
             aria-label={props["aria-label"]}
-            aria-labelledby={header ? labelledbyId : props["aria-labelledby"]}
+            aria-labelledby={isStringHeader ? labelledbyId : props["aria-labelledby"]}
             aria-describedby={props["aria-describedby"]}
           >
             {header && (
-              <div className={headerStyles({ className: classNames?.header })} id={labelledbyId}>
+              <div
+                className={headerStyles({ className: classNames?.header })}
+                id={isStringHeader ? labelledbyId : undefined}
+              >
                 {header}
               </div>
             )}
