@@ -1,8 +1,8 @@
 {
-  "name": "@gist-ui/shared-utils",
-  "version": "0.0.0",
+  "name": "@gist-ui/use-click-outside",
+  "version": "1.0.0",
   "keywords": [
-    "shared-utils"
+    "use-click-outside"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
-    "directory": "packages/utilities/shared-utils"
+    "directory": "packages/hooks/use-click-outside"
   },
   "bugs": {
     "url": "https://github.com/mzeeshan3597/gist-ui/issues"
@@ -36,6 +36,9 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@gist-ui/use-callback-ref": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

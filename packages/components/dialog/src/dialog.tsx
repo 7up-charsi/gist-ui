@@ -1,9 +1,10 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
 import { createPortal } from "react-dom";
-import { mergeProps } from "@gist-ui/react-utils";
+import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { DialogClassNames, DialogVariantProps, dialog } from "@gist-ui/theme";
+import { useClickOutside } from "@gist-ui/use-click-outside";
 import {
   Children,
   ReactNode,
@@ -15,6 +16,7 @@ import {
   useContext,
   useEffect,
   useId,
+  useRef,
 } from "react";
 
 export interface DialogProps extends DialogVariantProps {
@@ -32,7 +34,8 @@ export interface DialogProps extends DialogVariantProps {
   classNames?: DialogClassNames;
   disableEscapeKey?: boolean;
   disableBackdropClose?: boolean;
-  onBackdropClick?: () => void;
+  disableClickOutside?: boolean;
+  onClickOutside?: () => void;
 }
 
 interface Context {
@@ -56,11 +59,12 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     footer,
     classNames,
     disableEscapeKey,
-    disableBackdropClose,
-    onBackdropClick,
+    disableClickOutside,
+    onClickOutside,
   } = props;
 
   const labelledbyId = useId();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -70,20 +74,21 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
-  }, []);
+  }, [setIsOpen]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
-  }, []);
+  }, [setIsOpen]);
 
   const { pressProps: triggerPressProps } = usePress({
     onPress: handleOpen,
   });
 
-  const { pressProps: backdropPressProps } = usePress({
-    isDisabled: disableBackdropClose,
-    onPress: () => {
-      onBackdropClick?.();
+  useClickOutside<HTMLDivElement>({
+    isDisabled: disableClickOutside,
+    ref: dialogRef,
+    callback: () => {
+      onClickOutside?.();
       handleClose();
     },
   });
@@ -102,7 +107,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
         document.removeEventListener("keydown", handleKeydown, true);
       };
     }
-  }, [isOpen]);
+  }, [disableEscapeKey, isOpen, setIsOpen]);
 
   const {
     base,
@@ -134,15 +139,12 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     >
       <div>
         {props.backdrop === "transparent" ? null : (
-          <div
-            className={backdrop({ className: classNames?.backdrop })}
-            {...backdropPressProps}
-          ></div>
+          <div className={backdrop({ className: classNames?.backdrop })}></div>
         )}
 
         <div className={container({ className: classNames?.container })}>
           <div
-            ref={ref}
+            ref={mergeRefs(ref, dialogRef)}
             role="dialog"
             aria-modal={modal}
             className={base({ className: classNames?.base })}
