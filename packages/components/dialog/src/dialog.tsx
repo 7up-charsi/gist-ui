@@ -2,7 +2,8 @@ import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
 import { createPortal } from "react-dom";
 import { mergeProps } from "@gist-ui/react-utils";
-import { DialogVariantProps, dialog } from "@gist-ui/theme";
+import { __DEV__ } from "@gist-ui/shared-utils";
+import { DialogClassNames, DialogVariantProps, dialog } from "@gist-ui/theme";
 import {
   Children,
   ReactNode,
@@ -27,6 +28,7 @@ export interface DialogProps extends DialogVariantProps {
   header?: string;
   body?: ReactNode;
   footer?: ReactNode;
+  classNames?: DialogClassNames;
 }
 
 interface Context {
@@ -48,6 +50,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     header,
     body,
     footer,
+    classNames,
   } = props;
 
   const labelledbyId = useId();
@@ -73,6 +76,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
   const {
     base,
     container,
+    wrapper,
     backdrop,
     header: headerStyles,
     body: bodyStyles,
@@ -96,25 +100,29 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
         handleClose,
       }}
     >
-      <div className={container()}>
-        <div className={backdrop()}></div>
+      <div className={container({ className: classNames?.container })}>
+        <div className={backdrop({ className: classNames?.backdrop })}></div>
 
-        <div
-          ref={ref}
-          role="dialog"
-          aria-modal={modal}
-          className={base()}
-          aria-label={props["aria-label"]}
-          aria-labelledby={header ? labelledbyId : props["aria-labelledby"]}
-          aria-describedby={props["aria-describedby"]}
-        >
-          {header && (
-            <div className={headerStyles()} id={labelledbyId}>
-              {header}
-            </div>
-          )}
-          {body && <div className={bodyStyles()}>{body}</div>}
-          {footer && <div className={footerStyles()}>{footer}</div>}
+        <div className={wrapper({ className: classNames?.wrapper })}>
+          <div
+            ref={ref}
+            role="dialog"
+            aria-modal={modal}
+            className={base({ className: classNames?.base })}
+            aria-label={props["aria-label"]}
+            aria-labelledby={header ? labelledbyId : props["aria-labelledby"]}
+            aria-describedby={props["aria-describedby"]}
+          >
+            {header && (
+              <div className={headerStyles({ className: classNames?.header })} id={labelledbyId}>
+                {header}
+              </div>
+            )}
+            {body && <div className={bodyStyles({ className: classNames?.body })}>{body}</div>}
+            {footer && (
+              <div className={footerStyles({ className: classNames?.footer })}>{footer}</div>
+            )}
+          </div>
         </div>
       </div>
     </context.Provider>
@@ -135,15 +143,26 @@ export default Dialog;
 
 export interface DialogCloseProps {
   children: ReactNode;
+  onCloseStart?: () => Promise<void> | void;
+  onCloseEnd?: () => void;
 }
 
 export const DialogClose = (props: DialogCloseProps) => {
-  const { children } = props;
+  const { children, onCloseStart, onCloseEnd } = props;
 
   const { handleClose, scopeName } = useContext(context);
 
   const { pressProps } = usePress({
-    onPress: handleClose,
+    isDisabled: scopeName !== SCOPE_NAME,
+    onPress: async () => {
+      try {
+        await onCloseStart?.();
+        handleClose?.();
+        onCloseEnd?.();
+      } catch (error) {
+        if (__DEV__) console.log(error);
+      }
+    },
   });
 
   if (scopeName !== SCOPE_NAME) throw new Error('Gist-ui: "DialogClose" must be child of "Dialog"');

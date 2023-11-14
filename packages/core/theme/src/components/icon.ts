@@ -1,4 +1,4 @@
-import { tv, VariantProps } from "tailwind-variants";
+import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants";
 
 const icon = tv({
   base: "overflow-hidden flex items-center justify-center svg:h-full svg:w-full svg:text-current",
@@ -17,5 +17,6 @@ const icon = tv({
 });
 
 export type IconVariantProps = VariantProps<typeof icon>;
+export type IconClassNames = SlotsClassValue<typeof icon.slots, ClassValue>;
 
 export { icon };

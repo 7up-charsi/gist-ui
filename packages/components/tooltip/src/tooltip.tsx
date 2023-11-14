@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { useControllableState } from "@gist-ui/use-controllable-state";
-import { TooltipVariantProps, tooltip } from "@gist-ui/theme";
+import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import Arrow, { ArrowProps } from "./arrow";
 import {
   Children,
@@ -30,15 +30,11 @@ import {
   Placement,
 } from "@floating-ui/react-dom";
 
-type ClassNames = {
-  [key in keyof typeof tooltip.slots]?: string;
-};
-
 export interface TooltipProps extends TooltipVariantProps {
   children?: ReactNode;
   title?: string;
   disabled?: boolean;
-  classNames?: ClassNames;
+  classNames?: TooltipClassNames;
   arrowProps?: Omit<ArrowProps, "placement" | "arrowData" | "ref" | "floatingElement">;
   placement?: Placement;
   middlewareOptions?: {

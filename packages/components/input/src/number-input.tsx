@@ -1,26 +1,18 @@
 import { KeyboardEventHandler, forwardRef, useRef } from "react";
 import Input, { InputProps } from "./input";
 import { mergeRefs } from "@gist-ui/react-utils";
-import { numberInput } from "@gist-ui/theme";
+import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
 import { Button, ButtonProps } from "@gist-ui/button";
 import { Icon, IconProps } from "@gist-ui/icon";
 import { mergeProps, useLongPress, usePress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
 
-type ClassNames = { [key in keyof typeof numberInput.slots]?: string };
-
-type ExcludeStepButtonProps =
-  | "excludeFromTabOrder"
-  | "isIconOnly"
-  | "size"
-  | "variant"
-  | "rounded"
-  | "className";
+type ExcludeStepButtonProps = "isIconOnly" | "size" | "variant" | "rounded" | "className";
 
 type ExcludeStepButtonIconProps = "fill" | "className";
 
 export interface NumberInputProps extends Omit<InputProps, "type"> {
-  classNames?: InputProps["classNames"] & { stepButton: ClassNames };
+  classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
   inputMode?: "decimal" | "numeric";
   stepUpButtonProps?: Omit<ButtonProps, ExcludeStepButtonProps>;
   stepDownButtonProps?: Omit<ButtonProps, ExcludeStepButtonProps>;
@@ -255,16 +247,16 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     <div ref={ref} className={base({ className: classNames?.stepButton.base })}>
       {/* step up */}
       <Button
-        elementType="span"
+        as="span"
         aria-label="increase value"
         {...stepUpButtonProps}
-        excludeFromTabOrder
+        tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
         className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
-        nativeButtonProps={mergeProps(stepUpPressProps, stepUpLongPressProps)}
+        {...mergeProps(stepUpPressProps, stepUpLongPressProps)}
       >
         <Icon
           {...stepUpButtonIconProps}
@@ -279,16 +271,16 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
 
       {/* step down */}
       <Button
-        elementType="span"
+        as="span"
         aria-label="decrease value"
         {...stepDownButtonProps}
-        excludeFromTabOrder
+        tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
         className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
-        nativeButtonProps={mergeProps(stepDownPressProps, stepDownLongPressProps)}
+        {...mergeProps(stepDownPressProps, stepDownLongPressProps)}
       >
         <Icon
           {...stepDownButtonIconProps}

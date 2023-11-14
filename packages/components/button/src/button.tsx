@@ -1,18 +1,21 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode, useRef } from "react";
+import { ButtonHTMLAttributes, ElementType, forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonVariantProps } from "@gist-ui/theme";
+import { __DEV__ } from "@gist-ui/shared-utils";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
-import { AriaButtonOptions, useButton, useFocusRing, useHover } from "react-aria";
+import { useFocusRing, useHover, usePress, PressProps } from "react-aria";
 
 export interface ButtonProps
   extends ButtonVariantProps,
-    AriaButtonOptions<"button" | "div" | "a" | "span"> {
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">,
+    Omit<PressProps, "isDisabled"> {
   startContent?: ReactNode;
   endContent?: ReactNode;
   rippleProps?: UseRippleProps;
   className?: string;
   children?: ReactNode;
-  nativeButtonProps?: ButtonHTMLAttributes<HTMLButtonElement>;
+  isDisabled?: boolean;
+  as?: ElementType;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
@@ -28,8 +31,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     size,
     variant,
     isIconOnly,
-    nativeButtonProps,
-    elementType: Comp = "button",
+    as: Comp = "button",
+    ...rest
   } = props;
 
   const { base } = button({
@@ -50,30 +53,28 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     duration: isIconOnly ? 450 : 500,
   });
 
-  const { buttonProps, isPressed } = useButton(props, innerRef);
-
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
-
   const { hoverProps, isHovered } = useHover(props);
+  const { isPressed, pressProps } = usePress(props);
 
-  if (isIconOnly && !props["aria-label"] && !props["aria-labelledby"])
+  if (__DEV__ && isIconOnly && !props["aria-label"] && !props["aria-labelledby"])
     console.warn('Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"');
 
   return (
     <Comp
+      {...mergeProps(
+        { onPointerDown: rippleEvent },
+        { ...pressProps },
+        { ...focusProps },
+        { ...hoverProps },
+        { ...rest },
+      )}
       data-pressed={isPressed}
       data-key-pressed={isPressed && isFocusVisible && isFocused}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       ref={mergeRefs(ref, rippleRef, innerRef)}
-      {...mergeProps(
-        { onPointerDown: rippleEvent },
-        { ...buttonProps },
-        { ...focusProps },
-        { ...hoverProps },
-        { ...(nativeButtonProps || {}) },
-      )}
       className={base({ className })}
     >
       {!isIconOnly && startContent}

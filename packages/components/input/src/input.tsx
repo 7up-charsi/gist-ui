@@ -7,13 +7,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { input, InputVariantProps } from "@gist-ui/theme";
+import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { HoverEvents, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
-
-type ClassNames = { [key in keyof typeof input.slots]?: string };
 
 export interface InputProps extends InputVariantProps, HoverEvents {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
@@ -32,7 +30,7 @@ export interface InputProps extends InputVariantProps, HoverEvents {
   errorMessage?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
-  classNames?: ClassNames;
+  classNames?: InputClassNames;
   hideLabel?: boolean;
   feedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;

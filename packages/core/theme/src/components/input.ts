@@ -1,4 +1,4 @@
-import { VariantProps, tv } from "tailwind-variants";
+import { ClassValue, SlotsClassValue, VariantProps, tv } from "tailwind-variants";
 import { groupDataFocusVisible } from "../classes";
 
 const input = tv({
@@ -239,5 +239,6 @@ const input = tv({
 });
 
 export type InputVariantProps = VariantProps<typeof input>;
+export type InputClassNames = SlotsClassValue<typeof input.slots, ClassValue>;
 
 export { input };
