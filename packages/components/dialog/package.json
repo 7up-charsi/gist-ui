@@ -44,6 +44,7 @@
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/button": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
+    "@gist-ui/use-scroll-shadow": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {

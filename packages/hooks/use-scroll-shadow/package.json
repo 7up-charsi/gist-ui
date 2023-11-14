@@ -1,8 +1,8 @@
 {
-  "name": "@gist-ui/{{name}}",
+  "name": "@gist-ui/use-scroll-shadow",
   "version": "1.0.0",
   "keywords": [
-    "{{name}}"
+    "use-scroll-shadow"
   ],
   "author": {
     "name": "Muhammad Zeeshan",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
-    "directory": "packages/{{outDir}}/{{name}}"
+    "directory": "packages/hooks/use-scroll-shadow"
   },
   "bugs": {
     "url": "https://github.com/mzeeshan3597/gist-ui/issues"

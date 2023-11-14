@@ -13,16 +13,15 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
   const callbackRef = useCallbackRef(callback);
 
   useEffect(() => {
+    const el = ref?.current;
+
+    if (!el || isDisabled) return;
+
     const handler = (e: PointerEvent) => {
-      if (ref && ref.current && !ref.current.contains(e.target as Node)) {
+      if (!el.contains(e.target as Node)) {
         callbackRef();
       }
     };
-
-    if (isDisabled) {
-      document.removeEventListener("pointerup", handler, true);
-      return;
-    }
 
     document.addEventListener("pointerup", handler, true);
 

@@ -5,6 +5,7 @@ import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { DialogClassNames, DialogVariantProps, dialog } from "@gist-ui/theme";
 import { useClickOutside } from "@gist-ui/use-click-outside";
+import { useScrollShadow } from "@gist-ui/use-scroll-shadow";
 import {
   Children,
   ReactNode,
@@ -92,6 +93,8 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     },
   });
 
+  const shadowRef = useScrollShadow<HTMLDivElement>();
+
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -159,7 +162,11 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
                 {header}
               </div>
             )}
-            {body && <div className={bodyStyles({ className: classNames?.body })}>{body}</div>}
+            {body && (
+              <div className={bodyStyles({ className: classNames?.body })} ref={shadowRef}>
+                {body}
+              </div>
+            )}
             {footer && (
               <div className={footerStyles({ className: classNames?.footer })}>{footer}</div>
             )}
