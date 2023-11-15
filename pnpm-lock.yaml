@@ -186,6 +186,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
       '@gist-ui/use-click-outside':
         specifier: workspace:*
         version: link:../../hooks/use-click-outside
@@ -198,6 +201,22 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/focus-trap:
+    dependencies:
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      react:
+        specifier: '>=18'
+        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
