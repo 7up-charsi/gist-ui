@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from "tailwind-variants";
+import { ClassValue, SlotsClassValue, tv, type VariantProps } from "tailwind-variants";
 
 const verticalShadow = [
   "data-[top-scroll=true]:[mask-image:linear-gradient(0deg,#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
@@ -13,18 +13,19 @@ const horizontalShadow = [
 ];
 
 const scrollShadow = tv({
-  base: "",
+  slots: { base: "w-full h-full" },
   variants: {
-    orientation: {
-      vertical: ["overflow-y-auto", ...verticalShadow],
-      horizontal: ["overflow-x-auto", ...horizontalShadow],
+    direction: {
+      vertical: { base: ["overflow-y-auto", ...verticalShadow] },
+      horizontal: { base: ["overflow-x-auto", ...horizontalShadow] },
     },
   },
   defaultVariants: {
-    orientation: "vertical",
+    direction: "vertical",
   },
 });
 
 export type ScrollShadowVariantProps = VariantProps<typeof scrollShadow>;
+export type ScrollShadowClassNames = SlotsClassValue<typeof scrollShadow.slots, ClassValue>;
 
 export { scrollShadow };

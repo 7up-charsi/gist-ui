@@ -1,2 +1,2 @@
-export * from "./isTouchDevice";
 export * from "./assertion";
+export * from "./functions";

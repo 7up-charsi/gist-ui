@@ -177,6 +177,9 @@ importers:
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
+      '@gist-ui/scroll-shadow':
+        specifier: workspace:*
+        version: link:../scroll-shadow
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
@@ -189,9 +192,6 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
-      '@gist-ui/use-scroll-shadow':
-        specifier: workspace:*
-        version: link:../../hooks/use-scroll-shadow
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -245,6 +245,28 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/scroll-shadow:
+    dependencies:
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      '@gist-ui/use-scroll-overflow':
+        specifier: workspace:*
+        version: link:../../hooks/use-scroll-overflow
+      react:
+        specifier: '>=18'
+        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
@@ -408,8 +430,11 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/hooks/use-scroll-shadow:
+  packages/hooks/use-scroll-overflow:
     dependencies:
+      '@gist-ui/shared-utils':
+        specifier: workspace:*
+        version: link:../../utilities/shared-utils
       react:
         specifier: '>=18'
         version: 18.2.0
