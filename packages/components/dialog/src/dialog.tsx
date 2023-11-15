@@ -6,6 +6,7 @@ import { __DEV__ } from "@gist-ui/shared-utils";
 import { DialogClassNames, DialogVariantProps, dialog } from "@gist-ui/theme";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { ScrollShadow } from "@gist-ui/scroll-shadow";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import {
   Children,
   ReactNode,
@@ -19,6 +20,8 @@ import {
   useId,
   useRef,
 } from "react";
+
+type Reason = "pointer" | "escape" | "outside";
 
 export interface DialogProps extends DialogVariantProps {
   trigger?: ReactNode;
@@ -36,11 +39,13 @@ export interface DialogProps extends DialogVariantProps {
   disableEscapeKey?: boolean;
   disableClickOutside?: boolean;
   onClickOutside?: () => void;
+  onCloseStart?: (reason: Reason) => Promise<void> | void;
+  onCloseEnd?: (reason: Reason) => void;
 }
 
 interface Context {
   scopeName?: string;
-  handleClose?: () => void;
+  handleClose?: (reason: Reason) => void;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -61,7 +66,12 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     disableEscapeKey,
     disableClickOutside,
     onClickOutside,
+    onCloseStart,
+    onCloseEnd,
   } = props;
+
+  const onCloseEndRef = useCallbackRef(onCloseEnd);
+  const onCloseStartRef = useCallbackRef(onCloseStart);
 
   const labelledbyId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -76,9 +86,15 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     setIsOpen(true);
   }, [setIsOpen]);
 
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-  }, [setIsOpen]);
+  const handleClose = useCallback(
+    async (reason: Reason) => {
+      await onCloseStartRef(reason);
+
+      setIsOpen(false);
+      onCloseEndRef(reason);
+    },
+    [onCloseEndRef, onCloseStartRef, setIsOpen],
+  );
 
   const { pressProps: triggerPressProps } = usePress({
     onPress: handleOpen,
@@ -89,14 +105,14 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     ref: dialogRef,
     callback: () => {
       onClickOutside?.();
-      handleClose();
+      handleClose("outside");
     },
   });
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setIsOpen(false);
+        handleClose("escape");
       }
     };
 
@@ -107,7 +123,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
         document.removeEventListener("keydown", handleKeydown, true);
       };
     }
-  }, [disableEscapeKey, isOpen, setIsOpen]);
+  }, [disableEscapeKey, handleClose, isOpen]);
 
   const {
     base,
@@ -192,12 +208,10 @@ export default Dialog;
 
 export interface DialogCloseProps {
   children: ReactNode;
-  onCloseStart?: () => Promise<void> | void;
-  onCloseEnd?: () => void;
 }
 
 export const DialogClose = (props: DialogCloseProps) => {
-  const { children, onCloseStart, onCloseEnd } = props;
+  const { children } = props;
 
   const { handleClose, scopeName } = useContext(context);
 
@@ -205,9 +219,7 @@ export const DialogClose = (props: DialogCloseProps) => {
     isDisabled: scopeName !== SCOPE_NAME,
     onPress: async () => {
       try {
-        await onCloseStart?.();
-        handleClose?.();
-        onCloseEnd?.();
+        handleClose?.("pointer");
       } catch (error) {
         if (__DEV__) console.log(error);
       }
