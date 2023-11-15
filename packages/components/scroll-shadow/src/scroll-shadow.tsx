@@ -10,7 +10,6 @@ export interface ScrollShadowProps
   children?: ReactNode;
   as?: ElementType;
   classNames?: ScrollShadowClassNames;
-  shadowSize?: number;
 }
 
 const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) => {
@@ -23,7 +22,6 @@ const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) 
     offset,
     onVisibilityChange,
     visibility,
-    shadowSize = 40,
 
     ...rest
   } = props;
@@ -44,10 +42,6 @@ const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) 
   return (
     <Comp
       {...rest}
-      style={{
-        "--scroll-shadow-size": `${shadowSize}px`,
-        ...rest.style,
-      }}
       ref={mergeRefs(ref, innerRef)}
       className={base({ className: classNames?.base })}
     >

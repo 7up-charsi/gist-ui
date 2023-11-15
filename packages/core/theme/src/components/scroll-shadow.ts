@@ -1,15 +1,15 @@
 import { ClassValue, SlotsClassValue, tv, type VariantProps } from "tailwind-variants";
 
 const verticalShadow = [
-  "data-[top-scroll=true]:[mask-image:linear-gradient(0deg,#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
-  "data-[bottom-scroll=true]:[mask-image:linear-gradient(180deg,#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
-  "data-[top-bottom-scroll=true]:[mask-image:linear-gradient(#000,#000,transparent_0,#000_var(--scroll-shadow-size),#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
+  "data-[top-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[bottom-scroll=true]:shadow-[inset_0px_-5px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[top-bottom-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
 ];
 
 const horizontalShadow = [
-  "data-[left-scroll=true]:[mask-image:linear-gradient(270deg,#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
-  "data-[right-scroll=true]:[mask-image:linear-gradient(90deg,#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
-  "data-[left-right-scroll=true]:[mask-image:linear-gradient(to_right,#000,#000,transparent_0,#000_var(--scroll-shadow-size),#000_calc(100%_-_var(--scroll-shadow-size)),transparent)]",
+  "data-[left-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[right-scroll=true]:shadow-[inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[left-right-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
 ];
 
 const scrollShadow = tv({

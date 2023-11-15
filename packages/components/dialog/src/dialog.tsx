@@ -161,7 +161,10 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
               </div>
             )}
             {body && (
-              <ScrollShadow classNames={{ base: bodyStyles({ className: classNames?.body }) }}>
+              <ScrollShadow
+                classNames={{ base: bodyStyles({ className: classNames?.body }) }}
+                offset={15}
+              >
                 {body}
               </ScrollShadow>
             )}
