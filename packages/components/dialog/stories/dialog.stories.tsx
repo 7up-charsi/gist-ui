@@ -23,7 +23,7 @@ export const Default: StoryObj<DialogProps> = {
         </DialogTrigger>
 
         <DialogPortal>
-          <div className={backdrop()}>header</div>
+          <div className={backdrop()}></div>
 
           <DialogContent classNames={{ base: base(), container: container() }}>
             <div className={header()}>header</div>
