@@ -79,7 +79,7 @@ const button = tv({
       variant: "solid",
       color: "default",
       class: {
-        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)]",
+        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/30%)]",
       },
     },
     {
@@ -114,7 +114,7 @@ const button = tv({
       variant: "solid",
       color: "warning",
       class: {
-        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/10%)]",
+        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/30%)]",
       },
     },
     {
@@ -130,7 +130,7 @@ const button = tv({
       variant: "shadow",
       color: "default",
       class: {
-        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/20%)] shadow-default-400/100",
+        base: "bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/30%)] shadow-default-400/100",
       },
     },
     {
@@ -165,7 +165,7 @@ const button = tv({
       variant: "shadow",
       color: "warning",
       class: {
-        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/10%)] shadow-warning-400/80",
+        base: "bg-warning text-warning-foreground [--rippleBg:theme(colors.warning-foreground/30%)] shadow-warning-400/80",
       },
     },
     {

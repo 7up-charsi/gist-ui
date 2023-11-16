@@ -132,7 +132,7 @@ export const themeColorsLight: ThemeColors = {
   },
   warning: {
     ...amber,
-    foreground: "#000000",
+    foreground: "#ffffff",
     DEFAULT: amber[500],
   },
   danger: {
@@ -171,7 +171,7 @@ export const themeColorsDark: ThemeColors = {
   },
   warning: {
     ...swapColorValues(amber),
-    foreground: "#000000",
+    foreground: "#ffffff",
     DEFAULT: amber[500],
   },
   danger: {
