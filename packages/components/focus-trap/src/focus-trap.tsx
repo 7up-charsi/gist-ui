@@ -142,7 +142,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
   }, [container, focusScope, focusScopeContext, onMountAutoFocus, onUnmountAutoFocus]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (!loop && !trapped) return;
+    if (!loop) return;
     if (focusScope.paused) return;
 
     const isTab = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey;
