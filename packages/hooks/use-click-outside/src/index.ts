@@ -2,7 +2,7 @@ import { MutableRefObject, useEffect } from "react";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 export interface UseClickOutsideProps<R> {
-  callback?: () => void;
+  callback?: (e: PointerEvent) => void;
   isDisabled?: boolean;
   ref?: MutableRefObject<R | undefined | null>;
 }
@@ -19,14 +19,14 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
 
     const handler = (e: PointerEvent) => {
       if (!el.contains(e.target as Node)) {
-        callbackRef();
+        callbackRef(e);
       }
     };
 
-    document.addEventListener("pointerup", handler, true);
+    document.addEventListener("pointerup", handler);
 
     return () => {
-      document.removeEventListener("pointerup", handler, true);
+      document.removeEventListener("pointerup", handler);
     };
   }, [callbackRef, isDisabled, ref]);
 };

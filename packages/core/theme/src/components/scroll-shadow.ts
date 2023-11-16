@@ -2,7 +2,7 @@ import { ClassValue, SlotsClassValue, tv, type VariantProps } from "tailwind-var
 
 const verticalShadow = [
   "data-[top-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1)]",
-  "data-[bottom-scroll=true]:shadow-[inset_0px_-5px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[bottom-scroll=true]:shadow-[inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
   "data-[top-bottom-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
 ];
 

@@ -10,7 +10,7 @@ const useCallbackRef = <T extends Callback>(callback: T | undefined, deps: Depen
   });
 
   return useCallback(
-    (...args: unknown[]) => callbackRef.current?.(...(args as never[])) as T,
+    (...args: Parameters<T>) => callbackRef.current?.(...(args as never[])) as ReturnType<T>,
     deps,
   );
 };

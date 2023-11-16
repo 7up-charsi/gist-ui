@@ -46,6 +46,7 @@
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/scroll-shadow": "workspace:*",
+    "@gist-ui/focus-trap": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {

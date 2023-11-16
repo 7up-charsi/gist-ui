@@ -6,7 +6,7 @@ import { __DEV__ } from "@gist-ui/shared-utils";
 import { DialogClassNames, DialogVariantProps, dialog } from "@gist-ui/theme";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { ScrollShadow } from "@gist-ui/scroll-shadow";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
 import {
   Children,
   ReactNode,
@@ -20,10 +20,13 @@ import {
   useId,
   useRef,
 } from "react";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 type Reason = "pointer" | "escape" | "outside";
 
-export interface DialogProps extends DialogVariantProps {
+type CloseEvent = { preventDefault(): void };
+
+export interface DialogProps extends DialogVariantProps, Omit<FocusTrapProps, "loop" | "trapped"> {
   trigger?: ReactNode;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -36,11 +39,7 @@ export interface DialogProps extends DialogVariantProps {
   body?: ReactNode;
   footer?: ReactNode;
   classNames?: DialogClassNames;
-  disableEscapeKey?: boolean;
-  disableClickOutside?: boolean;
-  onClickOutside?: () => void;
-  onCloseStart?: (reason: Reason) => Promise<void> | void;
-  onCloseEnd?: (reason: Reason) => void;
+  onClose?: (event: CloseEvent, reason: Reason) => void;
 }
 
 interface Context {
@@ -63,18 +62,26 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     body,
     footer,
     classNames,
-    disableEscapeKey,
-    disableClickOutside,
-    onClickOutside,
-    onCloseStart,
-    onCloseEnd,
+    onClose: onCloseProp,
+    backdrop,
+    borderedBody,
+    fullWidth,
+    placement,
+    removeHorizontalSpace,
+    removeVerticleSpace,
+    rounded,
+    scrollBehavior,
+    shadow,
+    size,
+    variant,
+    onMountAutoFocus,
+    onUnmountAutoFocus,
   } = props;
-
-  const onCloseEndRef = useCallbackRef(onCloseEnd);
-  const onCloseStartRef = useCallbackRef(onCloseStart);
 
   const labelledbyId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  const onClose = useCallbackRef(onCloseProp);
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -87,13 +94,18 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
   }, [setIsOpen]);
 
   const handleClose = useCallback(
-    async (reason: Reason) => {
-      await onCloseStartRef(reason);
+    (reason: Reason) => {
+      const eventObj = { defaultPrevented: false };
 
-      setIsOpen(false);
-      onCloseEndRef(reason);
+      const preventDefault = () => {
+        eventObj.defaultPrevented = true;
+      };
+
+      onClose({ preventDefault }, reason);
+
+      if (!eventObj.defaultPrevented) setIsOpen(false);
     },
-    [onCloseEndRef, onCloseStartRef, setIsOpen],
+    [onClose, setIsOpen],
   );
 
   const { pressProps: triggerPressProps } = usePress({
@@ -101,10 +113,9 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
   });
 
   useClickOutside<HTMLDivElement>({
-    isDisabled: disableClickOutside,
+    isDisabled: !isOpen,
     ref: dialogRef,
     callback: () => {
-      onClickOutside?.();
       handleClose("outside");
     },
   });
@@ -116,24 +127,34 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
       }
     };
 
-    if (isOpen && !disableEscapeKey) {
+    if (isOpen) {
       document.addEventListener("keydown", handleKeydown, true);
 
       return () => {
         document.removeEventListener("keydown", handleKeydown, true);
       };
     }
-  }, [disableEscapeKey, handleClose, isOpen]);
+  }, [handleClose, isOpen]);
 
   const {
     base,
     container,
-    backdrop,
+    backdrop: backdropStyles,
     header: headerStyles,
     body: bodyStyles,
     footer: footerStyles,
   } = dialog({
-    ...props,
+    backdrop,
+    borderedBody,
+    fullWidth,
+    placement,
+    removeHorizontalSpace,
+    removeVerticleSpace,
+    rounded,
+    scrollBehavior,
+    shadow,
+    size,
+    variant,
   });
 
   if (!trigger) throw new Error("Gist-ui dialog: trigger is required");
@@ -146,7 +167,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
 
   const isStringHeader = typeof header === "string";
 
-  const dialogHTML = (
+  const diloagHTML = (
     <context.Provider
       value={{
         scopeName: SCOPE_NAME,
@@ -155,11 +176,11 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     >
       <div>
         {props.backdrop === "transparent" ? null : (
-          <div className={backdrop({ className: classNames?.backdrop })}></div>
+          <div className={backdropStyles({ className: classNames?.backdrop })}></div>
         )}
 
         <div className={container({ className: classNames?.container })}>
-          <div
+          <FocusTrap
             ref={mergeRefs(ref, dialogRef)}
             role="dialog"
             aria-modal={modal}
@@ -167,6 +188,10 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
             aria-label={props["aria-label"]}
             aria-labelledby={isStringHeader ? labelledbyId : props["aria-labelledby"]}
             aria-describedby={props["aria-describedby"]}
+            loop={modal}
+            trapped={modal}
+            onMountAutoFocus={onMountAutoFocus}
+            onUnmountAutoFocus={onUnmountAutoFocus}
           >
             {header && (
               <div
@@ -187,7 +212,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
             {footer && (
               <div className={footerStyles({ className: classNames?.footer })}>{footer}</div>
             )}
-          </div>
+          </FocusTrap>
         </div>
       </div>
     </context.Provider>
@@ -197,7 +222,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     <>
       {triggerClone}
 
-      {isOpen && createPortal(dialogHTML, document.body)}
+      {isOpen && createPortal(diloagHTML, document.body)}
     </>
   );
 });
