@@ -3,11 +3,12 @@ import { button, ButtonVariantProps } from "@gist-ui/theme";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
-import { useFocusRing, useHover, usePress, PressProps } from "react-aria";
+import { useFocusRing, useHover, usePress, PressProps, HoverProps } from "react-aria";
 
 export interface ButtonProps
   extends ButtonVariantProps,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">,
+    Omit<HoverProps, "isDisabled">,
     Omit<PressProps, "isDisabled"> {
   startContent?: ReactNode;
   endContent?: ReactNode;
