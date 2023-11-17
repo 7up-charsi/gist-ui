@@ -10,6 +10,7 @@ import {
   cloneElement,
   forwardRef,
   isValidElement,
+  useCallback,
   useEffect,
   useId,
   useRef,
@@ -108,20 +109,23 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     }
   };
 
-  const hideTooltip = (immediate?: boolean) => {
-    if (immediate || hideDelay <= 0) {
-      clearTimeout(hideTimeout.current);
-      hideTimeout.current = undefined;
-      setIsOpen(false);
-    } else {
-      hideTimeout.current = setTimeout(() => {
+  const hideTooltip = useCallback(
+    (immediate?: boolean) => {
+      if (immediate || hideDelay <= 0) {
+        clearTimeout(hideTimeout.current);
+        hideTimeout.current = undefined;
         setIsOpen(false);
-      }, hideDelay);
-    }
+      } else {
+        hideTimeout.current = setTimeout(() => {
+          setIsOpen(false);
+        }, hideDelay);
+      }
 
-    clearTimeout(showTimeout.current);
-    showTimeout.current = undefined;
-  };
+      clearTimeout(showTimeout.current);
+      showTimeout.current = undefined;
+    },
+    [hideDelay, setIsOpen],
+  );
 
   const handleHide = (immediate = false) => {
     if (!isHovered.current && !isFocused.current) {
@@ -143,7 +147,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
         document.removeEventListener("keydown", onKeyDown, true);
       };
     }
-  }, [isOpen]);
+  }, [hideTooltip, isOpen]);
 
   useEffect(() => {
     return () => {
