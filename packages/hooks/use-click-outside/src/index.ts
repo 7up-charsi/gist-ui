@@ -5,10 +5,11 @@ export interface UseClickOutsideProps<R> {
   callback?: (e: PointerEvent) => void;
   isDisabled?: boolean;
   ref?: MutableRefObject<R | undefined | null>;
+  closeButton?: number;
 }
 
 const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) => {
-  const { ref, callback, isDisabled } = props;
+  const { ref, callback, isDisabled, closeButton = 0 } = props;
 
   const callbackRef = useCallbackRef(callback);
 
@@ -18,8 +19,10 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
     if (!el || isDisabled) return;
 
     const handler = (e: PointerEvent) => {
-      if (!el.contains(e.target as Node)) {
-        callbackRef(e);
+      if (e.button === closeButton) {
+        if (!el.contains(e.target as Node)) {
+          callbackRef(e);
+        }
       }
     };
 
@@ -28,7 +31,7 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
     return () => {
       document.removeEventListener("pointerup", handler);
     };
-  }, [callbackRef, isDisabled, ref]);
+  }, [callbackRef, closeButton, isDisabled, ref]);
 };
 
 export type UseClickOutsideReturn = ReturnType<typeof useClickOutside>;

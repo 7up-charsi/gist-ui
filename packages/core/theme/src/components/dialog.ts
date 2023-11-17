@@ -2,7 +2,6 @@ import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants
 
 const dialog = tv({
   slots: {
-    backdrop: "w-screen h-screen fixed inset-0 z-50",
     container: "w-screen h-[100dvh] fixed inset-0 z-50 flex",
     base: "flex flex-col bg-white w-full max-h-[calc(100%_-_7.5rem)] box-border outline-none m-5 overflow-hidden",
     header:
@@ -53,15 +52,6 @@ const dialog = tv({
       "center-right": {
         container: "items-center justify-end",
       },
-    },
-    backdrop: {
-      opaque: {
-        backdrop: "bg-overlay/50 backdrop-opacity-50",
-      },
-      blur: {
-        backdrop: "backdrop-blur-md backdrop-saturate-150 bg-overlay/30",
-      },
-      transparent: { backdrop: "hidden" },
     },
     scrollBehavior: {
       inside: {

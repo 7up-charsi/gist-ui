@@ -32,6 +32,12 @@ export const mergeProps = <T extends Props>(...props: T[]) => {
         typeof newValue === "string"
       ) {
         result[key] = clsx(presentValue, newValue);
+      } else if (
+        key === "style" &&
+        typeof presentValue === "object" &&
+        typeof newValue === "object"
+      ) {
+        result.style = { ...presentValue, ...newValue };
       }
       //   override others
       else {

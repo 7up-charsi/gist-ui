@@ -177,6 +177,9 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
+      '@gist-ui/overlay':
+        specifier: workspace:*
+        version: link:../overlay
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -284,6 +287,25 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
+  packages/components/overlay:
+    dependencies:
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
   packages/components/scroll-shadow:
     dependencies:
       '@gist-ui/react-utils':
@@ -295,6 +317,28 @@ importers:
       '@gist-ui/use-scroll-overflow':
         specifier: workspace:*
         version: link:../../hooks/use-scroll-overflow
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/slot:
+    dependencies:
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -472,6 +516,12 @@ importers:
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/utilities/error:
     devDependencies:
       clean-package:
         specifier: ^2.2.0
