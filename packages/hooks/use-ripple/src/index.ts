@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 export interface UseRippleProps {
   duration?: number;
@@ -17,46 +17,52 @@ export interface MinimalEvent {
 const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
   const ref = useRef<T>(null);
 
-  const props = {
-    duration: 500,
-    timingFunction: "cubic-bezier(.42,.36,.28,.88)",
-    disabled: false,
-    completedFactor: 0.5,
-    pointerCenter: true,
-    ...(_props || {}),
-  };
+  const props = useMemo(
+    () => ({
+      duration: 500,
+      timingFunction: "cubic-bezier(.42,.36,.28,.88)",
+      disabled: false,
+      completedFactor: 0.5,
+      pointerCenter: true,
+      ...(_props || {}),
+    }),
+    [_props],
+  );
 
   const { disabled, duration, completedFactor } = props as Required<UseRippleProps>;
 
-  const event = useCallback((event: MinimalEvent) => {
-    if (!ref.current || disabled || event.button !== 0) return;
+  const event = useCallback(
+    (event: MinimalEvent) => {
+      if (!ref.current || disabled || event.button !== 0) return;
 
-    const target = ref.current;
+      const target = ref.current;
 
-    requestAnimationFrame(() => {
-      const begun = Date.now();
-      const ripple = createRipple(target, event, props);
-      target.appendChild(ripple);
+      requestAnimationFrame(() => {
+        const begun = Date.now();
+        const ripple = createRipple(target, event, props);
+        target.appendChild(ripple);
 
-      const removeRipple = () => {
-        const now = Date.now();
-        const diff = now - begun;
+        const removeRipple = () => {
+          const now = Date.now();
+          const diff = now - begun;
 
-        setTimeout(
-          () => {
-            ripple.style.opacity = "0";
+          setTimeout(
+            () => {
+              ripple.style.opacity = "0";
 
-            ripple.addEventListener("transitionend", (e) => {
-              if (e.propertyName === "opacity") ripple.remove();
-            });
-          },
-          diff > completedFactor * duration ? 0 : completedFactor * duration - diff,
-        );
-      };
+              ripple.addEventListener("transitionend", (e) => {
+                if (e.propertyName === "opacity") ripple.remove();
+              });
+            },
+            diff > completedFactor * duration ? 0 : completedFactor * duration - diff,
+          );
+        };
 
-      document.addEventListener("pointerup", removeRipple, { once: true });
-    });
-  }, []);
+        document.addEventListener("pointerup", removeRipple, { once: true });
+      });
+    },
+    [completedFactor, disabled, duration, props],
+  );
 
   return [ref, event] as const;
 };

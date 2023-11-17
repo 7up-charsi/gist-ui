@@ -11,6 +11,7 @@ const useCallbackRef = <T extends Callback>(callback: T | undefined, deps: Depen
 
   return useCallback(
     (...args: Parameters<T>) => callbackRef.current?.(...(args as never[])) as ReturnType<T>,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     deps,
   );
 };
