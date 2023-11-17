@@ -1,9 +1,9 @@
 type FocusableTarget = HTMLElement | { focus(): void };
 
-export const focusFirst = (candidates: HTMLElement[], { select = false } = {}) => {
+export const focusFirst = (elements: HTMLElement[], { select = false } = {}) => {
   const previouslyFocusedElement = document.activeElement;
-  for (const candidate of candidates) {
-    focus(candidate, { select });
+  for (const ele of elements) {
+    focus(ele, { select });
     if (document.activeElement !== previouslyFocusedElement) return;
   }
 };

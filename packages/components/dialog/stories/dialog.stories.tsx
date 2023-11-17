@@ -27,6 +27,7 @@ export const Default: StoryObj<DialogProps> = {
 
           <DialogContent classNames={{ base: base(), container: container() }}>
             <div className={header()}>header</div>
+
             <div className={body()}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores similique
               accusantium est esse, illo fugiat aut sequi ipsum magnam laborum provident delectus
