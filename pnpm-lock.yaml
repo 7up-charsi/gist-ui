@@ -214,6 +214,9 @@ importers:
 
   packages/components/focus-trap:
     dependencies:
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils

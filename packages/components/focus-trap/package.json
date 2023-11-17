@@ -40,12 +40,16 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
-    "@gist-ui/react-utils": "workspace:*"
+    "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/button": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
   },
   "clean-package": {
-    "extends": "../../../../../../clean-package.config.json"
+    "extends": "../../../../../../clean-package.config.json",
+    "remove": [
+      "dependencies.@gist-ui/button"
+    ]
   }
 }
