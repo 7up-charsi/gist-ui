@@ -16,7 +16,12 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>((props, ref) => {
   const Component = asChild ? Slot : "div";
 
   return (
-    <Component {...restProps} className={styles.base({ className: classNames?.base })} ref={ref}>
+    <Component
+      {...restProps}
+      aria-hidden={true}
+      className={styles.base({ className: classNames?.base })}
+      ref={ref}
+    >
       {children}
     </Component>
   );
