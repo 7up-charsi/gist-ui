@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonClassNames, ButtonVariantProps } from "@gist-ui/theme";
 import { __DEV__ } from "@gist-ui/shared-utils";
-import { Slot } from "@gist-ui/slot";
+import { Slot, WithSlotProps } from "@gist-ui/slot";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { useFocusRing, useHover, usePress, PressProps, HoverProps } from "react-aria";
@@ -13,13 +13,12 @@ export interface ButtonProps
   endContent?: ReactNode;
   classNames?: ButtonClassNames;
   children?: ReactNode;
-  asChild?: boolean;
   rippleProps?: UseRippleProps;
   hoverProps?: HoverProps;
   pressProps?: PressProps;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const Button = forwardRef<HTMLButtonElement, WithSlotProps<ButtonProps>>((props, ref) => {
   const {
     startContent,
     endContent,

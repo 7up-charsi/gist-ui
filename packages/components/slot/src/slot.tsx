@@ -1,10 +1,14 @@
-import { Children, ForwardedRef, ReactNode, cloneElement, forwardRef, isValidElement } from "react";
+import { Children, ReactNode, cloneElement, forwardRef, isValidElement } from "react";
 import { CustomError } from "@gist-ui/error";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
 export interface SlotProps {
   children?: ReactNode;
 }
+
+export type WithSlotProps<P> =
+  | ({ asChild?: boolean; children: ReactNode } & P)
+  | ({ asChild?: undefined } & P);
 
 const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
   const { children, ...slotProps } = props;
