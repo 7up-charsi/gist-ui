@@ -146,6 +146,9 @@ importers:
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
@@ -183,9 +186,6 @@ importers:
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
-      '@gist-ui/scroll-shadow':
-        specifier: workspace:*
-        version: link:../scroll-shadow
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils

@@ -1,36 +1,41 @@
-import { ButtonHTMLAttributes, ElementType, forwardRef, ReactNode, useRef } from "react";
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useRef } from "react";
 import { button, ButtonClassNames, ButtonVariantProps } from "@gist-ui/theme";
 import { __DEV__ } from "@gist-ui/shared-utils";
+import { Slot } from "@gist-ui/slot";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { useFocusRing, useHover, usePress, PressProps, HoverProps } from "react-aria";
 
 export interface ButtonProps
   extends ButtonVariantProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className">,
-    Omit<HoverProps, "isDisabled">,
-    Omit<PressProps, "isDisabled"> {
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className"> {
   startContent?: ReactNode;
   endContent?: ReactNode;
-  rippleProps?: UseRippleProps;
   classNames?: ButtonClassNames;
   children?: ReactNode;
-  isDisabled?: boolean;
-  as?: ElementType;
+  asChild?: boolean;
+  rippleProps?: UseRippleProps;
+  hoverProps?: HoverProps;
+  pressProps?: PressProps;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
     startContent,
     endContent,
-    rippleProps,
     classNames,
     isIconOnly,
-    as: Component = "button",
+    disabled,
+    rippleProps,
+    hoverProps: hoverHookProps = {},
+    pressProps: pressHookProps = {},
+    asChild,
     ...rest
   } = props;
 
   const innerRef = useRef<HTMLButtonElement>(null);
+
+  const Component = asChild ? Slot : "button";
 
   const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>({
     pointerCenter: !isIconOnly,
@@ -39,8 +44,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   });
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
-  const { hoverProps, isHovered } = useHover(props);
-  const { isPressed, pressProps } = usePress(props);
+  const { hoverProps, isHovered } = useHover(hoverHookProps);
+  const { isPressed, pressProps } = usePress(pressHookProps);
 
   const styles = button(props);
 
@@ -61,6 +66,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
+      disabled={disabled}
       ref={mergeRefs(ref, rippleRef, innerRef)}
       className={styles.base({ className: classNames?.base })}
     >

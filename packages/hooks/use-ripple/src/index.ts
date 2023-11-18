@@ -29,7 +29,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
     [_props],
   );
 
-  const { disabled, duration, completedFactor } = props as Required<UseRippleProps>;
+  const { disabled, duration, completedFactor } = props;
 
   const event = useCallback(
     (event: MinimalEvent) => {

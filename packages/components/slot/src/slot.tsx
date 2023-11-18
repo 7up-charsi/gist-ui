@@ -6,7 +6,7 @@ export interface SlotProps {
   children?: ReactNode;
 }
 
-const Slot = forwardRef<HTMLDivElement, SlotProps>((props, ref) => {
+const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
   const { children, ...slotProps } = props;
 
   const count = Children.count(children);
