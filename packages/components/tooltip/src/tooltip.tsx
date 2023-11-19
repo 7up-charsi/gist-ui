@@ -52,6 +52,7 @@ export interface TooltipProps extends TooltipVariantProps {
   isOpen?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
+  portalContainer?: Element;
 }
 
 const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -71,7 +72,10 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     onOpenChange,
     defaultOpen = false,
     arrowHide,
+    portalContainer = document.body,
   } = props;
+
+  const Component = "div";
 
   const [isOpen, setIsOpen] = useControllableState({
     value: isOpenProp,
@@ -255,7 +259,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
         !disabled &&
         !children.props.disabled &&
         createPortal(
-          <div
+          <Component
             ref={mergeRefs(ref, refs.setFloating)}
             className={baseStyles({ className: classNames?.base })}
             id={tooltipId}
@@ -277,8 +281,8 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
                 floatingElement={elements.floating}
               />
             )}
-          </div>,
-          document.body,
+          </Component>,
+          portalContainer,
         )}
     </>
   );

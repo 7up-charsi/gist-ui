@@ -14,15 +14,17 @@ export default meta;
 export const Default: StoryObj<FocusTrapProps> = {
   render: (args) => {
     return (
-      <FocusTrap {...args}>
-        <span className="w-full text-center uppercase font-medium text-default">
-          focus can not escape this container
-        </span>
-        <Button>button 1</Button>
-        <Button>button 2</Button>
-        <Button>button 3</Button>
-        <Button>button 4</Button>
-        <Button>button 5</Button>
+      <FocusTrap {...args} asChild>
+        <div className="w-[500px] h-[500px] border flex flex-wrap content-center items-center gap-3 justify-center">
+          <span className="w-full text-center uppercase font-medium text-default">
+            focus can not escape this container
+          </span>
+          <Button>button 1</Button>
+          <Button>button 2</Button>
+          <Button>button 3</Button>
+          <Button>button 4</Button>
+          <Button>button 5</Button>
+        </div>
       </FocusTrap>
     );
   },

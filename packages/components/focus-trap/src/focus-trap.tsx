@@ -2,27 +2,38 @@ import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { FocusTrapScope, FocusTrapScopeContext } from "./scope-provider";
 import { focus, focusFirst, getTabbableEdges, getTabbables, removeLinks } from "./utils";
 import { mergeRefs } from "@gist-ui/react-utils";
-import { Slot, WithSlotProps } from "@gist-ui/slot";
-import { KeyboardEvent, forwardRef, useContext, useEffect, useRef, useState } from "react";
+import { Slot } from "@gist-ui/slot";
+import {
+  KeyboardEvent,
+  ReactNode,
+  forwardRef,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export interface FocusTrapProps {
   loop?: boolean;
   trapped?: boolean;
   onMountAutoFocus?: (event: Event) => void;
   onUnmountAutoFocus?: (event: Event) => void;
+  children?: ReactNode;
+  asChild?: boolean;
 }
 
 const AUTOFOCUS_ON_MOUNT = "focusTrapScope.autoFocusOnMount";
 const AUTOFOCUS_ON_UNMOUNT = "focusTrapScope.autoFocusOnUnmount";
 const EVENT_OPTIONS = { bubbles: false, cancelable: true };
 
-const FocusTrap = forwardRef<HTMLDivElement, WithSlotProps<FocusTrapProps>>((props, ref) => {
+const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
   const {
     loop = true,
     trapped = true,
     onMountAutoFocus: onMountAutoFocusProp,
     onUnmountAutoFocus: onUnmountAutoFocusProp,
     asChild,
+    children,
   } = props;
 
   const Component = asChild ? Slot : "div";
@@ -164,7 +175,11 @@ const FocusTrap = forwardRef<HTMLDivElement, WithSlotProps<FocusTrapProps>>((pro
     }
   };
 
-  return <Component tabIndex={-1} ref={mergeRefs(ref, setContainer)} onKeyDown={handleKeyDown} />;
+  return (
+    <Component tabIndex={-1} ref={mergeRefs(ref, setContainer)} onKeyDown={handleKeyDown}>
+      {children}
+    </Component>
+  );
 });
 
 FocusTrap.displayName = "gist-ui.FocusTrap";

@@ -38,7 +38,8 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@gist-ui/theme": "workspace:*"
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/slot": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

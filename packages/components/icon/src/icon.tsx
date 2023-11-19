@@ -1,18 +1,24 @@
 import { ReactNode, forwardRef } from "react";
 import { IconVariantProps, icon } from "@gist-ui/theme";
+import { Slot } from "@gist-ui/slot";
 
 export interface IconProps extends IconVariantProps {
-  children?: ReactNode;
   className?: string;
+  children?: ReactNode;
+  asChild?: boolean;
 }
 
-const Icon = forwardRef<HTMLDivElement, IconProps>(({ fill, size, children, className }, ref) => {
+const Icon = forwardRef<HTMLDivElement, IconProps>((props, ref) => {
+  const { fill, size, children, className, asChild } = props;
+
+  const Component = asChild ? Slot : "div";
+
   const styles = icon({ size, fill, className });
 
   return (
-    <div ref={ref} className={styles}>
+    <Component ref={ref} className={styles}>
       {children}
-    </div>
+    </Component>
   );
 });
 
