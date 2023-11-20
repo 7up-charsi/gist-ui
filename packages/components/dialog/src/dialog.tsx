@@ -2,7 +2,7 @@ import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
-import { GistUiError } from "@gist-ui/error";
+import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
 import {
@@ -141,9 +141,8 @@ export const DialogTrigger = (props: { children: ReactNode; close?: boolean }) =
 
   const childCount = Children.count(children);
   if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("DialogTrigger", "must have only child");
-  if (!isValidElement(children))
-    throw new GistUiError("DialogTrigger", "must have valid element child");
+  if (childCount > 1) throw new GistUiError("DialogTrigger", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("DialogTrigger", validChildError);
 
   return (
     <>

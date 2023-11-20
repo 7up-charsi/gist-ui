@@ -1,5 +1,5 @@
 import { Children, ForwardedRef, ReactNode, cloneElement, forwardRef, isValidElement } from "react";
-import { GistUiError } from "@gist-ui/error";
+import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
 export interface SlotProps {
@@ -15,8 +15,8 @@ const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
 
   const count = Children.count(children);
   if (!count) return;
-  if (count > 1) throw new GistUiError("slot", "must have only child");
-  if (!isValidElement(children)) throw new GistUiError("slot", "child must be valid element");
+  if (count > 1) throw new GistUiError("slot", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("slot", validChildError);
 
   return cloneElement(children, {
     ...mergeProps(slotProps, children.props),
