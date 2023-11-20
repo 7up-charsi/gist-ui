@@ -33,6 +33,7 @@ const meta: Meta<typeof Button> = {
     fullWidth: {
       control: { type: "boolean" },
       if: { arg: "fullWidth", exists: true },
+      name: "full width",
     },
   },
 };

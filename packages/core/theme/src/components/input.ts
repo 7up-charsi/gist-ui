@@ -15,7 +15,7 @@ const input = tv({
   },
   variants: {
     variant: {
-      border: { inputWrapper: "border-2" },
+      border: { inputWrapper: "border" },
       flat: {},
     },
     color: {
@@ -52,7 +52,7 @@ const input = tv({
       true: { base: "w-full" },
     },
     disabled: {
-      true: { base: "disabled" },
+      true: { inputWrapper: "disabled" },
     },
     labelPlacement: {
       inside: {

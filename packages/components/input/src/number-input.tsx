@@ -6,6 +6,7 @@ import { Button } from "@gist-ui/button";
 import { Icon } from "@gist-ui/icon";
 import { mergeProps, useLongPress, usePress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
+import { GistUiError } from "@gist-ui/error";
 
 export interface NumberInputProps extends Omit<InputProps, "type"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
@@ -283,9 +284,9 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   );
 
   if (__DEV__ && min && max && min > max)
-    console.warn('Gist-ui input[number]: "min" must be lower than "max"');
+    throw new GistUiError("NumberInput", '"min" must be lower than "max"');
   if (__DEV__ && step > largeStep)
-    console.warn('Gist-ui input[number]: "step" must be lower than "largeStep"');
+    throw new GistUiError("NumberInput", '"step" must be lower than "largeStep"');
 
   return (
     <Input

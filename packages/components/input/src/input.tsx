@@ -1,8 +1,8 @@
 import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
+import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
-import { HoverProps, useFocus, useFocusRing, useHover, usePress } from "react-aria";
+import { HoverProps, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
 import {
   ChangeEventHandler,
@@ -84,7 +84,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const errorMessageId = useId();
   const inputId = id || labelId;
 
-  const innerRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
   const [filled, setFilled] = useState(!!defaultValue);
 
   const {
@@ -92,16 +93,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     isFocusVisible,
     isFocused,
   } = useFocusRing({ isTextInput: true });
-
-  const { pressProps } = usePress(
-    disabled
-      ? { isDisabled: true }
-      : {
-          onPress: () => {
-            innerRef.current?.focus();
-          },
-        },
-  );
 
   const { hoverProps, isHovered } = useHover(
     disabled ? { isDisabled: true } : { ...hoverHookProps },
@@ -153,8 +144,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       {!hideLabel && labelPlacement?.includes("outside") && labelHTML}
 
       <div
+        ref={inputWrapperRef}
         className={inputWrapper({ className: classNames?.inputWrapper })}
-        {...mergeProps({ ...pressProps }, { ...hoverProps })}
+        {...hoverProps}
+        onPointerUp={(e) => {
+          hoverProps.onPointerUp?.(e);
+          inputRef.current?.focus();
+        }}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
         {hideLabel && labelHTML}
@@ -173,7 +169,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           aria-required={required}
           aria-invalid={error}
           className={inputStyles({ className: classNames?.input })}
-          ref={mergeRefs(ref, innerRef)}
+          ref={mergeRefs(ref, inputRef)}
           id={inputId}
           disabled={disabled}
         />
