@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import Arrow, { ArrowProps } from "./arrow";
@@ -240,9 +241,10 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
 
   const { base: baseStyles } = tooltip(props);
 
-  if (!Children.only(children)) throw new Error("Gist-ui tooltip: must have only one child");
-
-  if (!isValidElement(children)) throw new Error("Gist-ui tooltip: children must be valid element");
+  const childCount = Children.count(children);
+  if (!childCount) return;
+  if (childCount > 1) throw new GistUiError("tooltip", "must have only one child");
+  if (!isValidElement(children)) throw new GistUiError("tooltip", "children must be valid element");
 
   const tooltipTrigger = cloneElement(children, {
     ref: refs.setReference,

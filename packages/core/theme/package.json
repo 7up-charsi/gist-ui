@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@gist-ui/shared-utils": "workspace:*",
+    "@gist-ui/error": "workspace:*",
     "@radix-ui/colors": "^3.0.0",
     "color": "^4.2.3",
     "deepmerge": "^4.3.1",

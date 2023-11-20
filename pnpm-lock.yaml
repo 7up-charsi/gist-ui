@@ -177,12 +177,12 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
-      '@gist-ui/overlay':
-        specifier: workspace:*
-        version: link:../overlay
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -267,6 +267,9 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/icon':
         specifier: workspace:*
         version: link:../icon
@@ -285,25 +288,6 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
-  packages/components/overlay:
-    dependencies:
-      '@gist-ui/slot':
-        specifier: workspace:*
-        version: link:../slot
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
-      react:
-        specifier: '>=18'
-        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
@@ -364,6 +348,9 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.0.4
         version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -405,6 +392,9 @@ importers:
 
   packages/core/theme:
     dependencies:
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils

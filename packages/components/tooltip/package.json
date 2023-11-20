@@ -44,6 +44,7 @@
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/slot": "workspace:*",
+    "@gist-ui/error": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {

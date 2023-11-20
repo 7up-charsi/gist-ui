@@ -1,4 +1,4 @@
-export class CustomError extends Error {
+export class GistUiError extends Error {
   constructor(
     public component: string,
     public message: string,

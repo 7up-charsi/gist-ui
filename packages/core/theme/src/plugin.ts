@@ -3,6 +3,7 @@ import omit from "lodash.omit";
 import kebabCase from "lodash.kebabcase";
 import deepmerge from "deepmerge";
 import Color from "color";
+import { GistUiError } from "@gist-ui/error";
 import { semanticColors } from "./semantic";
 import { flattenThemeObject } from "./utils/object";
 import { ConfigTheme, ConfigThemes, DefaultThemeType, GistuiConfig } from "./types";
@@ -112,10 +113,10 @@ export const gistui = (config: GistuiConfig) => {
     defaultTheme = "light",
   } = config || {};
   if (userThemes && typeof userThemes !== "object")
-    throw new TypeError("Gistui plugin: themes must be object");
+    throw new GistUiError("plugin", "themes must be object");
 
   if (userLayout && typeof userLayout !== "object")
-    throw new TypeError("Gistui plugin: layout must be object");
+    throw new GistUiError("plugin", "layout must be object");
 
   const userLightTheme = userThemes?.light?.colors || {};
   const userDarkTheme = userThemes?.dark?.colors || {};

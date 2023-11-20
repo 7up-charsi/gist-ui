@@ -2,6 +2,7 @@ import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
+import { GistUiError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
 import {
@@ -136,10 +137,13 @@ export const DialogTrigger = (props: { children: ReactNode; close?: boolean }) =
   });
 
   if (context?.scopeName !== SCOPE_NAME)
-    throw new Error('Gist-ui: "DialogTrigger" must be child of "Dialog"');
-  if (!Children.only(children)) throw new Error('Gist-ui: "DialogTrigger" must have only child');
+    throw new GistUiError("DialogTrigger", 'must be child of "Dialog"');
+
+  const childCount = Children.count(children);
+  if (!childCount) return;
+  if (childCount > 1) throw new GistUiError("DialogTrigger", "must have only child");
   if (!isValidElement(children))
-    throw new Error('Gist-ui: "DialogTrigger" child must be valid element');
+    throw new GistUiError("DialogTrigger", "must have valid element child");
 
   return (
     <>
@@ -156,7 +160,7 @@ export const DialogPortal = (props: { children?: ReactNode; container?: HTMLElem
   const context = useContext(DialogContext);
 
   if (context?.scopeName !== SCOPE_NAME)
-    throw new Error('Gist-ui: "DialogPortal" must be child of "Dialog"');
+    throw new GistUiError("DialogPortal", 'must be child of "Dialog"');
 
   return context?.isOpen ? createPortal(children, container) : null;
 };
@@ -185,7 +189,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
     });
 
     if (context?.scopeName !== SCOPE_NAME)
-      throw new Error('Gist-ui: "DialogContent" must be child of "Dialog"');
+      throw new GistUiError("DialogContent", 'must be child of "Dialog"');
 
     return (
       <div className={classNames?.container}>

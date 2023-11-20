@@ -10,6 +10,7 @@ import {
 import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
+import { GistUiError } from "@gist-ui/error";
 import { HoverEvents, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
 
@@ -124,8 +125,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   );
 
   if (__DEV__ && !label)
-    throw new Error(
-      'Gist-ui Input: "label" prop is required. if you want to hide label then pass "hideLabel" prop as well',
+    throw new GistUiError(
+      "Input",
+      '"label" prop is required. if you want to hide label then pass "hideLabel" prop as well',
     );
 
   return (

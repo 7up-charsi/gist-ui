@@ -46,6 +46,7 @@
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/focus-trap": "workspace:*",
     "@gist-ui/button": "workspace:*",
+    "@gist-ui/error": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {
