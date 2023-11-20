@@ -2,7 +2,6 @@ import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { dialog } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
-import { Overlay } from "@gist-ui/overlay";
 
 import { Dialog, DialogTrigger, DialogProps, DialogContent, DialogPortal } from "../src";
 
@@ -15,7 +14,7 @@ export default meta;
 
 export const Default: StoryObj<DialogProps> = {
   render: (args) => {
-    const { base, container, body, footer, header } = dialog({});
+    const { base, container, body, footer, header, backdrop } = dialog({});
 
     return (
       <Dialog {...args}>
@@ -24,7 +23,7 @@ export const Default: StoryObj<DialogProps> = {
         </DialogTrigger>
 
         <DialogPortal>
-          <Overlay />
+          <div className={backdrop()} />
 
           <DialogContent classNames={{ base: base(), container: container() }}>
             <div className={header()}>header</div>

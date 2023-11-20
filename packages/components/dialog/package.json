@@ -46,7 +46,6 @@
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/focus-trap": "workspace:*",
     "@gist-ui/button": "workspace:*",
-    "@gist-ui/overlay": "workspace:*",
     "react-aria": "^3.29.0"
   },
   "devDependencies": {
@@ -55,8 +54,7 @@
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json",
     "remove": [
-      "dependencies.@gist-ui/button",
-      "dependencies.@gist-ui/overlay"
+      "dependencies.@gist-ui/button"
     ]
   }
 }
