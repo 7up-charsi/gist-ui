@@ -3,7 +3,7 @@ import { __DEV__ } from "@gist-ui/shared-utils";
 import { Slot } from "@gist-ui/slot";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
-import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
 import { useFocusRing, useHover, usePress, PressProps, HoverProps } from "react-aria";
 import {
   ButtonHTMLAttributes,
@@ -28,13 +28,13 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
+  const [props, variantProps] = mapProps({ ..._props }, button.variantKeys);
+
   const {
     startContent,
     endContent,
     classNames,
-    isIconOnly,
-    disabled,
     rippleProps = {},
     hoverProps: hoverHookProps = {},
     pressProps: pressHookProps = {},
@@ -42,6 +42,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     children,
     ...rest
   } = props;
+
+  const { disabled, isIconOnly } = variantProps;
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
@@ -61,7 +63,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const { hoverProps, isHovered } = useHover(disabled ? { isDisabled: true } : hoverHookProps);
   const { isPressed, pressProps } = usePress(disabled ? { isDisabled: true } : pressHookProps);
 
-  const styles = button(props);
+  const styles = button(variantProps);
 
   if (__DEV__ && isIconOnly && !props["aria-label"] && !props["aria-labelledby"])
     console.warn('Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"');
