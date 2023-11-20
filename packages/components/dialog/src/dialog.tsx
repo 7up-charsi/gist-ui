@@ -5,6 +5,8 @@ import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { createPortal } from "react-dom";
 import {
   Children,
   ReactNode,
@@ -17,8 +19,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { createPortal } from "react-dom";
 
 type Reason = "pointer" | "escape" | "outside";
 
@@ -172,39 +172,37 @@ interface DialogContentProps extends Omit<FocusTrapProps, "loop" | "trapped"> {
   };
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  function DialogContent(props, ref) {
-    const { children, classNames, onMountAutoFocus, onUnmountAutoFocus } = props;
+export const DialogContent = (props: DialogContentProps) => {
+  const { children, classNames, onMountAutoFocus, onUnmountAutoFocus } = props;
 
-    const context = useContext(DialogContext);
-    const dialogRef = useRef<HTMLDivElement | null>(null);
+  const context = useContext(DialogContext);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
 
-    useClickOutside<HTMLDivElement>({
-      isDisabled: !context?.isOpen,
-      ref: dialogRef,
-      callback: () => {
-        context?.handleClose("outside");
-      },
-    });
+  useClickOutside<HTMLDivElement>({
+    isDisabled: !context?.isOpen,
+    ref: dialogRef,
+    callback: () => {
+      context?.handleClose("outside");
+    },
+  });
 
-    if (context?.scopeName !== SCOPE_NAME)
-      throw new GistUiError("DialogContent", 'must be child of "Dialog"');
+  if (context?.scopeName !== SCOPE_NAME)
+    throw new GistUiError("DialogContent", 'must be child of "Dialog"');
 
-    return (
-      <div className={classNames?.container}>
-        <FocusTrap
-          ref={mergeRefs(ref, dialogRef)}
-          role="dialog"
-          className={classNames?.base}
-          aria-modal={context?.modal}
-          loop={context?.modal}
-          trapped={context?.modal}
-          onMountAutoFocus={onMountAutoFocus}
-          onUnmountAutoFocus={onUnmountAutoFocus}
-        >
-          {children}
-        </FocusTrap>
-      </div>
-    );
-  },
-);
+  return (
+    <div className={classNames?.container}>
+      <FocusTrap
+        ref={dialogRef}
+        role="dialog"
+        className={classNames?.base}
+        aria-modal={context?.modal}
+        loop={context?.modal}
+        trapped={context?.modal}
+        onMountAutoFocus={onMountAutoFocus}
+        onUnmountAutoFocus={onUnmountAutoFocus}
+      >
+        {children}
+      </FocusTrap>
+    </div>
+  );
+};

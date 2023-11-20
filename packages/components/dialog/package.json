@@ -38,16 +38,16 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/focus-trap": "workspace:*",
-    "@gist-ui/button": "workspace:*",
     "@gist-ui/error": "workspace:*",
-    "react-aria": "^3.29.0"
+    "react-aria": "^3.29.0",
+    "@gist-ui/button": "workspace:*",
+    "@gist-ui/theme": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"
@@ -55,7 +55,8 @@
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json",
     "remove": [
-      "dependencies.@gist-ui/button"
+      "dependencies.@gist-ui/button",
+      "dependencies.@gist-ui/theme"
     ]
   }
 }

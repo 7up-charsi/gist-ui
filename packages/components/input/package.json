@@ -42,9 +42,9 @@
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/error": "workspace:*",
+    "react-aria": "^3.29.0",
     "@gist-ui/button": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
-    "react-aria": "^3.29.0"
+    "@gist-ui/icon": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

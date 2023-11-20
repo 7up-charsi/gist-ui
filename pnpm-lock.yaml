@@ -137,6 +137,9 @@ importers:
 
   packages/components/button:
     dependencies:
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/icon':
         specifier: workspace:*
         version: link:../icon
@@ -220,15 +223,9 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
-      '@gist-ui/react-utils':
-        specifier: workspace:*
-        version: link:../../utilities/react-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../../hooks/use-callback-ref
@@ -298,9 +295,6 @@ importers:
 
   packages/components/scroll-shadow:
     dependencies:
-      '@gist-ui/react-utils':
-        specifier: workspace:*
-        version: link:../../utilities/react-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot
@@ -329,9 +323,6 @@ importers:
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -354,12 +345,6 @@ importers:
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
-      '@gist-ui/shared-utils':
-        specifier: workspace:*
-        version: link:../../utilities/shared-utils
-      '@gist-ui/slot':
-        specifier: workspace:*
-        version: link:../slot
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme

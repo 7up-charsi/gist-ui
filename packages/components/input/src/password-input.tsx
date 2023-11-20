@@ -22,8 +22,10 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, r
       rounded="full"
       variant="text"
       aria-label={isPassword ? showAriaLabel || `show ${label}` : hideAriaLabel || `hide ${label}`}
-      onPress={() => {
-        setIsPassword((p) => !p);
+      pressProps={{
+        onPress: () => {
+          setIsPassword((p) => !p);
+        },
       }}
     >
       <Icon size="sm">

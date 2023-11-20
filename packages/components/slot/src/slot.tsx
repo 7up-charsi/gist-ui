@@ -6,10 +6,6 @@ export interface SlotProps {
   children?: ReactNode;
 }
 
-export type WithSlotProps<Props> =
-  | ({ asChild: true; children?: ReactNode } & Props)
-  | ({ asChild?: false; children?: undefined } & Props);
-
 const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
   const { children, ...slotProps } = props;
 

@@ -38,7 +38,6 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@gist-ui/theme": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "@gist-ui/react-utils": "workspace:*"
   },

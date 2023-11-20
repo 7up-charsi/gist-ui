@@ -40,7 +40,6 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-scroll-overflow": "workspace:*",
-    "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/slot": "workspace:*"
   },
   "devDependencies": {

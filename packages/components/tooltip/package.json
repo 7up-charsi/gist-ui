@@ -40,10 +40,8 @@
   "dependencies": {
     "@floating-ui/react-dom": "^2.0.4",
     "@gist-ui/react-utils": "workspace:*",
-    "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/theme": "workspace:*",
-    "@gist-ui/slot": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "react-aria": "^3.29.0"
   },

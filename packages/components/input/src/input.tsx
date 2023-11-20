@@ -1,3 +1,9 @@
+import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
+import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
+import { __DEV__ } from "@gist-ui/shared-utils";
+import { GistUiError } from "@gist-ui/error";
+import { HoverProps, useFocus, useFocusRing, useHover, usePress } from "react-aria";
+import { NativeInputProps } from "./types";
 import {
   ChangeEventHandler,
   FocusEventHandler,
@@ -7,14 +13,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mergeRefs } from "@gist-ui/react-utils";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { GistUiError } from "@gist-ui/error";
-import { HoverEvents, useFocus, useFocusRing, useHover } from "react-aria";
-import { NativeInputProps } from "./types";
 
-export interface InputProps extends InputVariantProps, HoverEvents {
+export interface InputProps extends InputVariantProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
   id?: string;
   placeholder?: string;
@@ -33,8 +33,9 @@ export interface InputProps extends InputVariantProps, HoverEvents {
   endContent?: ReactNode;
   classNames?: InputClassNames;
   hideLabel?: boolean;
-  feedback?: "polite" | "assertive";
+  a11yFeedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;
+  hoverProps?: HoverProps;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -59,12 +60,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     name,
     hideLabel,
     required,
-    feedback = "polite",
+    a11yFeedback = "polite",
     inputProps,
     onChange,
-    onHoverChange,
-    onHoverEnd,
-    onHoverStart,
+    hoverProps: hoverHookProps = {},
   } = props;
 
   const {
@@ -94,24 +93,35 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     isFocused,
   } = useFocusRing({ isTextInput: true });
 
-  const { hoverProps, isHovered } = useHover({
-    onHoverChange,
-    onHoverEnd,
-    onHoverStart,
-    isDisabled: disabled,
-  });
+  const { pressProps } = usePress(
+    disabled
+      ? { isDisabled: true }
+      : {
+          onPress: () => {
+            innerRef.current?.focus();
+          },
+        },
+  );
 
-  const { focusProps } = useFocus<HTMLInputElement>({
-    onFocus: (e) => {
-      onFocus?.(e);
-      focusRingProps.onFocus?.(e);
-    },
-    onBlur: (e) => {
-      setFilled(!!e.target.value.length);
-      onBlur?.(e);
-      focusRingProps.onBlur?.(e);
-    },
-  });
+  const { hoverProps, isHovered } = useHover(
+    disabled ? { isDisabled: true } : { ...hoverHookProps },
+  );
+
+  const { focusProps } = useFocus<HTMLInputElement>(
+    disabled
+      ? { isDisabled: true }
+      : {
+          onFocus: (e) => {
+            onFocus?.(e);
+            focusRingProps.onFocus?.(e);
+          },
+          onBlur: (e) => {
+            setFilled(!!e.target.value.length);
+            onBlur?.(e);
+            focusRingProps.onBlur?.(e);
+          },
+        },
+  );
 
   const labelHTML = !!label && (
     <label htmlFor={inputId} className={labelStyles({ className: classNames?.label })}>
@@ -144,10 +154,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
       <div
         className={inputWrapper({ className: classNames?.inputWrapper })}
-        onClick={() => {
-          innerRef.current?.focus();
-        }}
-        {...hoverProps}
+        {...mergeProps({ ...pressProps }, { ...hoverProps })}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
         {hideLabel && labelHTML}
@@ -182,7 +189,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       {error && errorMessage && (
         <div
           id={errorMessageId}
-          aria-live={feedback}
+          aria-live={a11yFeedback}
           className={helperTextStyles({ className: classNames?.helperText })}
         >
           {errorMessage}

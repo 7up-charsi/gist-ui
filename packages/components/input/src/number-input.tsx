@@ -2,22 +2,14 @@ import { KeyboardEventHandler, forwardRef, useRef } from "react";
 import Input, { InputProps } from "./input";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
-import { Button, ButtonProps } from "@gist-ui/button";
-import { Icon, IconProps } from "@gist-ui/icon";
+import { Button } from "@gist-ui/button";
+import { Icon } from "@gist-ui/icon";
 import { mergeProps, useLongPress, usePress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
-
-type ExcludeStepButtonProps = "isIconOnly" | "size" | "variant" | "rounded" | "className";
-
-type ExcludeStepButtonIconProps = "fill" | "className";
 
 export interface NumberInputProps extends Omit<InputProps, "type"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
   inputMode?: "decimal" | "numeric";
-  stepUpButtonProps?: Omit<ButtonProps, ExcludeStepButtonProps>;
-  stepDownButtonProps?: Omit<ButtonProps, ExcludeStepButtonProps>;
-  stepUpButtonIconProps?: Omit<IconProps, ExcludeStepButtonIconProps>;
-  stepDownButtonIconProps?: Omit<IconProps, ExcludeStepButtonIconProps>;
   min?: number;
   max?: number;
   step?: number;
@@ -29,10 +21,6 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
 const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
   const {
     classNames,
-    stepUpButtonProps,
-    stepDownButtonProps,
-    stepUpButtonIconProps,
-    stepDownButtonIconProps,
     inputMode = "numeric",
     inputProps,
     min,
@@ -42,13 +30,10 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     repeatRate = 100,
     threshold = 500,
     endContent,
-
     ...rest
   } = props;
 
   const innerRef = useRef<HTMLInputElement>(null);
-
-  const { base, button, icon } = numberInput();
 
   const state = useRef<{
     longPressInterval?: NodeJS.Timeout;
@@ -216,7 +201,6 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   });
 
   const { pressProps: stepUpPressProps } = usePress({
-    onPress: stepUpButtonProps?.onPress,
     onPressUp: () => {
       clearInterval(state.current.longPressInterval);
       state.current.longPressInterval = undefined;
@@ -236,61 +220,64 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
   });
 
   const { pressProps: stepDownPressProps } = usePress({
-    onPress: stepDownButtonProps?.onPress,
     onPressUp: () => {
       clearInterval(state.current.longPressInterval);
       state.current.longPressInterval = undefined;
     },
   });
 
+  const styles = numberInput();
+
   const buttons = (
-    <div ref={ref} className={base({ className: classNames?.stepButton.base })}>
+    <div ref={ref} className={styles.base({ className: classNames?.stepButton.base })}>
       {/* step up */}
       <Button
-        as="span"
         aria-label="increase value"
-        {...stepUpButtonProps}
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
-        className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
+        classNames={{
+          base: styles.button({
+            className: `text-default-500 ${classNames?.stepButton.button}`,
+          }),
+        }}
         {...mergeProps(stepUpPressProps, stepUpLongPressProps)}
+        asChild
       >
-        <Icon
-          {...stepUpButtonIconProps}
-          fill
-          className={icon({ className: classNames?.stepButton.icon })}
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
-            <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
-          </svg>
-        </Icon>
+        <div>
+          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
+              <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
+            </svg>
+          </Icon>
+        </div>
       </Button>
 
       {/* step down */}
       <Button
-        as="span"
         aria-label="decrease value"
-        {...stepDownButtonProps}
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
-        className={button({ className: `text-default-500 ${classNames?.stepButton.button}` })}
+        classNames={{
+          base: styles.button({
+            className: `text-default-500 ${classNames?.stepButton.button}`,
+          }),
+        }}
         {...mergeProps(stepDownPressProps, stepDownLongPressProps)}
+        asChild
       >
-        <Icon
-          {...stepDownButtonIconProps}
-          fill
-          className={icon({ className: classNames?.stepButton.icon })}
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
-            <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
-          </svg>
-        </Icon>
+        <div>
+          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
+              <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+            </svg>
+          </Icon>
+        </div>
       </Button>
     </div>
   );
