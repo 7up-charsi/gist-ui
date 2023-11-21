@@ -7,6 +7,15 @@ const meta: Meta<ScrollShadowProps> = {
   title: "Components/ScrollShadow",
   component: ScrollShadow,
   argTypes: {
+    visibility: {
+      control: "select",
+      options: ["auto", "top", "bottom", "left", "right", "both", "none"],
+      defaultValue: "auto",
+    },
+    offset: {
+      control: "number",
+      defaultValue: "0",
+    },
     disabled: {
       control: "boolean",
     },
