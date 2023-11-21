@@ -16,7 +16,7 @@ const ScrollShadow = (props: ScrollShadowProps) => {
     direction,
     children,
     classNames,
-    isDisabled,
+    disabled,
     offset,
     onVisibilityChange,
     visibility,
@@ -30,7 +30,7 @@ const ScrollShadow = (props: ScrollShadowProps) => {
   useScrollOverflow({
     direction,
     ref: ref,
-    isDisabled,
+    disabled,
     offset,
     onVisibilityChange,
     visibility,

@@ -14,7 +14,7 @@ export type ScrollOverflowVisibility =
 export interface UseScrollOverflowProps<R> {
   direction?: ScrollOverflowDirection;
   visibility?: ScrollOverflowVisibility;
-  isDisabled?: boolean;
+  disabled?: boolean;
   offset?: number;
   onVisibilityChange?: (overflow: ScrollOverflowVisibility) => void;
   ref?: RefObject<R>;
@@ -22,7 +22,7 @@ export interface UseScrollOverflowProps<R> {
 
 const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<R> = {}) => {
   const {
-    isDisabled,
+    disabled,
     direction = "vertical",
     offset = 0,
     onVisibilityChange,
@@ -35,10 +35,10 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
   useEffect(() => {
     const el = ref?.current;
 
-    if (!el || isDisabled) return;
+    if (!el || disabled) return;
 
     const clearOverflow = () => {
-      ["top", "bottom", "topBottom", "left", "right", "leftRight"].forEach((attr) => {
+      ["top", "bottom", "top-bottom", "left", "right", "left-right"].forEach((attr) => {
         el.removeAttribute(`data-${attr}-scroll`);
       });
     };
@@ -119,7 +119,7 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
       el.removeEventListener("scroll", checkOverflow);
       clearOverflow();
     };
-  }, [direction, isDisabled, offset, onVisibilityChange, ref, visibility]);
+  }, [direction, disabled, offset, onVisibilityChange, ref, visibility]);
 };
 
 export type UseScrollOverflowReturn = ReturnType<typeof useScrollOverflow>;

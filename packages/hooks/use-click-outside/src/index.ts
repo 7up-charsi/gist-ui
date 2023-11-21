@@ -3,20 +3,20 @@ import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 export interface UseClickOutsideProps<R> {
   callback?: (e: PointerEvent) => void;
-  isDisabled?: boolean;
+  disabled?: boolean;
   ref?: MutableRefObject<R | undefined | null>;
   closeButton?: number;
 }
 
 const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) => {
-  const { ref, callback, isDisabled, closeButton = 0 } = props;
+  const { ref, callback, disabled, closeButton = 0 } = props;
 
   const callbackRef = useCallbackRef(callback);
 
   useEffect(() => {
     const el = ref?.current;
 
-    if (!el || isDisabled) return;
+    if (!el || disabled) return;
 
     const handler = (e: PointerEvent) => {
       if (e.button === closeButton) {
@@ -31,7 +31,7 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
     return () => {
       document.removeEventListener("pointerup", handler);
     };
-  }, [callbackRef, closeButton, isDisabled, ref]);
+  }, [callbackRef, closeButton, disabled, ref]);
 };
 
 export type UseClickOutsideReturn = ReturnType<typeof useClickOutside>;

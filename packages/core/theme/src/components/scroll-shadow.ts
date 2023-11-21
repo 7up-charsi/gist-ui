@@ -12,12 +12,42 @@ const horizontalShadow = [
   "data-[left-right-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
 ];
 
+const bothShadow = [
+  "data-[top-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[bottom-scroll=true]:shadow-[inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[left-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+  "data-[right-scroll=true]:shadow-[inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-bottom-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[left-right-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-scroll=true]:data-[left-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-scroll=true]:data-[right-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[bottom-scroll=true]:data-[left-scroll=true]:shadow-[inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1),_inset_10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[bottom-scroll=true]:data-[right-scroll=true]:shadow-[inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-bottom-scroll=true]:data-[left-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1),_inset_10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-bottom-scroll=true]:data-[right-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[left-right-scroll=true]:data-[top-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_10px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[left-right-scroll=true]:data-[bottom-scroll=true]:shadow-[inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1)]",
+
+  "data-[top-bottom-scroll=true]:data-[left-right-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1),_inset_0px_-10px_9px_-3px_rgba(0,0,0,0.1),_inset_10px_0px_9px_-3px_rgba(0,0,0,0.1),_inset_-10px_0px_9px_-3px_rgba(0,0,0,0.1)]",
+];
+
 const scrollShadow = tv({
   slots: { base: "w-full h-full" },
   variants: {
     direction: {
       vertical: { base: ["overflow-y-auto", ...verticalShadow] },
       horizontal: { base: ["overflow-x-auto", ...horizontalShadow] },
+      both: { base: ["overflow-auto", ...bothShadow] },
     },
   },
   defaultVariants: {
