@@ -4,7 +4,6 @@ import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
-import Arrow, { ArrowProps } from "./arrow";
 import {
   Children,
   ReactNode,
@@ -32,12 +31,14 @@ import {
   Placement,
 } from "@floating-ui/react-dom";
 
+type Alignment = "start" | "end";
+type Side = "top" | "right" | "bottom" | "left";
+
 export interface TooltipProps extends TooltipVariantProps {
   children?: ReactNode;
   title?: string;
   disabled?: boolean;
   classNames?: TooltipClassNames;
-  arrowProps?: Omit<ArrowProps, "placement" | "arrowData" | "ref" | "floatingElement">;
   placement?: Placement;
   middlewareOptions?: {
     offset?: OffsetOptions;
@@ -64,7 +65,6 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     classNames,
     middlewareOptions,
     placement: position,
-    arrowProps,
     showDelay = 100,
     hideDelay = 300,
     trigger,
@@ -72,7 +72,6 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     isOpen: isOpenProp,
     onOpenChange,
     defaultOpen = false,
-    arrowHide,
     portalContainer = document.body,
   } = props;
 
@@ -85,7 +84,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   });
 
   const tooltipId = useId();
-  const arrowRef = useRef<SVGSVGElement>(null);
+  const arrowRef = useRef<HTMLDivElement>(null);
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -168,16 +167,14 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     }
   }, [isOpen]);
 
-  const { refs, floatingStyles, middlewareData, placement, elements } = useFloating({
+  const { refs, floatingStyles, middlewareData, placement } = useFloating({
     open: isOpen,
     whileElementsMounted: autoUpdate,
     placement: position,
     middleware: [
-      offset(middlewareOptions?.offset || 10),
+      offset({ mainAxis: 10, alignmentAxis: 5 }),
       shift({
-        limiter: limitShift(({ elements }) => ({
-          offset: elements.reference.getBoundingClientRect().width / 2,
-        })),
+        limiter: limitShift({ offset: 10 }),
         ...middlewareOptions?.shift,
       }),
       flip(middlewareOptions?.flip),
@@ -239,7 +236,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     },
   });
 
-  const { base: baseStyles } = tooltip(props);
+  const styles = tooltip(props);
 
   const childCount = Children.count(children);
   if (!childCount) return;
@@ -253,6 +250,37 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     ...mergeProps(children.props, hoverProps, focusProps, pressProps),
   } as Partial<unknown>);
 
+  const [side] = placement.split("-") as [Side, Alignment];
+
+  const isVerticalSide = side === "bottom" || side === "top";
+
+  const tooltipHtml = (
+    <Component
+      ref={mergeRefs(ref, refs.setFloating)}
+      className={styles.base({ className: classNames?.base })}
+      id={tooltipId}
+      style={{
+        ...floatingStyles,
+        visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
+      }}
+      role="tooltip"
+      {...tooltipHoverProps}
+    >
+      <div
+        ref={arrowRef}
+        data-side={side}
+        style={{
+          [isVerticalSide ? "left" : "top"]: isVerticalSide
+            ? middlewareData.arrow?.x
+            : middlewareData.arrow?.y,
+          [side]: "calc(100% - 1px)",
+        }}
+        className={styles.arrow({ className: classNames?.arrow })}
+      />
+      {title}
+    </Component>
+  );
+
   return (
     <>
       {tooltipTrigger}
@@ -260,32 +288,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       {isOpen &&
         !disabled &&
         !children.props.disabled &&
-        createPortal(
-          <Component
-            ref={mergeRefs(ref, refs.setFloating)}
-            className={baseStyles({ className: classNames?.base })}
-            id={tooltipId}
-            style={{
-              ...floatingStyles,
-              visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
-            }}
-            role="tooltip"
-            {...tooltipHoverProps}
-          >
-            {title}
-
-            {!arrowHide && (
-              <Arrow
-                {...arrowProps}
-                placement={placement}
-                arrowData={middlewareData.arrow}
-                ref={arrowRef}
-                floatingElement={elements.floating}
-              />
-            )}
-          </Component>,
-          portalContainer,
-        )}
+        createPortal(tooltipHtml, portalContainer)}
     </>
   );
 });
