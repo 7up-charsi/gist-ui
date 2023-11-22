@@ -309,6 +309,10 @@ export interface ContentProps {
   classNames?: TooltipClassNames;
   disableInteractive?: boolean;
   arrow?: boolean;
+  offsetMainAxis?: number;
+  offsetAlignmentAxis?: number;
+  shiftOffset?: number;
+  arrowPadding?: number;
 }
 
 export const Content = (props: ContentProps) => {
@@ -319,6 +323,10 @@ export const Content = (props: ContentProps) => {
     disableInteractive,
     classNames,
     arrow: arrowProp = true,
+    offsetMainAxis = 10,
+    offsetAlignmentAxis = 5,
+    shiftOffset = 10,
+    arrowPadding = 10,
   } = props;
 
   const context = useContext(TooltipContext);
@@ -346,12 +354,12 @@ export const Content = (props: ContentProps) => {
     whileElementsMounted: autoUpdate,
     placement: position,
     middleware: [
-      offset({ mainAxis: 10, alignmentAxis: 5 }),
+      offset({ mainAxis: offsetMainAxis, alignmentAxis: offsetAlignmentAxis }),
       shift({
-        limiter: limitShift({ offset: 10 }),
+        limiter: limitShift({ offset: shiftOffset }),
       }),
       flip(),
-      arrow({ element: arrowRef, padding: 10 }),
+      arrow({ element: arrowRef, padding: arrowPadding }),
       hide(),
     ],
   });
