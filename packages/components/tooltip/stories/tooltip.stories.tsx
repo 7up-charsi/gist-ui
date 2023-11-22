@@ -4,7 +4,7 @@ import { tooltip } from "@gist-ui/theme";
 
 import * as Tooltip from "../src";
 
-const meta: Meta<Tooltip.TooltipProps> = {
+const meta: Meta = {
   title: "Components/Tooltip",
   args: tooltip.defaultVariants,
   argTypes: {
@@ -33,32 +33,32 @@ const meta: Meta<Tooltip.TooltipProps> = {
         "left-end",
       ],
     },
+    showDelay: { control: "number" },
+    hideDelay: { control: "number" },
+    disableInteractive: { control: "boolean" },
+    arrow: { control: "boolean" },
   },
 };
 
 export default meta;
 
-const Template = (args: Tooltip.TooltipProps) => (
+const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => (
   <div className="h-[300vh] flex items-center justify-center">
     <Tooltip.Root {...args}>
       <Tooltip.Trigger>
-        <button className="p-10 border" disabled={args.disabled}>
-          button
-        </button>
+        <button className="p-10 border">button</button>
       </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content>i am tooltip content</Tooltip.Content>
+      </Tooltip.Portal>
     </Tooltip.Root>
   </div>
 );
 
-export const Default: StoryObj<Tooltip.TooltipProps> = {
+export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
   render: Template,
   args: {
-    title: "i'm tooltip text content",
-    disableInteractive: false,
-    showDelay: 100,
-    hideDelay: 300,
     defaultOpen: true,
     placement: "top-start",
-    disabled: false,
   },
 };

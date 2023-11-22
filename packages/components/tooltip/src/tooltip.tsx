@@ -3,17 +3,16 @@ import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
+import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import {
   Children,
   Dispatch,
-  ForwardedRef,
   MutableRefObject,
   ReactNode,
   SetStateAction,
   cloneElement,
   createContext,
-  forwardRef,
   isValidElement,
   useCallback,
   useContext,
@@ -29,14 +28,9 @@ import {
   flip,
   shift,
   offset,
-  OffsetOptions,
   limitShift,
-  ShiftOptions,
-  FlipOptions,
   hide,
-  HideOptions,
   Placement,
-  ReferenceType,
 } from "@floating-ui/react-dom";
 
 type Alignment = "start" | "end";
@@ -44,31 +38,21 @@ type Side = "top" | "right" | "bottom" | "left";
 
 type Trigger = "hover" | "focus";
 
-export interface TooltipProps extends TooltipVariantProps {
+export interface RootProps extends TooltipVariantProps {
   children?: ReactNode;
-  title?: string;
-  classNames?: TooltipClassNames;
-  placement?: Placement;
-  middlewareOptions?: {
-    offset?: OffsetOptions;
-    shift?: ShiftOptions;
-    flip?: FlipOptions;
-    hide?: HideOptions;
-  };
-  disableInteractive?: boolean;
   showDelay?: number;
   hideDelay?: number;
   trigger?: Trigger;
-  arrowHide?: boolean;
   isOpen?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
-  portalContainer?: Element;
 }
 
-interface Context {
+interface TooltipContext {
   handleShow: (a?: boolean) => void;
   handleHide: (a?: boolean) => void;
+  showTooltip: (a?: boolean) => void;
+  hideTooltip: (a?: boolean) => void;
   trigger?: Trigger;
   isHovered: MutableRefObject<boolean>;
   isFocused: MutableRefObject<boolean>;
@@ -77,29 +61,22 @@ interface Context {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isDisabled: boolean;
   setIsDisabled: Dispatch<SetStateAction<boolean>>;
-  setReference: (node: ReferenceType | null) => void;
+  triggerElement: HTMLElement | null;
+  setTriggerElement: Dispatch<SetStateAction<HTMLElement | null>>;
 }
 
-const TooltipContext = createContext<Context | null>(null);
+const TooltipContext = createContext<TooltipContext | null>(null);
 
-export const Root = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
+export const Root = (props: RootProps) => {
   const {
-    title,
     children,
-    classNames,
-    middlewareOptions,
-    placement: position,
     showDelay = 100,
     hideDelay = 300,
     trigger,
-    disableInteractive,
     isOpen: isOpenProp,
     onOpenChange,
     defaultOpen = false,
-    portalContainer = document.body,
   } = props;
-
-  const Component = "div";
 
   const [isOpen, setIsOpen] = useControllableState({
     value: isOpenProp,
@@ -107,10 +84,11 @@ export const Root = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     onChange: onOpenChange,
   });
 
+  const [triggerElement, setTriggerElement] = useState<HTMLElement | null>(null);
+
   const [isDisabled, setIsDisabled] = useState(false);
 
   const tooltipId = useId();
-  const arrowRef = useRef<HTMLDivElement>(null);
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -164,7 +142,7 @@ export const Root = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   };
 
   useEffect(() => {
-    if (!isDisabled) return;
+    if (isDisabled) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -195,100 +173,33 @@ export const Root = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     }
   }, [isOpen]);
 
-  const { refs, floatingStyles, middlewareData, placement } = useFloating({
-    open: isOpen,
-    whileElementsMounted: autoUpdate,
-    placement: position,
-    middleware: [
-      offset({ mainAxis: 10, alignmentAxis: 5 }),
-      shift({
-        limiter: limitShift({ offset: 10 }),
-        ...middlewareOptions?.shift,
-      }),
-      flip(middlewareOptions?.flip),
-      arrow({ element: arrowRef, padding: 10 }),
-      hide(middlewareOptions?.hide),
-    ],
-  });
-
-  const { hoverProps: tooltipHoverProps } = useHover(
-    isDisabled
-      ? { isDisabled: true }
-      : {
-          isDisabled: disableInteractive,
-          onHoverStart: () => {
-            showTooltip(true);
-          },
-          onHoverEnd: () => {
-            hideTooltip();
-          },
-        },
-  );
-
-  const styles = tooltip(props);
-
-  const childCount = Children.count(children);
-  if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("tooltip", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("tooltip", validChildError);
-
-  const [side] = placement.split("-") as [Side, Alignment];
-
-  const isVerticalSide = side === "bottom" || side === "top";
-
-  const tooltipHtml = (
-    <Component
-      ref={mergeRefs(ref, refs.setFloating)}
-      className={styles.base({ className: classNames?.base })}
-      id={tooltipId}
-      style={{
-        ...floatingStyles,
-        visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
-      }}
-      role="tooltip"
-      {...tooltipHoverProps}
-    >
-      <div
-        ref={arrowRef}
-        data-side={side}
-        style={{
-          [isVerticalSide ? "left" : "top"]: isVerticalSide
-            ? middlewareData.arrow?.x
-            : middlewareData.arrow?.y,
-          [side]: "calc(100% - 1px)",
-        }}
-        className={styles.arrow({ className: classNames?.arrow })}
-      />
-      {title}
-    </Component>
-  );
-
   return (
     <TooltipContext.Provider
       value={{
         handleShow,
         handleHide,
+        showTooltip,
+        hideTooltip,
         trigger,
         isHovered,
         isFocused,
         tooltipId,
         isOpen,
         setIsOpen,
-        setReference: refs.setReference,
         isDisabled,
         setIsDisabled,
+        triggerElement,
+        setTriggerElement,
       }}
     >
       {children}
-
-      {isOpen && createPortal(tooltipHtml, portalContainer)}
     </TooltipContext.Provider>
   );
-});
+};
 
-Root.displayName = "gist-ui.TooltipRoot";
+Root.displayName = "gist-ui.Root";
 
-export const Trigger = ({ children }: { children: ReactNode }) => {
+export const Trigger = ({ children }: { children?: ReactNode }) => {
   const context = useContext(TooltipContext);
   const [toObserver, setToObserver] = useState<HTMLElement | null>(null);
 
@@ -359,7 +270,7 @@ export const Trigger = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toObserver]);
 
-  if (!context) throw new GistUiError("tootipTrigger", 'must be used inside tooltip "Root"');
+  if (!context) throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   const childCount = Children.count(children);
   if (!childCount) return;
@@ -369,23 +280,118 @@ export const Trigger = ({ children }: { children: ReactNode }) => {
   return (
     <>
       {cloneElement(children, {
-        ref: mergeRefs(context.setReference, setToObserver as ForwardedRef<Element>),
+        ref: mergeRefs(context.setTriggerElement, setToObserver),
         "aria-describedby": context!.isOpen ? context!.tooltipId : undefined,
         tabIndex: 0,
         ...mergeProps(hoverProps, focusProps, pressProps, children.props),
+        id: context.tooltipId,
       } as Partial<unknown>)}
     </>
   );
 };
 
-Trigger.displayName = "gist-ui.TooltipTrigger";
+Trigger.displayName = "gist-ui.Trigger";
 
-export const Portal = ({ children, container }: { children: ReactNode; container: Element }) => {
+export const Portal = ({ children, container }: { children?: ReactNode; container?: Element }) => {
   const context = useContext(TooltipContext);
 
-  if (!context) throw new GistUiError("tootipTrigger", 'must be used inside tooltip "Root"');
+  if (!context) throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   return <>{context.isOpen && createPortal(children, container || document.body)}</>;
 };
 
-Portal.displayName = "gist-ui.TooltipPortal";
+Portal.displayName = "gist-ui.Portal";
+
+export interface ContentProps {
+  children?: ReactNode;
+  asChild?: boolean;
+  placement?: Placement;
+  classNames?: TooltipClassNames;
+  disableInteractive?: boolean;
+  arrow?: boolean;
+}
+
+export const Content = (props: ContentProps) => {
+  const {
+    children,
+    asChild,
+    placement: position,
+    disableInteractive,
+    classNames,
+    arrow: arrowProp = true,
+  } = props;
+
+  const context = useContext(TooltipContext);
+  const arrowRef = useRef<HTMLDivElement | null>(null);
+
+  const Component = asChild ? Slot : "div";
+
+  const { hoverProps: tooltipHoverProps } = useHover(
+    context?.isDisabled
+      ? { isDisabled: true }
+      : {
+          isDisabled: disableInteractive,
+          onHoverStart: () => {
+            context?.showTooltip(true);
+          },
+          onHoverEnd: () => {
+            context?.hideTooltip();
+          },
+        },
+  );
+
+  const { refs, floatingStyles, middlewareData, placement } = useFloating({
+    elements: { reference: context?.triggerElement },
+    open: context?.isOpen,
+    whileElementsMounted: autoUpdate,
+    placement: position,
+    middleware: [
+      offset({ mainAxis: 10, alignmentAxis: 5 }),
+      shift({
+        limiter: limitShift({ offset: 10 }),
+      }),
+      flip(),
+      arrow({ element: arrowRef, padding: 10 }),
+      hide(),
+    ],
+  });
+
+  if (!context) throw new GistUiError("Content", 'must be used inside "Root"');
+
+  const styles = tooltip();
+
+  const [side] = placement.split("-") as [Side, Alignment];
+  const isVerticalSide = side === "bottom" || side === "top";
+
+  return (
+    <Component
+      ref={refs.setFloating}
+      id={context.tooltipId}
+      role="tooltip"
+      className={styles.base({ className: classNames?.base })}
+      {...tooltipHoverProps}
+      style={{
+        ...floatingStyles,
+        visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
+      }}
+      data-side={placement.split("-")[0]}
+    >
+      {!arrowProp ? null : (
+        <div
+          ref={arrowRef}
+          style={{
+            [isVerticalSide ? "left" : "top"]: isVerticalSide
+              ? middlewareData.arrow?.x
+              : middlewareData.arrow?.y,
+            [side]: "calc(100% - 1px)",
+          }}
+          className={styles.arrow({ className: classNames?.arrow })}
+        />
+      )}
+
+      {children}
+    </Component>
+  );
+};
+
+Content.displayName = "gist-ui.Content";
