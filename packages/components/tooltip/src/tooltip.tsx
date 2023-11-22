@@ -199,7 +199,11 @@ export const Root = (props: RootProps) => {
 
 Root.displayName = "gist-ui.Root";
 
-export const Trigger = ({ children }: { children?: ReactNode }) => {
+export interface TriggerProps {
+  children?: ReactNode;
+}
+
+export const Trigger = ({ children }: TriggerProps) => {
   const context = useContext(TooltipContext);
   const [toObserver, setToObserver] = useState<HTMLElement | null>(null);
 
@@ -296,7 +300,12 @@ export const Trigger = ({ children }: { children?: ReactNode }) => {
 
 Trigger.displayName = "gist-ui.Trigger";
 
-export const Portal = ({ children, container }: { children?: ReactNode; container?: Element }) => {
+export interface PortalProps {
+  children?: ReactNode;
+  container?: Element;
+}
+
+export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(TooltipContext);
 
   if (!context) throw new GistUiError("Trigger", 'must be used inside "Root"');

@@ -1,7 +1,7 @@
 import * as tooltip from "./tooltip";
 
 // export types
-export type { ContentProps, RootProps } from "./tooltip";
+export type { ContentProps, RootProps, PortalProps, TriggerProps } from "./tooltip";
 
 // export component
 export const Root = tooltip.Root;
