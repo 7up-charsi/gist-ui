@@ -235,6 +235,8 @@ export const Trigger = ({ children }: { children?: ReactNode }) => {
   const { focusProps } = useFocus({
     isDisabled: context?.isDisabled,
     onFocus: () => {
+      if (context?.trigger === "hover") return;
+
       if (isFocusVisible) {
         context!.isFocused.current = true;
         context!.isHovered.current = false;
@@ -242,6 +244,8 @@ export const Trigger = ({ children }: { children?: ReactNode }) => {
       }
     },
     onBlur: () => {
+      if (context?.trigger === "hover") return;
+
       context!.isFocused.current = false;
       context!.isHovered.current = false;
       context!.handleHide(true);

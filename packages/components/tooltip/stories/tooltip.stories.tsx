@@ -16,6 +16,10 @@ const meta: Meta = {
       control: "select",
       options: Object.keys(tooltip.variants.rounded),
     },
+    trigger: {
+      control: "select",
+      options: ["none", "focus", "hover"],
+    },
     placement: {
       control: "select",
       options: [
@@ -33,10 +37,6 @@ const meta: Meta = {
         "left-end",
       ],
     },
-    showDelay: { control: "number" },
-    hideDelay: { control: "number" },
-    disableInteractive: { control: "boolean" },
-    arrow: { control: "boolean" },
   },
 };
 
@@ -44,12 +44,29 @@ export default meta;
 
 const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => (
   <div className="h-[300vh] flex items-center justify-center">
-    <Tooltip.Root {...args}>
+    <Tooltip.Root
+      color={args.color}
+      defaultOpen={args.defaultOpen}
+      hideDelay={args.hideDelay}
+      rounded={args.rounded}
+      showDelay={args.showDelay}
+      trigger={args.trigger}
+    >
       <Tooltip.Trigger>
         <button className="p-10 border">button</button>
       </Tooltip.Trigger>
       <Tooltip.Portal>
-        <Tooltip.Content>i am tooltip content</Tooltip.Content>
+        <Tooltip.Content
+          arrow={args.arrow}
+          arrowPadding={args.arrowPadding}
+          disableInteractive={args.disableInteractive}
+          offsetAlignmentAxis={args.offsetAlignmentAxis}
+          offsetMainAxis={args.offsetMainAxis}
+          shiftOffset={args.shiftOffset}
+          placement={args.placement}
+        >
+          i am tooltip content
+        </Tooltip.Content>
       </Tooltip.Portal>
     </Tooltip.Root>
   </div>
@@ -60,5 +77,13 @@ export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
   args: {
     defaultOpen: true,
     placement: "top-start",
+    showDelay: 100,
+    hideDelay: 300,
+    offsetMainAxis: 10,
+    offsetAlignmentAxis: 5,
+    shiftOffset: 10,
+    arrowPadding: 10,
+    disableInteractive: false,
+    arrow: true,
   },
 };
