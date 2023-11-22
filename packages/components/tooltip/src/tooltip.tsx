@@ -370,6 +370,8 @@ export const Content = (props: ContentProps) => {
 
   if (!context) throw new GistUiError("Content", 'must be used inside "Root"');
 
+  if (asChild && !isValidElement(children)) throw new GistUiError("Content", validChildError);
+
   const styles = tooltip();
 
   const [side] = placement.split("-") as [Side, Alignment];
@@ -388,20 +390,45 @@ export const Content = (props: ContentProps) => {
       }}
       data-side={placement.split("-")[0]}
     >
-      {!arrowProp ? null : (
-        <div
-          ref={arrowRef}
-          style={{
-            [isVerticalSide ? "left" : "top"]: isVerticalSide
-              ? middlewareData.arrow?.x
-              : middlewareData.arrow?.y,
-            [side]: "calc(100% - 1px)",
-          }}
-          className={styles.arrow({ className: classNames?.arrow })}
-        />
-      )}
+      {asChild && isValidElement(children) ? (
+        cloneElement(children, {
+          children: (
+            <>
+              {!arrowProp ? null : (
+                <div
+                  ref={arrowRef}
+                  style={{
+                    [isVerticalSide ? "left" : "top"]: isVerticalSide
+                      ? middlewareData.arrow?.x
+                      : middlewareData.arrow?.y,
+                    [side]: "calc(100% - 1px)",
+                  }}
+                  className={styles.arrow({ className: classNames?.arrow })}
+                />
+              )}
 
-      {children}
+              {children.props.children}
+            </>
+          ),
+        } as Partial<unknown>)
+      ) : (
+        <>
+          {!arrowProp ? null : (
+            <div
+              ref={arrowRef}
+              style={{
+                [isVerticalSide ? "left" : "top"]: isVerticalSide
+                  ? middlewareData.arrow?.x
+                  : middlewareData.arrow?.y,
+                [side]: "calc(100% - 1px)",
+              }}
+              className={styles.arrow({ className: classNames?.arrow })}
+            />
+          )}
+
+          {children}
+        </>
+      )}
     </Component>
   );
 };
