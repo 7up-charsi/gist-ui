@@ -2,11 +2,10 @@ import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { tooltip } from "@gist-ui/theme";
 
-import { Tooltip, TooltipProps } from "../src";
+import * as Tooltip from "../src";
 
-const meta: Meta<TooltipProps> = {
+const meta: Meta<Tooltip.TooltipProps> = {
   title: "Components/Tooltip",
-  component: Tooltip,
   args: tooltip.defaultVariants,
   argTypes: {
     color: {
@@ -39,15 +38,19 @@ const meta: Meta<TooltipProps> = {
 
 export default meta;
 
-const Template = (args: TooltipProps) => (
+const Template = (args: Tooltip.TooltipProps) => (
   <div className="h-[300vh] flex items-center justify-center">
-    <Tooltip {...args}>
-      <button className="p-10 border">button</button>
-    </Tooltip>
+    <Tooltip.Root {...args}>
+      <Tooltip.Trigger>
+        <button className="p-10 border" disabled={args.disabled}>
+          button
+        </button>
+      </Tooltip.Trigger>
+    </Tooltip.Root>
   </div>
 );
 
-export const Default: StoryObj<TooltipProps> = {
+export const Default: StoryObj<Tooltip.TooltipProps> = {
   render: Template,
   args: {
     title: "i'm tooltip text content",
@@ -56,5 +59,6 @@ export const Default: StoryObj<TooltipProps> = {
     hideDelay: 300,
     defaultOpen: true,
     placement: "top-start",
+    disabled: false,
   },
 };

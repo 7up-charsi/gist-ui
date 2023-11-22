@@ -4,4 +4,5 @@ import * as tooltip from "./tooltip";
 export type { TooltipProps } from "./tooltip";
 
 // export component
-export const Tooltip = tooltip.default;
+export const Root = tooltip.Root;
+export const Trigger = tooltip.Trigger;

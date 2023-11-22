@@ -6,14 +6,21 @@ import { useControllableState } from "@gist-ui/use-controllable-state";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import {
   Children,
+  Dispatch,
+  ForwardedRef,
+  MutableRefObject,
   ReactNode,
+  SetStateAction,
   cloneElement,
+  createContext,
   forwardRef,
   isValidElement,
   useCallback,
+  useContext,
   useEffect,
   useId,
   useRef,
+  useState,
 } from "react";
 import {
   useFloating,
@@ -29,15 +36,17 @@ import {
   hide,
   HideOptions,
   Placement,
+  ReferenceType,
 } from "@floating-ui/react-dom";
 
 type Alignment = "start" | "end";
 type Side = "top" | "right" | "bottom" | "left";
 
+type Trigger = "hover" | "focus";
+
 export interface TooltipProps extends TooltipVariantProps {
   children?: ReactNode;
   title?: string;
-  disabled?: boolean;
   classNames?: TooltipClassNames;
   placement?: Placement;
   middlewareOptions?: {
@@ -49,7 +58,7 @@ export interface TooltipProps extends TooltipVariantProps {
   disableInteractive?: boolean;
   showDelay?: number;
   hideDelay?: number;
-  trigger?: "hover" | "focus";
+  trigger?: Trigger;
   arrowHide?: boolean;
   isOpen?: boolean;
   defaultOpen?: boolean;
@@ -57,11 +66,26 @@ export interface TooltipProps extends TooltipVariantProps {
   portalContainer?: Element;
 }
 
-const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
+interface Context {
+  handleShow: (a?: boolean) => void;
+  handleHide: (a?: boolean) => void;
+  trigger?: Trigger;
+  isHovered: MutableRefObject<boolean>;
+  isFocused: MutableRefObject<boolean>;
+  tooltipId: string;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  isDisabled: boolean;
+  setIsDisabled: Dispatch<SetStateAction<boolean>>;
+  setReference: (node: ReferenceType | null) => void;
+}
+
+const TooltipContext = createContext<Context | null>(null);
+
+export const Root = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   const {
     title,
     children,
-    disabled,
     classNames,
     middlewareOptions,
     placement: position,
@@ -82,6 +106,8 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
+
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const tooltipId = useId();
   const arrowRef = useRef<HTMLDivElement>(null);
@@ -138,6 +164,8 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   };
 
   useEffect(() => {
+    if (!isDisabled) return;
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopPropagation();
@@ -151,7 +179,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
         document.removeEventListener("keydown", onKeyDown, true);
       };
     }
-  }, [hideTooltip, isOpen]);
+  }, [hideTooltip, isDisabled, isOpen]);
 
   useEffect(() => {
     return () => {
@@ -183,58 +211,19 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     ],
   });
 
-  const { hoverProps: tooltipHoverProps } = useHover({
-    isDisabled: disableInteractive,
-    onHoverStart: () => {
-      showTooltip(true);
-    },
-    onHoverEnd: () => {
-      hideTooltip();
-    },
-  });
-
-  const { hoverProps } = useHover({
-    isDisabled: disabled,
-    onHoverStart: () => {
-      if (trigger === "focus") return;
-
-      isHovered.current = true;
-      isFocused.current = false;
-
-      handleShow();
-    },
-    onHoverEnd: () => {
-      if (trigger === "focus") return;
-
-      isFocused.current = false;
-      isHovered.current = false;
-      handleHide();
-    },
-  });
-
-  const { pressProps } = usePress({
-    onPressStart: () => {
-      isFocused.current = false;
-      isHovered.current = false;
-      handleHide(true);
-    },
-  });
-
-  const { isFocusVisible } = useFocusVisible();
-  const { focusProps } = useFocus({
-    onFocus: () => {
-      if (isFocusVisible) {
-        isFocused.current = true;
-        isHovered.current = false;
-        handleShow(true);
-      }
-    },
-    onBlur: () => {
-      isFocused.current = false;
-      isHovered.current = false;
-      handleHide(true);
-    },
-  });
+  const { hoverProps: tooltipHoverProps } = useHover(
+    isDisabled
+      ? { isDisabled: true }
+      : {
+          isDisabled: disableInteractive,
+          onHoverStart: () => {
+            showTooltip(true);
+          },
+          onHoverEnd: () => {
+            hideTooltip();
+          },
+        },
+  );
 
   const styles = tooltip(props);
 
@@ -242,13 +231,6 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   if (!childCount) return;
   if (childCount > 1) throw new GistUiError("tooltip", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("tooltip", validChildError);
-
-  const tooltipTrigger = cloneElement(children, {
-    ref: refs.setReference,
-    "aria-describedby": isOpen ? tooltipId : undefined,
-    tabIndex: 0,
-    ...mergeProps(children.props, hoverProps, focusProps, pressProps),
-  } as Partial<unknown>);
 
   const [side] = placement.split("-") as [Side, Alignment];
 
@@ -282,17 +264,128 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   );
 
   return (
-    <>
-      {tooltipTrigger}
+    <TooltipContext.Provider
+      value={{
+        handleShow,
+        handleHide,
+        trigger,
+        isHovered,
+        isFocused,
+        tooltipId,
+        isOpen,
+        setIsOpen,
+        setReference: refs.setReference,
+        isDisabled,
+        setIsDisabled,
+      }}
+    >
+      {children}
 
-      {isOpen &&
-        !disabled &&
-        !children.props.disabled &&
-        createPortal(tooltipHtml, portalContainer)}
-    </>
+      {isOpen && createPortal(tooltipHtml, portalContainer)}
+    </TooltipContext.Provider>
   );
 });
 
-Tooltip.displayName = "gist-ui.Tooltip";
+Root.displayName = "gist-ui.TooltipRoot";
 
-export default Tooltip;
+export const Trigger = ({ children }: { children: ReactNode }) => {
+  const context = useContext(TooltipContext);
+  const [toObserver, setToObserver] = useState<HTMLElement | null>(null);
+
+  const { hoverProps } = useHover({
+    isDisabled: context?.isDisabled,
+    onHoverStart: () => {
+      if (context!.trigger === "focus") return;
+
+      context!.isHovered.current = true;
+      context!.isFocused.current = false;
+
+      context!.handleShow();
+    },
+    onHoverEnd: () => {
+      if (context!.trigger === "focus") return;
+
+      context!.isFocused.current = false;
+      context!.isHovered.current = false;
+      context!.handleHide();
+    },
+  });
+
+  const { pressProps } = usePress({
+    isDisabled: context?.isDisabled,
+    onPressStart: () => {
+      context!.isFocused.current = false;
+      context!.isHovered.current = false;
+      context!.handleHide(true);
+    },
+  });
+
+  const { isFocusVisible } = useFocusVisible();
+  const { focusProps } = useFocus({
+    isDisabled: context?.isDisabled,
+    onFocus: () => {
+      if (isFocusVisible) {
+        context!.isFocused.current = true;
+        context!.isHovered.current = false;
+        context!.handleShow(true);
+      }
+    },
+    onBlur: () => {
+      context!.isFocused.current = false;
+      context!.isHovered.current = false;
+      context!.handleHide(true);
+    },
+  });
+
+  useEffect(() => {
+    if (!toObserver) return;
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if ((mutation.target as unknown as { disabled?: boolean }).disabled) {
+          context?.setIsOpen(false);
+          context?.setIsDisabled(true);
+        } else {
+          context?.setIsDisabled(false);
+        }
+      }
+    });
+
+    observer.observe(toObserver, { attributeFilter: ["disabled"] });
+
+    return () => {
+      observer.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toObserver]);
+
+  if (!context) throw new GistUiError("tootipTrigger", 'must be used inside tooltip "Root"');
+
+  const childCount = Children.count(children);
+  if (!childCount) return;
+  if (childCount > 1) throw new GistUiError("tooltip", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("tooltip", validChildError);
+
+  return (
+    <>
+      {cloneElement(children, {
+        ref: mergeRefs(context.setReference, setToObserver as ForwardedRef<Element>),
+        "aria-describedby": context!.isOpen ? context!.tooltipId : undefined,
+        tabIndex: 0,
+        ...mergeProps(hoverProps, focusProps, pressProps, children.props),
+      } as Partial<unknown>)}
+    </>
+  );
+};
+
+Trigger.displayName = "gist-ui.TooltipTrigger";
+
+export const Portal = ({ children, container }: { children: ReactNode; container: Element }) => {
+  const context = useContext(TooltipContext);
+
+  if (!context) throw new GistUiError("tootipTrigger", 'must be used inside tooltip "Root"');
+
+  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
+};
+
+Portal.displayName = "gist-ui.TooltipPortal";
