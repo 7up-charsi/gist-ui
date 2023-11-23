@@ -223,6 +223,9 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot

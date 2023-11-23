@@ -13,12 +13,12 @@ const dialog = tv({
   variants: {
     backdrop: {
       opaque: {
-        base: "bg-overlay/50 backdrop-opacity-50",
+        backdrop: "bg-overlay/50 backdrop-opacity-50",
       },
       blur: {
-        base: "backdrop-blur-md backdrop-saturate-150 bg-overlay/30",
+        backdrop: "backdrop-blur-md backdrop-saturate-150 bg-overlay/30",
       },
-      transparent: { base: "hidden" },
+      transparent: { backdrop: "hidden" },
     },
     variant: {
       solid: {

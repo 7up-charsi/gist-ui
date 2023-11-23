@@ -3,52 +3,57 @@ import { Meta, StoryObj } from "@storybook/react";
 import { dialog } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
 
-import { Dialog, DialogTrigger, DialogProps, DialogContent, DialogPortal } from "../src";
+import * as Dialog from "../src";
 
-const meta: Meta<DialogProps> = {
+const meta: Meta = {
   title: "Components/Dialog",
-  component: Dialog,
 };
 
 export default meta;
 
-export const Default: StoryObj<DialogProps> = {
-  render: (args) => {
-    const { base, container, body, footer, header, backdrop } = dialog({});
+const DialogTemplate = (args) => {
+  const styles = dialog({});
 
-    return (
-      <Dialog {...args}>
-        <DialogTrigger>
-          <button>open dialog</button>
-        </DialogTrigger>
+  return (
+    <Dialog.Root {...args}>
+      <Dialog.Trigger>
+        <button>open dialog</button>
+      </Dialog.Trigger>
 
-        <DialogPortal>
-          <div className={backdrop()} />
+      <Dialog.Portal>
+        <div className={styles.backdrop()} />
 
-          <DialogContent classNames={{ base: base(), container: container() }}>
-            <div className={header()}>header</div>
+        <div className={styles.container()}>
+          <Dialog.Content>
+            <div className={styles.base()}>
+              <div className={styles.header()}>header</div>
 
-            <div className={body()}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores similique
-              accusantium est esse, illo fugiat aut sequi ipsum magnam laborum provident delectus
-              quaerat reprehenderit nihil porro ratione cupiditate ipsam nam odio animi blanditiis
-              nobis nisi! id
+              <div className={styles.body()}>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
+                similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum provident
+                delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam nam odio animi
+                blanditiis nobis nisi! id
+              </div>
+
+              <div className={styles.footer()}>
+                <Dialog.Trigger close>
+                  <Button variant="text" color="danger">
+                    Close
+                  </Button>
+                </Dialog.Trigger>
+
+                <Button color="success">Agree</Button>
+              </div>
             </div>
+          </Dialog.Content>
+        </div>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+};
 
-            <div className={footer()}>
-              <DialogTrigger close>
-                <Button variant="text" color="danger">
-                  Close
-                </Button>
-              </DialogTrigger>
-
-              <Button color="success">Agree</Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
-    );
-  },
+export const Default: StoryObj = {
+  render: DialogTemplate,
   args: {
     defaultOpen: true,
     modal: true,

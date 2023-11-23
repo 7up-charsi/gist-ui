@@ -1,6 +1,6 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
-import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
+import { mergeProps } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
@@ -12,7 +12,6 @@ import {
   ReactNode,
   cloneElement,
   createContext,
-  forwardRef,
   isValidElement,
   useCallback,
   useContext,
@@ -24,12 +23,11 @@ type Reason = "pointer" | "escape" | "outside";
 
 type CloseEvent = { preventDefault(): void };
 
-export interface DialogProps {
+export interface RootProps {
   children?: ReactNode;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   defaultOpen?: boolean;
-  modal?: boolean;
   onClose?: (event: CloseEvent, reason: Reason) => void;
 }
 
@@ -38,22 +36,14 @@ interface Context {
   handleOpen: () => void;
   handleClose: (reason: Reason) => void;
   isOpen: boolean;
-  modal?: boolean;
 }
 
 const SCOPE_NAME = "Dialog";
 
 const DialogContext = createContext<Context | null>(null);
 
-const Dialog = (props: DialogProps) => {
-  const {
-    children,
-    modal = true,
-    isOpen: isOpenProp,
-    defaultOpen,
-    onOpenChange,
-    onClose: onCloseProp,
-  } = props;
+export const Root = (props: RootProps) => {
+  const { children, isOpen: isOpenProp, defaultOpen, onOpenChange, onClose: onCloseProp } = props;
 
   const onClose = useCallbackRef(onCloseProp);
 
@@ -106,7 +96,6 @@ const Dialog = (props: DialogProps) => {
           handleClose,
           handleOpen,
           isOpen,
-          modal,
         }}
       >
         {children}
@@ -115,11 +104,14 @@ const Dialog = (props: DialogProps) => {
   );
 };
 
-Dialog.displayName = "gist-ui.Dialog";
+Root.displayName = "gist-ui.Root";
 
-export default Dialog;
+export interface TriggerProps {
+  children: ReactNode;
+  close?: boolean;
+}
 
-export const DialogTrigger = (props: { children: ReactNode; close?: boolean }) => {
+export const Trigger = (props: TriggerProps) => {
   const { children, close } = props;
 
   const context = useContext(DialogContext);
@@ -137,12 +129,12 @@ export const DialogTrigger = (props: { children: ReactNode; close?: boolean }) =
   });
 
   if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("DialogTrigger", 'must be child of "Dialog"');
+    throw new GistUiError("Trigger", 'must be child of "Root"');
 
   const childCount = Children.count(children);
   if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("DialogTrigger", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("DialogTrigger", validChildError);
+  if (childCount > 1) throw new GistUiError("Trigger", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("Trigger", validChildError);
 
   return (
     <>
@@ -153,33 +145,38 @@ export const DialogTrigger = (props: { children: ReactNode; close?: boolean }) =
   );
 };
 
-export const DialogPortal = (props: { children?: ReactNode; container?: HTMLElement }) => {
+Trigger.displayName = "gist-ui.Trigger";
+
+export interface PortalProps {
+  children?: ReactNode;
+  container?: HTMLElement;
+}
+
+export const Portal = (props: PortalProps) => {
   const { children, container = document.body } = props;
 
   const context = useContext(DialogContext);
 
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("DialogPortal", 'must be child of "Dialog"');
+  if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Portal", 'must be child of "Root"');
 
   return context?.isOpen ? createPortal(children, container) : null;
 };
 
-interface DialogContentProps extends Omit<FocusTrapProps, "loop" | "trapped"> {
+Portal.displayName = "gist-ui.Portal";
+
+export interface ContentProps extends Omit<FocusTrapProps, "loop" | "trapped" | "asChild"> {
   children?: ReactNode;
-  classNames?: {
-    container?: string;
-    base?: string;
-  };
+  modal?: boolean;
 }
 
-export const DialogContent = (props: DialogContentProps) => {
-  const { children, classNames, onMountAutoFocus, onUnmountAutoFocus } = props;
+export const Content = (props: ContentProps) => {
+  const { children, onMountAutoFocus, onUnmountAutoFocus, modal = true } = props;
 
   const context = useContext(DialogContext);
   const dialogRef = useRef<HTMLDivElement | null>(null);
 
   useClickOutside<HTMLDivElement>({
-    isDisabled: !context?.isOpen,
+    disabled: !context?.isOpen,
     ref: dialogRef,
     callback: () => {
       context?.handleClose("outside");
@@ -187,22 +184,28 @@ export const DialogContent = (props: DialogContentProps) => {
   });
 
   if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("DialogContent", 'must be child of "Dialog"');
+    throw new GistUiError("Content", 'must be child of "Root"');
+
+  const childCount = Children.count(children);
+  if (!childCount) return;
+  if (childCount > 1) throw new GistUiError("Content", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
   return (
-    <div className={classNames?.container}>
-      <FocusTrap
-        ref={dialogRef}
-        role="dialog"
-        className={classNames?.base}
-        aria-modal={context?.modal}
-        loop={context?.modal}
-        trapped={context?.modal}
-        onMountAutoFocus={onMountAutoFocus}
-        onUnmountAutoFocus={onUnmountAutoFocus}
-      >
-        {children}
-      </FocusTrap>
-    </div>
+    <FocusTrap
+      ref={dialogRef}
+      loop={modal}
+      trapped={modal}
+      onMountAutoFocus={onMountAutoFocus}
+      onUnmountAutoFocus={onUnmountAutoFocus}
+      asChild
+    >
+      {cloneElement(children, {
+        role: "dialog",
+        "aria-modal": modal,
+      } as Partial<unknown>)}
+    </FocusTrap>
   );
 };
+
+Content.displayName = "gist-ui.Content";
