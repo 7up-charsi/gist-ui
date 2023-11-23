@@ -12,12 +12,12 @@ const meta: Meta = {
 
 export default meta;
 
-const DialogTemplate = (args) => {
+const DialogTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
   const styles = dialog({});
 
   return (
     <FocusTrapScopeProvider>
-      <Dialog.Root {...args}>
+      <Dialog.Root defaultOpen={args.defaultOpen}>
         <Dialog.Trigger>
           <button>open dialog</button>
         </Dialog.Trigger>
@@ -26,7 +26,7 @@ const DialogTemplate = (args) => {
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>
-            <Dialog.Content>
+            <Dialog.Content modal={args.modal}>
               <div className={styles.base()}>
                 <div className={styles.header()}>header</div>
 
@@ -72,12 +72,12 @@ export const Default: StoryObj = {
   },
 };
 
-const NestedTemplate = (args) => {
+const NestedTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
   const styles = dialog({});
 
   return (
     <FocusTrapScopeProvider>
-      <Dialog.Root {...args}>
+      <Dialog.Root defaultOpen={args.defaultOpen}>
         <Dialog.Trigger>
           <button>open dialog</button>
         </Dialog.Trigger>
@@ -86,7 +86,7 @@ const NestedTemplate = (args) => {
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>
-            <Dialog.Content>
+            <Dialog.Content modal={args.modal}>
               <div className={styles.base()}>
                 <div className={styles.header()}>header</div>
 
