@@ -1,7 +1,8 @@
-import { ReactNode, useRef } from "react";
+import { ReactNode, forwardRef, useRef } from "react";
 import { UseScrollOverflowProps, useScrollOverflow } from "@gist-ui/use-scroll-overflow";
 import { ScrollShadowClassNames, ScrollShadowVariantProps, scrollShadow } from "@gist-ui/theme";
 import { Slot } from "@gist-ui/slot";
+import { mergeRefs } from "@gist-ui/react-utils";
 
 export interface ScrollShadowProps
   extends ScrollShadowVariantProps,
@@ -11,7 +12,7 @@ export interface ScrollShadowProps
   asChild?: boolean;
 }
 
-const ScrollShadow = (props: ScrollShadowProps) => {
+const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) => {
   const {
     direction,
     children,
@@ -25,11 +26,11 @@ const ScrollShadow = (props: ScrollShadowProps) => {
 
   const Component = asChild ? Slot : "div";
 
-  const ref = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
   useScrollOverflow({
     direction,
-    ref: ref,
+    ref: innerRef,
     disabled,
     offset,
     onVisibilityChange,
@@ -39,11 +40,11 @@ const ScrollShadow = (props: ScrollShadowProps) => {
   const { base } = scrollShadow({ direction });
 
   return (
-    <Component ref={ref} className={base({ className: classNames?.base })}>
+    <Component ref={mergeRefs(ref, innerRef)} className={base({ className: classNames?.base })}>
       {children}
     </Component>
   );
-};
+});
 
 ScrollShadow.displayName = "gist-ui.ScrollShadow";
 

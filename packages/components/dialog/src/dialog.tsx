@@ -43,6 +43,8 @@ const SCOPE_NAME = "Dialog";
 
 const DialogContext = createContext<Context | null>(null);
 
+// *-*-*-*-* Root *-*-*-*-*
+
 export const Root = (props: RootProps) => {
   const { children, isOpen: isOpenProp, defaultOpen, onOpenChange, onClose: onCloseProp } = props;
 
@@ -120,6 +122,8 @@ export const Root = (props: RootProps) => {
 
 Root.displayName = "gist-ui.Root";
 
+// *-*-*-*-* Trigger *-*-*-*-*
+
 export interface TriggerProps {
   children: ReactNode;
   close?: boolean;
@@ -161,6 +165,8 @@ export const Trigger = (props: TriggerProps) => {
 
 Trigger.displayName = "gist-ui.Trigger";
 
+// *-*-*-*-* Portal *-*-*-*-*
+
 export interface PortalProps {
   children?: ReactNode;
   container?: HTMLElement;
@@ -177,6 +183,8 @@ export const Portal = (props: PortalProps) => {
 };
 
 Portal.displayName = "gist-ui.Portal";
+
+// *-*-*-*-* Content *-*-*-*-*
 
 export interface ContentProps extends Omit<FocusTrapProps, "loop" | "trapped" | "asChild"> {
   children?: ReactNode;

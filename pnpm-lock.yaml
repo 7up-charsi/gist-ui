@@ -298,6 +298,9 @@ importers:
 
   packages/components/scroll-shadow:
     dependencies:
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot

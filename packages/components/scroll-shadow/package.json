@@ -40,7 +40,8 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-scroll-overflow": "workspace:*",
-    "@gist-ui/slot": "workspace:*"
+    "@gist-ui/slot": "workspace:*",
+    "@gist-ui/react-utils": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

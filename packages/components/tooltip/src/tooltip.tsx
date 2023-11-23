@@ -13,6 +13,7 @@ import {
   SetStateAction,
   cloneElement,
   createContext,
+  forwardRef,
   isValidElement,
   useCallback,
   useContext,
@@ -69,6 +70,8 @@ interface TooltipContext {
 const TooltipContext = createContext<TooltipContext | null>(null);
 
 const SCOPE_NAME = "Tooltip";
+
+// *-*-*-*-* Root *-*-*-*-*
 
 export const Root = (props: RootProps) => {
   const {
@@ -203,6 +206,8 @@ export const Root = (props: RootProps) => {
 
 Root.displayName = "gist-ui.Root";
 
+// *-*-*-*-* Trigger *-*-*-*-*
+
 export interface TriggerProps {
   children?: ReactNode;
 }
@@ -304,6 +309,8 @@ export const Trigger = ({ children }: TriggerProps) => {
 
 Trigger.displayName = "gist-ui.Trigger";
 
+// *-*-*-*-* Portal *-*-*-*-*
+
 export interface PortalProps {
   children?: ReactNode;
   container?: Element;
@@ -319,6 +326,8 @@ export const Portal = ({ children, container }: PortalProps) => {
 
 Portal.displayName = "gist-ui.Portal";
 
+// *-*-*-*-* Content *-*-*-*-*
+
 export interface ContentProps {
   children?: ReactNode;
   asChild?: boolean;
@@ -332,7 +341,7 @@ export interface ContentProps {
   arrowPadding?: number;
 }
 
-export const Content = (props: ContentProps) => {
+export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => {
   const {
     children,
     asChild,
@@ -392,7 +401,7 @@ export const Content = (props: ContentProps) => {
 
   return (
     <Component
-      ref={refs.setFloating}
+      ref={mergeRefs(ref, refs.setFloating)}
       id={context.tooltipId}
       role="tooltip"
       className={styles.base({ className: classNames?.base })}
@@ -444,6 +453,6 @@ export const Content = (props: ContentProps) => {
       )}
     </Component>
   );
-};
+});
 
 Content.displayName = "gist-ui.Content";
