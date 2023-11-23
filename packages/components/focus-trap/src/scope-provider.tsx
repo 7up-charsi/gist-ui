@@ -6,17 +6,17 @@ export interface FocusTrapScope {
   resume(): void;
 }
 
-interface Context {
+export const FocusTrapScopeContext = createContext<{
   add(scope: FocusTrapScope): void;
   remove(scope: FocusTrapScope): void;
-}
+} | null>(null);
 
-export const FocusTrapScopeContext = createContext<Context | null>(null);
-
-const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
+export const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
   const { children } = props;
 
-  const [, setScope] = useState<FocusTrapScope[]>([]);
+  const [scope, setScope] = useState<FocusTrapScope[]>([]);
+
+  console.log(scope);
 
   return (
     <FocusTrapScopeContext.Provider
@@ -25,7 +25,7 @@ const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
           setScope((p) => [
             toAddScope,
             ...p.filter((sc, i) => {
-              if (i === 0) {
+              if (i === 0 && sc !== toAddScope) {
                 sc.pause();
               }
 
@@ -48,5 +48,3 @@ const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
     </FocusTrapScopeContext.Provider>
   );
 };
-
-export default FocusTrapScopeProvider;

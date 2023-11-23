@@ -12,7 +12,11 @@ const meta: Meta = {
 
 export default meta;
 
-const DialogTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
+const DialogTemplate = (args: {
+  defaultOpen?: boolean;
+  modal?: boolean;
+  keepMounted?: boolean;
+}) => {
   const styles = dialog({});
 
   return (
@@ -22,7 +26,7 @@ const DialogTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
           <button>open dialog</button>
         </Dialog.Trigger>
 
-        <Dialog.Portal>
+        <Dialog.Portal keepMounted={args.keepMounted}>
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>
@@ -69,10 +73,15 @@ export const Default: StoryObj = {
   args: {
     defaultOpen: true,
     modal: true,
+    keepMounted: false,
   },
 };
 
-const NestedTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
+const NestedTemplate = (args: {
+  defaultOpen?: boolean;
+  modal?: boolean;
+  keepMounted?: boolean;
+}) => {
   const styles = dialog({});
 
   return (
@@ -82,7 +91,7 @@ const NestedTemplate = (args: { defaultOpen?: boolean; modal?: boolean }) => {
           <button>open dialog</button>
         </Dialog.Trigger>
 
-        <Dialog.Portal>
+        <Dialog.Portal keepMounted={args.keepMounted}>
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>
@@ -205,5 +214,6 @@ export const Nested: StoryObj = {
   args: {
     defaultOpen: true,
     modal: true,
+    keepMounted: false,
   },
 };

@@ -4,7 +4,12 @@ import { mergeProps } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { FocusTrap, FocusTrapProps, FocusTrapScope } from "@gist-ui/focus-trap";
+import {
+  FocusTrap,
+  FocusTrapProps,
+  FocusTrapScope,
+  FocusTrapScopeContext,
+} from "@gist-ui/focus-trap";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
 import {
@@ -170,14 +175,34 @@ Trigger.displayName = "gist-ui.Trigger";
 export interface PortalProps {
   children?: ReactNode;
   container?: HTMLElement;
+  keepMounted?: boolean;
 }
 
 export const Portal = (props: PortalProps) => {
-  const { children, container = document.body } = props;
-
+  const { children, keepMounted, container = document.body } = props;
+  const scopeContext = useContext(FocusTrapScopeContext);
   const context = useContext(DialogContext);
 
+  useEffect(() => {
+    if (!keepMounted) return;
+    if (!context) return;
+
+    if (context?.isOpen) {
+      scopeContext?.add(context.scope);
+    } else {
+      scopeContext?.remove(context.scope);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keepMounted, context?.isOpen]);
+
   if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Portal", 'must be child of "Root"');
+
+  if (keepMounted) {
+    return createPortal(
+      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>{children}</div>,
+      container,
+    );
+  }
 
   return context?.isOpen ? createPortal(children, container) : null;
 };
