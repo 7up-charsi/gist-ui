@@ -16,22 +16,31 @@ export const FocusTrapScopeContext = createContext<Context | null>(null);
 const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
   const { children } = props;
 
-  const [scope, setScope] = useState<FocusTrapScope[]>([]);
+  const [, setScope] = useState<FocusTrapScope[]>([]);
 
   return (
     <FocusTrapScopeContext.Provider
       value={{
         add: (toAddScope: FocusTrapScope) => {
-          const activeScope = scope[0];
+          setScope((p) => [
+            toAddScope,
+            ...p.filter((sc, i) => {
+              if (i === 0) {
+                sc.pause();
+              }
 
-          if (toAddScope !== activeScope) {
-            activeScope.pause();
-          }
-
-          setScope((p) => [toAddScope, ...p.filter((sc) => sc !== toAddScope)]);
+              return sc !== toAddScope;
+            }),
+          ]);
         },
         remove: (toRemoveScope) => {
-          setScope((p) => p.filter((sc) => sc !== toRemoveScope));
+          setScope((p) =>
+            p.filter((sc, i) => {
+              if (sc === toRemoveScope) p[i + 1]?.resume();
+
+              return sc !== toRemoveScope;
+            }),
+          );
         },
       }}
     >

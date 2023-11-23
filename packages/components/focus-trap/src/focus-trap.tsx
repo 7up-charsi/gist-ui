@@ -21,6 +21,7 @@ export interface FocusTrapProps {
   onUnmountAutoFocus?: (event: Event) => void;
   children?: ReactNode;
   asChild?: boolean;
+  scope?: FocusTrapScope;
 }
 
 const AUTOFOCUS_ON_MOUNT = "focusTrapScope.autoFocusOnMount";
@@ -35,6 +36,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     onUnmountAutoFocus: onUnmountAutoFocusProp,
     asChild,
     children,
+    scope,
   } = props;
 
   const Component = asChild ? Slot : "div";
@@ -47,7 +49,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
 
   const focusScopeContext = useContext(FocusTrapScopeContext);
 
-  const focusScope = useRef<FocusTrapScope>({
+  const _scope = useRef<FocusTrapScope>({
     paused: false,
     pause() {
       this.paused = true;
@@ -56,6 +58,8 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       this.paused = false;
     },
   }).current;
+
+  const focusScope = scope || _scope;
 
   useEffect(() => {
     if (!trapped) return;
@@ -143,7 +147,8 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
 
       focusScopeContext?.remove(focusScope);
     };
-  }, [container, focusScope, focusScopeContext, onMountAutoFocus, onUnmountAutoFocus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [container, focusScope, onMountAutoFocus, onUnmountAutoFocus]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!loop) return;

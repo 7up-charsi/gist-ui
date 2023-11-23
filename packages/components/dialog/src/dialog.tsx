@@ -4,7 +4,7 @@ import { mergeProps } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
+import { FocusTrap, FocusTrapProps, FocusTrapScope } from "@gist-ui/focus-trap";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
 import {
@@ -36,6 +36,7 @@ interface Context {
   handleOpen: () => void;
   handleClose: (reason: Reason) => void;
   isOpen: boolean;
+  scope: FocusTrapScope;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -44,6 +45,16 @@ const DialogContext = createContext<Context | null>(null);
 
 export const Root = (props: RootProps) => {
   const { children, isOpen: isOpenProp, defaultOpen, onOpenChange, onClose: onCloseProp } = props;
+
+  const scope = useRef<FocusTrapScope>({
+    paused: false,
+    pause() {
+      this.paused = true;
+    },
+    resume() {
+      this.paused = false;
+    },
+  }).current;
 
   const onClose = useCallbackRef(onCloseProp);
 
@@ -59,6 +70,8 @@ export const Root = (props: RootProps) => {
 
   const handleClose = useCallback(
     (reason: Reason) => {
+      if (scope.paused) return;
+
       const eventObj = { defaultPrevented: false };
 
       const preventDefault = () => {
@@ -69,7 +82,7 @@ export const Root = (props: RootProps) => {
 
       if (!eventObj.defaultPrevented) setIsOpen(false);
     },
-    [onClose, setIsOpen],
+    [onClose, scope.paused, setIsOpen],
   );
 
   useEffect(() => {
@@ -96,6 +109,7 @@ export const Root = (props: RootProps) => {
           handleClose,
           handleOpen,
           isOpen,
+          scope,
         }}
       >
         {children}
@@ -198,6 +212,7 @@ export const Content = (props: ContentProps) => {
       trapped={modal}
       onMountAutoFocus={onMountAutoFocus}
       onUnmountAutoFocus={onUnmountAutoFocus}
+      scope={context.scope}
       asChild
     >
       {cloneElement(children, {
