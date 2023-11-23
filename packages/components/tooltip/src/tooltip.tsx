@@ -49,6 +49,7 @@ export interface RootProps extends TooltipVariantProps {
 }
 
 interface TooltipContext {
+  scope: string;
   handleShow: (a?: boolean) => void;
   handleHide: (a?: boolean) => void;
   showTooltip: (a?: boolean) => void;
@@ -66,6 +67,8 @@ interface TooltipContext {
 }
 
 const TooltipContext = createContext<TooltipContext | null>(null);
+
+const SCOPE_NAME = "Tooltip";
 
 export const Root = (props: RootProps) => {
   const {
@@ -176,6 +179,7 @@ export const Root = (props: RootProps) => {
   return (
     <TooltipContext.Provider
       value={{
+        scope: SCOPE_NAME,
         handleShow,
         handleHide,
         showTooltip,
@@ -278,7 +282,7 @@ export const Trigger = ({ children }: TriggerProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toObserver]);
 
-  if (!context) throw new GistUiError("Trigger", 'must be used inside "Root"');
+  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   const childCount = Children.count(children);
   if (!childCount) return;
@@ -308,7 +312,7 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(TooltipContext);
 
-  if (!context) throw new GistUiError("Trigger", 'must be used inside "Root"');
+  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Portal", 'must be used inside "Root"');
 
   return <>{context.isOpen && createPortal(children, container || document.body)}</>;
 };
@@ -377,7 +381,7 @@ export const Content = (props: ContentProps) => {
     ],
   });
 
-  if (!context) throw new GistUiError("Content", 'must be used inside "Root"');
+  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Content", 'must be used inside "Root"');
 
   if (asChild && !isValidElement(children)) throw new GistUiError("Content", validChildError);
 
