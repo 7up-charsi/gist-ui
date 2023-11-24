@@ -6,6 +6,7 @@ const config: StorybookConfig = {
   addons: [
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@storybook/addon-a11y"),
+    getAbsolutePath("@storybook/addon-themes"),
   ],
 
   framework: {
@@ -28,3 +29,5 @@ export default config;
 function getAbsolutePath(value: string): string {
   return dirname(require.resolve(join(value, "package.json")));
 }
+
+console.log(getAbsolutePath("@storybook/addon-essentials"));
