@@ -21,12 +21,12 @@ const DialogTemplate = (args: {
 
   return (
     <FocusTrapScopeProvider>
-      <Dialog.Root defaultOpen={args.defaultOpen}>
+      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
         <Dialog.Trigger>
           <button>open dialog</button>
         </Dialog.Trigger>
 
-        <Dialog.Portal keepMounted={args.keepMounted}>
+        <Dialog.Portal>
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>
@@ -86,12 +86,12 @@ const NestedTemplate = (args: {
 
   return (
     <FocusTrapScopeProvider>
-      <Dialog.Root defaultOpen={args.defaultOpen}>
+      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
         <Dialog.Trigger>
           <button>open dialog</button>
         </Dialog.Trigger>
 
-        <Dialog.Portal keepMounted={args.keepMounted}>
+        <Dialog.Portal>
           <div className={styles.backdrop()} />
 
           <div className={styles.container()}>

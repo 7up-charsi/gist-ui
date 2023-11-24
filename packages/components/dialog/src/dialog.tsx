@@ -34,6 +34,7 @@ export interface RootProps {
   onOpenChange?: (isOpen: boolean) => void;
   defaultOpen?: boolean;
   onClose?: (event: CloseEvent, reason: Reason) => void;
+  keepMounted?: boolean;
 }
 
 interface Context {
@@ -42,6 +43,7 @@ interface Context {
   handleClose: (reason: Reason) => void;
   isOpen: boolean;
   scope: FocusTrapScope;
+  keepMounted: boolean;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -51,7 +53,14 @@ const DialogContext = createContext<Context | null>(null);
 // *-*-*-*-* Root *-*-*-*-*
 
 export const Root = (props: RootProps) => {
-  const { children, isOpen: isOpenProp, defaultOpen, onOpenChange, onClose: onCloseProp } = props;
+  const {
+    children,
+    isOpen: isOpenProp,
+    defaultOpen,
+    onOpenChange,
+    onClose: onCloseProp,
+    keepMounted = false,
+  } = props;
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -117,6 +126,7 @@ export const Root = (props: RootProps) => {
           handleOpen,
           isOpen,
           scope,
+          keepMounted,
         }}
       >
         {children}
@@ -175,29 +185,16 @@ Trigger.displayName = "gist-ui.Trigger";
 export interface PortalProps {
   children?: ReactNode;
   container?: HTMLElement;
-  keepMounted?: boolean;
 }
 
 export const Portal = (props: PortalProps) => {
-  const { children, keepMounted, container = document.body } = props;
-  const scopeContext = useContext(FocusTrapScopeContext);
+  const { children, container = document.body } = props;
+
   const context = useContext(DialogContext);
-
-  useEffect(() => {
-    if (!keepMounted) return;
-    if (!context) return;
-
-    if (context?.isOpen) {
-      scopeContext?.add(context.scope);
-    } else {
-      scopeContext?.remove(context.scope);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keepMounted, context?.isOpen]);
 
   if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Portal", 'must be child of "Root"');
 
-  if (keepMounted) {
+  if (context.keepMounted) {
     return createPortal(
       <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>{children}</div>,
       container,
@@ -219,6 +216,7 @@ export interface ContentProps extends Omit<FocusTrapProps, "loop" | "trapped" | 
 export const Content = (props: ContentProps) => {
   const { children, onMountAutoFocus, onUnmountAutoFocus, modal = true } = props;
 
+  const scopeContext = useContext(FocusTrapScopeContext);
   const context = useContext(DialogContext);
   const dialogRef = useRef<HTMLDivElement | null>(null);
 
@@ -229,6 +227,28 @@ export const Content = (props: ContentProps) => {
       context?.handleClose("outside");
     },
   });
+
+  useEffect(() => {
+    if (!context) return;
+    if (!scopeContext) return;
+    if (!context.keepMounted) return;
+    if (!context.isOpen) return;
+
+    scopeContext.add(context.scope);
+    const container = dialogRef.current;
+    const activeElement = document.activeElement as HTMLElement | null;
+
+    if (!container?.contains(activeElement)) {
+      container?.focus();
+    }
+
+    return () => {
+      scopeContext.remove(context.scope);
+      activeElement?.focus?.();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context?.keepMounted, context?.isOpen]);
 
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
@@ -247,6 +267,7 @@ export const Content = (props: ContentProps) => {
       onUnmountAutoFocus={onUnmountAutoFocus}
       scope={context.scope}
       asChild
+      disabled={!context.isOpen}
     >
       {cloneElement(children, {
         role: "dialog",

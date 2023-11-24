@@ -8,6 +8,7 @@ import {
   KeyboardEvent,
   ReactNode,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -22,6 +23,7 @@ export interface FocusTrapProps {
   children?: ReactNode;
   asChild?: boolean;
   scope?: FocusTrapScope;
+  disabled?: boolean;
 }
 
 const AUTOFOCUS_ON_MOUNT = "focusTrapScope.autoFocusOnMount";
@@ -37,6 +39,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     asChild,
     children,
     scope,
+    disabled,
   } = props;
 
   const Component = asChild ? Slot : "div";
@@ -62,6 +65,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
   const focusScope = scope || _scope;
 
   useEffect(() => {
+    if (disabled) return;
     if (!trapped) return;
 
     const handleFocusIn = (e: FocusEvent) => {
@@ -113,7 +117,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       document.removeEventListener("focusout", handleFocusOut);
       mutationObserver.disconnect();
     };
-  }, [container, focusScope.paused, trapped]);
+  }, [container, disabled, focusScope.paused, trapped]);
 
   useEffect(() => {
     if (!container) return;
@@ -150,36 +154,40 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [container, focusScope, onMountAutoFocus, onUnmountAutoFocus]);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (!loop) return;
-    if (focusScope.paused) return;
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (!loop) return;
+      if (focusScope.paused) return;
+      if (disabled) return;
 
-    const isTab = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey;
-    const focusedElement = document.activeElement as HTMLElement | null;
+      const isTab = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey;
+      const focusedElement = document.activeElement as HTMLElement | null;
 
-    if (isTab && focusedElement) {
-      const container = e.currentTarget as HTMLElement;
-      const [first, last] = getTabbableEdges(container);
+      if (isTab && focusedElement) {
+        const container = e.currentTarget as HTMLElement;
+        const [first, last] = getTabbableEdges(container);
 
-      if (!(first && last)) {
-        if (focusedElement === container) e.preventDefault();
-      } else {
-        if (e.shiftKey && focusedElement === first) {
-          if (loop) {
-            e.preventDefault();
+        if (!(first && last)) {
+          if (focusedElement === container) e.preventDefault();
+        } else {
+          if (e.shiftKey && focusedElement === first) {
+            if (loop) {
+              e.preventDefault();
 
-            focus(last, { select: true });
+              focus(last, { select: true });
+            }
           }
-        }
-        if (!e.shiftKey && focusedElement === last) {
-          if (loop) {
-            e.preventDefault();
-            focus(first, { select: true });
+          if (!e.shiftKey && focusedElement === last) {
+            if (loop) {
+              e.preventDefault();
+              focus(first, { select: true });
+            }
           }
         }
       }
-    }
-  };
+    },
+    [disabled, focusScope.paused, loop],
+  );
 
   return (
     <Component

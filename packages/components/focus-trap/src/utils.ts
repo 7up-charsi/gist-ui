@@ -4,6 +4,8 @@ export const focusFirst = (elements: HTMLElement[], { select = false } = {}) => 
   const previouslyFocusedElement = document.activeElement;
   for (const ele of elements) {
     focus(ele, { select });
+
+    // if statement is true, then focus moved
     if (document.activeElement !== previouslyFocusedElement) return;
   }
 };

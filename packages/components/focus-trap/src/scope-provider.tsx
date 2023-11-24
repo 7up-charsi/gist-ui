@@ -14,9 +14,7 @@ export const FocusTrapScopeContext = createContext<{
 export const FocusTrapScopeProvider = (props: { children?: ReactNode }) => {
   const { children } = props;
 
-  const [scope, setScope] = useState<FocusTrapScope[]>([]);
-
-  console.log(scope);
+  const [, setScope] = useState<FocusTrapScope[]>([]);
 
   return (
     <FocusTrapScopeContext.Provider
