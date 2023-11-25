@@ -35,12 +35,13 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
   defaultOpen?: boolean;
   onClose?: (event: CloseEvent, reason: Reason) => void;
   /**
-   * when this prop is true, all content stays in dom only css visiblity changes on open/close
-   * and also when this prop is true first tabbale element does not get focus instead container will be focused
+   * when this prop is true, all content stays in the DOM and only css visiblity changes on open/close
+   * and on open first tabbale element does not get focus instead container will be focused
    */
   keepMounted?: boolean;
   /**
-   * when this prop is true, dialog will behave like modal, e.g. it will trap focus and covers all accessibility
+   * when this prop is true, it will trap focus and set aria-modal=true
+   * when this prop is flase, it will not trap focus and set aria-modal=true
    */
   modal?: boolean;
 }
