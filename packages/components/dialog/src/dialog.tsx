@@ -56,27 +56,109 @@ const DialogContext = createContext<Context | null>(null);
 
 export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
   children?: ReactNode;
+  /**
+   * This prop is used for controled state
+   * @default undefined
+   */
   isOpen?: boolean;
+  /**
+   * This prop is used for controled state
+   * @default undefined
+   */
   onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * @default undefined
+   */
   defaultOpen?: boolean;
+  /**
+   * This callback can be used to prevent close conditionally
+   * @default undefined
+   * @example
+   * 1. when user click outside of `Content` component
+   * ```js
+   * onClose={(event, reason)=>{
+   *  if(reason === 'outside') {
+   *    event.preventDefault()
+   *  }
+   * }}
+   * ```
+   *
+   * 2. when user press Escape key
+   * ```js
+   * onClose={(event, reason)=>{
+   *  if(reason === 'escape') {
+   *    event.preventDefault()
+   *  }
+   * }}
+   * ```
+   *
+   * 3. when user press `Close` button
+   * ```js
+   * onClose={(event, reason)=>{
+   *  if(reason === 'pointer') {
+   *    event.preventDefault()
+   *  }
+   * }}
+   * ```
+   */
   onClose?: (event: CloseEvent, reason: Reason) => void;
   /**
-   * when this prop is true, it will trap focus and set aria-modal=true on children of Content component
-   * when this prop is flase, it will not trap focus and set aria-modal=false on children of Content component
+   * When this prop is true
+   * 1. It will trap focus
+   * 2. Set aria-modal=true on children of `Content` component.
+   *
+   * When this prop is flase
+   * 1. It will not trap focus
+   * 2. Set aria-modal=false on children of `Content` component
+   *
+   * @default true
    */
   modal?: boolean;
   /**
-   * when this prop is true, all content stays in the DOM and only css visiblity changes on open/close
+   * When this prop is true, all content stays in the DOM and only css visiblity changes on open/close
+   *
+   * @default false
    */
   keepMounted?: boolean;
   /**
-   * this will only executes when keepMounted is true
-   * by default it focus first tabbable element if you want to prevent it just call event.preventDefault
+   * **This will only executes when keepMounted is true.**
+   *
+   * This callback executes on open and by default on open first tabbable element focused, if you want to prevent this behaviour then call event.preventDefault()
+   * @default undefined
+   * @example
+   *
+   * ```js
+   * import * as Dialog from '@gist-ui/dialog'
+   *
+   * <Dialog.Root
+   *   onOpenAutoFocus={(event) => {
+   *     event.preventDefault();
+   *   }}
+   * >
+   *   // other stuff
+   * </Dialog.Root>
+   * ```
    */
   onOpenAutoFocus?: FocusTrapProps["onMountAutoFocus"];
   /**
-   * this will only executes when keepMounted is true
-   * by default it returns focus to trigger if you want to prevent it just call event.preventDefault
+   * **This will only executes when keepMounted is true.**
+   *
+   * This callback executes on close and by default on close focus returns to trigger, if you want to prevent this behaviour then call event.preventDefault()
+   *
+   * @default undefined
+   * @example
+   *
+   * ```js
+   * import * as Dialog from '@gist-ui/dialog'
+   *
+   * <Dialog.Root
+   *   onCloseAutoFocus={(event) => {
+   *     event.preventDefault();
+   *   }}
+   * >
+   *   // other stuff
+   * </Dialog.Root>
+   * ```
    */
   onCloseAutoFocus?: FocusTrapProps["onUnmountAutoFocus"];
 }

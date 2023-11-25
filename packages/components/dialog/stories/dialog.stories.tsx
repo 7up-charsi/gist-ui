@@ -4,7 +4,6 @@ import { dialog } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
 
 import * as Dialog from "../src";
-import { FocusTrapScopeProvider } from "@gist-ui/focus-trap";
 
 const meta: Meta = {
   title: "Components/Dialog",
@@ -83,7 +82,7 @@ const NestedTemplate = (args: {
   const styles = dialog({});
 
   return (
-    <FocusTrapScopeProvider>
+    <Dialog.Provider>
       <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
         <Dialog.Trigger>
           <button>open dialog</button>
@@ -167,7 +166,7 @@ const NestedTemplate = (args: {
           </div>
         </Dialog.Portal>
       </Dialog.Root>
-    </FocusTrapScopeProvider>
+    </Dialog.Provider>
   );
 };
 

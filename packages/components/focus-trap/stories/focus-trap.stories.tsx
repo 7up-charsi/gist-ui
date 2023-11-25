@@ -11,13 +11,14 @@ const meta: Meta<FocusTrapProps> = {
 
 export default meta;
 
-export const Default: StoryObj<FocusTrapProps> = {
-  render: (args) => {
-    return (
+const DefaultTemplate = (args: FocusTrapProps) => {
+  return (
+    <>
       <FocusTrap {...args} asChild>
         <div className="w-[500px] h-[500px] border-2 border-default-300 rounded-md flex flex-wrap content-center items-center gap-3 justify-center">
-          <span className="w-full text-center uppercase font-medium mb-4 text-info-400">
-            focus can not escape this container
+          <span className="w-full text-center font-medium mb-4 text-info-400">
+            Focus can not escape this container with
+            <span className="uppercase text-lg mx-1">keyboard</span>
           </span>
           <Button variant="flat">button 1</Button>
           <Button variant="flat">button 2</Button>
@@ -26,6 +27,19 @@ export const Default: StoryObj<FocusTrapProps> = {
           <Button variant="flat">button 5</Button>
         </div>
       </FocusTrap>
-    );
+
+      <Button variant="flat" color="secondary" classNames={{ base: "m-3" }}>
+        you cannot focus me when trapped is true
+      </Button>
+    </>
+  );
+};
+
+export const Default: StoryObj<FocusTrapProps> = {
+  render: DefaultTemplate,
+  args: {
+    loop: true,
+    trapped: true,
+    disabled: false,
   },
 };

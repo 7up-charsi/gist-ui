@@ -34,7 +34,8 @@ export interface InputProps extends InputVariantProps {
   classNames?: InputClassNames;
   hideLabel?: boolean;
   /**
-   * This prop value is used in "errorMessage" aria-live attribute
+   * When error prop is true, its value is used in "errorMessage" aria-live attribute
+   * @default polite
    */
   a11yFeedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;

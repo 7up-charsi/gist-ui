@@ -16,12 +16,62 @@ import {
 } from "react";
 
 export interface FocusTrapProps {
+  /**
+   * When this prop is true, focus with **keyboard** will loop,
+   *
+   * *loop* mean with last element is focused and you press Tab then first tabbable element will be focused and when first element is focused and you press Tab + Shift then last tabbable element will be focused
+   * @default true
+   */
   loop?: boolean;
+  /**
+   * When this prop is true, focus cannot go outside with **keyboard**
+   * @default true
+   */
   trapped?: boolean;
+  /**
+   * This callback executes on mount and by default on mount first tabbable element focused, if you want to prevent this behaviour then call event.preventDefault()
+   * @default undefined
+   * @example
+   *
+   * ```js
+   * import { FocusTrap } from '@gist-ui/focus-trap'
+   *
+   * <FocusTrap
+   *   onMountAutoFocus={(event) => {
+   *     event.preventDefault();
+   *   }}
+   * >
+   *   // other stuff
+   * </FocusTrap>
+   * ```
+   */
   onMountAutoFocus?: (event: Event) => void;
+  /**
+   * This callback executes on unmount and by default on unmount focus returns to trigger, if you want to prevent this behaviour then call event.preventDefault()
+   * @default undefined
+   * @example
+   *
+   * ```js
+   * import { FocusTrap } from '@gist-ui/focus-trap'
+   *
+   * <FocusTrap
+   *   onUnmountAutoFocus={(event) => {
+   *     event.preventDefault();
+   *   }}
+   * >
+   *   // other stuff
+   * </FocusTrap>
+   * ```
+   */
   onUnmountAutoFocus?: (event: Event) => void;
   children?: ReactNode;
   asChild?: boolean;
+  /**
+   * **This prop is for internal use.**
+   *
+   * This prop is used to pass custom scope and is usefull when more than one FocusTrap components are visible
+   * @default undefined
+   */
   scope?: FocusTrapScope;
   disabled?: boolean;
 }
@@ -194,6 +244,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       tabIndex={-1}
       ref={mergeRefs(ref, setContainer as ForwardedRef<HTMLDivElement>)}
       onKeyDown={handleKeyDown}
+      style={{ outline: "none" }}
     >
       {children}
     </Component>

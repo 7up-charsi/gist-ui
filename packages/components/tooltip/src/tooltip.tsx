@@ -43,6 +43,10 @@ export interface RootProps extends TooltipVariantProps {
   children?: ReactNode;
   showDelay?: number;
   hideDelay?: number;
+  /**
+   * On which action tooltip shows. undefined means show tooltip on both 'hover' and 'keyboard focus'
+   * @default undefined
+   */
   trigger?: Trigger;
   isOpen?: boolean;
   defaultOpen?: boolean;
@@ -333,11 +337,35 @@ export interface ContentProps {
   asChild?: boolean;
   placement?: Placement;
   classNames?: TooltipClassNames;
+  /**
+   * By default when user hovers over tooltip content it doest not close. if do not want this behaviour then you can disable this by passing this prop as true
+   */
   disableInteractive?: boolean;
   arrow?: boolean;
+  /**
+   * @see {@link https://floating-ui.com/docs/offset#mainaxis mainAxis}
+   * @default 10
+   */
   offsetMainAxis?: number;
+  /**
+   * @see {@link https://floating-ui.com/docs/offset#alignmentaxis alignmentAxis}
+   * @default 5
+   */
   offsetAlignmentAxis?: number;
+  /**
+   * @see {@link https://floating-ui.com/docs/offset#crossaxis crossAxis}
+   * @default undefined
+   */
+  offsetCorssAxis?: number;
+  /**
+   * @see {@link https://floating-ui.com/docs/shift#limitshiftoffset limitshiftOffset}
+   * @default 10
+   */
   shiftOffset?: number;
+  /**
+   * @see {@link https://floating-ui.com/docs/arrow#padding arrowPadding}
+   * @default 10
+   */
   arrowPadding?: number;
 }
 
@@ -351,6 +379,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => 
     arrow: arrowProp = true,
     offsetMainAxis = 10,
     offsetAlignmentAxis = 5,
+    offsetCorssAxis,
     shiftOffset = 10,
     arrowPadding = 10,
   } = props;
@@ -380,7 +409,11 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => 
     whileElementsMounted: autoUpdate,
     placement: position,
     middleware: [
-      offset({ mainAxis: offsetMainAxis, alignmentAxis: offsetAlignmentAxis }),
+      offset({
+        mainAxis: offsetMainAxis,
+        alignmentAxis: offsetAlignmentAxis,
+        crossAxis: offsetCorssAxis,
+      }),
       shift({
         limiter: limitShift({ offset: shiftOffset }),
       }),
