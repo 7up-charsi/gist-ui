@@ -9,6 +9,10 @@ import {
   FocusTrapProps,
   FocusTrapScope,
   FocusTrapScopeContext,
+  focus,
+  focusFirst,
+  getTabbables,
+  removeLinks,
 } from "@gist-ui/focus-trap";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
@@ -28,23 +32,9 @@ type Reason = "pointer" | "escape" | "outside";
 
 type CloseEvent = { preventDefault(): void };
 
-export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
-  children?: ReactNode;
-  isOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-  defaultOpen?: boolean;
-  onClose?: (event: CloseEvent, reason: Reason) => void;
-  /**
-   * when this prop is true, all content stays in the DOM and only css visiblity changes on open/close
-   * and on open first tabbale element does not get focus instead container will be focused
-   */
-  keepMounted?: boolean;
-  /**
-   * when this prop is true, it will trap focus and set aria-modal=true
-   * when this prop is flase, it will not trap focus and set aria-modal=true
-   */
-  modal?: boolean;
-}
+const AUTOFOCUS_ON_OPEN = "focusTrapScope.autoFocusOnOPEN";
+const AUTOFOCUS_ON_CLOSE = "focusTrapScope.autoFocusOnCLOSE";
+const EVENT_OPTIONS = { bubbles: false, cancelable: true };
 
 interface Context extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
   scopeName: string;
@@ -54,6 +44,8 @@ interface Context extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAu
   scope: FocusTrapScope;
   keepMounted: boolean;
   modal: boolean;
+  onOpenAutoFocus: Exclude<FocusTrapProps["onMountAutoFocus"], undefined>;
+  onCloseAutoFocus: Exclude<FocusTrapProps["onUnmountAutoFocus"], undefined>;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -61,6 +53,33 @@ const SCOPE_NAME = "Dialog";
 const DialogContext = createContext<Context | null>(null);
 
 // *-*-*-*-* Root *-*-*-*-*
+
+export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
+  children?: ReactNode;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+  defaultOpen?: boolean;
+  onClose?: (event: CloseEvent, reason: Reason) => void;
+  /**
+   * when this prop is true, it will trap focus and set aria-modal=true on children of Content component
+   * when this prop is flase, it will not trap focus and set aria-modal=false on children of Content component
+   */
+  modal?: boolean;
+  /**
+   * when this prop is true, all content stays in the DOM and only css visiblity changes on open/close
+   */
+  keepMounted?: boolean;
+  /**
+   * this will only executes when keepMounted is true
+   * by default it focus first tabbable element if you want to prevent it just call event.preventDefault
+   */
+  onOpenAutoFocus?: FocusTrapProps["onMountAutoFocus"];
+  /**
+   * this will only executes when keepMounted is true
+   * by default it returns focus to trigger if you want to prevent it just call event.preventDefault
+   */
+  onCloseAutoFocus?: FocusTrapProps["onUnmountAutoFocus"];
+}
 
 export const Root = (props: RootProps) => {
   const {
@@ -73,10 +92,14 @@ export const Root = (props: RootProps) => {
     modal = true,
     onMountAutoFocus: onMountAutoFocusProp,
     onUnmountAutoFocus: onUnmountAutoFocusProp,
+    onOpenAutoFocus: onOpenAutoFocusProp,
+    onCloseAutoFocus: onCloseAutoFocusProp,
   } = props;
 
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
   const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
+  const onOpenAutoFocus = useCallbackRef(onOpenAutoFocusProp);
+  const onCloseAutoFocus = useCallbackRef(onCloseAutoFocusProp);
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -146,6 +169,8 @@ export const Root = (props: RootProps) => {
           onMountAutoFocus,
           onUnmountAutoFocus,
           modal,
+          onOpenAutoFocus,
+          onCloseAutoFocus,
         }}
       >
         {children}
@@ -285,26 +310,44 @@ export const Content = (props: ContentProps) => {
   });
 
   useEffect(() => {
+    const container = dialogRef.current as HTMLElement;
+
+    if (!container) return;
     if (!context) return;
-    if (!scopeContext) return;
     if (!context.keepMounted) return;
     if (!context.isOpen) return;
 
-    scopeContext.add(context.scope);
-    const container = dialogRef.current;
-    const activeElement = document.activeElement as HTMLElement | null;
+    scopeContext?.add(context.scope);
 
-    if (!container?.contains(activeElement)) {
-      container?.focus();
+    const prevFocusedElement = document.activeElement as HTMLElement | null;
+    const hasFocusedElement = container.contains(prevFocusedElement);
+
+    if (!hasFocusedElement) {
+      const openEvent = new CustomEvent(AUTOFOCUS_ON_OPEN, EVENT_OPTIONS);
+      container.addEventListener(AUTOFOCUS_ON_OPEN, context.onOpenAutoFocus);
+      container.dispatchEvent(openEvent);
+      if (!openEvent.defaultPrevented) {
+        focusFirst(removeLinks(getTabbables(container)), { select: true });
+      }
+      if (prevFocusedElement === document.activeElement) focus(container);
     }
 
     return () => {
-      scopeContext.remove(context.scope);
-      activeElement?.focus?.();
-    };
+      container.removeEventListener(AUTOFOCUS_ON_OPEN, context.onOpenAutoFocus);
 
+      const closeEvent = new CustomEvent(AUTOFOCUS_ON_CLOSE, EVENT_OPTIONS);
+      container.addEventListener(AUTOFOCUS_ON_CLOSE, context.onCloseAutoFocus);
+      container.dispatchEvent(closeEvent);
+      if (!closeEvent.defaultPrevented) {
+        focus(prevFocusedElement ?? document.body, { select: true });
+      }
+
+      container.removeEventListener(AUTOFOCUS_ON_CLOSE, context.onCloseAutoFocus);
+
+      scopeContext?.remove(context.scope);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context?.keepMounted, context?.isOpen]);
+  }, [context?.isOpen, context?.keepMounted]);
 
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
