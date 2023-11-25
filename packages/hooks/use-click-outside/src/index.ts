@@ -2,9 +2,21 @@ import { MutableRefObject, useEffect } from "react";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 export interface UseClickOutsideProps<R> {
+  /**
+   * This will execute when user click outside of `ref`
+   */
   callback?: (e: PointerEvent) => void;
   disabled?: boolean;
   ref?: MutableRefObject<R | undefined | null>;
+  /**
+   * Indicates which button was pressed on the mouse to execute the `callback`
+   *
+   * 0: Main button pressed, usually the left button or the un-initialized state
+   * 1: Auxiliary button pressed, usually the wheel button or the middle button (if present)
+   * 2: Secondary button pressed, usually the right button
+   * 3: Fourth button, typically the Browser Back button
+   * 4: Fifth button, typically the Browser Forward button
+   */
   closeButton?: number;
 }
 

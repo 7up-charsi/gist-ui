@@ -2,6 +2,9 @@ import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { Dispatch, SetStateAction, useState } from "react";
 
 export interface UseControllableStateProps<T> {
+  /**
+   * If value is true then this hook will behave as controlled
+   */
   value?: T;
   defaultValue?: T | (() => T);
   onChange?: (value: T) => void;

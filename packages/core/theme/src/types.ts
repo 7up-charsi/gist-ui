@@ -50,13 +50,14 @@ export type SemanticBaseColors = {
 
 export interface LayoutTheme {
   borderRadius?: BaseThemeUnit;
-  disabledOpacity?: string | number;
-  dividerWeight?: string;
 }
 
 export type DefaultThemeType = "light" | "dark";
 
 export type ConfigTheme = {
+  /**
+   * With which default theme it merge
+   */
   extend?: "light" | "dark";
   colors?: Partial<ThemeColors>;
   layout?: LayoutTheme;
@@ -68,5 +69,8 @@ export interface GistuiConfig {
   themes?: ConfigThemes;
   layout?: LayoutTheme;
   defaultTheme?: DefaultThemeType;
+  /**
+   * if you have defined custom theme and you forgot to add `extend` key in this case `defaultExtendTheme` value will be used as the value of `extend` key
+   */
   defaultExtendTheme?: DefaultThemeType;
 }

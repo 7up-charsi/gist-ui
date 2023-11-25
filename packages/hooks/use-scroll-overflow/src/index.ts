@@ -13,10 +13,23 @@ export type ScrollOverflowVisibility =
 
 export interface UseScrollOverflowProps<R> {
   direction?: ScrollOverflowDirection;
+  /**
+   * This prop is used to make this hook controlled
+   *
+   * if this prop is defined then shadow will always show at defined visibility side
+   */
   visibility?: ScrollOverflowVisibility;
   disabled?: boolean;
   offset?: number;
+  /**
+   * This prop is used to make this hook controlled
+   *
+   * This prop is used with `visibility` prop
+   */
   onVisibilityChange?: (overflow: ScrollOverflowVisibility) => void;
+  /**
+   * Ref of element on which shadow will be added
+   */
   ref?: RefObject<R>;
 }
 

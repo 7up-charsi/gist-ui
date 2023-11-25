@@ -1,10 +1,20 @@
 import { useCallback, useMemo, useRef } from "react";
 
 export interface UseRippleProps {
+  /**
+   * this is used as css transition duration for ripple popup animation and popup duration depends on `completedFactor` prop
+   */
   duration?: number;
+  /**
+   * this is used as css transition timning function for ripple popup animation
+   */
   timingFunction?: string;
   disabled?: boolean;
   completedFactor?: number;
+  /**
+   * . when this prop is true, ripple will popup from the center of pointer
+   * . when this porp is false, ripple will popup from the center of element on which returned ref has set
+   */
   pointerCenter?: boolean;
 }
 
