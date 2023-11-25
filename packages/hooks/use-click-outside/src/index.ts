@@ -16,6 +16,8 @@ export interface UseClickOutsideProps<R> {
    * 2: Secondary button pressed, usually the right button
    * 3: Fourth button, typically the Browser Back button
    * 4: Fifth button, typically the Browser Forward button
+   *
+   * @default 0
    */
   closeButton?: number;
 }
