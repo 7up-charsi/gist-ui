@@ -28,22 +28,31 @@ type Reason = "pointer" | "escape" | "outside";
 
 type CloseEvent = { preventDefault(): void };
 
-export interface RootProps {
+export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
   children?: ReactNode;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   defaultOpen?: boolean;
   onClose?: (event: CloseEvent, reason: Reason) => void;
+  /**
+   * when this prop is true, all content stays in dom only css visiblity changes on open/close
+   * and also when this prop is true first tabbale element does not get focus instead container will be focused
+   */
   keepMounted?: boolean;
+  /**
+   * when this prop is true, dialog will behave like modal, e.g. it will trap focus and covers all accessibility
+   */
+  modal?: boolean;
 }
 
-interface Context {
+interface Context extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
   scopeName: string;
   handleOpen: () => void;
   handleClose: (reason: Reason) => void;
   isOpen: boolean;
   scope: FocusTrapScope;
   keepMounted: boolean;
+  modal: boolean;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -60,7 +69,13 @@ export const Root = (props: RootProps) => {
     onOpenChange,
     onClose: onCloseProp,
     keepMounted = false,
+    modal = true,
+    onMountAutoFocus: onMountAutoFocusProp,
+    onUnmountAutoFocus: onUnmountAutoFocusProp,
   } = props;
+
+  const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
+  const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -127,6 +142,9 @@ export const Root = (props: RootProps) => {
           isOpen,
           scope,
           keepMounted,
+          onMountAutoFocus,
+          onUnmountAutoFocus,
+          modal,
         }}
       >
         {children}
@@ -141,11 +159,10 @@ Root.displayName = "gist-ui.Root";
 
 export interface TriggerProps {
   children: ReactNode;
-  close?: boolean;
 }
 
 export const Trigger = (props: TriggerProps) => {
-  const { children, close } = props;
+  const { children } = props;
 
   const context = useContext(DialogContext);
 
@@ -153,8 +170,7 @@ export const Trigger = (props: TriggerProps) => {
     isDisabled: context?.scopeName !== SCOPE_NAME,
     onPress: async () => {
       try {
-        if (close) context?.handleClose("pointer");
-        else context?.handleOpen();
+        context?.handleOpen();
       } catch (error) {
         if (__DEV__) console.log(error);
       }
@@ -179,6 +195,46 @@ export const Trigger = (props: TriggerProps) => {
 };
 
 Trigger.displayName = "gist-ui.Trigger";
+
+// *-*-*-*-* Close *-*-*-*-*
+
+export interface CloseProps {
+  children: ReactNode;
+}
+
+export const Close = (props: CloseProps) => {
+  const { children } = props;
+
+  const context = useContext(DialogContext);
+
+  const { pressProps } = usePress({
+    isDisabled: context?.scopeName !== SCOPE_NAME,
+    onPress: async () => {
+      try {
+        context?.handleClose("pointer");
+      } catch (error) {
+        if (__DEV__) console.log(error);
+      }
+    },
+  });
+
+  if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Close", 'must be child of "Root"');
+
+  const childCount = Children.count(children);
+  if (!childCount) return;
+  if (childCount > 1) throw new GistUiError("Close", onlyChildError);
+  if (!isValidElement(children)) throw new GistUiError("Close", validChildError);
+
+  return (
+    <>
+      {cloneElement(children, {
+        ...mergeProps(children.props, pressProps),
+      })}
+    </>
+  );
+};
+
+Close.displayName = "gist-ui.Close";
 
 // *-*-*-*-* Portal *-*-*-*-*
 
@@ -208,13 +264,12 @@ Portal.displayName = "gist-ui.Portal";
 
 // *-*-*-*-* Content *-*-*-*-*
 
-export interface ContentProps extends Omit<FocusTrapProps, "loop" | "trapped" | "asChild"> {
+export interface ContentProps {
   children?: ReactNode;
-  modal?: boolean;
 }
 
 export const Content = (props: ContentProps) => {
-  const { children, onMountAutoFocus, onUnmountAutoFocus, modal = true } = props;
+  const { children } = props;
 
   const scopeContext = useContext(FocusTrapScopeContext);
   const context = useContext(DialogContext);
@@ -258,13 +313,15 @@ export const Content = (props: ContentProps) => {
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
+  const modal = context.modal;
+
   return (
     <FocusTrap
       ref={dialogRef}
       loop={modal}
       trapped={modal}
-      onMountAutoFocus={onMountAutoFocus}
-      onUnmountAutoFocus={onUnmountAutoFocus}
+      onMountAutoFocus={context?.onMountAutoFocus}
+      onUnmountAutoFocus={context?.onUnmountAutoFocus}
       scope={context.scope}
       asChild
       disabled={!context.isOpen}

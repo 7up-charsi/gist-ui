@@ -33,6 +33,9 @@ export interface InputProps extends InputVariantProps {
   endContent?: ReactNode;
   classNames?: InputClassNames;
   hideLabel?: boolean;
+  /**
+   * This prop value is used in "errorMessage" aria-live attribute
+   */
   a11yFeedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;
   hoverProps?: HoverProps;

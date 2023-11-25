@@ -51,11 +51,11 @@ const DialogTemplate = (args: {
                 </div>
 
                 <div className={styles.footer()}>
-                  <Dialog.Trigger close>
+                  <Dialog.Close>
                     <Button variant="text" color="danger">
                       Close
                     </Button>
-                  </Dialog.Trigger>
+                  </Dialog.Close>
 
                   <Button color="success">Agree</Button>
                 </div>
@@ -148,11 +148,11 @@ const NestedTemplate = (args: {
                                         </div>
 
                                         <div className={styles.footer()}>
-                                          <Dialog.Trigger close>
+                                          <Dialog.Close>
                                             <Button variant="text" color="danger">
                                               Close
                                             </Button>
-                                          </Dialog.Trigger>
+                                          </Dialog.Close>
 
                                           <Button color="success">Agree</Button>
                                         </div>
@@ -169,11 +169,11 @@ const NestedTemplate = (args: {
                             </div>
 
                             <div className={styles.footer()}>
-                              <Dialog.Trigger close>
+                              <Dialog.Close>
                                 <Button variant="text" color="danger">
                                   Close
                                 </Button>
-                              </Dialog.Trigger>
+                              </Dialog.Close>
 
                               <Button color="success">Agree</Button>
                             </div>
@@ -192,11 +192,11 @@ const NestedTemplate = (args: {
                 </div>
 
                 <div className={styles.footer()}>
-                  <Dialog.Trigger close>
+                  <Dialog.Close>
                     <Button variant="text" color="danger">
                       Close
                     </Button>
-                  </Dialog.Trigger>
+                  </Dialog.Close>
 
                   <Button color="success">Agree</Button>
                 </div>
