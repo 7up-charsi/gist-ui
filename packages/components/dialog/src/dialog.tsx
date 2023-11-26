@@ -25,6 +25,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useRef,
 } from "react";
 
@@ -46,6 +47,7 @@ interface Context extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAu
   modal: boolean;
   onOpenAutoFocus: Exclude<FocusTrapProps["onMountAutoFocus"], undefined>;
   onCloseAutoFocus: Exclude<FocusTrapProps["onUnmountAutoFocus"], undefined>;
+  dialogId: string;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -161,6 +163,12 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * ```
    */
   onCloseAutoFocus?: FocusTrapProps["onUnmountAutoFocus"];
+  /**
+   * id to pass to `Content` component
+   *
+   * this id is also used in "aria-controls" in `Trigger` component
+   */
+  id?: string;
 }
 
 export const Root = (props: RootProps) => {
@@ -176,12 +184,15 @@ export const Root = (props: RootProps) => {
     onUnmountAutoFocus: onUnmountAutoFocusProp,
     onOpenAutoFocus: onOpenAutoFocusProp,
     onCloseAutoFocus: onCloseAutoFocusProp,
+    id,
   } = props;
 
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
   const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
   const onOpenAutoFocus = useCallbackRef(onOpenAutoFocusProp);
   const onCloseAutoFocus = useCallbackRef(onCloseAutoFocusProp);
+
+  const dialogId = useId();
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -253,6 +264,7 @@ export const Root = (props: RootProps) => {
           modal,
           onOpenAutoFocus,
           onCloseAutoFocus,
+          dialogId: id || dialogId,
         }}
       >
         {children}
@@ -296,7 +308,11 @@ export const Trigger = (props: TriggerProps) => {
   return (
     <>
       {cloneElement(children, {
-        ...mergeProps(pressProps, children.props),
+        ...mergeProps(
+          pressProps,
+          { "aria-expanded": context.isOpen, "aria-controls": context.dialogId },
+          children.props,
+        ),
       })}
     </>
   );
@@ -439,6 +455,8 @@ export const Content = (props: ContentProps) => {
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
+  if (children.props.id) throw new GistUiError("Content", 'add "id" prop on "Root" component');
+
   const modal = context.modal;
 
   return (
@@ -455,6 +473,7 @@ export const Content = (props: ContentProps) => {
       {cloneElement(children, {
         role: "dialog",
         "aria-modal": modal,
+        id: context.dialogId,
       } as Partial<unknown>)}
     </FocusTrap>
   );
