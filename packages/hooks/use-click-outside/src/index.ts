@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect } from "react";
+import { RefObject, useEffect } from "react";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 export interface UseClickOutsideProps<R> {
@@ -7,7 +7,7 @@ export interface UseClickOutsideProps<R> {
    */
   callback?: (e: PointerEvent) => void;
   disabled?: boolean;
-  ref?: MutableRefObject<R | undefined | null>;
+  ref?: RefObject<R | null>;
   /**
    * Indicates which button was pressed on the mouse to execute the `callback`
    *
