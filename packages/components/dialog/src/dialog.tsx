@@ -296,7 +296,7 @@ export const Trigger = (props: TriggerProps) => {
   return (
     <>
       {cloneElement(children, {
-        ...mergeProps(children.props, pressProps),
+        ...mergeProps(pressProps, children.props),
       })}
     </>
   );
@@ -336,7 +336,7 @@ export const Close = (props: CloseProps) => {
   return (
     <>
       {cloneElement(children, {
-        ...mergeProps(children.props, pressProps),
+        ...mergeProps(pressProps, children.props),
       })}
     </>
   );
