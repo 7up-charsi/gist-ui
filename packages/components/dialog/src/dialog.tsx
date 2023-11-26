@@ -28,6 +28,7 @@ import {
   useId,
   useRef,
 } from "react";
+import { useScrollLock } from "@gist-ui/use-scroll-lock";
 
 type Reason = "pointer" | "escape" | "outside";
 
@@ -397,7 +398,9 @@ export const Content = (props: ContentProps) => {
 
   const scopeContext = useContext(FocusTrapScopeContext);
   const context = useContext(DialogContext);
-  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useScrollLock({ enabled: context?.isOpen });
 
   useClickOutside<HTMLDivElement>({
     disabled: !context?.isOpen,

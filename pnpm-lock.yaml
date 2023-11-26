@@ -198,6 +198,9 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
+      '@gist-ui/use-scroll-lock':
+        specifier: workspace:*
+        version: link:../../hooks/use-scroll-lock
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -483,6 +486,19 @@ importers:
         version: 2.2.0
 
   packages/hooks/use-ripple:
+    dependencies:
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-scroll-lock:
     dependencies:
       react:
         specifier: '>=18'

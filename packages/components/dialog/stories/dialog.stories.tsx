@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { dialog } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
@@ -18,50 +18,68 @@ const DialogTemplate = (args: {
 }) => {
   const styles = dialog({});
 
+  const ref = useRef<HTMLDivElement>(null);
+
   return (
-    <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
-      <Dialog.Trigger>
-        <button>open dialog</button>
-      </Dialog.Trigger>
+    <>
+      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
+        <Dialog.Trigger>
+          <Button color="secondary">open dialog</Button>
+        </Dialog.Trigger>
 
-      <Dialog.Portal>
-        <div className={styles.backdrop()} />
+        <Dialog.Portal>
+          <div className={styles.backdrop()} />
 
-        <div className={styles.container()}>
-          <Dialog.Content>
-            <div className={styles.base()}>
-              <div className={styles.header()}>header</div>
+          <div className={styles.container()}>
+            <Dialog.Content>
+              <div className={styles.base()}>
+                <div className={styles.header()}>header</div>
 
-              <div className={styles.body()}>
-                <p className="m-3">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
-                  similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
-                  provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam nam
-                  odio animi blanditiis nobis nisi! id
-                </p>
+                <div className={styles.body()} ref={ref}>
+                  <p className="m-3">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
+                    similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
+                    provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam
+                    nam odio animi blanditiis nobis nisi! id
+                  </p>
+                  <p className="m-3">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
+                    similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
+                    provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam
+                    nam odio animi blanditiis nobis nisi! id
+                  </p>
+                </div>
 
-                <p className="m-3">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
-                  similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
-                  provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam nam
-                  odio animi blanditiis nobis nisi! id
-                </p>
+                <div className={styles.footer()}>
+                  <Dialog.Close>
+                    <Button variant="text" color="danger">
+                      Close
+                    </Button>
+                  </Dialog.Close>
+
+                  <Button color="success">Agree</Button>
+                </div>
               </div>
+            </Dialog.Content>
+          </div>
+        </Dialog.Portal>
+      </Dialog.Root>
 
-              <div className={styles.footer()}>
-                <Dialog.Close>
-                  <Button variant="text" color="danger">
-                    Close
-                  </Button>
-                </Dialog.Close>
-
-                <Button color="success">Agree</Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </div>
-      </Dialog.Portal>
-    </Dialog.Root>
+      {Array.from({ length: 10 }).map((_, i) => (
+        <p className="m-3" key={i}>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero quam fuga voluptatem
+          fugiat? Ullam voluptate saepe illo quidem excepturi recusandae perspiciatis nemo cumque
+          incidunt deleniti corrupti quam similique beatae unde doloremque quod id aut, pariatur
+          blanditiis iste repellendus a ea? Repellat quod quo unde ipsam atque molestiae, voluptas
+          accusamus ex sit sapiente placeat. Iusto quasi sunt ad autem quos laborum facilis illum
+          obcaecati reiciendis tempora quidem vitae at voluptatibus, recusandae dicta necessitatibus
+          itaque rerum. Possimus et officiis similique enim cumque ex a voluptas ipsam? Minus vel
+          quaerat, sequi labore at necessitatibus suscipit eum ducimus error eaque explicabo qui
+          iure ipsa magnam facilis illum libero rem non pariatur? Perferendis ducimus ipsum dolor
+          inventore
+        </p>
+      ))}
+    </>
   );
 };
 
@@ -85,7 +103,7 @@ const NestedTemplate = (args: {
     <Dialog.Provider>
       <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
         <Dialog.Trigger>
-          <button>open dialog</button>
+          <Button color="secondary">open dialog</Button>
         </Dialog.Trigger>
 
         <Dialog.Portal>
