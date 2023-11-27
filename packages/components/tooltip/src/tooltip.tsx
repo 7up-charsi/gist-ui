@@ -1,12 +1,11 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
-import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
-import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
+import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
+import { GistUiError, validChildError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import {
-  Children,
   Dispatch,
   MutableRefObject,
   ReactNode,
@@ -39,7 +38,31 @@ type Side = "top" | "right" | "bottom" | "left";
 
 type Trigger = "hover" | "focus";
 
-export interface RootProps extends TooltipVariantProps {
+interface TooltipContext {
+  scopeName: string;
+  handleShow: (a?: boolean) => void;
+  handleHide: (a?: boolean) => void;
+  showTooltip: (a?: boolean) => void;
+  hideTooltip: (a?: boolean) => void;
+  trigger?: Trigger;
+  isHovered: MutableRefObject<boolean>;
+  isFocused: MutableRefObject<boolean>;
+  id: string;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  isDisabled: boolean;
+  setIsDisabled: Dispatch<SetStateAction<boolean>>;
+  reference: HTMLElement | null;
+  setReference: Dispatch<SetStateAction<HTMLElement | null>>;
+}
+
+const TooltipContext = createContext<TooltipContext | null>(null);
+
+const SCOPE_NAME = "Tooltip";
+
+// *-*-*-*-* Root *-*-*-*-*
+
+export interface RootProps {
   children?: ReactNode;
   showDelay?: number;
   hideDelay?: number;
@@ -51,31 +74,13 @@ export interface RootProps extends TooltipVariantProps {
   isOpen?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * id to pass to `Content` component
+   *
+   * this id is also used in "aria-controls" in `Trigger` component
+   */
+  id?: string;
 }
-
-interface TooltipContext {
-  scope: string;
-  handleShow: (a?: boolean) => void;
-  handleHide: (a?: boolean) => void;
-  showTooltip: (a?: boolean) => void;
-  hideTooltip: (a?: boolean) => void;
-  trigger?: Trigger;
-  isHovered: MutableRefObject<boolean>;
-  isFocused: MutableRefObject<boolean>;
-  tooltipId: string;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  isDisabled: boolean;
-  setIsDisabled: Dispatch<SetStateAction<boolean>>;
-  triggerElement: HTMLElement | null;
-  setTriggerElement: Dispatch<SetStateAction<HTMLElement | null>>;
-}
-
-const TooltipContext = createContext<TooltipContext | null>(null);
-
-const SCOPE_NAME = "Tooltip";
-
-// *-*-*-*-* Root *-*-*-*-*
 
 export const Root = (props: RootProps) => {
   const {
@@ -86,6 +91,7 @@ export const Root = (props: RootProps) => {
     isOpen: isOpenProp,
     onOpenChange,
     defaultOpen = false,
+    id: idProp,
   } = props;
 
   const [isOpen, setIsOpen] = useControllableState({
@@ -94,11 +100,11 @@ export const Root = (props: RootProps) => {
     onChange: onOpenChange,
   });
 
-  const [triggerElement, setTriggerElement] = useState<HTMLElement | null>(null);
+  const [reference, setReference] = useState<HTMLElement | null>(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const tooltipId = useId();
+  const id = useId();
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -186,7 +192,7 @@ export const Root = (props: RootProps) => {
   return (
     <TooltipContext.Provider
       value={{
-        scope: SCOPE_NAME,
+        scopeName: SCOPE_NAME,
         handleShow,
         handleHide,
         showTooltip,
@@ -194,13 +200,13 @@ export const Root = (props: RootProps) => {
         trigger,
         isHovered,
         isFocused,
-        tooltipId,
+        id: idProp || id,
         isOpen,
         setIsOpen,
         isDisabled,
         setIsDisabled,
-        triggerElement,
-        setTriggerElement,
+        reference,
+        setReference,
       }}
     >
       {children}
@@ -291,23 +297,20 @@ export const Trigger = ({ children }: TriggerProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toObserver]);
 
-  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Trigger", 'must be used inside "Root"');
-
-  const childCount = Children.count(children);
-  if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("tooltip", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("tooltip", validChildError);
+  if (context?.scopeName !== SCOPE_NAME)
+    throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   return (
-    <>
-      {cloneElement(children, {
-        ref: mergeRefs(context.setTriggerElement, setToObserver),
-        "aria-describedby": context!.isOpen ? context!.tooltipId : undefined,
+    <Slot
+      ref={mergeRefs(context.setReference, setToObserver)}
+      aria-describedby={context.isOpen ? context.id : undefined}
+      {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, {
+        id: context.id,
         tabIndex: 0,
-        ...mergeProps(hoverProps, focusProps, pressProps, children.props),
-        id: context.tooltipId,
-      } as Partial<unknown>)}
-    </>
+      })}
+    >
+      {children}
+    </Slot>
   );
 };
 
@@ -323,7 +326,8 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(TooltipContext);
 
-  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Portal", 'must be used inside "Root"');
+  if (context?.scopeName !== SCOPE_NAME)
+    throw new GistUiError("Portal", 'must be used inside "Root"');
 
   return <>{context.isOpen && createPortal(children, container || document.body)}</>;
 };
@@ -332,7 +336,7 @@ Portal.displayName = "gist-ui.Portal";
 
 // *-*-*-*-* Content *-*-*-*-*
 
-export interface ContentProps {
+export interface ContentProps extends TooltipVariantProps {
   children?: ReactNode;
   asChild?: boolean;
   placement?: Placement;
@@ -369,7 +373,9 @@ export interface ContentProps {
   arrowPadding?: number;
 }
 
-export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => {
+export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) => {
+  const [props, variantProps] = mapProps({ ..._props }, tooltip.variantKeys);
+
   const {
     children,
     asChild,
@@ -404,7 +410,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => 
   );
 
   const { refs, floatingStyles, middlewareData, placement } = useFloating({
-    elements: { reference: context?.triggerElement },
+    elements: { reference: context?.reference },
     open: context?.isOpen,
     whileElementsMounted: autoUpdate,
     placement: position,
@@ -423,11 +429,12 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => 
     ],
   });
 
-  if (context?.scope !== SCOPE_NAME) throw new GistUiError("Content", 'must be used inside "Root"');
+  if (context?.scopeName !== SCOPE_NAME)
+    throw new GistUiError("Content", 'must be used inside "Root"');
 
   if (asChild && !isValidElement(children)) throw new GistUiError("Content", validChildError);
 
-  const styles = tooltip();
+  const styles = tooltip(variantProps);
 
   const [side] = placement.split("-") as [Side, Alignment];
   const isVerticalSide = side === "bottom" || side === "top";
@@ -435,7 +442,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((props, ref) => 
   return (
     <Component
       ref={mergeRefs(ref, refs.setFloating)}
-      id={context.tooltipId}
+      id={context.id}
       role="tooltip"
       className={styles.base({ className: classNames?.base })}
       {...tooltipHoverProps}
