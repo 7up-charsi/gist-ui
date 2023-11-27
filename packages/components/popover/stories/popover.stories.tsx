@@ -43,9 +43,6 @@ const Template = () => {
                 molestias eius suscipit in, est distinctio deserunt culpa odit, sunt nostrum. Ad
                 culpa excepturi assumenda perferendis similique dolore qui.
               </p>
-              <Popover.Close>
-                <button>close</button>
-              </Popover.Close>
             </div>
           </Popover.Content>
         </Popover.Portal>
