@@ -7,7 +7,13 @@ import {
   offset,
   FlipOptions,
   MiddlewareData as _MiddlewareData,
+  Alignment as _Alignment,
+  Side as _Side,
+  AlignedPlacement as _AlignedPlacement,
+  Placement as _Placement,
+  Strategy as _Strategy,
 } from "@floating-ui/react-dom";
+import { RefObject, createContext } from "react";
 
 interface OffsetOptions {
   /**
@@ -56,10 +62,12 @@ interface ArrowOptions {
   padding?: Padding;
 }
 
-export type Alignment = "start" | "end";
-export type Side = "top" | "right" | "bottom" | "left";
-
-export interface MiddlewareData extends _MiddlewareData {}
+export type Alignment = _Alignment;
+export type Side = _Side;
+export type AlignedPlacement = _AlignedPlacement;
+export type Placement = _Placement;
+export type Strategy = _Strategy;
+export type MiddlewareData = _MiddlewareData;
 
 export interface UseFloatingMiddlewareOptions {
   offsetOptions?: OffsetOptions;
@@ -68,6 +76,12 @@ export interface UseFloatingMiddlewareOptions {
 }
 
 export interface UseFloatingOptions extends Omit<_UseFloatingOptions, "middleware"> {}
+
+export const FloatingArrowContext = createContext<{
+  middlewareData: MiddlewareData;
+  side: Side;
+  arrowRef: RefObject<SVGSVGElement>;
+} | null>(null);
 
 export interface UseFloatingProps extends UseFloatingOptions, UseFloatingMiddlewareOptions {}
 
