@@ -2,25 +2,24 @@ import { Context, RefObject, forwardRef, useContext } from "react";
 import { GistUiError } from "@gist-ui/error";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { FloatingArrowClassNames, floatingArrow } from "@gist-ui/theme";
+import { MiddlewareData, Side } from "@gist-ui/use-floating";
 
 export interface FloatingArrowProps {
-  context: unknown;
+  context: Context<{
+    side: Side;
+    middlewareData: MiddlewareData;
+    arrowRef: RefObject<SVGSVGElement>;
+  } | null>;
   classNames?: FloatingArrowClassNames;
 }
 
 const FloatingArrow = forwardRef<SVGSVGElement, FloatingArrowProps>((props, ref) => {
   const { context: contextProp, classNames } = props;
-  const _context = useContext(contextProp as Context<unknown>);
+  const context = useContext(contextProp);
 
-  if (!_context) throw new GistUiError("FloatingArrow", "must be used inside valid provider");
+  if (!context) throw new GistUiError("FloatingArrow", "must be used inside valid provider");
 
-  const context = _context as {
-    placement: string;
-    arrowRef: RefObject<SVGSVGElement>;
-    arrowData: { x: number; y: number };
-  };
-
-  const [side] = context.placement.split("-");
+  const [side] = context.side.split("-");
   const isVerticalSide = side === "bottom" || side === "top";
 
   const styles = floatingArrow();
@@ -30,11 +29,11 @@ const FloatingArrow = forwardRef<SVGSVGElement, FloatingArrowProps>((props, ref)
       <svg
         style={{
           [isVerticalSide ? "left" : "top"]: isVerticalSide
-            ? context.arrowData?.x
-            : context.arrowData?.y,
+            ? context.middlewareData.arrow?.x
+            : context.middlewareData.arrow?.y,
           [side]: "calc(100% - 2px)",
         }}
-        data-side={context.placement.split("-")[0]}
+        data-side={context.side.split("-")[0]}
         ref={mergeRefs(ref, context.arrowRef)}
         className={styles.base({ className: classNames?.base })}
         aria-hidden="true"

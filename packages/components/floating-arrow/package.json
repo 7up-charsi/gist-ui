@@ -40,7 +40,8 @@
   "dependencies": {
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/error": "workspace:*",
-    "@gist-ui/react-utils": "workspace:*"
+    "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/use-floating": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "^2.2.0"

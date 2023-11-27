@@ -226,6 +226,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-floating':
+        specifier: workspace:*
+        version: link:../../hooks/use-floating
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -410,12 +413,12 @@ importers:
 
   packages/components/tooltip:
     dependencies:
-      '@floating-ui/react-dom':
-        specifier: ^2.0.4
-        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
+      '@gist-ui/floating-arrow':
+        specifier: workspace:*
+        version: link:../floating-arrow
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -428,6 +431,9 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
+      '@gist-ui/use-floating':
+        specifier: workspace:*
+        version: link:../../hooks/use-floating
       react:
         specifier: '>=18'
         version: 18.2.0
