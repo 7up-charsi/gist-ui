@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { tooltip } from "@gist-ui/theme";
+import { FloatingArrow } from "@gist-ui/floating-arrow";
 
 import * as Tooltip from "../src";
 
@@ -69,16 +70,12 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
         <Tooltip.Portal>
           <Tooltip.Content
             color={args.color}
-            arrow={args.arrow}
             rounded={args.rounded}
-            arrowPadding={args.arrowPadding}
             disableInteractive={args.disableInteractive}
-            offsetAlignmentAxis={args.offsetAlignmentAxis}
-            offsetMainAxis={args.offsetMainAxis}
-            shiftOffset={args.shiftOffset}
             placement={args.placement}
           >
             i am tooltip content
+            <FloatingArrow context={Tooltip.FloatingArrowContext} />
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
@@ -93,11 +90,6 @@ export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
     placement: "top-start",
     showDelay: 100,
     hideDelay: 300,
-    offsetMainAxis: 10,
-    offsetAlignmentAxis: 5,
-    shiftOffset: 10,
-    arrowPadding: 10,
     disableInteractive: false,
-    arrow: true,
   },
 };

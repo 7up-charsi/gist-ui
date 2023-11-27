@@ -1,16 +1,23 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
-import { GistUiError, validChildError } from "@gist-ui/error";
+import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
+import {
+  useFloating,
+  Side,
+  UseFloatingMiddlewareOptions,
+  UseFloatingOptions,
+  Placement,
+  FloatingArrowContext,
+} from "@gist-ui/use-floating";
 import {
   Dispatch,
   MutableRefObject,
   ReactNode,
   SetStateAction,
-  cloneElement,
   createContext,
   forwardRef,
   isValidElement,
@@ -21,20 +28,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  useFloating,
-  autoUpdate,
-  arrow,
-  flip,
-  shift,
-  offset,
-  limitShift,
-  hide,
-  Placement,
-} from "@floating-ui/react-dom";
-
-type Alignment = "start" | "end";
-type Side = "top" | "right" | "bottom" | "left";
 
 type Trigger = "hover" | "focus";
 
@@ -48,12 +41,13 @@ interface TooltipContext {
   isHovered: MutableRefObject<boolean>;
   isFocused: MutableRefObject<boolean>;
   id: string;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   isDisabled: boolean;
   setIsDisabled: Dispatch<SetStateAction<boolean>>;
   reference: HTMLElement | null;
   setReference: Dispatch<SetStateAction<HTMLElement | null>>;
+  setGivenId: Dispatch<SetStateAction<string>>;
 }
 
 const TooltipContext = createContext<TooltipContext | null>(null);
@@ -71,15 +65,9 @@ export interface RootProps {
    * @default undefined
    */
   trigger?: Trigger;
-  isOpen?: boolean;
+  open?: boolean;
   defaultOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-  /**
-   * id to pass to `Content` component
-   *
-   * this id is also used in "aria-controls" in `Trigger` component
-   */
-  id?: string;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const Root = (props: RootProps) => {
@@ -88,23 +76,21 @@ export const Root = (props: RootProps) => {
     showDelay = 100,
     hideDelay = 300,
     trigger,
-    isOpen: isOpenProp,
+    open: isOpenProp,
     onOpenChange,
     defaultOpen = false,
-    id: idProp,
   } = props;
 
-  const [isOpen, setIsOpen] = useControllableState({
+  const [open, setOpen] = useControllableState({
     value: isOpenProp,
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
 
   const [reference, setReference] = useState<HTMLElement | null>(null);
-
   const [isDisabled, setIsDisabled] = useState(false);
-
   const id = useId();
+  const [givenId, setGivenId] = useState("");
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -116,14 +102,14 @@ export const Root = (props: RootProps) => {
     clearTimeout(hideTimeout.current);
     hideTimeout.current = undefined;
 
-    if (isOpen) return;
+    if (open) return;
 
     if (!immediate && showDelay > 0) {
       showTimeout.current = setTimeout(() => {
-        setIsOpen(true);
+        setOpen(true);
       }, showDelay);
     } else {
-      setIsOpen(true);
+      setOpen(true);
     }
   };
 
@@ -138,17 +124,17 @@ export const Root = (props: RootProps) => {
       if (immediate || hideDelay <= 0) {
         clearTimeout(hideTimeout.current);
         hideTimeout.current = undefined;
-        setIsOpen(false);
+        setOpen(false);
       } else {
         hideTimeout.current = setTimeout(() => {
-          setIsOpen(false);
+          setOpen(false);
         }, hideDelay);
       }
 
       clearTimeout(showTimeout.current);
       showTimeout.current = undefined;
     },
-    [hideDelay, setIsOpen],
+    [hideDelay, setOpen],
   );
 
   const handleHide = (immediate = false) => {
@@ -167,13 +153,13 @@ export const Root = (props: RootProps) => {
       }
     };
 
-    if (isOpen) {
+    if (open) {
       document.addEventListener("keydown", onKeyDown, true);
       return () => {
         document.removeEventListener("keydown", onKeyDown, true);
       };
     }
-  }, [hideTooltip, isDisabled, isOpen]);
+  }, [hideTooltip, isDisabled, open]);
 
   useEffect(() => {
     return () => {
@@ -183,11 +169,11 @@ export const Root = (props: RootProps) => {
   }, []);
 
   useEffect(() => {
-    if (!isOpen && hideTimeout.current) {
+    if (!open && hideTimeout.current) {
       clearTimeout(hideTimeout.current);
       hideTimeout.current = undefined;
     }
-  }, [isOpen]);
+  }, [open]);
 
   return (
     <TooltipContext.Provider
@@ -200,13 +186,14 @@ export const Root = (props: RootProps) => {
         trigger,
         isHovered,
         isFocused,
-        id: idProp || id,
-        isOpen,
-        setIsOpen,
+        id: givenId || id,
+        open,
+        setOpen,
         isDisabled,
         setIsDisabled,
         reference,
         setReference,
+        setGivenId,
       }}
     >
       {children}
@@ -281,7 +268,7 @@ export const Trigger = ({ children }: TriggerProps) => {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if ((mutation.target as unknown as { disabled?: boolean }).disabled) {
-          context?.setIsOpen(false);
+          context?.setOpen(false);
           context?.setIsDisabled(true);
         } else {
           context?.setIsDisabled(false);
@@ -303,9 +290,8 @@ export const Trigger = ({ children }: TriggerProps) => {
   return (
     <Slot
       ref={mergeRefs(context.setReference, setToObserver)}
-      aria-describedby={context.isOpen ? context.id : undefined}
+      aria-describedby={context.open ? context.id : undefined}
       {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, {
-        id: context.id,
         tabIndex: 0,
       })}
     >
@@ -329,48 +315,22 @@ export const Portal = ({ children, container }: PortalProps) => {
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Portal", 'must be used inside "Root"');
 
-  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
+  return <>{context.open && createPortal(children, container || document.body)}</>;
 };
 
 Portal.displayName = "gist-ui.Portal";
 
 // *-*-*-*-* Content *-*-*-*-*
 
-export interface ContentProps extends TooltipVariantProps {
+export interface ContentProps
+  extends TooltipVariantProps,
+    Omit<UseFloatingOptions, "open" | "elements">,
+    UseFloatingMiddlewareOptions {
   children?: ReactNode;
   asChild?: boolean;
   placement?: Placement;
   classNames?: TooltipClassNames;
-  /**
-   * By default when user hovers over tooltip content it doest not close. if do not want this behaviour then you can disable this by passing this prop as true
-   */
   disableInteractive?: boolean;
-  arrow?: boolean;
-  /**
-   * @see {@link https://floating-ui.com/docs/offset#mainaxis mainAxis}
-   * @default 10
-   */
-  offsetMainAxis?: number;
-  /**
-   * @see {@link https://floating-ui.com/docs/offset#alignmentaxis alignmentAxis}
-   * @default 5
-   */
-  offsetAlignmentAxis?: number;
-  /**
-   * @see {@link https://floating-ui.com/docs/offset#crossaxis crossAxis}
-   * @default undefined
-   */
-  offsetCorssAxis?: number;
-  /**
-   * @see {@link https://floating-ui.com/docs/shift#limitshiftoffset limitshiftOffset}
-   * @default 10
-   */
-  shiftOffset?: number;
-  /**
-   * @see {@link https://floating-ui.com/docs/arrow#padding arrowPadding}
-   * @default 10
-   */
-  arrowPadding?: number;
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) => {
@@ -379,19 +339,20 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
   const {
     children,
     asChild,
-    placement: position,
+    placement: placementProp,
     disableInteractive,
     classNames,
-    arrow: arrowProp = true,
-    offsetMainAxis = 10,
-    offsetAlignmentAxis = 5,
-    offsetCorssAxis,
-    shiftOffset = 10,
-    arrowPadding = 10,
+    arrowOptions,
+    flipOptions,
+    offsetOptions,
+    platform,
+    strategy,
+    transform,
+    whileElementsMounted,
   } = props;
 
   const context = useContext(TooltipContext);
-  const arrowRef = useRef<HTMLDivElement | null>(null);
+  const arrowRef = useRef<SVGSVGElement>(null);
 
   const Component = asChild ? Slot : "div";
 
@@ -409,89 +370,56 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
         },
   );
 
-  const { refs, floatingStyles, middlewareData, placement } = useFloating({
-    elements: { reference: context?.reference },
-    open: context?.isOpen,
-    whileElementsMounted: autoUpdate,
-    placement: position,
-    middleware: [
-      offset({
-        mainAxis: offsetMainAxis,
-        alignmentAxis: offsetAlignmentAxis,
-        crossAxis: offsetCorssAxis,
-      }),
-      shift({
-        limiter: limitShift({ offset: shiftOffset }),
-      }),
-      flip(),
-      arrow({ element: arrowRef, padding: arrowPadding }),
-      hide(),
-    ],
+  const { refs, middlewareData, floatingStyles, placement } = useFloating({
+    placement: placementProp,
+    platform,
+    strategy,
+    transform,
+    whileElementsMounted,
+    open: context?.open,
+    elements: {
+      reference: context?.reference,
+    },
+    offsetOptions,
+    flipOptions,
+    arrowOptions: { padding: arrowOptions?.padding, element: arrowRef },
   });
+
+  useEffect(() => {
+    if (isValidElement(children)) {
+      context?.setGivenId(children.props.id || "");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children]);
 
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be used inside "Root"');
 
-  if (asChild && !isValidElement(children)) throw new GistUiError("Content", validChildError);
-
   const styles = tooltip(variantProps);
 
-  const [side] = placement.split("-") as [Side, Alignment];
-  const isVerticalSide = side === "bottom" || side === "top";
-
   return (
-    <Component
-      ref={mergeRefs(ref, refs.setFloating)}
-      id={context.id}
-      role="tooltip"
-      className={styles.base({ className: classNames?.base })}
-      {...tooltipHoverProps}
-      style={{
-        ...floatingStyles,
-        visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
+    <FloatingArrowContext.Provider
+      value={{
+        middlewareData: middlewareData,
+        side: placement.split("-")[0] as Side,
+        arrowRef,
       }}
-      data-side={placement.split("-")[0]}
     >
-      {asChild && isValidElement(children) ? (
-        cloneElement(children, {
-          children: (
-            <>
-              {!arrowProp ? null : (
-                <div
-                  ref={arrowRef}
-                  style={{
-                    [isVerticalSide ? "left" : "top"]: isVerticalSide
-                      ? middlewareData.arrow?.x
-                      : middlewareData.arrow?.y,
-                    [side]: "calc(100% - 1px)",
-                  }}
-                  className={styles.arrow({ className: classNames?.arrow })}
-                />
-              )}
-
-              {children.props.children}
-            </>
-          ),
-        } as Partial<unknown>)
-      ) : (
-        <>
-          {!arrowProp ? null : (
-            <div
-              ref={arrowRef}
-              style={{
-                [isVerticalSide ? "left" : "top"]: isVerticalSide
-                  ? middlewareData.arrow?.x
-                  : middlewareData.arrow?.y,
-                [side]: "calc(100% - 1px)",
-              }}
-              className={styles.arrow({ className: classNames?.arrow })}
-            />
-          )}
-
-          {children}
-        </>
-      )}
-    </Component>
+      <Component
+        ref={mergeRefs(ref, refs.setFloating)}
+        role="tooltip"
+        className={styles.base({ className: classNames?.base })}
+        {...tooltipHoverProps}
+        id={context.id}
+        style={{
+          ...floatingStyles,
+          visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
+        }}
+      >
+        {children}
+      </Component>
+    </FloatingArrowContext.Provider>
   );
 });
 
