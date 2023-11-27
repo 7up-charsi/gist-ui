@@ -1,0 +1,51 @@
+{
+  "name": "@gist-ui/floating-arrow",
+  "version": "1.0.0",
+  "keywords": [
+    "floating-arrow"
+  ],
+  "author": {
+    "name": "Muhammad Zeeshan",
+    "email": "mzeeshan3597@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
+    "directory": "packages/components/floating-arrow"
+  },
+  "bugs": {
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
+  },
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsup src --dts",
+    "build:fast": "tsup src",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/error": "workspace:*",
+    "@gist-ui/react-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "^2.2.0"
+  },
+  "clean-package": {
+    "extends": "../../../../../../clean-package.config.json"
+  }
+}
