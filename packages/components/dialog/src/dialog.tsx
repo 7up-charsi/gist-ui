@@ -1,6 +1,7 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
 import { Slot } from "@gist-ui/slot";
+import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { useScrollLock } from "@gist-ui/use-scroll-lock";
@@ -353,6 +354,9 @@ Portal.displayName = "gist-ui.Portal";
 
 export interface ContentProps {
   children?: ReactNode;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
+  ariaDescribedBy?: string;
 }
 
 export const Content = (props: ContentProps) => {
@@ -421,6 +425,12 @@ export const Content = (props: ContentProps) => {
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
   if (children.props.id) throw new GistUiError("Content", 'add "id" prop on "Root" component');
+
+  if (__DEV__ && (!props.ariaLabel || !props.ariaLabelledBy))
+    throw new GistUiError("Content", 'add "aria-label" or "aria-labelledby" for accessibility');
+
+  if (__DEV__ && !props.ariaDescribedBy)
+    console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
     <FocusTrap

@@ -180,6 +180,9 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
+      '@gist-ui/shared-utils':
+        specifier: workspace:*
+        version: link:../../utilities/shared-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot
