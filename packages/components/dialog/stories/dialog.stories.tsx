@@ -22,7 +22,7 @@ const DialogTemplate = (args: {
 
   return (
     <>
-      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
+      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
         <Dialog.Trigger>
           <Button color="secondary">open dialog</Button>
         </Dialog.Trigger>
@@ -32,7 +32,7 @@ const DialogTemplate = (args: {
 
           <div className={styles.container()}>
             <Dialog.Content>
-              <div className={styles.base()}>
+              <div className={styles.base()} aria-label="very nice dialog">
                 <div className={styles.header()}>header</div>
 
                 <div className={styles.body()} ref={ref}>
@@ -101,7 +101,7 @@ const NestedTemplate = (args: {
 
   return (
     <Dialog.Provider>
-      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted} modal={args.modal}>
+      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
         <Dialog.Trigger>
           <Button color="secondary">open dialog</Button>
         </Dialog.Trigger>
@@ -111,7 +111,7 @@ const NestedTemplate = (args: {
 
           <div className={styles.container()}>
             <Dialog.Content>
-              <div className={styles.base()}>
+              <div className={styles.base()} aria-label="very nice dialog">
                 <div className={styles.header()}>header</div>
 
                 <div className={styles.body()}>

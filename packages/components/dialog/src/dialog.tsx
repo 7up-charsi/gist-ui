@@ -19,7 +19,9 @@ import {
 } from "@gist-ui/focus-trap";
 import {
   Children,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   cloneElement,
   createContext,
   isValidElement,
@@ -28,6 +30,7 @@ import {
   useEffect,
   useId,
   useRef,
+  useState,
 } from "react";
 
 type Reason = "pointer" | "escape" | "outside";
@@ -49,6 +52,7 @@ interface Context
   onOpenAutoFocus: Exclude<FocusTrapProps["onMountAutoFocus"], undefined>;
   onCloseAutoFocus: Exclude<FocusTrapProps["onUnmountAutoFocus"], undefined>;
   id: string;
+  setGivenId: Dispatch<SetStateAction<string>>;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -152,12 +156,6 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * ```
    */
   onCloseAutoFocus?: FocusTrapProps["onUnmountAutoFocus"];
-  /**
-   * id to pass to `Content` component
-   *
-   * this id is also used in "aria-controls" in `Trigger` component
-   */
-  id?: string;
 }
 
 export const Root = (props: RootProps) => {
@@ -172,7 +170,6 @@ export const Root = (props: RootProps) => {
     onUnmountAutoFocus: onUnmountAutoFocusProp,
     onOpenAutoFocus: onOpenAutoFocusProp,
     onCloseAutoFocus: onCloseAutoFocusProp,
-    id: idProp,
   } = props;
 
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
@@ -181,6 +178,8 @@ export const Root = (props: RootProps) => {
   const onCloseAutoFocus = useCallbackRef(onCloseAutoFocusProp);
 
   const id = useId();
+
+  const [givenId, setGivenId] = useState("");
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -251,7 +250,8 @@ export const Root = (props: RootProps) => {
           onUnmountAutoFocus,
           onOpenAutoFocus,
           onCloseAutoFocus,
-          id: idProp || id,
+          id: givenId || id,
+          setGivenId,
         }}
       >
         {children}
@@ -354,9 +354,6 @@ Portal.displayName = "gist-ui.Portal";
 
 export interface ContentProps {
   children?: ReactNode;
-  ariaLabel?: string;
-  ariaLabelledBy?: string;
-  ariaDescribedBy?: string;
 }
 
 export const Content = (props: ContentProps) => {
@@ -416,6 +413,14 @@ export const Content = (props: ContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context?.open, context?.keepMounted]);
 
+  useEffect(() => {
+    if (isValidElement(children)) {
+      context?.setGivenId(children.props.id || "");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children]);
+
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
 
@@ -424,12 +429,10 @@ export const Content = (props: ContentProps) => {
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
-  if (children.props.id) throw new GistUiError("Content", 'add "id" prop on "Root" component');
-
-  if (__DEV__ && (!props.ariaLabel || !props.ariaLabelledBy))
+  if (__DEV__ && !children.props["aria-label"] && !children.props["aria-labelledby"])
     throw new GistUiError("Content", 'add "aria-label" or "aria-labelledby" for accessibility');
 
-  if (__DEV__ && !props.ariaDescribedBy)
+  if (__DEV__ && !children.props["aria-describedby"])
     console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
