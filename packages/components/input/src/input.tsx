@@ -169,7 +169,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           placeholder={placeholder}
           type={type}
           onChange={onChange}
-          aria-describedby={error ? errorMessageId : helperTextId}
+          aria-describedby={helperText && !error ? helperTextId : undefined}
+          aria-errormessage={error && errorMessage ? errorMessageId : undefined}
           aria-required={required}
           aria-invalid={error}
           className={inputStyles({ className: classNames?.input })}
