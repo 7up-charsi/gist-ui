@@ -317,9 +317,6 @@ importers:
 
   packages/components/popover:
     dependencies:
-      '@floating-ui/react-dom':
-        specifier: ^2.0.4
-        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
@@ -332,6 +329,9 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
+      '@gist-ui/shared-utils':
+        specifier: workspace:*
+        version: link:../../utilities/shared-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot
