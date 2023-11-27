@@ -1,9 +1,11 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { usePress } from "react-aria";
-import { mergeProps } from "@gist-ui/react-utils";
-import { __DEV__ } from "@gist-ui/shared-utils";
+import { Slot } from "@gist-ui/slot";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
+import { useScrollLock } from "@gist-ui/use-scroll-lock";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { createPortal } from "react-dom";
 import {
   FocusTrap,
   FocusTrapProps,
@@ -14,8 +16,6 @@ import {
   getTabbables,
   removeLinks,
 } from "@gist-ui/focus-trap";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { createPortal } from "react-dom";
 import {
   Children,
   ReactNode,
@@ -28,7 +28,6 @@ import {
   useId,
   useRef,
 } from "react";
-import { useScrollLock } from "@gist-ui/use-scroll-lock";
 
 type Reason = "pointer" | "escape" | "outside";
 
@@ -38,17 +37,17 @@ const AUTOFOCUS_ON_OPEN = "focusTrapScope.autoFocusOnOPEN";
 const AUTOFOCUS_ON_CLOSE = "focusTrapScope.autoFocusOnCLOSE";
 const EVENT_OPTIONS = { bubbles: false, cancelable: true };
 
-interface Context extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
+interface Context
+  extends Required<Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus">> {
   scopeName: string;
   handleOpen: () => void;
   handleClose: (reason: Reason) => void;
-  isOpen: boolean;
+  open: boolean;
   scope: FocusTrapScope;
   keepMounted: boolean;
-  modal: boolean;
   onOpenAutoFocus: Exclude<FocusTrapProps["onMountAutoFocus"], undefined>;
   onCloseAutoFocus: Exclude<FocusTrapProps["onUnmountAutoFocus"], undefined>;
-  dialogId: string;
+  id: string;
 }
 
 const SCOPE_NAME = "Dialog";
@@ -63,12 +62,12 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * This prop is used for controled state
    * @default undefined
    */
-  isOpen?: boolean;
+  open?: boolean;
   /**
    * This prop is used for controled state
    * @default undefined
    */
-  onOpenChange?: (isOpen: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   /**
    * @default undefined
    */
@@ -105,18 +104,6 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * ```
    */
   onClose?: (event: CloseEvent, reason: Reason) => void;
-  /**
-   * When this prop is true
-   * 1. It will trap focus
-   * 2. Set aria-modal=true on children of `Content` component.
-   *
-   * When this prop is flase
-   * 1. It will not trap focus
-   * 2. Set aria-modal=false on children of `Content` component
-   *
-   * @default true
-   */
-  modal?: boolean;
   /**
    * When this prop is true, all content stays in the DOM and only css visiblity changes on open/close
    *
@@ -175,17 +162,16 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
 export const Root = (props: RootProps) => {
   const {
     children,
-    isOpen: isOpenProp,
+    open: isOpenProp,
     defaultOpen,
     onOpenChange,
     onClose: onCloseProp,
     keepMounted = false,
-    modal = true,
     onMountAutoFocus: onMountAutoFocusProp,
     onUnmountAutoFocus: onUnmountAutoFocusProp,
     onOpenAutoFocus: onOpenAutoFocusProp,
     onCloseAutoFocus: onCloseAutoFocusProp,
-    id,
+    id: idProp,
   } = props;
 
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
@@ -193,7 +179,7 @@ export const Root = (props: RootProps) => {
   const onOpenAutoFocus = useCallbackRef(onOpenAutoFocusProp);
   const onCloseAutoFocus = useCallbackRef(onCloseAutoFocusProp);
 
-  const dialogId = useId();
+  const id = useId();
 
   const scope = useRef<FocusTrapScope>({
     paused: false,
@@ -207,15 +193,15 @@ export const Root = (props: RootProps) => {
 
   const onClose = useCallbackRef(onCloseProp);
 
-  const [isOpen, setIsOpen] = useControllableState({
+  const [open, setOpen] = useControllableState({
     defaultValue: defaultOpen,
     value: isOpenProp,
     onChange: onOpenChange,
   });
 
   const handleOpen = useCallback(() => {
-    setIsOpen(true);
-  }, [setIsOpen]);
+    setOpen(true);
+  }, [setOpen]);
 
   const handleClose = useCallback(
     (reason: Reason) => {
@@ -229,9 +215,9 @@ export const Root = (props: RootProps) => {
 
       onClose({ preventDefault }, reason);
 
-      if (!eventObj.defaultPrevented) setIsOpen(false);
+      if (!eventObj.defaultPrevented) setOpen(false);
     },
-    [onClose, scope.paused, setIsOpen],
+    [onClose, scope.paused, setOpen],
   );
 
   useEffect(() => {
@@ -241,14 +227,14 @@ export const Root = (props: RootProps) => {
       }
     };
 
-    if (isOpen) {
+    if (open) {
       document.addEventListener("keydown", handleKeydown, true);
 
       return () => {
         document.removeEventListener("keydown", handleKeydown, true);
       };
     }
-  }, [handleClose, isOpen]);
+  }, [handleClose, open]);
 
   return (
     <>
@@ -257,15 +243,14 @@ export const Root = (props: RootProps) => {
           scopeName: SCOPE_NAME,
           handleClose,
           handleOpen,
-          isOpen,
+          open,
           scope,
           keepMounted,
           onMountAutoFocus,
           onUnmountAutoFocus,
-          modal,
           onOpenAutoFocus,
           onCloseAutoFocus,
-          dialogId: id || dialogId,
+          id: idProp || id,
         }}
       >
         {children}
@@ -289,33 +274,20 @@ export const Trigger = (props: TriggerProps) => {
 
   const { pressProps } = usePress({
     isDisabled: context?.scopeName !== SCOPE_NAME,
-    onPress: async () => {
-      try {
-        context?.handleOpen();
-      } catch (error) {
-        if (__DEV__) console.log(error);
-      }
-    },
+    onPress: context?.handleOpen,
   });
 
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Trigger", 'must be child of "Root"');
 
-  const childCount = Children.count(children);
-  if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("Trigger", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("Trigger", validChildError);
-
   return (
-    <>
-      {cloneElement(children, {
-        ...mergeProps(
-          pressProps,
-          { "aria-expanded": context.isOpen, "aria-controls": context.dialogId },
-          children.props,
-        ),
-      })}
-    </>
+    <Slot
+      aria-expanded={context.open}
+      aria-controls={context.open ? context.id : undefined}
+      {...pressProps}
+    >
+      {children}
+    </Slot>
   );
 };
 
@@ -334,12 +306,8 @@ export const Close = (props: CloseProps) => {
 
   const { pressProps } = usePress({
     isDisabled: context?.scopeName !== SCOPE_NAME,
-    onPress: async () => {
-      try {
-        context?.handleClose("pointer");
-      } catch (error) {
-        if (__DEV__) console.log(error);
-      }
+    onPress: () => {
+      context?.handleClose("pointer");
     },
   });
 
@@ -350,13 +318,7 @@ export const Close = (props: CloseProps) => {
   if (childCount > 1) throw new GistUiError("Close", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Close", validChildError);
 
-  return (
-    <>
-      {cloneElement(children, {
-        ...mergeProps(pressProps, children.props),
-      })}
-    </>
-  );
+  return <Slot {...pressProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui.Close";
@@ -377,12 +339,12 @@ export const Portal = (props: PortalProps) => {
 
   if (context.keepMounted) {
     return createPortal(
-      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>{children}</div>,
+      <div style={{ visibility: context.open ? "visible" : "hidden" }}>{children}</div>,
       container,
     );
   }
 
-  return context?.isOpen ? createPortal(children, container) : null;
+  return context?.open ? createPortal(children, container) : null;
 };
 
 Portal.displayName = "gist-ui.Portal";
@@ -400,10 +362,10 @@ export const Content = (props: ContentProps) => {
   const context = useContext(DialogContext);
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  useScrollLock({ enabled: context?.isOpen });
+  useScrollLock({ enabled: context?.open });
 
   useClickOutside<HTMLDivElement>({
-    disabled: !context?.isOpen,
+    disabled: !context?.open,
     ref: dialogRef,
     callback: () => {
       context?.handleClose("outside");
@@ -416,7 +378,7 @@ export const Content = (props: ContentProps) => {
     if (!container) return;
     if (!context) return;
     if (!context.keepMounted) return;
-    if (!context.isOpen) return;
+    if (!context.open) return;
 
     scopeContext?.add(context.scope);
 
@@ -448,7 +410,7 @@ export const Content = (props: ContentProps) => {
       scopeContext?.remove(context.scope);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context?.isOpen, context?.keepMounted]);
+  }, [context?.open, context?.keepMounted]);
 
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
@@ -460,23 +422,21 @@ export const Content = (props: ContentProps) => {
 
   if (children.props.id) throw new GistUiError("Content", 'add "id" prop on "Root" component');
 
-  const modal = context.modal;
-
   return (
     <FocusTrap
       ref={dialogRef}
-      loop={modal}
-      trapped={modal}
+      loop
+      trapped
       onMountAutoFocus={context?.onMountAutoFocus}
       onUnmountAutoFocus={context?.onUnmountAutoFocus}
       scope={context.scope}
       asChild
-      disabled={!context.isOpen}
+      disabled={!context.open}
     >
       {cloneElement(children, {
         role: "dialog",
-        "aria-modal": modal,
-        id: context.dialogId,
+        "aria-modal": true,
+        id: context.id,
       } as Partial<unknown>)}
     </FocusTrap>
   );

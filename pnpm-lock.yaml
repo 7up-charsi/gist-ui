@@ -180,12 +180,9 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
-      '@gist-ui/react-utils':
+      '@gist-ui/slot':
         specifier: workspace:*
-        version: link:../../utilities/react-utils
-      '@gist-ui/shared-utils':
-        specifier: workspace:*
-        version: link:../../utilities/shared-utils
+        version: link:../slot
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
@@ -207,6 +204,28 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/floating-arrow:
+    dependencies:
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      react:
+        specifier: '>=18'
+        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
@@ -279,6 +298,55 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-aria:
+        specifier: ^3.29.0
+        version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/popover:
+    dependencies:
+      '@floating-ui/react-dom':
+        specifier: ^2.0.4
+        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
+      '@gist-ui/floating-arrow':
+        specifier: workspace:*
+        version: link:../floating-arrow
+      '@gist-ui/focus-trap':
+        specifier: workspace:*
+        version: link:../focus-trap
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
+      '@gist-ui/use-click-outside':
+        specifier: workspace:*
+        version: link:../../hooks/use-click-outside
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
+      '@gist-ui/use-floating':
+        specifier: workspace:*
+        version: link:../../hooks/use-floating
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -389,9 +457,6 @@ importers:
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
-      '@radix-ui/colors':
-        specifier: ^3.0.0
-        version: 3.0.0
       color:
         specifier: ^4.2.3
         version: 4.2.3
@@ -461,6 +526,22 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../use-callback-ref
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-floating:
+    dependencies:
+      '@floating-ui/react-dom':
+        specifier: ^2.0.4
+        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -3007,10 +3088,6 @@ packages:
       picocolors: 1.0.0
       tslib: 2.6.2
     dev: true
-
-  /@radix-ui/colors@3.0.0:
-    resolution: {integrity: sha512-FUOsGBkHrYJwCSEtWRCIfQbZG7q1e6DgxCIOe1SUQzDe/7rXXeA47s8yCn6fuTNQAj1Zq4oTFi9Yjp3wzElcxg==}
-    dev: false
 
   /@radix-ui/number@1.0.1:
     resolution: {integrity: sha512-T5gIdVO2mmPW3NNhjNgEP3cqMXjXL9UbO0BzWcXfvdBs+BohbQxvd/K5hSVKmn9/lbTdsQVKbUcP5WLCwvUbBg==}
