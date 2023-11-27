@@ -1,6 +1,8 @@
-import { ForwardedRef, MutableRefObject } from "react";
+import { Dispatch, ForwardedRef, MutableRefObject, SetStateAction } from "react";
 
-export const mergeRefs = <T>(...refs: (ForwardedRef<T> | MutableRefObject<T>)[]) => {
+export const mergeRefs = <T>(
+  ...refs: (ForwardedRef<T> | MutableRefObject<T> | Dispatch<SetStateAction<T>>)[]
+) => {
   if (refs.length === 1) return refs[0];
 
   return (node: T) => {
