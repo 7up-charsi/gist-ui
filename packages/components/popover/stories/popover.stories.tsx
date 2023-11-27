@@ -24,15 +24,18 @@ const Template = () => {
 
   return (
     <div className="w-[300vw] h-[300vh] flex items-center justify-center">
-      <Popover.Root>
+      <Popover.Root defaultOpen>
         <Popover.Trigger>
           <Button ref={ref}>open popver</Button>
         </Popover.Trigger>
 
         <Popover.Portal>
           <Popover.Content>
-            <div className="max-w-sm w-full bg-white border shadow-lg rounded-md p-4">
-              <FloatingArrow context={Popover.FloatinArrowContext} />
+            <div
+              aria-label="very nice label"
+              className="max-w-sm w-full bg-white border shadow-lg rounded-md p-4"
+            >
+              <FloatingArrow context={Popover.FloatingArrowContext} />
               <h3 className="text-lg first-letter:uppercase">nice heading</h3>
 
               <p>

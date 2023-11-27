@@ -9,22 +9,22 @@ import { useClickOutside } from "@gist-ui/use-click-outside";
 import { createPortal } from "react-dom";
 import {
   useFloating,
-  MiddlewareData,
   Side,
   UseFloatingMiddlewareOptions,
   UseFloatingOptions,
+  FloatingArrowContext,
 } from "@gist-ui/use-floating";
 import {
   Children,
   Dispatch,
   ReactNode,
-  RefObject,
   SetStateAction,
   cloneElement,
   createContext,
   isValidElement,
   useCallback,
   useContext,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -41,17 +41,12 @@ interface PopoverContext
   id: string;
   reference: HTMLElement | null;
   setReference: Dispatch<SetStateAction<HTMLElement | null>>;
+  setGivenId: Dispatch<SetStateAction<string>>;
 }
 
 const SCOPE_NAME = "POPOVER";
 
 const PopoverContext = createContext<PopoverContext | null>(null);
-
-export const FloatinArrowContext = createContext<{
-  arrowData: MiddlewareData["arrow"];
-  placement: Side;
-  arrowRef: RefObject<HTMLDivElement>;
-} | null>(null);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -71,12 +66,6 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * @default undefined
    */
   defaultOpen?: boolean;
-  /**
-   * id to pass to `Content` component
-   *
-   * this id is also used in "aria-controls" in `Trigger` component
-   */
-  id?: string;
 }
 
 export const Root = (props: RootProps) => {
@@ -85,7 +74,6 @@ export const Root = (props: RootProps) => {
     defaultOpen,
     open: openProp,
     onOpenChange,
-    id: idProp,
     onMountAutoFocus: onMountAutoFocusProp,
     onUnmountAutoFocus: onUnmountAutoFocusProp,
   } = props;
@@ -101,6 +89,8 @@ export const Root = (props: RootProps) => {
   const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
   const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
   const id = useId();
+
+  const [givenId, setGivenId] = useState("");
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -119,11 +109,12 @@ export const Root = (props: RootProps) => {
         handleOpen,
         handleClose,
         open,
-        id: idProp || id,
+        id: givenId || id,
         onMountAutoFocus,
         onUnmountAutoFocus,
         reference,
         setReference,
+        setGivenId,
       }}
     >
       {children}
@@ -209,28 +200,28 @@ Portal.displayName = "gist-ui.Portal";
 
 // *-*-*-*-* Content *-*-*-*-*
 
-export interface ContentProps extends Omit<UseFloatingOptions, "open" | "elements"> {
+export interface ContentProps
+  extends Omit<UseFloatingOptions, "open" | "elements">,
+    UseFloatingMiddlewareOptions {
   children?: ReactNode;
-  middlewareOptions?: UseFloatingMiddlewareOptions;
-  ariaLabel?: string;
-  ariaLabelledBy?: string;
-  ariaDescribedBy?: string;
 }
 
 export const Content = (props: ContentProps) => {
   const {
     children,
-    middlewareOptions,
     placement: placementProp,
     platform,
     strategy,
     transform,
     whileElementsMounted,
+    arrowOptions,
+    flipOptions,
+    offsetOptions,
   } = props;
 
   const context = useContext(PopoverContext);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLDivElement>(null);
+  const arrowRef = useRef<SVGSVGElement>(null);
 
   const { refs, middlewareData, floatingStyles, placement } = useFloating({
     placement: placementProp,
@@ -242,8 +233,9 @@ export const Content = (props: ContentProps) => {
     elements: {
       reference: context?.reference,
     },
-    ...middlewareOptions,
-    arrowOptions: { padding: middlewareOptions?.arrowOptions?.padding, element: arrowRef },
+    offsetOptions,
+    flipOptions,
+    arrowOptions: { padding: arrowOptions?.padding, element: arrowRef },
   });
 
   useClickOutside<HTMLDivElement>({
@@ -253,6 +245,14 @@ export const Content = (props: ContentProps) => {
     },
   });
 
+  useEffect(() => {
+    if (isValidElement(children)) {
+      context?.setGivenId(children.props.id || "");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children]);
+
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
 
@@ -261,19 +261,17 @@ export const Content = (props: ContentProps) => {
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
-  if (children.props.id) throw new GistUiError("Content", 'add "id" prop on "Root" component');
-
-  if (__DEV__ && (!props.ariaLabel || !props.ariaLabelledBy))
+  if (__DEV__ && !children.props["aria-label"] && !children.props["aria-labelledby"])
     throw new GistUiError("Content", 'add "aria-label" or "aria-labelledby" for accessibility');
 
-  if (__DEV__ && !props.ariaDescribedBy)
+  if (__DEV__ && !children.props["aria-describedby"])
     console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
-    <FloatinArrowContext.Provider
+    <FloatingArrowContext.Provider
       value={{
-        arrowData: middlewareData.arrow,
-        placement: placement.split("-")[0] as Side,
+        middlewareData: middlewareData,
+        side: placement.split("-")[0] as Side,
         arrowRef,
       }}
     >
@@ -287,14 +285,12 @@ export const Content = (props: ContentProps) => {
       >
         {cloneElement(children, {
           role: "dialog",
-          id: context.id,
           ref: refs.setFloating,
-          style: {
-            ...floatingStyles,
-          },
+          style: floatingStyles,
+          id: context.id,
         } as Partial<unknown>)}
       </FocusTrap>
-    </FloatinArrowContext.Provider>
+    </FloatingArrowContext.Provider>
   );
 };
 
