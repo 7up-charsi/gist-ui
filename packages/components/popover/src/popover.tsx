@@ -1,10 +1,9 @@
-import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
+import { GistUiError, validChildError } from "@gist-ui/error";
 import { usePress } from "react-aria";
 import { Slot } from "@gist-ui/slot";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
-import { FocusTrap, FocusTrapProps } from "@gist-ui/focus-trap";
+import { FocusTrap } from "@gist-ui/focus-trap";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { createPortal } from "react-dom";
 import {
@@ -15,10 +14,6 @@ import {
   FloatingArrowContext,
 } from "@gist-ui/use-floating";
 import {
-  Children,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
   cloneElement,
   createContext,
   isValidElement,
@@ -30,18 +25,17 @@ import {
   useState,
 } from "react";
 
-interface PopoverContext
-  extends Required<Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus">> {
+interface PopoverContext {
   open: boolean;
   scopeName: string;
   disabled: boolean;
-  setDisabled: Dispatch<SetStateAction<boolean>>;
+  setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   handleOpen(): void;
   handleClose(): void;
   id: string;
   reference: HTMLElement | null;
-  setReference: Dispatch<SetStateAction<HTMLElement | null>>;
-  setGivenId: Dispatch<SetStateAction<string>>;
+  setReference: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  setGivenId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SCOPE_NAME = "POPOVER";
@@ -50,8 +44,8 @@ const PopoverContext = createContext<PopoverContext | null>(null);
 
 // *-*-*-*-* Root *-*-*-*-*
 
-export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
-  children?: ReactNode;
+export interface RootProps {
+  children?: React.ReactNode;
   /**
    * This prop is used for controled state
    * @default undefined
@@ -69,14 +63,7 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
 }
 
 export const Root = (props: RootProps) => {
-  const {
-    children,
-    defaultOpen,
-    open: openProp,
-    onOpenChange,
-    onMountAutoFocus: onMountAutoFocusProp,
-    onUnmountAutoFocus: onUnmountAutoFocusProp,
-  } = props;
+  const { children, defaultOpen, open: openProp, onOpenChange } = props;
 
   const [open, setOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -86,8 +73,6 @@ export const Root = (props: RootProps) => {
   const [disabled, setDisabled] = useState(true);
   const [reference, setReference] = useState<HTMLElement | null>(null);
 
-  const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
-  const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
   const id = useId();
 
   const [givenId, setGivenId] = useState("");
@@ -110,8 +95,6 @@ export const Root = (props: RootProps) => {
         handleClose,
         open,
         id: givenId || id,
-        onMountAutoFocus,
-        onUnmountAutoFocus,
         reference,
         setReference,
         setGivenId,
@@ -127,7 +110,7 @@ Root.displayName = "gist-ui.Root";
 // *-*-*-*-* Trigger *-*-*-*-*
 
 export interface TriggerProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const Trigger = (props: TriggerProps) => {
@@ -160,7 +143,7 @@ Trigger.displayName = "gist-ui.Trigger";
 // *-*-*-*-* Close *-*-*-*-*
 
 export interface CloseProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const Close = (props: CloseProps) => {
@@ -183,7 +166,7 @@ Close.displayName = "gist-ui.Close";
 // *-*-*-*-* Portal *-*-*-*-*
 
 export interface PortalProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
   container?: Element;
 }
 
@@ -203,7 +186,7 @@ Portal.displayName = "gist-ui.Portal";
 export interface ContentProps
   extends Omit<UseFloatingOptions, "open" | "elements">,
     UseFloatingMiddlewareOptions {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export const Content = (props: ContentProps) => {
@@ -256,16 +239,7 @@ export const Content = (props: ContentProps) => {
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Content", 'must be child of "Root"');
 
-  const childCount = Children.count(children);
-  if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("Content", onlyChildError);
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
-
-  if (__DEV__ && !children.props["aria-label"] && !children.props["aria-labelledby"])
-    throw new GistUiError("Content", 'add "aria-label" or "aria-labelledby" for accessibility');
-
-  if (__DEV__ && !children.props["aria-describedby"])
-    console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
     <FloatingArrowContext.Provider
@@ -275,19 +249,25 @@ export const Content = (props: ContentProps) => {
         arrowRef,
       }}
     >
-      <FocusTrap
-        ref={dialogRef}
-        loop
-        trapped
-        onMountAutoFocus={context?.onMountAutoFocus}
-        onUnmountAutoFocus={context?.onUnmountAutoFocus}
-        asChild
-      >
+      <FocusTrap ref={dialogRef} loop trapped asChild>
         {cloneElement(children, {
           role: "dialog",
           ref: refs.setFloating,
           style: floatingStyles,
           id: context.id,
+          children: (
+            <>
+              <VisuallyHidden asChild>
+                <button onClick={context.handleClose}>close</button>
+              </VisuallyHidden>
+
+              {children.props.children}
+
+              <VisuallyHidden asChild>
+                <button onClick={context.handleClose}>close</button>
+              </VisuallyHidden>
+            </>
+          ),
         } as Partial<unknown>)}
       </FocusTrap>
     </FloatingArrowContext.Provider>

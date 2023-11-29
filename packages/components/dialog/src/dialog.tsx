@@ -23,14 +23,22 @@ import {
   useRef,
   useState,
 } from "react";
+import { VisuallyHidden } from "@gist-ui/visually-hidden";
 
-type Reason = "pointer" | "escape" | "outside";
+type Reason = "pointer" | "escape" | "outside" | "virtual";
 
 type CloseEvent = { preventDefault(): void };
 
 interface Context {
   scopeName: string;
   handleOpen: () => void;
+  /**
+   * reason param could be "pointer" | "escape" | "outside" | "virtual"
+   * 1. when dialog closed on interaction with `Close` component then reason is "pointer"
+   * 2. when dialog closed on interaction outside `Content` component then reason is "outside"
+   * 2. when dialog closed on Escape keypress then reason is "escape"
+   * 2. when dialog closed on interaction with visually hidden close button then reason is "virtual" and this will only happen when screen reader read dialog content and press close button
+   */
   handleClose: (reason: Reason) => void;
   open: boolean;
   scope: FocusScope;
@@ -330,6 +338,19 @@ export const Content = (props: ContentProps) => {
         role: "dialog",
         "aria-modal": true,
         id: context.id,
+        children: (
+          <>
+            <VisuallyHidden asChild>
+              <button onClick={() => context.handleClose("virtual")}>close</button>
+            </VisuallyHidden>
+
+            {children.props.children}
+
+            <VisuallyHidden asChild>
+              <button onClick={() => context.handleClose("virtual")}>close</button>
+            </VisuallyHidden>
+          </>
+        ),
       } as Partial<unknown>)}
     </FocusTrap>
   );

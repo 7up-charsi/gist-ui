@@ -2,6 +2,7 @@ import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
+import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { HoverProps, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
 import {
@@ -75,19 +76,6 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
     hoverProps: hoverHookProps = {},
   } = props;
 
-  const {
-    base,
-    inputWrapper,
-    label: labelStyles,
-    input: inputStyles,
-    helperText: helperTextStyles,
-    required: requiredStyles,
-  } = input({
-    ...props,
-    disabled,
-    color: error ? "danger" : color,
-  });
-
   const labelId = useId();
   const helperTextId = useId();
   const errorMessageId = useId();
@@ -133,11 +121,17 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
         },
   );
 
+  const styles = input({
+    ...props,
+    disabled,
+    color: error ? "danger" : color,
+  });
+
   const labelHTML = !!label && (
-    <label htmlFor={inputId} className={labelStyles({ className: classNames?.label })}>
+    <label htmlFor={inputId} className={styles.label({ className: classNames?.label })}>
       {label}
       {required && (
-        <span className={requiredStyles({ className: classNames?.required })} aria-hidden="true">
+        <span className={styles.required({ className: classNames?.required })} aria-hidden="true">
           *
         </span>
       )}
@@ -152,7 +146,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
 
   return (
     <div
-      className={base({ className: classNames?.base })}
+      className={styles.base({ className: classNames?.base })}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
@@ -164,7 +158,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
 
       <div
         ref={inputWrapperRef}
-        className={inputWrapper({ className: classNames?.inputWrapper })}
+        className={styles.inputWrapper({ className: classNames?.inputWrapper })}
         {...hoverProps}
         onPointerUp={(e) => {
           hoverProps.onPointerUp?.(e);
@@ -172,7 +166,10 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
         }}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
-        {hideLabel && labelHTML}
+
+        {/* show label inside inputWrapper when hideLabel is true,
+        because inputWrapper has position relative and VisuallyHidden element set position absolute */}
+        {hideLabel && <VisuallyHidden asChild>{labelHTML}</VisuallyHidden>}
 
         {startContent}
         <input
@@ -188,7 +185,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
           aria-errormessage={error && errorMessage ? errorMessageId : undefined}
           aria-required={required}
           aria-invalid={error}
-          className={inputStyles({ className: classNames?.input })}
+          className={styles.input({ className: classNames?.input })}
           ref={mergeRefs(ref, inputRef)}
           id={inputId}
           disabled={disabled}
@@ -197,7 +194,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
       </div>
 
       {helperText && !error && (
-        <div id={helperTextId} className={helperTextStyles({ className: classNames?.helperText })}>
+        <div id={helperTextId} className={styles.helperText({ className: classNames?.helperText })}>
           {helperText}
         </div>
       )}
@@ -206,7 +203,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
         <div
           id={errorMessageId}
           aria-live={a11yFeedback}
-          className={helperTextStyles({ className: classNames?.helperText })}
+          className={styles.helperText({ className: classNames?.helperText })}
         >
           {errorMessage}
         </div>

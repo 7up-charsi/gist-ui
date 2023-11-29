@@ -62,11 +62,6 @@ const input = tv({
         label: "ml-2 font-medium cursor-pointer place-self-start",
       },
     },
-    hideLabel: {
-      true: {
-        label: "border-0 [clip-path:rect(0_0_0_0)] h-px w-px -m-px overflow-hiiden p-0 absolute",
-      },
-    },
   },
   defaultVariants: {
     color: "default",

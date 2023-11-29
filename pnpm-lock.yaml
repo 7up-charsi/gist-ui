@@ -201,6 +201,9 @@ importers:
       '@gist-ui/use-scroll-lock':
         specifier: workspace:*
         version: link:../../hooks/use-scroll-lock
+      '@gist-ui/visually-hidden':
+        specifier: workspace:*
+        version: link:../visually-hidden
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -304,6 +307,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/visually-hidden':
+        specifier: workspace:*
+        version: link:../visually-hidden
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -353,6 +359,9 @@ importers:
       '@gist-ui/use-floating':
         specifier: workspace:*
         version: link:../../hooks/use-floating
+      '@gist-ui/visually-hidden':
+        specifier: workspace:*
+        version: link:../visually-hidden
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -440,6 +449,22 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/visually-hidden:
+    dependencies:
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      react:
+        specifier: '>=18'
+        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
