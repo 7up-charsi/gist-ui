@@ -1,5 +1,5 @@
 import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mergeRefs } from "@gist-ui/react-utils";
+import { mapProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
 import { VisuallyHidden } from "@gist-ui/visually-hidden";
@@ -48,7 +48,9 @@ export interface InputProps extends InputVariantProps {
   hoverProps?: HoverProps;
 }
 
-const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
+const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
+  const [props, variantProps] = mapProps({ ..._props }, input.variantKeys);
+
   const {
     label,
     type = "text",
@@ -56,11 +58,8 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
     helperText,
     error,
     errorMessage,
-    color,
-    disabled,
     startContent,
     endContent,
-    labelPlacement,
     placeholder,
     value,
     defaultValue,
@@ -75,6 +74,8 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
     onChange,
     hoverProps: hoverHookProps = {},
   } = props;
+
+  const { color, disabled, labelPlacement } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -122,7 +123,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
   );
 
   const styles = input({
-    ...props,
+    ...variantProps,
     disabled,
     color: error ? "danger" : color,
   });
