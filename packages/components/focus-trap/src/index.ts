@@ -1,14 +1,8 @@
 import * as focusTrap from "./focus-trap";
-import * as focusTrapScope from "./scope-provider";
 import * as utils from "./utils";
 
 // export types
-export type { FocusTrapProps } from "./focus-trap";
-export type { FocusTrapScope } from "./scope-provider";
-
-// export component
-export const FocusTrapScopeProvider = focusTrapScope.FocusTrapScopeProvider;
-export const FocusTrapScopeContext = focusTrapScope.FocusTrapScopeContext;
+export type { FocusTrapProps, FocusScope } from "./focus-trap";
 
 export const FocusTrap = focusTrap.default;
 

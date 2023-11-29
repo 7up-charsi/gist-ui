@@ -1,4 +1,3 @@
-import { FocusTrapScopeProvider } from "@gist-ui/focus-trap";
 import * as dialog from "./dialog";
 
 // export types
@@ -10,5 +9,3 @@ export const Trigger = dialog.Trigger;
 export const Close = dialog.Close;
 export const Portal = dialog.Portal;
 export const Content = dialog.Content;
-
-export const Provider = FocusTrapScopeProvider;

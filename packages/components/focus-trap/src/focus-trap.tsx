@@ -1,19 +1,10 @@
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { FocusTrapScope, FocusTrapScopeContext } from "./scope-provider";
-import { focus, focusFirst, getTabbableEdges, getTabbables, removeLinks } from "./utils";
+import { focus, getTabbableEdges } from "./utils";
 import { Slot } from "@gist-ui/slot";
 import { mergeRefs } from "@gist-ui/react-utils";
-import {
-  ForwardedRef,
-  KeyboardEvent,
-  ReactNode,
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { GistUiError } from "@gist-ui/error";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+
+export type FocusScope = { paused: boolean; pause(): void; resume(): void };
 
 export interface FocusTrapProps {
   /**
@@ -28,81 +19,28 @@ export interface FocusTrapProps {
    * @default true
    */
   trapped?: boolean;
-  /**
-   * This callback executes on mount and by default on mount first tabbable element focused, if you want to prevent this behaviour then call event.preventDefault()
-   * @default undefined
-   * @example
-   *
-   * ```js
-   * import { FocusTrap } from '@gist-ui/focus-trap'
-   *
-   * <FocusTrap
-   *   onMountAutoFocus={(event) => {
-   *     event.preventDefault();
-   *   }}
-   * >
-   *   // other stuff
-   * </FocusTrap>
-   * ```
-   */
-  onMountAutoFocus?: (event: Event) => void;
-  /**
-   * This callback executes on unmount and by default on unmount focus returns to trigger, if you want to prevent this behaviour then call event.preventDefault()
-   * @default undefined
-   * @example
-   *
-   * ```js
-   * import { FocusTrap } from '@gist-ui/focus-trap'
-   *
-   * <FocusTrap
-   *   onUnmountAutoFocus={(event) => {
-   *     event.preventDefault();
-   *   }}
-   * >
-   *   // other stuff
-   * </FocusTrap>
-   * ```
-   */
-  onUnmountAutoFocus?: (event: Event) => void;
-  children?: ReactNode;
+  children?: React.ReactNode;
   asChild?: boolean;
+  disabled?: boolean;
   /**
    * **This prop is for internal use.**
    *
    * This prop is used to pass custom scope and is usefull when more than one FocusTrap components are visible
    * @default undefined
    */
-  scope?: FocusTrapScope;
-  disabled?: boolean;
+  scope?: FocusScope;
 }
 
-const AUTOFOCUS_ON_MOUNT = "focusTrapScope.autoFocusOnMount";
-const AUTOFOCUS_ON_UNMOUNT = "focusTrapScope.autoFocusOnUnmount";
-const EVENT_OPTIONS = { bubbles: false, cancelable: true };
-
 const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
-  const {
-    loop = true,
-    trapped = true,
-    onMountAutoFocus: onMountAutoFocusProp,
-    onUnmountAutoFocus: onUnmountAutoFocusProp,
-    asChild,
-    children,
-    scope,
-    disabled,
-  } = props;
+  const { loop = true, trapped = true, asChild, children, disabled, scope } = props;
 
   const Component = asChild ? Slot : "div";
 
   const [container, setContainer] = useState<HTMLElement | null>(null);
-  const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
-  const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
 
   const lastFocusedElement = useRef<HTMLElement | null>(null);
 
-  const focusScopeContext = useContext(FocusTrapScopeContext);
-
-  const _scope = useRef<FocusTrapScope>({
+  const _scope = useRef<FocusScope>({
     paused: false,
     pause() {
       this.paused = true;
@@ -171,41 +109,27 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
 
   useEffect(() => {
     if (!container) return;
+    if (disabled) return;
 
-    focusScopeContext?.add(focusScope);
+    const previouslyActiveElement = document.activeElement as HTMLElement | null;
 
-    const prevFocusedElement = document.activeElement as HTMLElement | null;
-    const hasFocusedElement = container.contains(prevFocusedElement);
+    focusScopesStack?.add(focusScope);
 
-    if (!hasFocusedElement) {
-      const mountEvent = new CustomEvent(AUTOFOCUS_ON_MOUNT, EVENT_OPTIONS);
-      container.addEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
-      container.dispatchEvent(mountEvent);
-      if (!mountEvent.defaultPrevented) {
-        focusFirst(removeLinks(getTabbables(container)), { select: true });
-      }
-      if (prevFocusedElement === document.activeElement) focus(container);
-    }
+    if (!("focus" in container))
+      throw new GistUiError("FocusTrap", "container must be focusable, hint =  set tabIndex to -1");
+
+    container.focus?.();
 
     return () => {
-      container.removeEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
+      focusScopesStack?.remove(focusScope);
 
-      const unmountEvent = new CustomEvent(AUTOFOCUS_ON_UNMOUNT, EVENT_OPTIONS);
-      container.addEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
-      container.dispatchEvent(unmountEvent);
-      if (!unmountEvent.defaultPrevented) {
-        focus(prevFocusedElement ?? document.body, { select: true });
-      }
-
-      container.removeEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
-
-      focusScopeContext?.remove(focusScope);
+      if (previouslyActiveElement) previouslyActiveElement?.focus?.();
+      else document.body.focus();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [container, focusScope, onMountAutoFocus, onUnmountAutoFocus]);
+  }, [container, focusScope, disabled]);
 
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (!loop) return;
       if (focusScope.paused) return;
       if (disabled) return;
@@ -242,7 +166,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
   return (
     <Component
       tabIndex={-1}
-      ref={mergeRefs(ref, setContainer as ForwardedRef<HTMLDivElement>)}
+      ref={mergeRefs(ref, setContainer as React.ForwardedRef<HTMLDivElement>)}
       onKeyDown={handleKeyDown}
       style={{ outline: "none" }}
     >
@@ -254,3 +178,29 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
 FocusTrap.displayName = "gist-ui.FocusTrap";
 
 export default FocusTrap;
+
+const focusScopesStack = createFocusScopesStack();
+
+function createFocusScopesStack() {
+  /** A stack of focus scopes, with the active one at the top */
+  let stack: FocusScope[] = [];
+
+  return {
+    add(focusScope: FocusScope) {
+      // pause the currently active focus scope (at the top of the stack)
+      const activeFocusScope = stack[0];
+      if (focusScope !== activeFocusScope) {
+        activeFocusScope?.pause();
+      }
+
+      // remove in case it already exists (because we'll re-add it at the top of the stack)
+      stack = stack.filter((ele) => ele !== focusScope);
+      stack.unshift(focusScope);
+    },
+
+    remove(focusScope: FocusScope) {
+      stack = stack.filter((ele) => ele !== focusScope);
+      stack[0]?.resume();
+    },
+  };
+}

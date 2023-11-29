@@ -100,91 +100,89 @@ const NestedTemplate = (args: {
   const styles = dialog({});
 
   return (
-    <Dialog.Provider>
-      <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
-        <Dialog.Trigger>
-          <Button color="secondary">open dialog</Button>
-        </Dialog.Trigger>
+    <Dialog.Root defaultOpen={args.defaultOpen} keepMounted={args.keepMounted}>
+      <Dialog.Trigger>
+        <Button color="secondary">open dialog</Button>
+      </Dialog.Trigger>
 
-        <Dialog.Portal>
-          <div className={styles.backdrop()} />
+      <Dialog.Portal>
+        <div className={styles.backdrop()} />
 
-          <div className={styles.container()}>
-            <Dialog.Content>
-              <div className={styles.base()} aria-label="very nice dialog">
-                <div className={styles.header()}>header</div>
+        <div className={styles.container()}>
+          <Dialog.Content>
+            <div className={styles.base()} aria-label="very nice dialog">
+              <div className={styles.header()}>header</div>
 
-                <div className={styles.body()}>
-                  <p className="m-3">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
-                    similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
-                    provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam
-                    nam odio animi blanditiis nobis nisi! id
-                  </p>
+              <div className={styles.body()}>
+                <p className="m-3">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
+                  similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
+                  provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam nam
+                  odio animi blanditiis nobis nisi! id
+                </p>
 
-                  <Dialog.Root>
-                    <Dialog.Trigger>
-                      <Button color="secondary">open child dialog</Button>
-                    </Dialog.Trigger>
+                <Dialog.Root>
+                  <Dialog.Trigger>
+                    <Button color="secondary">open child dialog</Button>
+                  </Dialog.Trigger>
 
-                    <Dialog.Portal>
-                      <div className={styles.backdrop()} />
+                  <Dialog.Portal>
+                    <div className={styles.backdrop()} />
 
-                      <div className={styles.container()}>
-                        <Dialog.Content>
-                          <div className={styles.base({ size: "lg" })}>
-                            <div className={styles.header()}>header</div>
+                    <div className={styles.container()}>
+                      <Dialog.Content>
+                        <div className={styles.base({ size: "lg" })} aria-label="very nice dialog">
+                          <div className={styles.header()}>header</div>
 
-                            <div className={styles.body()}>
-                              <p className="m-2">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus
-                                dolores similique accusantium est esse, illo fugiat aut sequi ipsum
-                              </p>
+                          <div className={styles.body()}>
+                            <p className="m-2">
+                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus
+                              dolores similique accusantium est esse, illo fugiat aut sequi ipsum
+                            </p>
 
-                              <p className="m-2">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus
-                                dolores similique accusantium est esse, illo fugiat aut sequi ipsum
-                              </p>
-                            </div>
-
-                            <div className={styles.footer()}>
-                              <Dialog.Close>
-                                <Button variant="text" color="danger">
-                                  Close
-                                </Button>
-                              </Dialog.Close>
-
-                              <Button color="success">Agree</Button>
-                            </div>
+                            <p className="m-2">
+                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus
+                              dolores similique accusantium est esse, illo fugiat aut sequi ipsum
+                            </p>
                           </div>
-                        </Dialog.Content>
-                      </div>
-                    </Dialog.Portal>
-                  </Dialog.Root>
 
-                  <p className="m-3">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
-                    similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
-                    provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam
-                    nam odio animi blanditiis nobis nisi! id
-                  </p>
-                </div>
+                          <div className={styles.footer()}>
+                            <Dialog.Close>
+                              <Button variant="text" color="danger">
+                                Close
+                              </Button>
+                            </Dialog.Close>
 
-                <div className={styles.footer()}>
-                  <Dialog.Close>
-                    <Button variant="text" color="danger">
-                      Close
-                    </Button>
-                  </Dialog.Close>
+                            <Button color="success">Agree</Button>
+                          </div>
+                        </div>
+                      </Dialog.Content>
+                    </div>
+                  </Dialog.Portal>
+                </Dialog.Root>
 
-                  <Button color="success">Agree</Button>
-                </div>
+                <p className="m-3">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste natus dolores
+                  similique accusantium est esse, illo fugiat aut sequi ipsum magnam laborum
+                  provident delectus quaerat reprehenderit nihil porro ratione cupiditate ipsam nam
+                  odio animi blanditiis nobis nisi! id
+                </p>
               </div>
-            </Dialog.Content>
-          </div>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </Dialog.Provider>
+
+              <div className={styles.footer()}>
+                <Dialog.Close>
+                  <Button variant="text" color="danger">
+                    Close
+                  </Button>
+                </Dialog.Close>
+
+                <Button color="success">Agree</Button>
+              </div>
+            </div>
+          </Dialog.Content>
+        </div>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 };
 

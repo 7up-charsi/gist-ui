@@ -38,7 +38,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@gist-ui/use-callback-ref": "workspace:*",
+    "@gist-ui/error": "workspace:*",
     "@gist-ui/slot": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/button": "workspace:*"

@@ -5,8 +5,11 @@ import { Button } from "@gist-ui/button";
 
 import * as Popover from "../src";
 
-const meta: Meta<Popover.ContentProps> = {
+const meta: Meta<Popover.RootProps & Popover.ContentProps> = {
   title: "Components/Popover",
+  args: {
+    defaultOpen: false,
+  },
   argTypes: {
     placement: {
       control: "select",
@@ -30,7 +33,7 @@ const meta: Meta<Popover.ContentProps> = {
 
 export default meta;
 
-const Template = (args: Popover.ContentProps) => {
+const Template = (args: Popover.RootProps & Popover.ContentProps) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const Template = (args: Popover.ContentProps) => {
 
   return (
     <div className="w-[300vw] h-[300vh] flex items-center justify-center">
-      <Popover.Root defaultOpen>
+      <Popover.Root defaultOpen={args.defaultOpen}>
         <Popover.Trigger>
           <Button ref={ref}>open popver</Button>
         </Popover.Trigger>
@@ -70,6 +73,6 @@ const Template = (args: Popover.ContentProps) => {
   );
 };
 
-export const Default: StoryObj<Popover.ContentProps> = {
+export const Default: StoryObj<Popover.RootProps & Popover.ContentProps> = {
   render: Template,
 };

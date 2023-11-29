@@ -7,16 +7,7 @@ import { useClickOutside } from "@gist-ui/use-click-outside";
 import { useScrollLock } from "@gist-ui/use-scroll-lock";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
-import {
-  FocusTrap,
-  FocusTrapProps,
-  FocusTrapScope,
-  FocusTrapScopeContext,
-  focus,
-  focusFirst,
-  getTabbables,
-  removeLinks,
-} from "@gist-ui/focus-trap";
+import { FocusTrap, FocusScope } from "@gist-ui/focus-trap";
 import {
   Children,
   Dispatch,
@@ -37,20 +28,13 @@ type Reason = "pointer" | "escape" | "outside";
 
 type CloseEvent = { preventDefault(): void };
 
-const AUTOFOCUS_ON_OPEN = "focusTrapScope.autoFocusOnOPEN";
-const AUTOFOCUS_ON_CLOSE = "focusTrapScope.autoFocusOnCLOSE";
-const EVENT_OPTIONS = { bubbles: false, cancelable: true };
-
-interface Context
-  extends Required<Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus">> {
+interface Context {
   scopeName: string;
   handleOpen: () => void;
   handleClose: (reason: Reason) => void;
   open: boolean;
-  scope: FocusTrapScope;
+  scope: FocusScope;
   keepMounted: boolean;
-  onOpenAutoFocus: Exclude<FocusTrapProps["onMountAutoFocus"], undefined>;
-  onCloseAutoFocus: Exclude<FocusTrapProps["onUnmountAutoFocus"], undefined>;
   id: string;
   setGivenId: Dispatch<SetStateAction<string>>;
 }
@@ -61,7 +45,7 @@ const DialogContext = createContext<Context | null>(null);
 
 // *-*-*-*-* Root *-*-*-*-*
 
-export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "onUnmountAutoFocus"> {
+export interface RootProps {
   children?: ReactNode;
   /**
    * This prop is used for controled state
@@ -115,47 +99,6 @@ export interface RootProps extends Pick<FocusTrapProps, "onMountAutoFocus" | "on
    * @default false
    */
   keepMounted?: boolean;
-  /**
-   * **This will only executes when keepMounted is true.**
-   *
-   * This callback executes on open and by default on open first tabbable element focused, if you want to prevent this behaviour then call event.preventDefault()
-   * @default undefined
-   * @example
-   *
-   * ```js
-   * import * as Dialog from '@gist-ui/dialog'
-   *
-   * <Dialog.Root
-   *   onOpenAutoFocus={(event) => {
-   *     event.preventDefault();
-   *   }}
-   * >
-   *   // other stuff
-   * </Dialog.Root>
-   * ```
-   */
-  onOpenAutoFocus?: FocusTrapProps["onMountAutoFocus"];
-  /**
-   * **This will only executes when keepMounted is true.**
-   *
-   * This callback executes on close and by default on close focus returns to trigger, if you want to prevent this behaviour then call event.preventDefault()
-   *
-   * @default undefined
-   * @example
-   *
-   * ```js
-   * import * as Dialog from '@gist-ui/dialog'
-   *
-   * <Dialog.Root
-   *   onCloseAutoFocus={(event) => {
-   *     event.preventDefault();
-   *   }}
-   * >
-   *   // other stuff
-   * </Dialog.Root>
-   * ```
-   */
-  onCloseAutoFocus?: FocusTrapProps["onUnmountAutoFocus"];
 }
 
 export const Root = (props: RootProps) => {
@@ -166,22 +109,13 @@ export const Root = (props: RootProps) => {
     onOpenChange,
     onClose: onCloseProp,
     keepMounted = false,
-    onMountAutoFocus: onMountAutoFocusProp,
-    onUnmountAutoFocus: onUnmountAutoFocusProp,
-    onOpenAutoFocus: onOpenAutoFocusProp,
-    onCloseAutoFocus: onCloseAutoFocusProp,
   } = props;
-
-  const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
-  const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
-  const onOpenAutoFocus = useCallbackRef(onOpenAutoFocusProp);
-  const onCloseAutoFocus = useCallbackRef(onCloseAutoFocusProp);
 
   const id = useId();
 
   const [givenId, setGivenId] = useState("");
 
-  const scope = useRef<FocusTrapScope>({
+  const scope = useRef<FocusScope>({
     paused: false,
     pause() {
       this.paused = true;
@@ -246,10 +180,6 @@ export const Root = (props: RootProps) => {
           open,
           scope,
           keepMounted,
-          onMountAutoFocus,
-          onUnmountAutoFocus,
-          onOpenAutoFocus,
-          onCloseAutoFocus,
           id: givenId || id,
           setGivenId,
         }}
@@ -359,7 +289,6 @@ export interface ContentProps {
 export const Content = (props: ContentProps) => {
   const { children } = props;
 
-  const scopeContext = useContext(FocusTrapScopeContext);
   const context = useContext(DialogContext);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -372,46 +301,6 @@ export const Content = (props: ContentProps) => {
       context?.handleClose("outside");
     },
   });
-
-  useEffect(() => {
-    const container = dialogRef.current as HTMLElement;
-
-    if (!container) return;
-    if (!context) return;
-    if (!context.keepMounted) return;
-    if (!context.open) return;
-
-    scopeContext?.add(context.scope);
-
-    const prevFocusedElement = document.activeElement as HTMLElement | null;
-    const hasFocusedElement = container.contains(prevFocusedElement);
-
-    if (!hasFocusedElement) {
-      const openEvent = new CustomEvent(AUTOFOCUS_ON_OPEN, EVENT_OPTIONS);
-      container.addEventListener(AUTOFOCUS_ON_OPEN, context.onOpenAutoFocus);
-      container.dispatchEvent(openEvent);
-      if (!openEvent.defaultPrevented) {
-        focusFirst(removeLinks(getTabbables(container)), { select: true });
-      }
-      if (prevFocusedElement === document.activeElement) focus(container);
-    }
-
-    return () => {
-      container.removeEventListener(AUTOFOCUS_ON_OPEN, context.onOpenAutoFocus);
-
-      const closeEvent = new CustomEvent(AUTOFOCUS_ON_CLOSE, EVENT_OPTIONS);
-      container.addEventListener(AUTOFOCUS_ON_CLOSE, context.onCloseAutoFocus);
-      container.dispatchEvent(closeEvent);
-      if (!closeEvent.defaultPrevented) {
-        focus(prevFocusedElement ?? document.body, { select: true });
-      }
-
-      container.removeEventListener(AUTOFOCUS_ON_CLOSE, context.onCloseAutoFocus);
-
-      scopeContext?.remove(context.scope);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context?.open, context?.keepMounted]);
 
   useEffect(() => {
     if (isValidElement(children)) {
@@ -436,16 +325,7 @@ export const Content = (props: ContentProps) => {
     console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
-    <FocusTrap
-      ref={dialogRef}
-      loop
-      trapped
-      onMountAutoFocus={context?.onMountAutoFocus}
-      onUnmountAutoFocus={context?.onUnmountAutoFocus}
-      scope={context.scope}
-      asChild
-      disabled={!context.open}
-    >
+    <FocusTrap ref={dialogRef} loop trapped asChild scope={context.scope} disabled={!context.open}>
       {cloneElement(children, {
         role: "dialog",
         "aria-modal": true,
