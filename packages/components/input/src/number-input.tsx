@@ -1,5 +1,5 @@
 import { KeyboardEventHandler, forwardRef, useRef } from "react";
-import Input, { InputProps } from "./input";
+import Input, { CustomInputElement, InputProps } from "./input";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
@@ -19,7 +19,7 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
   threshold?: number;
 }
 
-const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
+const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref) => {
   const {
     classNames,
     inputMode = "numeric",
@@ -34,7 +34,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) 
     ...rest
   } = props;
 
-  const innerRef = useRef<HTMLInputElement>(null);
+  const innerRef = useRef<CustomInputElement>(null);
 
   const state = useRef<{
     longPressInterval?: NodeJS.Timeout;

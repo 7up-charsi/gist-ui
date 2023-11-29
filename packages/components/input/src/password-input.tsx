@@ -1,5 +1,5 @@
 import { ReactNode, forwardRef, useState } from "react";
-import Input, { InputProps } from "./input";
+import Input, { CustomInputElement, InputProps } from "./input";
 import { Button } from "@gist-ui/button";
 import { Icon } from "@gist-ui/icon";
 
@@ -10,7 +10,7 @@ export interface PasswordInputProps extends Omit<InputProps, "type"> {
   hideIcon?: ReactNode;
 }
 
-const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, ref) => {
+const PasswordInput = forwardRef<CustomInputElement, PasswordInputProps>((props, ref) => {
   const { showAriaLabel, hideAriaLabel, showIcon, hideIcon, label, ...rest } = props;
 
   const [isPassword, setIsPassword] = useState(true);

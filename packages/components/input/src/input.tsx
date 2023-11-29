@@ -10,9 +10,14 @@ import {
   ReactNode,
   forwardRef,
   useId,
+  useImperativeHandle,
   useRef,
   useState,
 } from "react";
+
+export interface CustomInputElement extends HTMLInputElement {
+  inputWrapper: HTMLDivElement | null;
+}
 
 export interface InputProps extends InputVariantProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
@@ -42,7 +47,7 @@ export interface InputProps extends InputVariantProps {
   hoverProps?: HoverProps;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+const Input = forwardRef<CustomInputElement, InputProps>((props, ref) => {
   const {
     label,
     type = "text",
@@ -88,9 +93,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const errorMessageId = useId();
   const inputId = id || labelId;
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<CustomInputElement | null>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const [filled, setFilled] = useState(!!defaultValue);
+
+  useImperativeHandle(
+    ref,
+    () =>
+      ({
+        inputWrapper: inputWrapperRef.current,
+      }) as CustomInputElement,
+
+    [],
+  );
 
   const {
     focusProps: focusRingProps,

@@ -3,7 +3,7 @@ import PasswordInput from "./password-input";
 import NumberInput from "./number-input";
 
 // export types
-export type { InputProps } from "./input";
+export type { InputProps, CustomInputElement } from "./input";
 export type { PasswordInputProps } from "./password-input";
 export type { NumberInputProps } from "./number-input";
 
