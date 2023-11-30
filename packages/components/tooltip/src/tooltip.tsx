@@ -5,6 +5,7 @@ import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
+import { useIsDisabled } from "@gist-ui/use-is-disabled";
 import {
   useFloating,
   Side,
@@ -43,8 +44,6 @@ interface TooltipContext {
   id: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  isDisabled: boolean;
-  setIsDisabled: Dispatch<SetStateAction<boolean>>;
   reference: HTMLElement | null;
   setReference: Dispatch<SetStateAction<HTMLElement | null>>;
   setGivenId: Dispatch<SetStateAction<string>>;
@@ -88,9 +87,8 @@ export const Root = (props: RootProps) => {
   });
 
   const [reference, setReference] = useState<HTMLElement | null>(null);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const id = useId();
   const [givenId, setGivenId] = useState("");
+  const id = useId();
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -144,8 +142,6 @@ export const Root = (props: RootProps) => {
   };
 
   useEffect(() => {
-    if (isDisabled) return;
-
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopPropagation();
@@ -159,7 +155,7 @@ export const Root = (props: RootProps) => {
         document.removeEventListener("keydown", onKeyDown, true);
       };
     }
-  }, [hideTooltip, isDisabled, open]);
+  }, [hideTooltip, open]);
 
   useEffect(() => {
     return () => {
@@ -189,8 +185,6 @@ export const Root = (props: RootProps) => {
         id: givenId || id,
         open,
         setOpen,
-        isDisabled,
-        setIsDisabled,
         reference,
         setReference,
         setGivenId,
@@ -211,10 +205,15 @@ export interface TriggerProps {
 
 export const Trigger = ({ children }: TriggerProps) => {
   const context = useContext(TooltipContext);
-  const [toObserver, setToObserver] = useState<HTMLElement | null>(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const isDisabledRef = useIsDisabled((isDisabled) => {
+    setIsDisabled(isDisabled);
+
+    if (!isDisabled) context?.handleShow(true);
+  });
 
   const { hoverProps } = useHover({
-    isDisabled: context?.isDisabled,
+    isDisabled: isDisabled,
     onHoverStart: () => {
       if (context!.trigger === "focus") return;
 
@@ -233,7 +232,6 @@ export const Trigger = ({ children }: TriggerProps) => {
   });
 
   const { pressProps } = usePress({
-    isDisabled: context?.isDisabled,
     onPressStart: () => {
       context!.isFocused.current = false;
       context!.isHovered.current = false;
@@ -243,7 +241,6 @@ export const Trigger = ({ children }: TriggerProps) => {
 
   const { isFocusVisible } = useFocusVisible();
   const { focusProps } = useFocus({
-    isDisabled: context?.isDisabled,
     onFocus: () => {
       if (context?.trigger === "hover") return;
 
@@ -262,34 +259,12 @@ export const Trigger = ({ children }: TriggerProps) => {
     },
   });
 
-  useEffect(() => {
-    if (!toObserver) return;
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if ((mutation.target as unknown as { disabled?: boolean }).disabled) {
-          context?.setOpen(false);
-          context?.setIsDisabled(true);
-        } else {
-          context?.setIsDisabled(false);
-        }
-      }
-    });
-
-    observer.observe(toObserver, { attributeFilter: ["disabled"] });
-
-    return () => {
-      observer.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toObserver]);
-
   if (context?.scopeName !== SCOPE_NAME)
     throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   return (
     <Slot
-      ref={mergeRefs(context.setReference, setToObserver)}
+      ref={mergeRefs(context.setReference, isDisabledRef)}
       aria-describedby={context.open ? context.id : undefined}
       {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, {
         tabIndex: 0,
@@ -356,19 +331,15 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
 
   const Component = asChild ? Slot : "div";
 
-  const { hoverProps: tooltipHoverProps } = useHover(
-    context?.isDisabled
-      ? { isDisabled: true }
-      : {
-          isDisabled: disableInteractive,
-          onHoverStart: () => {
-            context?.showTooltip(true);
-          },
-          onHoverEnd: () => {
-            context?.hideTooltip();
-          },
-        },
-  );
+  const { hoverProps: tooltipHoverProps } = useHover({
+    isDisabled: disableInteractive,
+    onHoverStart: () => {
+      context?.showTooltip(true);
+    },
+    onHoverEnd: () => {
+      context?.hideTooltip();
+    },
+  });
 
   const { refs, middlewareData, floatingStyles, placement } = useFloating({
     placement: placementProp,

@@ -41,6 +41,7 @@
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/use-floating": "workspace:*",
+    "@gist-ui/use-is-disabled": "workspace:*",
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "@gist-ui/slot": "workspace:*",

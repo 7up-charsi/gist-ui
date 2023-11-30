@@ -338,18 +338,15 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
-      '@gist-ui/shared-utils':
+      '@gist-ui/react-utils':
         specifier: workspace:*
-        version: link:../../utilities/shared-utils
+        version: link:../../utilities/react-utils
       '@gist-ui/slot':
         specifier: workspace:*
         version: link:../slot
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
-      '@gist-ui/use-callback-ref':
-        specifier: workspace:*
-        version: link:../../hooks/use-callback-ref
       '@gist-ui/use-click-outside':
         specifier: workspace:*
         version: link:../../hooks/use-click-outside
@@ -359,6 +356,9 @@ importers:
       '@gist-ui/use-floating':
         specifier: workspace:*
         version: link:../../hooks/use-floating
+      '@gist-ui/use-is-disabled':
+        specifier: workspace:*
+        version: link:../../hooks/use-is-disabled
       '@gist-ui/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
@@ -443,6 +443,9 @@ importers:
       '@gist-ui/use-floating':
         specifier: workspace:*
         version: link:../../hooks/use-floating
+      '@gist-ui/use-is-disabled':
+        specifier: workspace:*
+        version: link:../../hooks/use-is-disabled
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -576,6 +579,19 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.0.4
         version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-is-disabled:
+    dependencies:
       react:
         specifier: '>=18'
         version: 18.2.0
