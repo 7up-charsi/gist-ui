@@ -1,0 +1,45 @@
+{
+  "name": "@gist-ui/context",
+  "version": "1.0.0",
+  "keywords": [
+    "context"
+  ],
+  "author": {
+    "name": "Muhammad Zeeshan",
+    "email": "mzeeshan3597@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
+    "directory": "packages/core/context"
+  },
+  "bugs": {
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
+  },
+  "main": "./src/index.tsx",
+  "scripts": {
+    "build": "tsup src --dts",
+    "build:fast": "tsup src",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "devDependencies": {
+    "clean-package": "^2.2.0"
+  },
+  "dependencies": {
+    "@gist-ui/error": "workspace:*"
+  },
+  "clean-package": {
+    "extends": "../../../../../../clean-package.config.json"
+  }
+}
