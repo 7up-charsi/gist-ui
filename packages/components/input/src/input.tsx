@@ -102,25 +102,19 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
     isFocused,
   } = useFocusRing({ isTextInput: true });
 
-  const { hoverProps, isHovered } = useHover(
-    disabled ? { isDisabled: true } : { ...hoverHookProps },
-  );
+  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled: disabled });
 
-  const { focusProps } = useFocus<HTMLInputElement>(
-    disabled
-      ? { isDisabled: true }
-      : {
-          onFocus: (e) => {
-            onFocus?.(e);
-            focusRingProps.onFocus?.(e);
-          },
-          onBlur: (e) => {
-            setFilled(!!e.target.value.length);
-            onBlur?.(e);
-            focusRingProps.onBlur?.(e);
-          },
-        },
-  );
+  const { focusProps } = useFocus<HTMLInputElement>({
+    onFocus: (e) => {
+      onFocus?.(e);
+      focusRingProps.onFocus?.(e);
+    },
+    onBlur: (e) => {
+      setFilled(!!e.target.value.length);
+      onBlur?.(e);
+      focusRingProps.onBlur?.(e);
+    },
+  });
 
   const styles = input({
     ...variantProps,

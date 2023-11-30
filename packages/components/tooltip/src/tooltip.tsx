@@ -205,15 +205,16 @@ export interface TriggerProps {
 
 export const Trigger = ({ children }: TriggerProps) => {
   const context = useContext(TooltipContext);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+
   const isDisabledRef = useIsDisabled((isDisabled) => {
-    setIsDisabled(isDisabled);
+    setDisabled(isDisabled);
 
     if (!isDisabled) context?.handleShow(true);
   });
 
   const { hoverProps } = useHover({
-    isDisabled: isDisabled,
+    isDisabled: disabled,
     onHoverStart: () => {
       if (context!.trigger === "focus") return;
 
