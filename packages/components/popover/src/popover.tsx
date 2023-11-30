@@ -24,12 +24,12 @@ import {
   useRef,
   useState,
 } from "react";
+import { useIsDisabled } from "@gist-ui/use-is-disabled";
+import { mergeRefs } from "@gist-ui/react-utils";
 
 interface PopoverContext {
   open: boolean;
   scopeName: string;
-  disabled: boolean;
-  setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   handleOpen(): void;
   handleClose(): void;
   id: string;
@@ -70,7 +70,7 @@ export const Root = (props: RootProps) => {
     onChange: onOpenChange,
     value: openProp,
   });
-  const [disabled, setDisabled] = useState(true);
+
   const [reference, setReference] = useState<HTMLElement | null>(null);
 
   const id = useId();
@@ -89,8 +89,6 @@ export const Root = (props: RootProps) => {
     <PopoverContext.Provider
       value={{
         scopeName: SCOPE_NAME,
-        disabled,
-        setDisabled,
         handleOpen,
         handleClose,
         open,
@@ -118,8 +116,11 @@ export const Trigger = (props: TriggerProps) => {
 
   const context = useContext(PopoverContext);
 
+  const isDisabledRef = useIsDisabled((isDisabled) => {
+    if (isDisabled) context?.handleClose();
+  });
+
   const { pressProps } = usePress({
-    isDisabled: context?.scopeName !== SCOPE_NAME,
     onPress: context?.handleOpen,
   });
 
@@ -128,7 +129,7 @@ export const Trigger = (props: TriggerProps) => {
 
   return (
     <Slot
-      ref={context.setReference}
+      ref={mergeRefs(context.setReference, isDisabledRef)}
       aria-expanded={context.open}
       aria-controls={context.open ? context.id : undefined}
       {...pressProps}
@@ -152,7 +153,6 @@ export const Close = (props: CloseProps) => {
   const context = useContext(PopoverContext);
 
   const { pressProps } = usePress({
-    isDisabled: context?.scopeName !== SCOPE_NAME,
     onPress: context?.handleClose,
   });
 

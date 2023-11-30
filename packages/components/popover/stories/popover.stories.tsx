@@ -8,7 +8,7 @@ import * as Popover from "../src";
 const meta: Meta<Popover.RootProps & Popover.ContentProps> = {
   title: "Components/Popover",
   args: {
-    defaultOpen: false,
+    defaultOpen: true,
   },
   argTypes: {
     placement: {
