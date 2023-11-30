@@ -15,10 +15,8 @@ import {
 } from "@gist-ui/use-floating";
 import {
   cloneElement,
-  createContext,
   isValidElement,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useRef,
@@ -26,10 +24,10 @@ import {
 } from "react";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
 import { mergeRefs } from "@gist-ui/react-utils";
+import { createContextScope } from "@gist-ui/context";
 
 interface PopoverContext {
   open: boolean;
-  scopeName: string;
   handleOpen(): void;
   handleClose(): void;
   id: string;
@@ -38,9 +36,9 @@ interface PopoverContext {
   setGivenId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SCOPE_NAME = "POPOVER";
+const Popover_Name = "Popover.Root";
 
-const PopoverContext = createContext<PopoverContext | null>(null);
+const [Provider, useContext] = createContextScope<PopoverContext>(Popover_Name);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -86,26 +84,25 @@ export const Root = (props: RootProps) => {
   }, [setOpen]);
 
   return (
-    <PopoverContext.Provider
-      value={{
-        scopeName: SCOPE_NAME,
-        handleOpen,
-        handleClose,
-        open,
-        id: givenId || id,
-        reference,
-        setReference,
-        setGivenId,
-      }}
+    <Provider
+      handleOpen={handleOpen}
+      handleClose={handleClose}
+      open={open}
+      reference={reference}
+      setReference={setReference}
+      setGivenId={setGivenId}
+      id={givenId || id}
     >
       {children}
-    </PopoverContext.Provider>
+    </Provider>
   );
 };
 
-Root.displayName = "gist-ui.Root";
+Root.displayName = "gist-ui." + Popover_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
+
+const Trigger_Name = "Popover.Trigger";
 
 export interface TriggerProps {
   children: React.ReactNode;
@@ -114,18 +111,15 @@ export interface TriggerProps {
 export const Trigger = (props: TriggerProps) => {
   const { children } = props;
 
-  const context = useContext(PopoverContext);
+  const context = useContext(Trigger_Name);
 
   const isDisabledRef = useIsDisabled((isDisabled) => {
-    if (isDisabled) context?.handleClose();
+    if (isDisabled) context.handleClose();
   });
 
   const { pressProps } = usePress({
-    onPress: context?.handleOpen,
+    onPress: context.handleOpen,
   });
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Trigger", 'must be child of "Root"');
 
   return (
     <Slot
@@ -139,9 +133,11 @@ export const Trigger = (props: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui.Trigger";
+Trigger.displayName = "gist-ui." + Trigger_Name;
 
 // *-*-*-*-* Close *-*-*-*-*
+
+const Close_Name = "Popover.Close";
 
 export interface CloseProps {
   children: React.ReactNode;
@@ -150,20 +146,20 @@ export interface CloseProps {
 export const Close = (props: CloseProps) => {
   const { children } = props;
 
-  const context = useContext(PopoverContext);
+  const context = useContext(Close_Name);
 
   const { pressProps } = usePress({
-    onPress: context?.handleClose,
+    onPress: context.handleClose,
   });
-
-  if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Close", 'must be child of "Root"');
 
   return <Slot {...pressProps}>{children}</Slot>;
 };
 
-Close.displayName = "gist-ui.Close";
+Close.displayName = "gist-ui." + Close_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
+
+const Portal_Name = "Popover.Portal";
 
 export interface PortalProps {
   children?: React.ReactNode;
@@ -171,17 +167,16 @@ export interface PortalProps {
 }
 
 export const Portal = ({ children, container }: PortalProps) => {
-  const context = useContext(PopoverContext);
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Portal", 'must be used inside "Root"');
+  const context = useContext(Portal_Name);
 
   return <>{context.open && createPortal(children, container || document.body)}</>;
 };
 
-Portal.displayName = "gist-ui.Portal";
+Portal.displayName = "gist-ui." + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
+
+const Content_Name = "Popover.Content";
 
 export interface ContentProps
   extends Omit<UseFloatingOptions, "open" | "elements">,
@@ -202,7 +197,7 @@ export const Content = (props: ContentProps) => {
     offsetOptions,
   } = props;
 
-  const context = useContext(PopoverContext);
+  const context = useContext(Content_Name);
   const dialogRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<SVGSVGElement>(null);
 
@@ -212,9 +207,9 @@ export const Content = (props: ContentProps) => {
     strategy,
     transform,
     whileElementsMounted,
-    open: context?.open,
+    open: context.open,
     elements: {
-      reference: context?.reference,
+      reference: context.reference,
     },
     offsetOptions,
     flipOptions,
@@ -224,20 +219,17 @@ export const Content = (props: ContentProps) => {
   useClickOutside<HTMLDivElement>({
     ref: dialogRef,
     callback: () => {
-      context?.handleClose();
+      context.handleClose();
     },
   });
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context?.setGivenId(children.props.id || "");
+      context.setGivenId(children.props.id || "");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Content", 'must be child of "Root"');
 
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
@@ -274,4 +266,4 @@ export const Content = (props: ContentProps) => {
   );
 };
 
-Content.displayName = "gist-ui.Content";
+Content.displayName = "gist-ui." + Content_Name;

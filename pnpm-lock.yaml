@@ -329,6 +329,9 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
+      '@gist-ui/context':
+        specifier: workspace:*
+        version: link:../../core/context
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
@@ -425,9 +428,6 @@ importers:
       '@gist-ui/context':
         specifier: workspace:*
         version: link:../../core/context
-      '@gist-ui/error':
-        specifier: workspace:*
-        version: link:../../utilities/error
       '@gist-ui/floating-arrow':
         specifier: workspace:*
         version: link:../floating-arrow
