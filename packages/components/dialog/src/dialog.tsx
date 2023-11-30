@@ -37,7 +37,7 @@ interface Context {
    * 1. when dialog closed on interaction with `Close` component then reason is "pointer"
    * 2. when dialog closed on interaction outside `Content` component then reason is "outside"
    * 2. when dialog closed on Escape keypress then reason is "escape"
-   * 2. when dialog closed on interaction with visually hidden close button then reason is "virtual" and this will only happen when screen reader read dialog content and press close button
+   * 2. when dialog closed on interaction with visually hidden close button then reason is "virtual" and this will only happen when screen reader read dialog content and close press close button
    */
   handleClose: (reason: Reason) => void;
   open: boolean;
@@ -212,7 +212,6 @@ export const Trigger = (props: TriggerProps) => {
   const context = useContext(DialogContext);
 
   const { pressProps } = usePress({
-    isDisabled: context?.scopeName !== SCOPE_NAME,
     onPress: context?.handleOpen,
   });
 
@@ -244,7 +243,6 @@ export const Close = (props: CloseProps) => {
   const context = useContext(DialogContext);
 
   const { pressProps } = usePress({
-    isDisabled: context?.scopeName !== SCOPE_NAME,
     onPress: () => {
       context?.handleClose("pointer");
     },
