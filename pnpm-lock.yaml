@@ -422,6 +422,9 @@ importers:
 
   packages/components/tooltip:
     dependencies:
+      '@gist-ui/context':
+        specifier: workspace:*
+        version: link:../../core/context
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
@@ -471,6 +474,16 @@ importers:
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/core/context:
+    dependencies:
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
     devDependencies:
       clean-package:
         specifier: ^2.2.0

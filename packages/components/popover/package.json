@@ -59,8 +59,7 @@
     "extends": "../../../../../../clean-package.config.json",
     "remove": [
       "dependencies.@gist-ui/button",
-      "dependencies.@gist-ui/theme",
-      "dependencies.@gist-ui/floating-arrow"
+      "dependencies.@gist-ui/theme"
     ]
   }
 }

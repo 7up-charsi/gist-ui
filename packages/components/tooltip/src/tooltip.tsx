@@ -1,11 +1,11 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
 import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
-import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
+import { createContextScope } from "@gist-ui/context";
 import {
   useFloating,
   Side,
@@ -19,11 +19,9 @@ import {
   MutableRefObject,
   ReactNode,
   SetStateAction,
-  createContext,
   forwardRef,
   isValidElement,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useRef,
@@ -33,7 +31,6 @@ import {
 type Trigger = "hover" | "focus";
 
 interface TooltipContext {
-  scopeName: string;
   handleShow: (a?: boolean) => void;
   handleHide: (a?: boolean) => void;
   showTooltip: (a?: boolean) => void;
@@ -49,9 +46,9 @@ interface TooltipContext {
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
-const TooltipContext = createContext<TooltipContext | null>(null);
+const Tooltip_Name = "Tooltip.Root";
 
-const SCOPE_NAME = "Tooltip";
+const [Provider, useContext] = createContextScope<TooltipContext>(Tooltip_Name);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -172,96 +169,92 @@ export const Root = (props: RootProps) => {
   }, [open]);
 
   return (
-    <TooltipContext.Provider
-      value={{
-        scopeName: SCOPE_NAME,
-        handleShow,
-        handleHide,
-        showTooltip,
-        hideTooltip,
-        trigger,
-        isHovered,
-        isFocused,
-        id: givenId || id,
-        open,
-        setOpen,
-        reference,
-        setReference,
-        setGivenId,
-      }}
+    <Provider
+      handleShow={handleShow}
+      handleHide={handleHide}
+      showTooltip={showTooltip}
+      hideTooltip={hideTooltip}
+      trigger={trigger}
+      isHovered={isHovered}
+      isFocused={isFocused}
+      id={givenId || id}
+      open={open}
+      setOpen={setOpen}
+      reference={reference}
+      setReference={setReference}
+      setGivenId={setGivenId}
     >
       {children}
-    </TooltipContext.Provider>
+    </Provider>
   );
 };
 
-Root.displayName = "gist-ui.Root";
+Root.displayName = "gist-ui." + Tooltip_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
+
+const Trigger_Name = "Tooltip.Trigger";
 
 export interface TriggerProps {
   children?: ReactNode;
 }
 
 export const Trigger = ({ children }: TriggerProps) => {
-  const context = useContext(TooltipContext);
+  const context = useContext(Trigger_Name);
   const [disabled, setDisabled] = useState(false);
 
   const isDisabledRef = useIsDisabled((isDisabled) => {
     setDisabled(isDisabled);
 
-    if (!isDisabled) context?.handleShow(true);
+    if (!isDisabled) context.handleShow(true);
   });
 
   const { hoverProps } = useHover({
     isDisabled: disabled,
     onHoverStart: () => {
-      if (context!.trigger === "focus") return;
+      if (context.trigger === "focus") return;
 
-      context!.isHovered.current = true;
-      context!.isFocused.current = false;
+      context.isHovered.current = true;
+      context.isFocused.current = false;
 
-      context!.handleShow();
+      context.handleShow();
     },
     onHoverEnd: () => {
-      if (context!.trigger === "focus") return;
+      if (context.trigger === "focus") return;
 
-      context!.isFocused.current = false;
-      context!.isHovered.current = false;
-      context!.handleHide();
+      context.isFocused.current = false;
+      context.isHovered.current = false;
+      context.handleHide();
     },
   });
 
   const { pressProps } = usePress({
     onPressStart: () => {
-      context!.isFocused.current = false;
-      context!.isHovered.current = false;
-      context!.handleHide(true);
+      context.isFocused.current = false;
+      context.isHovered.current = false;
+      context.handleHide(true);
     },
   });
 
   const { isFocusVisible } = useFocusVisible();
   const { focusProps } = useFocus({
     onFocus: () => {
-      if (context?.trigger === "hover") return;
+      if (context.trigger === "hover") return;
 
       if (isFocusVisible) {
-        context!.isFocused.current = true;
-        context!.isHovered.current = false;
-        context!.handleShow(true);
+        context.isFocused.current = true;
+        context.isHovered.current = false;
+        context.handleShow(true);
       }
     },
     onBlur: () => {
-      if (context?.trigger === "hover") return;
+      if (context.trigger === "hover") return;
 
-      context!.isFocused.current = false;
-      context!.isHovered.current = false;
-      context!.handleHide(true);
+      context.isFocused.current = false;
+      context.isHovered.current = false;
+      context.handleHide(true);
     },
   });
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Trigger", 'must be used inside "Root"');
 
   return (
     <Slot
@@ -276,9 +269,11 @@ export const Trigger = ({ children }: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui.Trigger";
+Trigger.displayName = "gist-ui." + Trigger_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
+
+const Portal_Name = "Tooltip.Portal";
 
 export interface PortalProps {
   children?: ReactNode;
@@ -286,17 +281,16 @@ export interface PortalProps {
 }
 
 export const Portal = ({ children, container }: PortalProps) => {
-  const context = useContext(TooltipContext);
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Portal", 'must be used inside "Root"');
+  const context = useContext(Portal_Name);
 
   return <>{context.open && createPortal(children, container || document.body)}</>;
 };
 
-Portal.displayName = "gist-ui.Portal";
+Portal.displayName = "gist-ui." + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
+
+const Content_Name = "Tooltip.Content";
 
 export interface ContentProps
   extends TooltipVariantProps,
@@ -327,7 +321,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
     whileElementsMounted,
   } = props;
 
-  const context = useContext(TooltipContext);
+  const context = useContext(Content_Name);
   const arrowRef = useRef<SVGSVGElement>(null);
 
   const Component = asChild ? Slot : "div";
@@ -335,10 +329,10 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
   const { hoverProps: tooltipHoverProps } = useHover({
     isDisabled: disableInteractive,
     onHoverStart: () => {
-      context?.showTooltip(true);
+      context.showTooltip(true);
     },
     onHoverEnd: () => {
-      context?.hideTooltip();
+      context.hideTooltip();
     },
   });
 
@@ -348,9 +342,9 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
     strategy,
     transform,
     whileElementsMounted,
-    open: context?.open,
+    open: context.open,
     elements: {
-      reference: context?.reference,
+      reference: context.reference,
     },
     offsetOptions,
     flipOptions,
@@ -359,14 +353,11 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context?.setGivenId(children.props.id || "");
+      context.setGivenId(children.props.id || "");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Content", 'must be used inside "Root"');
 
   const styles = tooltip(variantProps);
 
@@ -395,4 +386,4 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
   );
 });
 
-Content.displayName = "gist-ui.Content";
+Content.displayName = "gist-ui." + Content_Name;
