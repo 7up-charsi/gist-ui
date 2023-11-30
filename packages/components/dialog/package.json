@@ -45,6 +45,7 @@
     "@gist-ui/focus-trap": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "@gist-ui/slot": "workspace:*",
+    "@gist-ui/context": "workspace:*",
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/visually-hidden": "workspace:*",
     "react-aria": "^3.29.0",

@@ -8,29 +8,27 @@ import { useScrollLock } from "@gist-ui/use-scroll-lock";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
 import { FocusTrap, FocusScope } from "@gist-ui/focus-trap";
+import { VisuallyHidden } from "@gist-ui/visually-hidden";
+import { createContextScope } from "@gist-ui/context";
 import {
   Children,
   Dispatch,
   ReactNode,
   SetStateAction,
   cloneElement,
-  createContext,
   isValidElement,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useRef,
   useState,
 } from "react";
-import { VisuallyHidden } from "@gist-ui/visually-hidden";
 
 type Reason = "pointer" | "escape" | "outside" | "virtual";
 
 type CloseEvent = { preventDefault(): void };
 
 interface Context {
-  scopeName: string;
   handleOpen: () => void;
   /**
    * reason param could be "pointer" | "escape" | "outside" | "virtual"
@@ -47,9 +45,9 @@ interface Context {
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
-const SCOPE_NAME = "Dialog";
+const Dialog_Name = "Dialog.Root";
 
-const DialogContext = createContext<Context | null>(null);
+const [Provider, useContext] = createContextScope<Context>(Dialog_Name);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -180,27 +178,26 @@ export const Root = (props: RootProps) => {
 
   return (
     <>
-      <DialogContext.Provider
-        value={{
-          scopeName: SCOPE_NAME,
-          handleClose,
-          handleOpen,
-          open,
-          scope,
-          keepMounted,
-          id: givenId || id,
-          setGivenId,
-        }}
+      <Provider
+        handleClose={handleClose}
+        handleOpen={handleOpen}
+        open={open}
+        scope={scope}
+        keepMounted={keepMounted}
+        setGivenId={setGivenId}
+        id={givenId || id}
       >
         {children}
-      </DialogContext.Provider>
+      </Provider>
     </>
   );
 };
 
-Root.displayName = "gist-ui.Root";
+Root.displayName = "gist-ui." + Dialog_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
+
+const Trigger_Name = "Dialog.Trigger";
 
 export interface TriggerProps {
   children: ReactNode;
@@ -209,14 +206,11 @@ export interface TriggerProps {
 export const Trigger = (props: TriggerProps) => {
   const { children } = props;
 
-  const context = useContext(DialogContext);
+  const context = useContext(Trigger_Name);
 
   const { pressProps } = usePress({
-    onPress: context?.handleOpen,
+    onPress: context.handleOpen,
   });
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Trigger", 'must be child of "Root"');
 
   return (
     <Slot
@@ -229,9 +223,11 @@ export const Trigger = (props: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui.Trigger";
+Trigger.displayName = "gist-ui." + Trigger_Name;
 
 // *-*-*-*-* Close *-*-*-*-*
+
+const Close_Name = "Dialog.Close";
 
 export interface CloseProps {
   children: ReactNode;
@@ -240,27 +236,22 @@ export interface CloseProps {
 export const Close = (props: CloseProps) => {
   const { children } = props;
 
-  const context = useContext(DialogContext);
+  const context = useContext(Close_Name);
 
   const { pressProps } = usePress({
     onPress: () => {
-      context?.handleClose("pointer");
+      context.handleClose("pointer");
     },
   });
-
-  if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Close", 'must be child of "Root"');
-
-  const childCount = Children.count(children);
-  if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("Close", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("Close", validChildError);
 
   return <Slot {...pressProps}>{children}</Slot>;
 };
 
-Close.displayName = "gist-ui.Close";
+Close.displayName = "gist-ui." + Close_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
+
+const Portal_Name = "Dialog.Portal";
 
 export interface PortalProps {
   children?: ReactNode;
@@ -270,9 +261,7 @@ export interface PortalProps {
 export const Portal = (props: PortalProps) => {
   const { children, container = document.body } = props;
 
-  const context = useContext(DialogContext);
-
-  if (context?.scopeName !== SCOPE_NAME) throw new GistUiError("Portal", 'must be child of "Root"');
+  const context = useContext(Portal_Name);
 
   if (context.keepMounted) {
     return createPortal(
@@ -281,12 +270,14 @@ export const Portal = (props: PortalProps) => {
     );
   }
 
-  return context?.open ? createPortal(children, container) : null;
+  return context.open ? createPortal(children, container) : null;
 };
 
-Portal.displayName = "gist-ui.Portal";
+Portal.displayName = "gist-ui." + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
+
+const Content_Name = "Dialog.Content";
 
 export interface ContentProps {
   children?: ReactNode;
@@ -295,29 +286,26 @@ export interface ContentProps {
 export const Content = (props: ContentProps) => {
   const { children } = props;
 
-  const context = useContext(DialogContext);
+  const context = useContext(Content_Name);
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  useScrollLock({ enabled: context?.open });
+  useScrollLock({ enabled: context.open });
 
   useClickOutside<HTMLDivElement>({
-    disabled: !context?.open,
+    disabled: !context.open,
     ref: dialogRef,
     callback: () => {
-      context?.handleClose("outside");
+      context.handleClose("outside");
     },
   });
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context?.setGivenId(children.props.id || "");
+      context.setGivenId(children.props.id || "");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
-
-  if (context?.scopeName !== SCOPE_NAME)
-    throw new GistUiError("Content", 'must be child of "Root"');
 
   const childCount = Children.count(children);
   if (!childCount) return;
@@ -354,4 +342,4 @@ export const Content = (props: ContentProps) => {
   );
 };
 
-Content.displayName = "gist-ui.Content";
+Content.displayName = "gist-ui." + Content_Name;
