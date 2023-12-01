@@ -38,10 +38,8 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@gist-ui/use-floating": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
-    "@gist-ui/floating-arrow": "workspace:*",
     "@gist-ui/focus-trap": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "@gist-ui/slot": "workspace:*",

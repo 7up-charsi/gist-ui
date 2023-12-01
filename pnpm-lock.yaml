@@ -221,31 +221,6 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/components/floating-arrow:
-    dependencies:
-      '@gist-ui/error':
-        specifier: workspace:*
-        version: link:../../utilities/error
-      '@gist-ui/react-utils':
-        specifier: workspace:*
-        version: link:../../utilities/react-utils
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
-      '@gist-ui/use-floating':
-        specifier: workspace:*
-        version: link:../../hooks/use-floating
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
   packages/components/focus-trap:
     dependencies:
       '@gist-ui/button':
@@ -338,9 +313,6 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
-      '@gist-ui/floating-arrow':
-        specifier: workspace:*
-        version: link:../floating-arrow
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
@@ -362,9 +334,6 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
-      '@gist-ui/use-floating':
-        specifier: workspace:*
-        version: link:../../hooks/use-floating
       '@gist-ui/use-is-disabled':
         specifier: workspace:*
         version: link:../../hooks/use-is-disabled
@@ -462,9 +431,9 @@ importers:
       '@gist-ui/context':
         specifier: workspace:*
         version: link:../../core/context
-      '@gist-ui/floating-arrow':
+      '@gist-ui/popper':
         specifier: workspace:*
-        version: link:../floating-arrow
+        version: link:../popper
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -477,9 +446,6 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
-      '@gist-ui/use-floating':
-        specifier: workspace:*
-        version: link:../../hooks/use-floating
       '@gist-ui/use-is-disabled':
         specifier: workspace:*
         version: link:../../hooks/use-is-disabled
@@ -610,22 +576,6 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../use-callback-ref
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
-  packages/hooks/use-floating:
-    dependencies:
-      '@floating-ui/react-dom':
-        specifier: ^2.0.4
-        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: '>=18'
         version: 18.2.0

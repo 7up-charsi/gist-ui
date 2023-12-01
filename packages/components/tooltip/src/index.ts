@@ -1,6 +1,6 @@
 import * as tooltip from "./tooltip";
 
-export { FloatingArrowContext } from "@gist-ui/use-floating";
+export { Arrow } from "@gist-ui/popper";
 
 // export types
 export type { ContentProps, RootProps, PortalProps, TriggerProps } from "./tooltip";

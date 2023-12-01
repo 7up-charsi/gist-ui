@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { tooltip } from "@gist-ui/theme";
-import { FloatingArrow } from "@gist-ui/floating-arrow";
 
 import * as Tooltip from "../src";
 
@@ -72,10 +71,9 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
             color={args.color}
             rounded={args.rounded}
             disableInteractive={args.disableInteractive}
-            placement={args.placement}
           >
             i am tooltip content
-            <FloatingArrow context={Tooltip.FloatingArrowContext} />
+            <Tooltip.Arrow width={7} height={5} />
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
@@ -87,7 +85,6 @@ export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
   render: Template,
   args: {
     defaultOpen: true,
-    placement: "top-start",
     showDelay: 100,
     hideDelay: 300,
     disableInteractive: false,

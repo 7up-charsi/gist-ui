@@ -1,19 +1,12 @@
 import { createPortal } from "react-dom";
 import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
-import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
+import { mergeProps, mapProps } from "@gist-ui/react-utils";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
 import { createContextScope } from "@gist-ui/context";
-import {
-  useFloating,
-  Side,
-  UseFloatingMiddlewareOptions,
-  UseFloatingOptions,
-  Placement,
-  FloatingArrowContext,
-} from "@gist-ui/use-floating";
+import * as Popper from "@gist-ui/popper";
 import {
   Dispatch,
   MutableRefObject,
@@ -40,9 +33,6 @@ interface TooltipContext {
   isFocused: MutableRefObject<boolean>;
   id: string;
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  reference: HTMLElement | null;
-  setReference: Dispatch<SetStateAction<HTMLElement | null>>;
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
@@ -83,7 +73,6 @@ export const Root = (props: RootProps) => {
     onChange: onOpenChange,
   });
 
-  const [reference, setReference] = useState<HTMLElement | null>(null);
   const [givenId, setGivenId] = useState("");
   const id = useId();
 
@@ -179,12 +168,9 @@ export const Root = (props: RootProps) => {
       isFocused={isFocused}
       id={givenId || id}
       open={open}
-      setOpen={setOpen}
-      reference={reference}
-      setReference={setReference}
       setGivenId={setGivenId}
     >
-      {children}
+      <Popper.Root>{children}</Popper.Root>
     </Provider>
   );
 };
@@ -257,15 +243,15 @@ export const Trigger = ({ children }: TriggerProps) => {
   });
 
   return (
-    <Slot
-      ref={mergeRefs(context.setReference, isDisabledRef)}
-      aria-describedby={context.open ? context.id : undefined}
-      {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, {
-        tabIndex: 0,
-      })}
-    >
-      {children}
-    </Slot>
+    <Popper.Reference>
+      <Slot
+        ref={isDisabledRef}
+        aria-describedby={context.open ? context.id : undefined}
+        {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, { tabIndex: 0 })}
+      >
+        {children}
+      </Slot>
+    </Popper.Reference>
   );
 };
 
@@ -292,13 +278,9 @@ Portal.displayName = "gist-ui." + Portal_Name;
 
 const Content_Name = "Tooltip.Content";
 
-export interface ContentProps
-  extends TooltipVariantProps,
-    Omit<UseFloatingOptions, "open" | "elements">,
-    UseFloatingMiddlewareOptions {
+export interface ContentProps extends TooltipVariantProps {
   children?: ReactNode;
   asChild?: boolean;
-  placement?: Placement;
   classNames?: TooltipClassNames;
   disableInteractive?: boolean;
 }
@@ -306,23 +288,9 @@ export interface ContentProps
 export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) => {
   const [props, variantProps] = mapProps({ ..._props }, tooltip.variantKeys);
 
-  const {
-    children,
-    asChild,
-    placement: placementProp,
-    disableInteractive,
-    classNames,
-    arrowOptions,
-    flipOptions,
-    offsetOptions,
-    platform,
-    strategy,
-    transform,
-    whileElementsMounted,
-  } = props;
+  const { children, asChild, disableInteractive, classNames } = props;
 
   const context = useContext(Content_Name);
-  const arrowRef = useRef<SVGSVGElement>(null);
 
   const Component = asChild ? Slot : "div";
 
@@ -336,21 +304,6 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
     },
   });
 
-  const { refs, middlewareData, floatingStyles, placement } = useFloating({
-    placement: placementProp,
-    platform,
-    strategy,
-    transform,
-    whileElementsMounted,
-    open: context.open,
-    elements: {
-      reference: context.reference,
-    },
-    offsetOptions,
-    flipOptions,
-    arrowOptions: { padding: arrowOptions?.padding, element: arrowRef },
-  });
-
   useEffect(() => {
     if (isValidElement(children)) {
       context.setGivenId(children.props.id || "");
@@ -362,27 +315,17 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
   const styles = tooltip(variantProps);
 
   return (
-    <FloatingArrowContext.Provider
-      value={{
-        middlewareData: middlewareData,
-        side: placement.split("-")[0] as Side,
-        arrowRef,
-      }}
-    >
+    <Popper.Floating>
       <Component
-        ref={mergeRefs(ref, refs.setFloating)}
+        ref={ref}
         role="tooltip"
         className={styles.base({ className: classNames?.base })}
         {...tooltipHoverProps}
         id={context.id}
-        style={{
-          ...floatingStyles,
-          visibility: middlewareData.hide?.escaped ? "hidden" : "visible",
-        }}
       >
         {children}
       </Component>
-    </FloatingArrowContext.Provider>
+    </Popper.Floating>
   );
 });
 
