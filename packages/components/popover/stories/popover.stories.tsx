@@ -63,6 +63,8 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
             placement={args.placement}
             arrowPadding={args.arrowPadding}
             hideWhenDetached={args.hideWhenDetached}
+            allowMainAxisFlip={args.allowMainAxisFlip}
+            allowCrossAxisFlip={args.allowCrossAxisFlip}
           >
             <div
               aria-label="very nice label"
