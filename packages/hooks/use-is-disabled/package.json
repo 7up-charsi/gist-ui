@@ -40,6 +40,9 @@
   "devDependencies": {
     "clean-package": "^2.2.0"
   },
+  "dependencies": {
+    "@gist-ui/use-callback-ref": "workspace:*"
+  },
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json"
   }

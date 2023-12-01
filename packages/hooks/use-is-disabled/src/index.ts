@@ -1,32 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
-const useIsDisabled = <E extends HTMLElement>(callback?: (isDisabled: boolean) => void) => {
-  const [ref, setRef] = useState<E | null>(null);
+export interface UseIsDisabledProps<E> {
+  ref?: React.RefObject<E>;
+  callback?: (isDisabled: boolean) => void;
+}
+
+const useIsDisabled = <E extends HTMLElement>(props: UseIsDisabledProps<E>) => {
+  const { ref, callback } = props;
+  const callbackRef = useCallbackRef(callback);
 
   useEffect(() => {
-    if (!ref) return;
+    if (!ref?.current) return;
 
-    if (ref.hasAttribute("disabled")) callback?.(true);
+    const element = ref.current;
+
+    if (element.hasAttribute("disabled")) callbackRef?.(true);
 
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if ((mutation.target as unknown as { disabled?: boolean }).disabled) {
-          callback?.(true);
+          callbackRef?.(true);
         } else {
-          callback?.(false);
+          callbackRef?.(false);
         }
       }
     });
 
-    observer.observe(ref, { attributeFilter: ["disabled"] });
+    observer.observe(element, { attributeFilter: ["disabled"] });
 
     return () => {
       observer.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref]);
-
-  return setRef;
+  }, [callbackRef, ref]);
 };
 
 export type UseIsDisabledReturn = ReturnType<typeof useIsDisabled>;

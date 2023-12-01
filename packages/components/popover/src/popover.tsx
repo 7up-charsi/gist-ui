@@ -99,9 +99,13 @@ export const Trigger = (props: TriggerProps) => {
   const { children } = props;
 
   const context = useContext(Trigger_Name);
+  const ref = useRef<HTMLButtonElement>(null);
 
-  const isDisabledRef = useIsDisabled((isDisabled) => {
-    if (isDisabled) context.handleClose();
+  useIsDisabled({
+    ref,
+    callback: (isDisabled) => {
+      if (isDisabled) context.handleClose();
+    },
   });
 
   const { pressProps } = usePress({
@@ -111,7 +115,7 @@ export const Trigger = (props: TriggerProps) => {
   return (
     <Popper.Reference>
       <Slot
-        ref={isDisabledRef}
+        ref={ref}
         aria-expanded={context.open}
         aria-controls={context.open ? context.id : undefined}
         {...pressProps}

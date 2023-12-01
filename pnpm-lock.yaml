@@ -589,6 +589,9 @@ importers:
 
   packages/hooks/use-is-disabled:
     dependencies:
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../use-callback-ref
       react:
         specifier: '>=18'
         version: 18.2.0
