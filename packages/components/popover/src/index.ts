@@ -1,6 +1,6 @@
 import * as popover from "./popover";
 
-export { FloatingArrowContext } from "@gist-ui/use-floating";
+export { Arrow } from "@gist-ui/popper";
 
 // export types
 export type { RootProps, TriggerProps, CloseProps, ContentProps, PortalProps } from "./popover";

@@ -49,6 +49,7 @@
     "@gist-ui/use-is-disabled": "workspace:*",
     "@gist-ui/visually-hidden": "workspace:*",
     "@gist-ui/context": "workspace:*",
+    "@gist-ui/popper": "workspace:*",
     "react-aria": "^3.29.0",
     "@gist-ui/button": "workspace:*",
     "@gist-ui/theme": "workspace:*"

@@ -5,14 +5,8 @@ import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { FocusTrap } from "@gist-ui/focus-trap";
 import { useClickOutside } from "@gist-ui/use-click-outside";
+import * as Popper from "@gist-ui/popper";
 import { createPortal } from "react-dom";
-import {
-  useFloating,
-  Side,
-  UseFloatingMiddlewareOptions,
-  UseFloatingOptions,
-  FloatingArrowContext,
-} from "@gist-ui/use-floating";
 import {
   cloneElement,
   isValidElement,
@@ -23,7 +17,6 @@ import {
   useState,
 } from "react";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
-import { mergeRefs } from "@gist-ui/react-utils";
 import { createContextScope } from "@gist-ui/context";
 
 interface PopoverContext {
@@ -31,8 +24,6 @@ interface PopoverContext {
   handleOpen(): void;
   handleClose(): void;
   id: string;
-  reference: HTMLElement | null;
-  setReference: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
   setGivenId: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -69,8 +60,6 @@ export const Root = (props: RootProps) => {
     value: openProp,
   });
 
-  const [reference, setReference] = useState<HTMLElement | null>(null);
-
   const id = useId();
 
   const [givenId, setGivenId] = useState("");
@@ -88,12 +77,10 @@ export const Root = (props: RootProps) => {
       handleOpen={handleOpen}
       handleClose={handleClose}
       open={open}
-      reference={reference}
-      setReference={setReference}
       setGivenId={setGivenId}
       id={givenId || id}
     >
-      {children}
+      <Popper.Root>{children}</Popper.Root>
     </Provider>
   );
 };
@@ -122,14 +109,16 @@ export const Trigger = (props: TriggerProps) => {
   });
 
   return (
-    <Slot
-      ref={mergeRefs(context.setReference, isDisabledRef)}
-      aria-expanded={context.open}
-      aria-controls={context.open ? context.id : undefined}
-      {...pressProps}
-    >
-      {children}
-    </Slot>
+    <Popper.Reference>
+      <Slot
+        ref={isDisabledRef}
+        aria-expanded={context.open}
+        aria-controls={context.open ? context.id : undefined}
+        {...pressProps}
+      >
+        {children}
+      </Slot>
+    </Popper.Reference>
   );
 };
 
@@ -178,43 +167,15 @@ Portal.displayName = "gist-ui." + Portal_Name;
 
 const Content_Name = "Popover.Content";
 
-export interface ContentProps
-  extends Omit<UseFloatingOptions, "open" | "elements">,
-    UseFloatingMiddlewareOptions {
+export interface ContentProps extends Popper.FloatingProps {
   children?: React.ReactNode;
 }
 
 export const Content = (props: ContentProps) => {
-  const {
-    children,
-    placement: placementProp,
-    platform,
-    strategy,
-    transform,
-    whileElementsMounted,
-    arrowOptions,
-    flipOptions,
-    offsetOptions,
-  } = props;
+  const { children, ...restProps } = props;
 
   const context = useContext(Content_Name);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<SVGSVGElement>(null);
-
-  const { refs, middlewareData, floatingStyles, placement } = useFloating({
-    placement: placementProp,
-    platform,
-    strategy,
-    transform,
-    whileElementsMounted,
-    open: context.open,
-    elements: {
-      reference: context.reference,
-    },
-    offsetOptions,
-    flipOptions,
-    arrowOptions: { padding: arrowOptions?.padding, element: arrowRef },
-  });
 
   useClickOutside<HTMLDivElement>({
     ref: dialogRef,
@@ -234,18 +195,10 @@ export const Content = (props: ContentProps) => {
   if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
 
   return (
-    <FloatingArrowContext.Provider
-      value={{
-        middlewareData: middlewareData,
-        side: placement.split("-")[0] as Side,
-        arrowRef,
-      }}
-    >
+    <Popper.Floating {...restProps}>
       <FocusTrap ref={dialogRef} loop trapped asChild>
         {cloneElement(children, {
           role: "dialog",
-          ref: refs.setFloating,
-          style: floatingStyles,
           id: context.id,
           children: (
             <>
@@ -262,7 +215,7 @@ export const Content = (props: ContentProps) => {
           ),
         } as Partial<unknown>)}
       </FocusTrap>
-    </FloatingArrowContext.Provider>
+    </Popper.Floating>
   );
 };
 

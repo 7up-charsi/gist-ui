@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { FloatingArrow } from "@gist-ui/floating-arrow";
 import { Button } from "@gist-ui/button";
 
 import * as Popover from "../src";
@@ -28,6 +27,10 @@ const meta: Meta<Popover.RootProps & Popover.ContentProps> = {
         "left-start",
       ],
     },
+    sticky: {
+      control: "select",
+      options: ["partial", "always"],
+    },
   },
 };
 
@@ -52,12 +55,21 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
         </Popover.Trigger>
 
         <Popover.Portal>
-          <Popover.Content placement={args.placement}>
+          <Popover.Content
+            alignOffset={args.alignOffset}
+            arrow={args.arrow}
+            mainOffset={args.mainOffset}
+            sticky={args.sticky}
+            placement={args.placement}
+            arrowPadding={args.arrowPadding}
+            hideWhenDetached={args.hideWhenDetached}
+          >
             <div
               aria-label="very nice label"
               className="max-w-sm w-full bg-white border shadow-lg rounded-md p-4"
             >
-              <FloatingArrow context={Popover.FloatingArrowContext} />
+              {args.arrow && <Popover.Arrow />}
+
               <h3 className="text-lg first-letter:uppercase">nice heading</h3>
 
               <p>
@@ -75,4 +87,15 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
 
 export const Default: StoryObj<Popover.RootProps & Popover.ContentProps> = {
   render: Template,
+  args: {
+    alignOffset: 0,
+    mainOffset: 0,
+    arrowPadding: 10,
+    sticky: "partial",
+    placement: "bottom",
+    arrow: true,
+    allowMainAxisFlip: true,
+    allowCrossAxisFlip: true,
+    hideWhenDetached: true,
+  },
 };
