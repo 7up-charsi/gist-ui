@@ -72,6 +72,22 @@ export const Root = (props: RootProps) => {
     setOpen(false);
   }, [setOpen]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+
+      handleClose();
+    };
+
+    document.addEventListener("keydown", handler, true);
+
+    return () => {
+      document.removeEventListener("keydown", handler, true);
+    };
+  }, [handleClose, open]);
+
   return (
     <Provider
       handleOpen={handleOpen}
