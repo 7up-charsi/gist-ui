@@ -344,6 +344,9 @@ importers:
       '@gist-ui/focus-trap':
         specifier: workspace:*
         version: link:../focus-trap
+      '@gist-ui/popper':
+        specifier: workspace:*
+        version: link:../popper
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -374,6 +377,34 @@ importers:
       react-aria:
         specifier: ^3.29.0
         version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/components/popper:
+    dependencies:
+      '@floating-ui/react-dom':
+        specifier: ^2.0.4
+        version: 2.0.4(react-dom@18.2.0)(react@18.2.0)
+      '@gist-ui/context':
+        specifier: workspace:*
+        version: link:../../core/context
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      '@gist-ui/use-size':
+        specifier: workspace:*
+        version: link:../../hooks/use-size
+      react:
+        specifier: '>=18'
+        version: 18.2.0
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
@@ -663,6 +694,19 @@ importers:
       '@gist-ui/shared-utils':
         specifier: workspace:*
         version: link:../../utilities/shared-utils
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-size:
+    dependencies:
       react:
         specifier: '>=18'
         version: 18.2.0
