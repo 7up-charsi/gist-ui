@@ -32,7 +32,7 @@ export interface FocusTrapProps {
 }
 
 const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
-  const { loop = true, trapped = true, asChild, children, disabled, scope } = props;
+  const { loop = true, trapped = true, asChild, children, disabled, scope, ...restProps } = props;
 
   const Component = asChild ? Slot : "div";
 
@@ -168,7 +168,8 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       tabIndex={-1}
       ref={mergeRefs(ref, setContainer as React.ForwardedRef<HTMLDivElement>)}
       onKeyDown={handleKeyDown}
-      style={{ outline: "none" }}
+      {...restProps}
+      style={{ outline: "none", ...(restProps as { style: object }).style }}
     >
       {children}
     </Component>
