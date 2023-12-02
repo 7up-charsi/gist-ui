@@ -187,6 +187,7 @@ export const Floating = (props: FloatingProps) => {
   });
 
   const arrowData = middlewareData.arrow;
+  const hideData = middlewareData.hide;
 
   return (
     <ArrowProvider
@@ -196,7 +197,15 @@ export const Floating = (props: FloatingProps) => {
       setArrow={setArrow}
       shouldHideArrow={arrowData?.centerOffset !== 0}
     >
-      <Slot ref={refs.setFloating} {...{ style: floatingStyles }}>
+      <Slot
+        ref={refs.setFloating}
+        {...{
+          style: {
+            ...floatingStyles,
+            visibility: hideData?.referenceHidden ? "hidden" : "visible",
+          },
+        }}
+      >
         {children}
       </Slot>
     </ArrowProvider>
