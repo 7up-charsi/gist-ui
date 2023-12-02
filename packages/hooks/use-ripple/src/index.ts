@@ -16,6 +16,7 @@ export interface UseRippleProps {
   disabled?: boolean;
 
   /**
+   * This prop means how much part of `duration` is used to appear the ripple and rest ot it used to disappear it
    * @default 0.5
    */
   completedFactor?: number;
