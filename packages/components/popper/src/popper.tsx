@@ -3,7 +3,10 @@ import { Slot } from "@gist-ui/slot";
 import { useSize } from "@gist-ui/use-size";
 import { forwardRef, useEffect, useState } from "react";
 import {
+  Boundary,
+  DetectOverflowOptions,
   FlipOptions,
+  Padding,
   Side,
   UseFloatingOptions,
   arrow as arrowMiddleware,
@@ -130,6 +133,20 @@ export interface FloatingProps {
    * @default true
    */
   allowCrossAxisFlip?: boolean;
+  /**
+   * This describes the virtual padding around the boundary to check for overflow.
+   *
+   * @see {@link https://floating-ui.com/docs/detectoverflow#padding padding}
+   * @default 0
+   */
+  boundaryPadding?: Padding;
+  /**
+   * This describes the clipping element(s) or area that overflow will be checked relative to.
+   *
+   * @see {@link https://floating-ui.com/docs/detectoverflow#boundary boundary}
+   * @default clippingAncestors
+   */
+  clippingBoundary?: Boundary;
 }
 
 export const Floating = (props: FloatingProps) => {
@@ -141,22 +158,32 @@ export const Floating = (props: FloatingProps) => {
     mainOffset = 0,
     alignOffset = 0,
     arrow: arrowProp = true,
-    arrowPadding,
+    arrowPadding = 0,
     sticky = "partial",
     hideWhenDetached = true,
     fallbackPlacements,
     allowCrossAxisFlip = true,
     allowMainAxisFlip = true,
+    boundaryPadding = 0,
+    clippingBoundary = "clippingAncestors",
   } = props;
 
   const context = useContext(Floating_Name);
   const [arrow, setArrow] = useState<HTMLSpanElement | null>(null);
   const size = useSize(arrow);
 
+  const detectOverflow: DetectOverflowOptions = {
+    padding:
+      typeof boundaryPadding === "number"
+        ? boundaryPadding
+        : { top: 0, left: 0, right: 0, bottom: 0, ...boundaryPadding },
+    boundary: clippingBoundary,
+  };
+
   const { middlewareData, placement, floatingStyles, refs } = useFloating({
     open,
-    placement: placementProp,
     strategy: "fixed",
+    placement: placementProp,
     elements: { reference: context.reference },
     whileElementsMounted: (...args) =>
       autoUpdate(...args, { animationFrame: updatePositionStrategy === "always" }),
@@ -171,9 +198,11 @@ export const Floating = (props: FloatingProps) => {
             fallbackPlacements,
             mainAxis: allowMainAxisFlip,
             crossAxis: sticky === "partial" ? false : allowCrossAxisFlip,
+            ...detectOverflow,
           }),
       sticky === "partial" &&
         shift({
+          ...detectOverflow,
           limiter: limitShift({
             offset: ({ placement, elements }) =>
               placement.includes("top") || placement.includes("bottom")
@@ -182,7 +211,7 @@ export const Floating = (props: FloatingProps) => {
           }),
         }),
       arrowProp && arrowMiddleware({ padding: arrowPadding, element: arrow }),
-      hideWhenDetached && hide({ strategy: "referenceHidden" }),
+      hideWhenDetached && hide({ strategy: "referenceHidden", ...detectOverflow }),
     ],
   });
 
@@ -195,7 +224,7 @@ export const Floating = (props: FloatingProps) => {
       arrowY={arrowData?.y}
       side={placement.split("-")[0] as Side}
       setArrow={setArrow}
-      shouldHideArrow={arrowData?.centerOffset !== 0}
+      shouldHideArrow={!!hideData?.referenceHidden}
     >
       <Slot
         ref={refs.setFloating}
