@@ -17,6 +17,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -40,6 +41,9 @@ const Tooltip_Name = "Tooltip.Root";
 
 const [Provider, useContext] = createContextScope<TooltipContext>(Tooltip_Name);
 
+const tooltips: Record<string, (a: boolean) => void> = {};
+let tooltipId = 0;
+
 // *-*-*-*-* Root *-*-*-*-*
 
 export interface RootProps {
@@ -52,7 +56,6 @@ export interface RootProps {
    */
   trigger?: Trigger;
   open?: boolean;
-  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -64,17 +67,17 @@ export const Root = (props: RootProps) => {
     trigger,
     open: isOpenProp,
     onOpenChange,
-    defaultOpen = false,
   } = props;
 
   const [open, setOpen] = useControllableState({
     value: isOpenProp,
-    defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
 
   const [givenId, setGivenId] = useState("");
   const id = useId();
+
+  const tooltipIdentifier = useMemo(() => `${++tooltipId}`, []);
 
   const isHovered = useRef(false);
   const isFocused = useRef(false);
@@ -82,9 +85,27 @@ export const Root = (props: RootProps) => {
   const showTimeout = useRef<NodeJS.Timeout>();
   const hideTimeout = useRef<NodeJS.Timeout>();
 
+  const addOpenTooltip = () => {
+    tooltips[tooltipIdentifier] = hideTooltip;
+  };
+
+  const closeOpenTooltips = () => {
+    for (const hideId in tooltips) {
+      if (hideId !== tooltipIdentifier) {
+        if (Object.prototype.hasOwnProperty.call(tooltips, hideId)) {
+          tooltips[hideId](true);
+          delete tooltips[hideId];
+        }
+      }
+    }
+  };
+
   const showTooltip = (immediate?: boolean) => {
     clearTimeout(hideTimeout.current);
     hideTimeout.current = undefined;
+
+    closeOpenTooltips();
+    addOpenTooltip();
 
     if (open) return;
 

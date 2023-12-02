@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { tooltip } from "@gist-ui/theme";
 
@@ -43,7 +43,9 @@ const meta: Meta = {
 export default meta;
 
 const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
-  const ref = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     ref.current?.scrollIntoView({
@@ -55,28 +57,32 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
 
   return (
     <div className="w-[300vw] h-[300vh] flex items-center justify-center">
-      <Tooltip.Root
-        defaultOpen={args.defaultOpen}
-        hideDelay={args.hideDelay}
-        showDelay={args.showDelay}
-        trigger={args.trigger}
-      >
-        <Tooltip.Trigger>
-          <button ref={ref} className="p-10 border">
-            button
-          </button>
-        </Tooltip.Trigger>
-        <Tooltip.Portal>
-          <Tooltip.Content
-            color={args.color}
-            rounded={args.rounded}
-            disableInteractive={args.disableInteractive}
+      <div ref={ref} className="flex items-center justify-center gap-4">
+        {Array.from({ length: 4 }).map((_ele, i) => (
+          <Tooltip.Root
+            key={i}
+            open={i === 0 ? open : undefined}
+            onOpenChange={i === 0 ? setOpen : undefined}
+            hideDelay={args.hideDelay}
+            showDelay={args.showDelay}
+            trigger={args.trigger}
           >
-            i am tooltip content
-            <Tooltip.Arrow width={7} height={5} />
-          </Tooltip.Content>
-        </Tooltip.Portal>
-      </Tooltip.Root>
+            <Tooltip.Trigger>
+              <button className="p-10 border">button</button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                color={args.color}
+                rounded={args.rounded}
+                disableInteractive={args.disableInteractive}
+              >
+                i am tooltip
+                <Tooltip.Arrow width={7} height={5} />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        ))}
+      </div>
     </div>
   );
 };
@@ -84,9 +90,8 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
 export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
   render: Template,
   args: {
-    defaultOpen: true,
     showDelay: 100,
-    hideDelay: 300,
+    hideDelay: 1000,
     disableInteractive: false,
   },
 };
