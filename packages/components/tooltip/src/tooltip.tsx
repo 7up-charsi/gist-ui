@@ -303,7 +303,7 @@ Portal.displayName = "gist-ui." + Portal_Name;
 
 const Content_Name = "Tooltip.Content";
 
-export interface ContentProps extends TooltipVariantProps {
+export interface ContentProps extends TooltipVariantProps, Popper.FloatingProps {
   children?: ReactNode;
   asChild?: boolean;
   classNames?: TooltipClassNames;

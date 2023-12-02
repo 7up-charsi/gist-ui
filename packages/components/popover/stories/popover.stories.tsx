@@ -93,11 +93,12 @@ export const Default: StoryObj<Popover.RootProps & Popover.ContentProps> = {
     alignOffset: 0,
     mainOffset: 0,
     arrowPadding: 10,
+    hideWhenDetached: true,
+    boundaryPadding: 0,
     sticky: "partial",
     placement: "bottom",
     arrow: true,
     allowMainAxisFlip: true,
     allowCrossAxisFlip: true,
-    hideWhenDetached: true,
   },
 };
