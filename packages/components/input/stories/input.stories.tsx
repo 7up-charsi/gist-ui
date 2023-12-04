@@ -1,7 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { input } from "@gist-ui/theme";
-import { Icon } from "@gist-ui/icon";
 
 import {
   NumberInput,
@@ -59,24 +58,7 @@ const meta: Meta = {
 
 export default meta;
 
-const InputTemplate = (args: InputProps) => (
-  <InputComp
-    {...args}
-    startContent={
-      <Icon size={args.size}>
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m7 10 2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>
-      </Icon>
-    }
-  />
-);
+const InputTemplate = (args: InputProps) => <InputComp {...args} />;
 
 export const Input: StoryObj<InputProps> = {
   render: InputTemplate,

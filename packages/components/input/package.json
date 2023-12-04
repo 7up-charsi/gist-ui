@@ -41,20 +41,22 @@
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/shared-utils": "workspace:*",
-    "@gist-ui/error": "workspace:*",
     "@gist-ui/visually-hidden": "workspace:*",
+    "@gist-ui/error": "workspace:*",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
     "react-aria": "^3.29.0",
-    "@gist-ui/button": "workspace:*",
-    "@gist-ui/icon": "workspace:*"
+    "@gist-ui/button": "workspace:*"
   },
   "devDependencies": {
+    "@types/lodash.omit": "^4.5.8",
+    "@types/lodash.pick": "^4.4.9",
     "clean-package": "^2.2.0"
   },
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json",
     "remove": [
-      "dependencies.@gist-ui/button",
-      "dependencies.@gist-ui/icon"
+      "dependencies.@gist-ui/button"
     ]
   }
 }
