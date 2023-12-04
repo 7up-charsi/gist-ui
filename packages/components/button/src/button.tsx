@@ -25,7 +25,7 @@ const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className">,
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className" | "disabled">,
     UseRippleProps,
     HoverProps {
   startContent?: ReactNode;
@@ -97,7 +97,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
         { ...rest },
       )}
       data-pressed={isPressed}
-      data-key-pressed={isPressed && isFocusVisible && isFocused}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
@@ -105,6 +104,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
       ref={mergeRefs(ref, rippleRef, innerRef)}
       className={styles.base({ className: classNames?.base })}
       role={asChild ? "button" : undefined}
+      aria-disabled={asChild ? isDisabled : undefined}
     >
       {asChild && isValidElement(children) ? (
         cloneElement(children, {
