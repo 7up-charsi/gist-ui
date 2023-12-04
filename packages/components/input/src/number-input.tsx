@@ -1,4 +1,4 @@
-import { KeyboardEventHandler, forwardRef, useCallback, useRef } from "react";
+import { ChangeEvent, forwardRef, useCallback, useRef } from "react";
 import Input, { CustomInputElement, InputProps } from "./input";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
@@ -7,7 +7,7 @@ import { useLongPress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
 
-export interface NumberInputProps extends Omit<InputProps, "type"> {
+export interface NumberInputProps extends Omit<InputProps, "type" | "onChange"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
   inputMode?: "decimal" | "numeric";
   min?: number;
@@ -16,6 +16,10 @@ export interface NumberInputProps extends Omit<InputProps, "type"> {
   largeStep?: number;
   repeatRate?: number;
   threshold?: number;
+  /**
+   * This is native onChange event. But when you increase/decrease value with step buttons or Up/Down arrow then only target property is available
+   */
+  onChange?: InputProps["onChange"];
 }
 
 const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref) => {
@@ -30,6 +34,8 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     repeatRate = 100,
     threshold = 500,
     endContent,
+    onChange,
+    name,
     ...rest
   } = props;
 
@@ -91,7 +97,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
         : `${value - (normalStep ? step : largeStep)}`;
   };
 
-  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     const ArrowUp = e.key === "ArrowUp";
     const ArrowDown = e.key === "ArrowDown";
     const PageUp = e.key === "PageUp";
@@ -173,7 +179,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     }
   };
 
-  const handleKeyUp: KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     const ArrowUp = e.key === "ArrowUp";
     const ArrowDown = e.key === "ArrowDown";
     const PageUp = e.key === "PageUp";
@@ -194,9 +200,13 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepUp();
+      onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
     },
     onLongPress: () => {
-      state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
+      state.current.longPressInterval = setInterval(() => {
+        handleStepUp();
+        onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
+      }, repeatRate);
     },
   });
 
@@ -211,9 +221,13 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepDown();
+      onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
     },
     onLongPress: () => {
-      state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
+      state.current.longPressInterval = setInterval(() => {
+        handleStepDown();
+        onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
+      }, repeatRate);
     },
   });
 
@@ -244,7 +258,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       >
         <div>
           <svg
-            fill="current"
+            fill="currentColor"
             className={styles.icon({ className: classNames?.stepButton.icon })}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
@@ -273,7 +287,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       >
         <div>
           <svg
-            fill="current"
+            fill="currentColor"
             className={styles.icon({ className: classNames?.stepButton.icon })}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
@@ -297,6 +311,8 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       classNames={classNames}
       ref={mergeRefs(ref, innerRef)}
       type="number"
+      name={name}
+      onChange={onChange}
       endContent={
         <>
           {endContent}
