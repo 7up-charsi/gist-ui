@@ -16,7 +16,7 @@ const meta: Meta<ScrollShadowProps> = {
       control: "number",
       defaultValue: "0",
     },
-    disabled: {
+    isDisabled: {
       control: "boolean",
     },
   },

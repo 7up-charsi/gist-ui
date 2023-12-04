@@ -17,7 +17,7 @@ const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) 
     direction,
     children,
     classNames,
-    disabled,
+    isDisabled,
     offset,
     onVisibilityChange,
     visibility,
@@ -31,7 +31,7 @@ const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>((props, ref) 
   useScrollOverflow({
     direction,
     ref: innerRef,
-    disabled,
+    isDisabled,
     offset,
     onVisibilityChange,
     visibility,
