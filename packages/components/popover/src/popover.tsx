@@ -1,5 +1,4 @@
 import { GistUiError, validChildError } from "@gist-ui/error";
-import { usePress } from "react-aria";
 import { Slot } from "@gist-ui/slot";
 import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
@@ -13,6 +12,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -124,9 +124,14 @@ export const Trigger = (props: TriggerProps) => {
     },
   });
 
-  const { pressProps } = usePress({
-    onPress: context.handleOpen,
-  });
+  const handleOpen = context.handleOpen;
+
+  const slotProps = useMemo(
+    () => ({
+      onPointerUp: handleOpen,
+    }),
+    [handleOpen],
+  );
 
   return (
     <Popper.Reference>
@@ -134,7 +139,7 @@ export const Trigger = (props: TriggerProps) => {
         ref={ref}
         aria-expanded={context.open}
         aria-controls={context.open ? context.id : undefined}
-        {...pressProps}
+        {...slotProps}
       >
         {children}
       </Slot>
@@ -157,11 +162,16 @@ export const Close = (props: CloseProps) => {
 
   const context = useContext(Close_Name);
 
-  const { pressProps } = usePress({
-    onPress: context.handleClose,
-  });
+  const handleClose = context.handleClose;
 
-  return <Slot {...pressProps}>{children}</Slot>;
+  const slotProps = useMemo(
+    () => ({
+      onPointerUp: handleClose,
+    }),
+    [handleClose],
+  );
+
+  return <Slot {...slotProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;
@@ -195,7 +205,7 @@ export const Content = (props: ContentProps) => {
   const { children, ...restProps } = props;
 
   const context = useContext(Content_Name);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const [dialogRef, setDialogRef] = useState<HTMLDivElement | null>(null);
 
   useClickOutside<HTMLDivElement>({
     ref: dialogRef,
@@ -216,7 +226,7 @@ export const Content = (props: ContentProps) => {
 
   return (
     <Popper.Floating {...restProps}>
-      <FocusTrap ref={dialogRef} loop trapped asChild>
+      <FocusTrap ref={setDialogRef} loop trapped asChild>
         {cloneElement(children, {
           role: "dialog",
           id: context.id,
