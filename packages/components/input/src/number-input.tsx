@@ -1,10 +1,9 @@
-import { KeyboardEventHandler, forwardRef, useRef } from "react";
+import { KeyboardEventHandler, forwardRef, useCallback, useRef } from "react";
 import Input, { CustomInputElement, InputProps } from "./input";
-import { mergeRefs } from "@gist-ui/react-utils";
+import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
-import { Icon } from "@gist-ui/icon";
-import { mergeProps, useLongPress, usePress } from "react-aria";
+import { useLongPress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
 
@@ -201,12 +200,10 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     },
   });
 
-  const { pressProps: stepUpPressProps } = usePress({
-    onPressUp: () => {
-      clearInterval(state.current.longPressInterval);
-      state.current.longPressInterval = undefined;
-    },
-  });
+  const handleStepUpClear: React.PointerEventHandler = useCallback(() => {
+    clearInterval(state.current.longPressInterval);
+    state.current.longPressInterval = undefined;
+  }, []);
 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
     threshold,
@@ -220,12 +217,10 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     },
   });
 
-  const { pressProps: stepDownPressProps } = usePress({
-    onPressUp: () => {
-      clearInterval(state.current.longPressInterval);
-      state.current.longPressInterval = undefined;
-    },
-  });
+  const handleStepDownClear: React.PointerEventHandler = useCallback(() => {
+    clearInterval(state.current.longPressInterval);
+    state.current.longPressInterval = undefined;
+  }, []);
 
   const styles = numberInput();
 
@@ -244,15 +239,19 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
         }}
-        {...mergeProps(stepUpPressProps, stepUpLongPressProps)}
+        {...mergeProps({ onPointerUp: handleStepUpClear }, { ...stepUpLongPressProps })}
         asChild
       >
         <div>
-          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
-              <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
-            </svg>
-          </Icon>
+          <svg
+            fill="current"
+            className={styles.icon({ className: classNames?.stepButton.icon })}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 10"
+          >
+            <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
+          </svg>
         </div>
       </Button>
 
@@ -269,15 +268,19 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
         }}
-        {...mergeProps(stepDownPressProps, stepDownLongPressProps)}
+        {...mergeProps({ onPointerUp: handleStepDownClear }, { ...stepDownLongPressProps })}
         asChild
       >
         <div>
-          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
-              <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
-            </svg>
-          </Icon>
+          <svg
+            fill="current"
+            className={styles.icon({ className: classNames?.stepButton.icon })}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 10"
+          >
+            <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+          </svg>
         </div>
       </Button>
     </div>
