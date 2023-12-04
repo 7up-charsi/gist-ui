@@ -21,7 +21,7 @@ export interface FocusTrapProps {
   trapped?: boolean;
   children?: React.ReactNode;
   asChild?: boolean;
-  disabled?: boolean;
+  isDisabled?: boolean;
   /**
    * **This prop is for internal use.**
    *
@@ -32,7 +32,7 @@ export interface FocusTrapProps {
 }
 
 const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
-  const { loop = true, trapped = true, asChild, children, disabled, scope, ...restProps } = props;
+  const { loop = true, trapped = true, asChild, children, isDisabled, scope, ...restProps } = props;
 
   const Component = asChild ? Slot : "div";
 
@@ -53,7 +53,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
   const focusScope = scope || _scope;
 
   useEffect(() => {
-    if (disabled) return;
+    if (isDisabled) return;
     if (!trapped) return;
 
     const handleFocusIn = (e: FocusEvent) => {
@@ -105,11 +105,11 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       document.removeEventListener("focusout", handleFocusOut);
       mutationObserver.disconnect();
     };
-  }, [container, disabled, focusScope.paused, trapped]);
+  }, [container, isDisabled, focusScope.paused, trapped]);
 
   useEffect(() => {
     if (!container) return;
-    if (disabled) return;
+    if (isDisabled) return;
 
     const previouslyActiveElement = document.activeElement as HTMLElement | null;
 
@@ -126,13 +126,13 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       if (previouslyActiveElement) previouslyActiveElement?.focus?.();
       else document.body.focus();
     };
-  }, [container, focusScope, disabled]);
+  }, [container, focusScope, isDisabled]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (!loop) return;
       if (focusScope.paused) return;
-      if (disabled) return;
+      if (isDisabled) return;
 
       const isTab = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey;
       const focusedElement = document.activeElement as HTMLElement | null;
@@ -160,7 +160,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
         }
       }
     },
-    [disabled, focusScope.paused, loop],
+    [isDisabled, focusScope.paused, loop],
   );
 
   return (

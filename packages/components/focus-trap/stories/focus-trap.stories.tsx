@@ -40,6 +40,6 @@ export const Default: StoryObj<FocusTrapProps> = {
   args: {
     loop: true,
     trapped: true,
-    disabled: false,
+    isDisabled: false,
   },
 };
