@@ -19,7 +19,7 @@ export interface UseScrollOverflowProps<R> {
    * if this prop is defined then shadow will always show at defined visibility side
    */
   visibility?: ScrollOverflowVisibility;
-  disabled?: boolean;
+  isDisabled?: boolean;
   offset?: number;
   /**
    * This prop is used to make this hook controlled
@@ -35,7 +35,7 @@ export interface UseScrollOverflowProps<R> {
 
 const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<R> = {}) => {
   const {
-    disabled,
+    isDisabled,
     direction = "vertical",
     offset = 0,
     onVisibilityChange,
@@ -48,7 +48,7 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
   useEffect(() => {
     const el = ref?.current;
 
-    if (!el || disabled) return;
+    if (!el || isDisabled) return;
 
     const clearOverflow = () => {
       ["top", "bottom", "top-bottom", "left", "right", "left-right"].forEach((attr) => {
@@ -132,7 +132,7 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
       el.removeEventListener("scroll", checkOverflow);
       clearOverflow();
     };
-  }, [direction, disabled, offset, onVisibilityChange, ref, visibility]);
+  }, [direction, isDisabled, offset, onVisibilityChange, ref, visibility]);
 };
 
 export type UseScrollOverflowReturn = ReturnType<typeof useScrollOverflow>;
