@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from "react";
+import { useEffect } from "react";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 export interface UseClickOutsideProps<R> {
@@ -6,8 +6,8 @@ export interface UseClickOutsideProps<R> {
    * This will execute when user click outside of `ref`
    */
   callback?: (e: PointerEvent) => void;
-  disabled?: boolean;
-  ref?: RefObject<R | null>;
+  isDisabled?: boolean;
+  ref?: R | null;
   /**
    * Indicates which button was pressed on the mouse to execute the `callback`
    *
@@ -20,17 +20,21 @@ export interface UseClickOutsideProps<R> {
    * @default 0
    */
   closeButton?: number;
+  /**
+   * @default "pointerup"
+   */
+  onEvent?: "pointerup" | "pointerdown";
 }
 
 const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) => {
-  const { ref, callback, disabled, closeButton = 0 } = props;
+  const { ref, callback, isDisabled, closeButton = 0, onEvent = "pointerup" } = props;
 
   const callbackRef = useCallbackRef(callback);
 
   useEffect(() => {
-    const el = ref?.current;
+    const el = ref;
 
-    if (!el || disabled) return;
+    if (!el || isDisabled) return;
 
     const handler = (e: PointerEvent) => {
       if (e.button === closeButton) {
@@ -40,12 +44,12 @@ const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps<R>) 
       }
     };
 
-    document.addEventListener("pointerup", handler);
+    document.addEventListener(onEvent, handler);
 
     return () => {
-      document.removeEventListener("pointerup", handler);
+      document.removeEventListener(onEvent, handler);
     };
-  }, [callbackRef, closeButton, disabled, ref]);
+  }, [callbackRef, closeButton, isDisabled, onEvent, ref]);
 };
 
 export type UseClickOutsideReturn = ReturnType<typeof useClickOutside>;
