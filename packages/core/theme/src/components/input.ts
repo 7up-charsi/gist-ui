@@ -51,7 +51,7 @@ const input = tv({
     fullWidth: {
       true: { base: "w-full" },
     },
-    disabled: {
+    isDisabled: {
       true: { inputWrapper: "disabled" },
     },
     labelPlacement: {
@@ -66,7 +66,7 @@ const input = tv({
   defaultVariants: {
     color: "default",
     fullWidth: false,
-    disabled: false,
+    isDisabled: false,
     rounded: "md",
     size: "md",
     variant: "flat",

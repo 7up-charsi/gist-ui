@@ -58,7 +58,7 @@ const button = tv({
     fullWidth: {
       true: { base: "w-full" },
     },
-    disabled: {
+    isDisabled: {
       true: { base: "disabled" },
     },
     isIconOnly: {
@@ -71,7 +71,7 @@ const button = tv({
     variant: "solid",
     color: "default",
     fullWidth: false,
-    disabled: false,
+    isDisabled: false,
   },
   compoundVariants: [
     // color / solid
