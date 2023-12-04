@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
-import { useHover, useFocus, useFocusVisible, usePress } from "react-aria";
-import { mergeProps, mapProps } from "@gist-ui/react-utils";
+import { useHover, useFocus, useFocusVisible } from "react-aria";
+import { mergeProps } from "@gist-ui/react-utils";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
 import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
@@ -21,6 +21,8 @@ import {
   useRef,
   useState,
 } from "react";
+import pick from "lodash.pick";
+import omit from "lodash.omit";
 
 type Trigger = "hover" | "focus";
 
@@ -239,13 +241,11 @@ export const Trigger = ({ children }: TriggerProps) => {
     },
   });
 
-  const { pressProps } = usePress({
-    onPressStart: () => {
-      context.isFocused.current = false;
-      context.isHovered.current = false;
-      context.handleHide(true);
-    },
-  });
+  const handlePointerDown = () => {
+    context.isFocused.current = false;
+    context.isHovered.current = false;
+    context.handleHide(true);
+  };
 
   const { isFocusVisible } = useFocusVisible();
   const { focusProps } = useFocus({
@@ -272,7 +272,12 @@ export const Trigger = ({ children }: TriggerProps) => {
       <Slot
         ref={ref}
         aria-describedby={context.open ? context.id : undefined}
-        {...mergeProps({ ...hoverProps }, { ...focusProps }, pressProps, { tabIndex: 0 })}
+        {...mergeProps(
+          { ...hoverProps },
+          { ...focusProps },
+          { onPointerDown: handlePointerDown },
+          { tabIndex: 0 },
+        )}
       >
         {children}
       </Slot>
@@ -311,7 +316,8 @@ export interface ContentProps extends TooltipVariantProps, Popper.FloatingProps 
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) => {
-  const [props, variantProps] = mapProps({ ..._props }, tooltip.variantKeys);
+  const variantProps = pick(_props, ...tooltip.variantKeys);
+  const props = omit(_props, ...tooltip.variantKeys);
 
   const { children, asChild, disableInteractive, classNames } = props;
 
@@ -331,7 +337,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) =>
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context.setGivenId(children.props.id || "");
+      context.setGivenId((children.props as { id?: string }).id || "");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
