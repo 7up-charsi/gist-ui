@@ -134,9 +134,6 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
-      '@gist-ui/icon':
-        specifier: workspace:*
-        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -149,9 +146,18 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-is-pressed':
+        specifier: workspace:*
+        version: link:../../hooks/use-is-pressed
       '@gist-ui/use-ripple':
         specifier: workspace:*
         version: link:../../hooks/use-ripple
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
+      lodash.pick:
+        specifier: ^4.4.0
+        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -165,6 +171,12 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5(@babel/core@7.23.3)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.8
+        version: 4.5.8
+      '@types/lodash.pick':
+        specifier: ^4.4.9
+        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -246,25 +258,6 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/components/icon:
-    dependencies:
-      '@gist-ui/slot':
-        specifier: workspace:*
-        version: link:../slot
-      '@gist-ui/theme':
-        specifier: workspace:*
-        version: link:../../core/theme
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
   packages/components/input:
     dependencies:
       '@gist-ui/button':
@@ -273,9 +266,6 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
-      '@gist-ui/icon':
-        specifier: workspace:*
-        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -288,6 +278,12 @@ importers:
       '@gist-ui/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
+      lodash.pick:
+        specifier: ^4.4.0
+        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -298,6 +294,12 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.8
+        version: 4.5.8
+      '@types/lodash.pick':
+        specifier: ^4.4.9
+        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -407,6 +409,49 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
+  packages/components/select:
+    dependencies:
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
+      '@gist-ui/input':
+        specifier: workspace:*
+        version: link:../input
+      '@gist-ui/popper':
+        specifier: workspace:*
+        version: link:../popper
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      '@gist-ui/use-click-outside':
+        specifier: workspace:*
+        version: link:../../hooks/use-click-outside
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
+      lodash.pick:
+        specifier: ^4.4.0
+        version: 4.4.0
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.8
+        version: 4.5.8
+      '@types/lodash.pick':
+        specifier: ^4.4.9
+        version: 4.4.9
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
   packages/components/slot:
     dependencies:
       '@gist-ui/error':
@@ -449,6 +494,12 @@ importers:
       '@gist-ui/use-is-disabled':
         specifier: workspace:*
         version: link:../../hooks/use-is-disabled
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
+      lodash.pick:
+        specifier: ^4.4.0
+        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -459,6 +510,12 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.8
+        version: 4.5.8
+      '@types/lodash.pick':
+        specifier: ^4.4.9
+        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -592,6 +649,19 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../use-callback-ref
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-is-pressed:
+    dependencies:
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -5819,6 +5889,12 @@ packages:
       '@types/lodash': 4.14.201
     dev: true
 
+  /@types/lodash.pick@4.4.9:
+    resolution: {integrity: sha512-hDpr96x9xHClwy1KX4/RXRejqjDFTEGbEMT3t6wYSYeFDzxmMnSKB/xHIbktRlPj8Nii2g8L5dtFDRaNFBEzUQ==}
+    dependencies:
+      '@types/lodash': 4.14.201
+    dev: true
+
   /@types/lodash@4.14.201:
     resolution: {integrity: sha512-y9euML0cim1JrykNxADLfaG0FgD1g/yTHwUs/Jg9ZIU7WKj2/4IW9Lbb1WZbvck78W/lfGXFfe+u2EGfIJXdLQ==}
     dev: true
@@ -9926,6 +10002,10 @@ packages:
 
   /lodash.omit@4.5.0:
     resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
+    dev: false
+
+  /lodash.pick@4.4.0:
+    resolution: {integrity: sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==}
     dev: false
 
   /lodash.snakecase@4.1.1:
