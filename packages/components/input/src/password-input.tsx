@@ -3,14 +3,27 @@ import Input, { CustomInputElement, InputProps } from "./input";
 import { Button } from "@gist-ui/button";
 
 export interface PasswordInputProps extends Omit<InputProps, "type"> {
+  /**
+   * This prop value is used in `aria-label` of ToggleButton when it is not in pressed state
+   */
   showAriaLabel?: string;
+  /**
+   * This prop value is used in `aria-label` of ToggleButton when it is in pressed state
+   */
   hideAriaLabel?: string;
   showIcon?: ReactNode;
   hideIcon?: ReactNode;
 }
 
 const PasswordInput = forwardRef<CustomInputElement, PasswordInputProps>((props, ref) => {
-  const { showAriaLabel, hideAriaLabel, showIcon, hideIcon, label, ...rest } = props;
+  const {
+    showIcon,
+    hideIcon,
+    label,
+    hideAriaLabel = `hide ${label}`,
+    showAriaLabel = `show ${label}`,
+    ...rest
+  } = props;
 
   const [isPassword, setIsPassword] = useState(true);
 
@@ -24,8 +37,9 @@ const PasswordInput = forwardRef<CustomInputElement, PasswordInputProps>((props,
       size="sm"
       rounded="full"
       variant="text"
-      aria-label={isPassword ? showAriaLabel || `show ${label}` : hideAriaLabel || `hide ${label}`}
+      aria-label={isPassword ? showAriaLabel : hideAriaLabel}
       onPointerUp={handleToggle}
+      aria-pressed={isPassword}
     >
       {isPassword
         ? showIcon || (
