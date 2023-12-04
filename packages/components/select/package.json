@@ -1,0 +1,58 @@
+{
+  "name": "@gist-ui/select",
+  "version": "1.0.0",
+  "keywords": [
+    "select"
+  ],
+  "author": {
+    "name": "Muhammad Zeeshan",
+    "email": "mzeeshan3597@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzeeshan3597/gist-ui.git",
+    "directory": "packages/components/select"
+  },
+  "bugs": {
+    "url": "https://github.com/mzeeshan3597/gist-ui/issues"
+  },
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsup src --dts",
+    "build:fast": "tsup src",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/input": "workspace:*",
+    "@gist-ui/popper": "workspace:*",
+    "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/button": "workspace:*",
+    "@gist-ui/use-click-outside": "workspace:*",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/lodash.omit": "^4.5.8",
+    "@types/lodash.pick": "^4.4.9",
+    "clean-package": "^2.2.0"
+  },
+  "clean-package": {
+    "extends": "../../../../../../clean-package.config.json"
+  }
+}
