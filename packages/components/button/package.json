@@ -42,20 +42,23 @@
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-ripple": "workspace:*",
+    "@gist-ui/use-is-pressed": "workspace:*",
     "react-aria": "^3.29.0",
     "@gist-ui/slot": "workspace:*",
     "@gist-ui/error": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
     "react-loader-spinner": "^5.4.5"
   },
   "devDependencies": {
+    "@types/lodash.omit": "^4.5.8",
+    "@types/lodash.pick": "^4.4.9",
     "clean-package": "^2.2.0"
   },
   "clean-package": {
     "extends": "../../../../../../clean-package.config.json",
     "remove": [
-      "dependencies.react-loader-spinner",
-      "dependencies.@gist-ui/icon"
+      "dependencies.react-loader-spinner"
     ]
   }
 }

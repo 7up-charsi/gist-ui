@@ -3,8 +3,10 @@ import { __DEV__ } from "@gist-ui/shared-utils";
 import { Slot } from "@gist-ui/slot";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
-import { mergeRefs, mergeProps, mapProps } from "@gist-ui/react-utils";
-import { useFocusRing, useHover, usePress, PressProps, HoverProps } from "react-aria";
+import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import omit from "lodash.omit";
+import pick from "lodash.pick";
+import { useFocusRing, useHover, HoverProps } from "react-aria";
 import {
   ButtonHTMLAttributes,
   Children,
@@ -12,46 +14,45 @@ import {
   forwardRef,
   isValidElement,
   ReactNode,
+  useCallback,
   useRef,
 } from "react";
+import { useIsPressed } from "@gist-ui/use-is-pressed";
+
+const ripplePropsKeys = ["duration", "timingFunction", "completedFactor", "pointerCenter"] as const;
+
+const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className"> {
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className">,
+    UseRippleProps,
+    HoverProps {
   startContent?: ReactNode;
   endContent?: ReactNode;
   classNames?: ButtonClassNames;
   children?: ReactNode;
-  rippleProps?: UseRippleProps;
-  hoverProps?: HoverProps;
-  pressProps?: PressProps;
   asChild?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
-  const [props, variantProps] = mapProps({ ..._props }, button.variantKeys);
+  const variantProps = pick(_props, ...button.variantKeys);
+  const rippleProps = pick(_props, ...ripplePropsKeys);
+  const hoverHookProps = pick(_props, ...hoverPropsKeys);
 
-  const {
-    startContent,
-    endContent,
-    classNames,
-    rippleProps = {},
-    hoverProps: hoverHookProps = {},
-    pressProps: pressHookProps = {},
-    asChild,
-    children,
-    ...rest
-  } = props;
+  const props = omit(_props, ...button.variantKeys, ...ripplePropsKeys, ...hoverPropsKeys);
 
-  const { disabled, isIconOnly } = variantProps;
+  const { startContent, endContent, classNames, asChild, children, ...rest } = props;
+
+  const { isDisabled, isIconOnly } = variantProps;
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
   const Component = asChild ? Slot : "button";
 
   const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(
-    disabled
-      ? { disabled: true }
+    isDisabled
+      ? { isDisabled: true }
       : {
           pointerCenter: !isIconOnly,
           duration: isIconOnly ? 450 : 500,
@@ -60,8 +61,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   );
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
-  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled: disabled });
-  const { isPressed, pressProps } = usePress(pressHookProps);
+  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
+  const { isPressed, isPressedProps } = useIsPressed<HTMLButtonElement>();
+
+  const handleKeyUp: React.KeyboardEventHandler = useCallback((e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.repeat) return;
+
+    e.preventDefault();
+
+    const event = new PointerEvent("pointerup", { bubbles: true, cancelable: true });
+
+    e.target.dispatchEvent(event);
+  }, []);
 
   const styles = button(variantProps);
 
@@ -78,8 +90,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   return (
     <Component
       {...mergeProps(
-        { onPointerDown: rippleEvent },
-        { ...pressProps },
+        { onPointerDown: rippleEvent, onKeyUp: handleKeyUp },
+        { ...isPressedProps },
         { ...focusProps },
         { ...hoverProps },
         { ...rest },
@@ -89,9 +101,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
-      disabled={disabled}
+      disabled={isDisabled}
       ref={mergeRefs(ref, rippleRef, innerRef)}
       className={styles.base({ className: classNames?.base })}
+      role={asChild ? "button" : undefined}
     >
       {asChild && isValidElement(children) ? (
         cloneElement(children, {
