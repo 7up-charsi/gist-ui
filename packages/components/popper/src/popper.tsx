@@ -57,7 +57,7 @@ export interface ReferenceProps {
    *
    * @default false
    */
-  virturalElement?: HTMLElement;
+  virturalElement?: HTMLElement | null;
 }
 
 export const Reference = (props: ReferenceProps) => {
@@ -90,7 +90,6 @@ const [ArrowProvider, useArrowContext] = createContextScope<ArrowContext>(Floati
 
 export interface FloatingProps {
   children?: React.ReactNode;
-  open?: UseFloatingOptions["open"];
   placement?: UseFloatingOptions["placement"];
   updatePositionStrategy?: "optimized" | "always";
   /**
@@ -152,7 +151,6 @@ export interface FloatingProps {
 export const Floating = (props: FloatingProps) => {
   const {
     children,
-    open,
     placement: placementProp,
     updatePositionStrategy = "optimized",
     mainOffset = 0,
@@ -170,7 +168,8 @@ export const Floating = (props: FloatingProps) => {
 
   const context = useContext(Floating_Name);
   const [arrow, setArrow] = useState<HTMLSpanElement | null>(null);
-  const size = useSize(arrow);
+  const arrowSize = useSize(arrow);
+  const referenceSize = useSize(context.reference);
 
   const detectOverflow: DetectOverflowOptions = {
     padding:
@@ -181,7 +180,6 @@ export const Floating = (props: FloatingProps) => {
   };
 
   const { middlewareData, placement, floatingStyles, refs } = useFloating({
-    open,
     strategy: "fixed",
     placement: placementProp,
     elements: { reference: context.reference },
@@ -189,7 +187,7 @@ export const Floating = (props: FloatingProps) => {
       autoUpdate(...args, { animationFrame: updatePositionStrategy === "always" }),
     middleware: [
       offset({
-        mainAxis: mainOffset + (size?.height ?? 0),
+        mainAxis: mainOffset + (arrowSize?.height ?? 0),
         alignmentAxis: alignOffset,
       }),
       !allowMainAxisFlip && !allowCrossAxisFlip
@@ -232,6 +230,8 @@ export const Floating = (props: FloatingProps) => {
           style: {
             ...floatingStyles,
             visibility: hideData?.referenceHidden ? "hidden" : "visible",
+            "--reference-width": `${referenceSize?.width}px`,
+            "--reference-height": `${referenceSize?.height}px`,
           },
         }}
       >
