@@ -13,7 +13,7 @@ export interface UseRippleProps {
    * @default cubic-bezier(.42,.36,.28,.88)
    */
   timingFunction?: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
 
   /**
    * This prop means how much part of `duration` is used to appear the ripple and rest ot it used to disappear it
@@ -42,7 +42,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
     () => ({
       duration: 500,
       timingFunction: "cubic-bezier(.42,.36,.28,.88)",
-      disabled: false,
+      isDisabled: false,
       completedFactor: 0.5,
       pointerCenter: true,
       ...(_props || {}),
@@ -50,11 +50,11 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
     [_props],
   );
 
-  const { disabled, duration, completedFactor } = props;
+  const { isDisabled, duration, completedFactor } = props;
 
   const event = useCallback(
     (event: MinimalEvent) => {
-      if (!ref.current || disabled || event.button !== 0) return;
+      if (!ref.current || isDisabled || event.button !== 0) return;
 
       const target = ref.current;
 
@@ -82,7 +82,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
         document.addEventListener("pointerup", removeRipple, { once: true });
       });
     },
-    [completedFactor, disabled, duration, props],
+    [completedFactor, isDisabled, duration, props],
   );
 
   return [ref, event] as const;
