@@ -1,5 +1,4 @@
 import { useControllableState } from "@gist-ui/use-controllable-state";
-import { usePress } from "react-aria";
 import { Slot } from "@gist-ui/slot";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
@@ -20,6 +19,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -208,15 +208,15 @@ export const Trigger = (props: TriggerProps) => {
 
   const context = useContext(Trigger_Name);
 
-  const { pressProps } = usePress({
-    onPress: context.handleOpen,
-  });
+  const handleOpen = context.handleOpen;
+
+  const slotProps = useMemo(() => ({ onPointerUp: handleOpen }), [handleOpen]);
 
   return (
     <Slot
       aria-expanded={context.open}
       aria-controls={context.open ? context.id : undefined}
-      {...pressProps}
+      {...slotProps}
     >
       {children}
     </Slot>
@@ -238,13 +238,18 @@ export const Close = (props: CloseProps) => {
 
   const context = useContext(Close_Name);
 
-  const { pressProps } = usePress({
-    onPress: () => {
-      context.handleClose("pointer");
-    },
-  });
+  const handleClose = context.handleClose;
 
-  return <Slot {...pressProps}>{children}</Slot>;
+  const slotProps = useMemo(
+    () => ({
+      onPointerUp: () => {
+        handleClose("pointer");
+      },
+    }),
+    [handleClose],
+  );
+
+  return <Slot {...slotProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;
@@ -287,12 +292,12 @@ export const Content = (props: ContentProps) => {
   const { children } = props;
 
   const context = useContext(Content_Name);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const [dialogRef, setDialogRef] = useState<HTMLDivElement | null>(null);
 
   useScrollLock({ enabled: context.open });
 
   useClickOutside<HTMLDivElement>({
-    disabled: !context.open,
+    isDisabled: !context.open,
     ref: dialogRef,
     callback: () => {
       context.handleClose("outside");
@@ -319,7 +324,14 @@ export const Content = (props: ContentProps) => {
     console.warn("Content", '"aria-describedby" is optional but recommended');
 
   return (
-    <FocusTrap ref={dialogRef} loop trapped asChild scope={context.scope} disabled={!context.open}>
+    <FocusTrap
+      ref={setDialogRef}
+      loop
+      trapped
+      asChild
+      scope={context.scope}
+      isDisabled={!context.open}
+    >
       {cloneElement(children, {
         role: "dialog",
         "aria-modal": true,
