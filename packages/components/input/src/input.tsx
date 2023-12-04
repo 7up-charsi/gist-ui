@@ -31,9 +31,9 @@ export interface InputProps extends InputVariantProps, HoverProps {
   placeholder?: string;
   value?: string;
   defaultValue?: string;
-  onFocus?: FocusEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onFocus?: FocusEventHandler<CustomInputElement>;
+  onBlur?: FocusEventHandler<CustomInputElement>;
+  onChange?: ChangeEventHandler<CustomInputElement>;
   required?: boolean;
   name?: string;
   label?: string;
@@ -115,7 +115,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
 
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
 
-  const { focusProps } = useFocus<HTMLInputElement>({
+  const { focusProps } = useFocus<CustomInputElement>({
     onFocus: (e) => {
       onFocus?.(e);
       focusRingProps.onFocus?.(e);
