@@ -1,7 +1,6 @@
 import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mapProps, mergeRefs } from "@gist-ui/react-utils";
+import { mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
-import { GistUiError } from "@gist-ui/error";
 import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { HoverProps, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
@@ -15,12 +14,18 @@ import {
   useRef,
   useState,
 } from "react";
+import omit from "lodash.omit";
+import pick from "lodash.pick";
+
+const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
 export interface CustomInputElement extends HTMLInputElement {
   inputWrapper: HTMLDivElement | null;
+  inputBase: HTMLDivElement | null;
+  inputLabel: HTMLLabelElement | null;
 }
 
-export interface InputProps extends InputVariantProps {
+export interface InputProps extends InputVariantProps, HoverProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
   id?: string;
   placeholder?: string;
@@ -31,7 +36,7 @@ export interface InputProps extends InputVariantProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   required?: boolean;
   name?: string;
-  label: string;
+  label?: string;
   helperText?: string;
   error?: boolean;
   errorMessage?: string;
@@ -45,11 +50,13 @@ export interface InputProps extends InputVariantProps {
    */
   a11yFeedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;
-  hoverProps?: HoverProps;
 }
 
 const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
-  const [props, variantProps] = mapProps({ ..._props }, input.variantKeys);
+  const variantProps = pick(_props, ...input.variantKeys);
+  const hoverHookProps = pick(_props, ...hoverPropsKeys);
+
+  const props = omit(_props, ...input.variantKeys, ...hoverPropsKeys);
 
   const {
     label,
@@ -72,10 +79,9 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
     a11yFeedback = "polite",
     inputProps,
     onChange,
-    hoverProps: hoverHookProps = {},
   } = props;
 
-  const { color, disabled, labelPlacement } = variantProps;
+  const { color, isDisabled, labelPlacement = "outside" } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -83,15 +89,20 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
   const inputId = id || labelId;
 
   const inputRef = useRef<CustomInputElement | null>(null);
+  const inputBaseRef = useRef<HTMLDivElement>(null);
+  const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const [filled, setFilled] = useState(!!defaultValue);
 
   useImperativeHandle(
     ref,
-    () =>
-      ({
-        inputWrapper: inputWrapperRef.current,
-      }) as CustomInputElement,
+    () => {
+      inputRef.current!.inputWrapper = inputWrapperRef.current;
+      inputRef.current!.inputBase = inputBaseRef.current;
+      inputRef.current!.inputLabel = inputLabelRef.current;
+
+      return inputRef.current as CustomInputElement;
+    },
 
     [],
   );
@@ -102,7 +113,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
     isFocused,
   } = useFocusRing({ isTextInput: true });
 
-  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled: disabled });
+  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
 
   const { focusProps } = useFocus<HTMLInputElement>({
     onFocus: (e) => {
@@ -118,12 +129,16 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
 
   const styles = input({
     ...variantProps,
-    disabled,
+    isDisabled,
     color: error ? "danger" : color,
   });
 
   const labelHTML = !!label && (
-    <label htmlFor={inputId} className={styles.label({ className: classNames?.label })}>
+    <label
+      ref={inputLabelRef}
+      htmlFor={inputId}
+      className={styles.label({ className: classNames?.label })}
+    >
       {label}
       {required && (
         <span className={styles.required({ className: classNames?.required })} aria-hidden="true">
@@ -134,20 +149,20 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
   );
 
   if (__DEV__ && !label)
-    throw new GistUiError(
-      "Input",
-      '"label" prop is required. if you want to hide label then pass "hideLabel" prop as well',
+    console.warn(
+      '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
     );
 
   return (
     <div
+      ref={inputBaseRef}
       className={styles.base({ className: classNames?.base })}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
       data-filled-within={isFocused || filled || !!placeholder || !!startContent}
       data-hovered={isHovered}
-      data-disabled={disabled}
+      data-is-disabled={isDisabled}
     >
       {!hideLabel && labelPlacement?.includes("outside") && labelHTML}
 
@@ -157,7 +172,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
         {...hoverProps}
         onPointerUp={(e) => {
           hoverProps.onPointerUp?.(e);
-          inputRef.current?.focus();
+          if (e.target === e.currentTarget) inputRef.current?.focus();
         }}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
@@ -176,19 +191,19 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
           placeholder={placeholder}
           type={type}
           onChange={onChange}
-          aria-describedby={helperText && !error ? helperTextId : undefined}
+          aria-describedby={helperText ? helperTextId : undefined}
           aria-errormessage={error && errorMessage ? errorMessageId : undefined}
           aria-required={required}
           aria-invalid={error}
           className={styles.input({ className: classNames?.input })}
           ref={mergeRefs(ref, inputRef)}
           id={inputId}
-          disabled={disabled}
+          disabled={isDisabled}
         />
         {endContent}
       </div>
 
-      {helperText && !error && (
+      {helperText && (
         <div id={helperTextId} className={styles.helperText({ className: classNames?.helperText })}>
           {helperText}
         </div>
