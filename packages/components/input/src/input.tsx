@@ -16,6 +16,7 @@ import {
 } from "react";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
@@ -64,15 +65,15 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     placeholder,
     value,
     defaultValue,
-    onBlur,
-    onFocus,
+    onBlur: onBlurProp,
+    onFocus: onFocusProp,
     classNames,
     name,
     hideLabel,
     required,
     a11yFeedback = "polite",
     inputProps,
-    onChange,
+    onChange: onChangeProp,
   } = props;
 
   const { color, isDisabled, labelPlacement = "outside" } = variantProps;
@@ -81,6 +82,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   const helperTextId = useId();
   const errorMessageId = useId();
   const inputId = id || labelId;
+
+  const onBlur = useCallbackRef(onBlurProp);
+  const onFocus = useCallbackRef(onFocusProp);
+  const onChange = useCallbackRef(onChangeProp);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const inputBaseRef = useRef<HTMLDivElement>(null);

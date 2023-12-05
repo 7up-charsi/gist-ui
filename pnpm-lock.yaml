@@ -275,6 +275,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
