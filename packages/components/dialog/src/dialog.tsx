@@ -210,7 +210,15 @@ export const Trigger = (props: TriggerProps) => {
 
   const handleOpen = context.handleOpen;
 
-  const slotProps = useMemo(() => ({ onPointerUp: handleOpen }), [handleOpen]);
+  const slotProps = useMemo(
+    () => ({
+      onPointerUp: (e: PointerEvent) => {
+        if (e.button !== 0) return;
+        handleOpen();
+      },
+    }),
+    [handleOpen],
+  );
 
   return (
     <Slot
@@ -242,7 +250,8 @@ export const Close = (props: CloseProps) => {
 
   const slotProps = useMemo(
     () => ({
-      onPointerUp: () => {
+      onPointerUp: (e: PointerEvent) => {
+        if (e.button !== 0) return;
         handleClose("pointer");
       },
     }),
@@ -292,13 +301,11 @@ export const Content = (props: ContentProps) => {
   const { children } = props;
 
   const context = useContext(Content_Name);
-  const [dialogRef, setDialogRef] = useState<HTMLDivElement | null>(null);
 
   useScrollLock({ enabled: context.open });
 
-  useClickOutside<HTMLDivElement>({
+  const setOutsideEle = useClickOutside<HTMLDivElement>({
     isDisabled: !context.open,
-    ref: dialogRef,
     callback: () => {
       context.handleClose("outside");
     },
@@ -325,7 +332,7 @@ export const Content = (props: ContentProps) => {
 
   return (
     <FocusTrap
-      ref={setDialogRef}
+      ref={setOutsideEle}
       loop
       trapped
       asChild
