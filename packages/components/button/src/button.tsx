@@ -64,7 +64,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
   const { isPressed, isPressedProps } = useIsPressed<HTMLButtonElement>();
 
-  const handleKeyUp: React.KeyboardEventHandler = useCallback((e) => {
+  const handleKeyUp = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== "Enter" && e.key !== " ") return;
     if (e.repeat) return;
 
@@ -96,7 +96,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
         { ...hoverProps },
         { ...rest },
       )}
-      data-pressed={isPressed}
+      data-pointer-pressed={isPressed === "pointer"}
+      data-keyboard-pressed={isPressed === "keyboard"}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}

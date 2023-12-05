@@ -22,7 +22,7 @@ const button = tv({
       "transition-[background,border-color]",
       "duration-150",
       "outline-none",
-      "data-[key-pressed=true]:scale-90",
+      "data-[keyboard-pressed=true]:scale-90",
       ...dataFocusVisible,
     ],
   },
