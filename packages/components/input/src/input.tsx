@@ -19,21 +19,15 @@ import pick from "lodash.pick";
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
-export interface CustomInputElement extends HTMLInputElement {
-  inputWrapper: HTMLDivElement | null;
-  inputBase: HTMLDivElement | null;
-  inputLabel: HTMLLabelElement | null;
-}
-
 export interface InputProps extends InputVariantProps, HoverProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
   id?: string;
   placeholder?: string;
   value?: string;
   defaultValue?: string;
-  onFocus?: FocusEventHandler<CustomInputElement>;
-  onBlur?: FocusEventHandler<CustomInputElement>;
-  onChange?: ChangeEventHandler<CustomInputElement>;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   required?: boolean;
   name?: string;
   label?: string;
@@ -52,7 +46,7 @@ export interface InputProps extends InputVariantProps, HoverProps {
   inputProps?: NativeInputProps;
 }
 
-const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
+const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   const variantProps = pick(_props, ...input.variantKeys);
   const hoverHookProps = pick(_props, ...hoverPropsKeys);
 
@@ -88,7 +82,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
   const errorMessageId = useId();
   const inputId = id || labelId;
 
-  const inputRef = useRef<CustomInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const inputBaseRef = useRef<HTMLDivElement>(null);
   const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
@@ -97,13 +91,12 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
   useImperativeHandle(
     ref,
     () => {
-      inputRef.current!.inputWrapper = inputWrapperRef.current;
-      inputRef.current!.inputBase = inputBaseRef.current;
-      inputRef.current!.inputLabel = inputLabelRef.current;
+      inputWrapperRef.current!.focus = () => {
+        inputRef.current?.focus();
+      };
 
-      return inputRef.current as CustomInputElement;
+      return inputWrapperRef.current!;
     },
-
     [],
   );
 
@@ -115,7 +108,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
 
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
 
-  const { focusProps } = useFocus<CustomInputElement>({
+  const { focusProps } = useFocus<HTMLInputElement>({
     onFocus: (e) => {
       onFocus?.(e);
       focusRingProps.onFocus?.(e);
@@ -167,11 +160,16 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
       {!hideLabel && labelPlacement?.includes("outside") && labelHTML}
 
       <div
-        ref={inputWrapperRef}
+        ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
         {...hoverProps}
         onPointerUp={(e) => {
+          
+
           hoverProps.onPointerUp?.(e);
+
+          if (e.button !== 0) return;
+
           if (e.target === e.currentTarget) inputRef.current?.focus();
         }}
       >
@@ -196,7 +194,7 @@ const Input = forwardRef<CustomInputElement, InputProps>((_props, ref) => {
           aria-required={required}
           aria-invalid={error}
           className={styles.input({ className: classNames?.input })}
-          ref={mergeRefs(ref, inputRef)}
+          ref={inputRef}
           id={inputId}
           disabled={isDisabled}
         />
