@@ -1,13 +1,14 @@
-import { ChangeEvent, forwardRef, useCallback, useRef } from "react";
-import Input, { CustomInputElement, InputProps } from "./input";
+import { forwardRef, useCallback, useRef } from "react";
+import Input, { InputProps } from "./input";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
 import { Button } from "@gist-ui/button";
 import { useLongPress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
+import { useControllableState } from "@gist-ui/use-controllable-state";
 
-export interface NumberInputProps extends Omit<InputProps, "type" | "onChange"> {
+export interface NumberInputProps extends Omit<InputProps, "type" | "onChange" | "defaultValue"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
   inputMode?: "decimal" | "numeric";
   min?: number;
@@ -16,13 +17,10 @@ export interface NumberInputProps extends Omit<InputProps, "type" | "onChange"> 
   largeStep?: number;
   repeatRate?: number;
   threshold?: number;
-  /**
-   * This is native onChange event. But when you increase/decrease value with step buttons or Up/Down arrow then only target property is available
-   */
-  onChange?: InputProps["onChange"];
+  onChange?: (e: { target: { value: string } }) => void;
 }
 
-const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref) => {
+const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) => {
   const {
     classNames,
     inputMode = "numeric",
@@ -35,11 +33,19 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     threshold = 500,
     endContent,
     onChange,
-    name,
+    value: valueProp,
     ...rest
   } = props;
 
-  const innerRef = useRef<CustomInputElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  const [value, setValue] = useControllableState<string>({
+    defaultValue: "",
+    value: valueProp,
+    onChange: (val) => {
+      onChange?.({ target: { value: val } });
+    },
+  });
 
   const state = useRef<{
     longPressInterval?: NodeJS.Timeout;
@@ -47,55 +53,35 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     repeatedEvent?: boolean;
   }>({});
 
-  const handleStepUp = (normalStep = true) => {
-    const target = innerRef.current;
+  const handleStepUp = useCallback(
+    (toAdd = step) => {
+      setValue((prev) => {
+        const val = +prev;
 
-    if (!target) return;
+        if (val === max) return prev;
+        if (max && val > max) return max + "";
+        if (min && val < min) return min + "";
 
-    const value = +target.value;
+        return max && val + toAdd > max ? max + "" : `${val + toAdd}`;
+      });
+    },
+    [max, min, setValue, step],
+  );
 
-    if (value === max) return;
+  const handleStepDown = useCallback(
+    (toAdd = step) => {
+      setValue((prev) => {
+        const val = +prev;
 
-    if (max && value > max) {
-      target.value = max + "";
-      return;
-    }
+        if (val === min) return prev;
+        if (max && val > max) return max + "";
+        if (min && val < min) return min + "";
 
-    if (min && value < min) {
-      target.value = min + "";
-      return;
-    }
-
-    target.value =
-      max && value + (normalStep ? step : largeStep) > max
-        ? max + ""
-        : `${value + (normalStep ? step : largeStep)}`;
-  };
-
-  const handleStepDown = (normalStep = true) => {
-    const target = innerRef.current;
-
-    if (!target) return;
-
-    const value = +target.value;
-
-    if (value === min) return;
-
-    if (max && value > max) {
-      target.value = max + "";
-      return;
-    }
-
-    if (min && value < min) {
-      target.value = min + "";
-      return;
-    }
-
-    target.value =
-      min && value - (normalStep ? step : largeStep) < min
-        ? min + ""
-        : `${value - (normalStep ? step : largeStep)}`;
-  };
+        return min && +prev - toAdd < min ? min + "" : `${+prev - toAdd}`;
+      });
+    },
+    [max, min, setValue, step],
+  );
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     const ArrowUp = e.key === "ArrowUp";
@@ -119,12 +105,12 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     }
 
     if (PageUp && !repeatEvent) {
-      handleStepUp(false);
+      handleStepUp(largeStep);
       return;
     }
 
     if (PageDown && !repeatEvent) {
-      handleStepDown(false);
+      handleStepDown(largeStep);
       return;
     }
 
@@ -144,7 +130,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       state.current.repeatedEvent = true;
 
       state.current.keyDownInterval = setInterval(() => {
-        handleStepUp(false);
+        handleStepUp(largeStep);
       }, repeatRate);
 
       return;
@@ -154,7 +140,7 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       state.current.repeatedEvent = true;
 
       state.current.keyDownInterval = setInterval(() => {
-        handleStepDown(false);
+        handleStepDown(largeStep);
       }, repeatRate);
 
       return;
@@ -164,17 +150,17 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     if (!target) return;
 
     if (Home && min) {
-      target.value = min + "";
+      setValue(min + "");
       return;
     }
 
     if (Home && !min) {
-      target.value = "0";
+      setValue("0");
       return;
     }
 
     if (End && max) {
-      target.value = max + "";
+      setValue(max + "");
       return;
     }
   };
@@ -200,17 +186,17 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepUp();
-      onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
     },
     onLongPress: () => {
-      state.current.longPressInterval = setInterval(() => {
-        handleStepUp();
-        onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
-      }, repeatRate);
+      state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
     },
   });
 
-  const handleStepUpClear: React.PointerEventHandler = useCallback(() => {
+  const handleStepUpClear: React.PointerEventHandler = useCallback((e) => {
+    
+
+    if (e.button !== 0) return;
+
     clearInterval(state.current.longPressInterval);
     state.current.longPressInterval = undefined;
   }, []);
@@ -221,20 +207,27 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepDown();
-      onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
     },
     onLongPress: () => {
-      state.current.longPressInterval = setInterval(() => {
-        handleStepDown();
-        onChange?.({ target: innerRef.current } as ChangeEvent<CustomInputElement>);
-      }, repeatRate);
+      state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
     },
   });
 
-  const handleStepDownClear: React.PointerEventHandler = useCallback(() => {
+  const handleStepDownClear: React.PointerEventHandler = useCallback((e) => {
+    
+
+    if (e.button !== 0) return;
+
     clearInterval(state.current.longPressInterval);
     state.current.longPressInterval = undefined;
   }, []);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+    },
+    [setValue],
+  );
 
   const styles = numberInput();
 
@@ -311,8 +304,8 @@ const NumberInput = forwardRef<CustomInputElement, NumberInputProps>((props, ref
       classNames={classNames}
       ref={mergeRefs(ref, innerRef)}
       type="number"
-      name={name}
-      onChange={onChange}
+      value={value}
+      onChange={handleChange}
       endContent={
         <>
           {endContent}
