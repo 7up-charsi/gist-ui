@@ -35,7 +35,7 @@ interface TooltipContext {
   isHovered: MutableRefObject<boolean>;
   isFocused: MutableRefObject<boolean>;
   id: string;
-  open: boolean;
+  isOpen: boolean;
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
@@ -57,8 +57,8 @@ export interface RootProps {
    * @default undefined
    */
   trigger?: Trigger;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 export const Root = (props: RootProps) => {
@@ -67,11 +67,11 @@ export const Root = (props: RootProps) => {
     showDelay = 100,
     hideDelay = 300,
     trigger,
-    open: isOpenProp,
+    isOpen: isOpenProp,
     onOpenChange,
   } = props;
 
-  const [open, setOpen] = useControllableState({
+  const [isOpen, setOpen] = useControllableState({
     value: isOpenProp,
     onChange: onOpenChange,
   });
@@ -109,7 +109,7 @@ export const Root = (props: RootProps) => {
     closeOpenTooltips();
     addOpenTooltip();
 
-    if (open) return;
+    if (isOpen) return;
 
     if (!immediate && showDelay > 0) {
       showTimeout.current = setTimeout(() => {
@@ -157,13 +157,13 @@ export const Root = (props: RootProps) => {
       }
     };
 
-    if (open) {
+    if (isOpen) {
       document.addEventListener("keydown", onKeyDown, true);
       return () => {
         document.removeEventListener("keydown", onKeyDown, true);
       };
     }
-  }, [hideTooltip, open]);
+  }, [hideTooltip, isOpen]);
 
   useEffect(() => {
     return () => {
@@ -173,11 +173,11 @@ export const Root = (props: RootProps) => {
   }, []);
 
   useEffect(() => {
-    if (!open && hideTimeout.current) {
+    if (!isOpen && hideTimeout.current) {
       clearTimeout(hideTimeout.current);
       hideTimeout.current = undefined;
     }
-  }, [open]);
+  }, [isOpen]);
 
   return (
     <Provider
@@ -189,7 +189,7 @@ export const Root = (props: RootProps) => {
       isHovered={isHovered}
       isFocused={isFocused}
       id={givenId || id}
-      open={open}
+      isOpen={isOpen}
       setGivenId={setGivenId}
     >
       <Popper.Root>{children}</Popper.Root>
@@ -270,7 +270,7 @@ export const Trigger = ({ children }: TriggerProps) => {
     <Popper.Reference>
       <Slot
         ref={ref}
-        aria-describedby={context.open ? context.id : undefined}
+        aria-describedby={context.isOpen ? context.id : undefined}
         {...mergeProps(
           { ...hoverProps },
           { ...focusProps },
@@ -298,7 +298,7 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(Portal_Name);
 
-  return <>{context.open && createPortal(children, container || document.body)}</>;
+  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
 };
 
 Portal.displayName = "gist-ui." + Portal_Name;

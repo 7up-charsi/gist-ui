@@ -38,7 +38,7 @@ interface Context {
    * 2. when dialog closed on interaction with visually hidden close button then reason is "virtual" and this will only happen when screen reader read dialog content and close press close button
    */
   handleClose: (reason: Reason) => void;
-  open: boolean;
+  isOpen: boolean;
   scope: FocusScope;
   keepMounted: boolean;
   id: string;
@@ -57,12 +57,12 @@ export interface RootProps {
    * This prop is used for controled state
    * @default undefined
    */
-  open?: boolean;
+  isOpen?: boolean;
   /**
    * This prop is used for controled state
    * @default undefined
    */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (isOpen: boolean) => void;
   /**
    * @default undefined
    */
@@ -110,7 +110,7 @@ export interface RootProps {
 export const Root = (props: RootProps) => {
   const {
     children,
-    open: isOpenProp,
+    isOpen: isOpenProp,
     defaultOpen,
     onOpenChange,
     onClose: onCloseProp,
@@ -133,7 +133,7 @@ export const Root = (props: RootProps) => {
 
   const onClose = useCallbackRef(onCloseProp);
 
-  const [open, setOpen] = useControllableState({
+  const [isOpen, setOpen] = useControllableState({
     defaultValue: defaultOpen,
     value: isOpenProp,
     onChange: onOpenChange,
@@ -167,21 +167,21 @@ export const Root = (props: RootProps) => {
       }
     };
 
-    if (open) {
+    if (isOpen) {
       document.addEventListener("keydown", handleKeydown, true);
 
       return () => {
         document.removeEventListener("keydown", handleKeydown, true);
       };
     }
-  }, [handleClose, open]);
+  }, [handleClose, isOpen]);
 
   return (
     <>
       <Provider
         handleClose={handleClose}
         handleOpen={handleOpen}
-        open={open}
+        isOpen={isOpen}
         scope={scope}
         keepMounted={keepMounted}
         setGivenId={setGivenId}
@@ -222,8 +222,8 @@ export const Trigger = (props: TriggerProps) => {
 
   return (
     <Slot
-      aria-expanded={context.open}
-      aria-controls={context.open ? context.id : undefined}
+      aria-expanded={context.isOpen}
+      aria-controls={context.isOpen ? context.id : undefined}
       {...slotProps}
     >
       {children}
@@ -279,12 +279,12 @@ export const Portal = (props: PortalProps) => {
 
   if (context.keepMounted) {
     return createPortal(
-      <div style={{ visibility: context.open ? "visible" : "hidden" }}>{children}</div>,
+      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>{children}</div>,
       container,
     );
   }
 
-  return context.open ? createPortal(children, container) : null;
+  return context.isOpen ? createPortal(children, container) : null;
 };
 
 Portal.displayName = "gist-ui." + Portal_Name;
@@ -302,10 +302,10 @@ export const Content = (props: ContentProps) => {
 
   const context = useContext(Content_Name);
 
-  useScrollLock({ enabled: context.open });
+  useScrollLock({ enabled: context.isOpen });
 
   const setOutsideEle = useClickOutside<HTMLDivElement>({
-    isDisabled: !context.open,
+    isDisabled: !context.isOpen,
     callback: () => {
       context.handleClose("outside");
     },
@@ -337,7 +337,7 @@ export const Content = (props: ContentProps) => {
       trapped
       asChild
       scope={context.scope}
-      isDisabled={!context.open}
+      isDisabled={!context.isOpen}
     >
       {cloneElement(children, {
         role: "dialog",

@@ -61,7 +61,7 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
         {Array.from({ length: 4 }).map((_ele, i) => (
           <Tooltip.Root
             key={i}
-            open={i === 0 ? open : undefined}
+            isOpen={i === 0 ? open : undefined}
             onOpenChange={i === 0 ? setOpen : undefined}
             hideDelay={args.hideDelay}
             showDelay={args.showDelay}

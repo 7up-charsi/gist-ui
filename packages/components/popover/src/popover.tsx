@@ -20,7 +20,7 @@ import { useIsDisabled } from "@gist-ui/use-is-disabled";
 import { createContextScope } from "@gist-ui/context";
 
 interface PopoverContext {
-  open: boolean;
+  isOpen: boolean;
   handleOpen(): void;
   handleClose(): void;
   id: string;
@@ -39,12 +39,12 @@ export interface RootProps {
    * This prop is used for controled state
    * @default undefined
    */
-  open?: boolean;
+  isOpen?: boolean;
   /**
    * This prop is used for controled state
    * @default undefined
    */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (isOpen: boolean) => void;
   /**
    * @default undefined
    */
@@ -52,9 +52,9 @@ export interface RootProps {
 }
 
 export const Root = (props: RootProps) => {
-  const { children, defaultOpen, open: openProp, onOpenChange } = props;
+  const { children, defaultOpen, isOpen: openProp, onOpenChange } = props;
 
-  const [open, setOpen] = useControllableState({
+  const [isOpen, setOpen] = useControllableState({
     defaultValue: defaultOpen,
     onChange: onOpenChange,
     value: openProp,
@@ -73,7 +73,7 @@ export const Root = (props: RootProps) => {
   }, [setOpen]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
 
     const handler = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
@@ -86,13 +86,13 @@ export const Root = (props: RootProps) => {
     return () => {
       document.removeEventListener("keydown", handler, true);
     };
-  }, [handleClose, open]);
+  }, [handleClose, isOpen]);
 
   return (
     <Provider
       handleOpen={handleOpen}
       handleClose={handleClose}
-      open={open}
+      isOpen={isOpen}
       setGivenId={setGivenId}
       id={givenId || id}
     >
@@ -141,8 +141,8 @@ export const Trigger = (props: TriggerProps) => {
     <Popper.Reference>
       <Slot
         ref={ref}
-        aria-expanded={context.open}
-        aria-controls={context.open ? context.id : undefined}
+        aria-expanded={context.isOpen}
+        aria-controls={context.isOpen ? context.id : undefined}
         {...slotProps}
       >
         {children}
@@ -196,7 +196,7 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(Portal_Name);
 
-  return <>{context.open && createPortal(children, container || document.body)}</>;
+  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
 };
 
 Portal.displayName = "gist-ui." + Portal_Name;
@@ -215,7 +215,7 @@ export const Content = (props: ContentProps) => {
   const context = useContext(Content_Name);
 
   const setOutsideEle = useClickOutside<HTMLDivElement>({
-    isDisabled: !context.open,
+    isDisabled: !context.isOpen,
     callback: () => {
       context.handleClose();
     },
