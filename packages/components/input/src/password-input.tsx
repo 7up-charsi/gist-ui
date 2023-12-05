@@ -1,5 +1,5 @@
 import { ReactNode, forwardRef, useCallback, useState } from "react";
-import Input, { CustomInputElement, InputProps } from "./input";
+import Input, { InputProps } from "./input";
 import { Button } from "@gist-ui/button";
 
 export interface PasswordInputProps extends Omit<InputProps, "type"> {
@@ -15,7 +15,7 @@ export interface PasswordInputProps extends Omit<InputProps, "type"> {
   hideIcon?: ReactNode;
 }
 
-const PasswordInput = forwardRef<CustomInputElement, PasswordInputProps>((props, ref) => {
+const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref) => {
   const {
     showIcon,
     hideIcon,
@@ -27,7 +27,11 @@ const PasswordInput = forwardRef<CustomInputElement, PasswordInputProps>((props,
 
   const [isPassword, setIsPassword] = useState(true);
 
-  const handleToggle = useCallback(() => {
+  const handleToggle = useCallback((e: React.PointerEvent) => {
+    
+
+    if (e.button !== 0) return;
+
     setIsPassword((p) => !p);
   }, []);
 
