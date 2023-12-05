@@ -44,8 +44,10 @@
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/button": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
+    "@gist-ui/use-controllable-state": "workspace:*",
     "lodash.omit": "^4.5.0",
-    "lodash.pick": "^4.4.0"
+    "lodash.pick": "^4.4.0",
+    "react-aria": "^3.29.0"
   },
   "devDependencies": {
     "@types/lodash.omit": "^4.5.8",

@@ -4,8 +4,9 @@ const select = tv({
   slots: {
     listbox: "w-[--reference-width] bg-white border overflow-y-auto",
     option:
-      "h-10 flex gap-2 items-center px-2 select-none border-b last:border-b-0 [&>span]:first-letter:uppercase cursor-pointer",
+      "h-10 flex gap-2 items-center px-2 select-none [&>span]:first-letter:uppercase cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 hover:bg-default-100",
     emptyText: "h-10 flex items-center justify-center capitalize text-default",
+    optionSeperator: "h-px bg-default-200",
   },
   variants: {
     rounded: {
@@ -41,15 +42,6 @@ const select = tv({
     color: "default",
     size: "md",
   },
-  compoundVariants: [
-    { color: "default", className: { option: "hover:bg-default-100" } },
-    { color: "primary", className: { option: "hover:bg-primary-100" } },
-    { color: "secondary", className: { option: "hover:bg-secondary-100" } },
-    { color: "success", className: { option: "hover:bg-success-100" } },
-    { color: "info", className: { option: "hover:bg-info-100" } },
-    { color: "warning", className: { option: "hover:bg-warning-100" } },
-    { color: "danger", className: { option: "hover:bg-danger-100" } },
-  ],
 });
 
 export type SelectVariantProps = VariantProps<typeof select>;

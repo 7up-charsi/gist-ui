@@ -275,6 +275,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
       '@gist-ui/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
@@ -429,6 +432,9 @@ importers:
       '@gist-ui/use-click-outside':
         specifier: workspace:*
         version: link:../../hooks/use-click-outside
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
       lodash.omit:
         specifier: ^4.5.0
         version: 4.5.0
@@ -438,6 +444,9 @@ importers:
       react:
         specifier: '>=18'
         version: 18.2.0
+      react-aria:
+        specifier: ^3.29.0
+        version: 3.29.0(react-dom@18.2.0)(react@18.2.0)
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)

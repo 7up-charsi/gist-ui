@@ -1,12 +1,14 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, forwardRef, useCallback, useId, useRef, useState } from "react";
 import * as Popper from "@gist-ui/popper";
 import { CustomInputElement, Input, InputProps } from "@gist-ui/input";
 import { SelectClassNames, SelectVariantProps, select } from "@gist-ui/theme";
 import { mergeRefs } from "@gist-ui/react-utils";
 import { Button } from "@gist-ui/button";
-import { useClickOutside } from "@gist-ui/use-click-outside";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
+import { useControllableState } from "@gist-ui/use-controllable-state";
+import { useClickOutside } from "@gist-ui/use-click-outside";
+import { useFocusVisible } from "react-aria";
 
 const caretDown = (
   <svg
@@ -23,20 +25,17 @@ const caretDown = (
   </svg>
 );
 
-export type SelectOption =
-  | string
-  | {
-      label: string;
-      value: string;
-    };
+export type SelectOption = {
+  label: string;
+  value: string;
+};
 
 // const keys: { [key in keyof Popper.FloatingProps]: undefined } = {};
 
-const inputPropsKeys: (keyof InputProps)[] = [
+const inputPropsKeys = [
   "a11yFeedback",
   "classNames",
   "color",
-  "defaultValue",
   "isDisabled",
   "endContent",
   "error",
@@ -50,7 +49,6 @@ const inputPropsKeys: (keyof InputProps)[] = [
   "labelPlacement",
   "name",
   "onBlur",
-  "onChange",
   "onFocus",
   "placeholder",
   "required",
@@ -58,13 +56,17 @@ const inputPropsKeys: (keyof InputProps)[] = [
   "size",
   "startContent",
   "type",
-  "value",
   "variant",
-];
+  "onHoverChange",
+  "onHoverEnd",
+  "onHoverStart",
+] as const;
 
 const variantPropsKeys = select.variantKeys.filter((e) => e !== "rounded");
 
-export interface SelectProps extends Omit<SelectVariantProps, "rounded">, InputProps {
+export interface SelectProps
+  extends Omit<SelectVariantProps, "rounded">,
+    Omit<InputProps, "defaultValue" | "value" | "onChange"> {
   listboxRounded?: SelectVariantProps["rounded"];
   /**
    * This prop value is use in `listbox` style.maxHeight
@@ -82,57 +84,133 @@ export interface SelectProps extends Omit<SelectVariantProps, "rounded">, InputP
    * This prop add distance between `Input` and listbox
    */
   offset?: Popper.FloatingProps["mainOffset"];
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * @default false
+   */
+  defaultOpen?: boolean;
+  /**
+   * Used to determine the disabled state for a given option
+   */
+  getOptionDisabled?: (options: SelectOption) => boolean;
+  /**
+   * Used to determine the key for a given option. By default labels are used as keys
+   */
+  getOptionKey?: (options: SelectOption) => string;
+  /**
+   * by default `option.label` is used
+   */
+  getOptionLabel?: (options: SelectOption) => string;
+  isOptionEqualToValue?: (option: SelectOption, value?: SelectOption) => boolean;
+  defaultValue?: SelectOption;
+  value?: SelectOption;
+  onChange?: (e: { target: { value?: SelectOption } }) => void;
 }
 
 const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   const inputProps = pick(_props, ...inputPropsKeys);
   const variantProps = pick(_props, ...variantPropsKeys);
-
   const props = omit(_props, ...variantPropsKeys, ...inputPropsKeys);
-
-  const [isOpen, setIsOpen] = useState(false);
 
   const {
     options,
     listboxClassNames,
     listboxRounded,
     offset,
+    getOptionDisabled,
+    isOpen: isOpenProp,
+    onOpenChange,
     maxHeight = 300,
     empltyText = "no options",
+    defaultOpen = false,
+    defaultValue,
+    value,
+    onChange,
+    getOptionKey,
+    getOptionLabel,
+    isOptionEqualToValue,
   } = props;
 
-  const inputRef = useRef<CustomInputElement>(null);
-  const [inputLabel, setInputLabel] = useState<HTMLLabelElement | null>(null);
-  const [inputWrapper, setInputWrapper] = useState<HTMLDivElement | null>(null);
-  const [listboxRef, setListboxRef] = useState<HTMLDivElement | null>(null);
-  const inputFocused = useRef(inputProps.inputProps?.autoFocus || false);
+  const [isOpen, setIsOpen] = useControllableState({
+    defaultValue: defaultOpen,
+    value: isOpenProp,
+    onChange: onOpenChange,
+  });
 
-  useClickOutside({
-    ref: listboxRef,
-    onEvent: "pointerdown",
-    callback: (e) => {
-      if (inputWrapper?.contains(e.target as Node)) return;
-      if (inputLabel?.contains(e.target as Node)) return;
-      setIsOpen(false);
+  const [selected, setSelected] = useControllableState({
+    defaultValue,
+    value,
+    onChange: (value) => {
+      onChange?.({ target: { value: value || null } });
     },
   });
 
+  const [inputWrapper, setInputWrapper] = useState<HTMLDivElement | null>(null);
+  const inputFocused = useRef(inputProps.inputProps?.autoFocus || false);
+
+  const lisboxId = useId();
+
+  const { isFocusVisible } = useFocusVisible();
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      
+
+      if (e.button !== 0) return;
+
+      if (inputFocused.current && !isOpen) setIsOpen(true);
+    },
+    [isOpen, setIsOpen],
+  );
+
   const handleFocus = useCallback(() => {
     inputFocused.current = true;
-  }, []);
+
+    if (!isFocusVisible) setIsOpen(true);
+  }, [isFocusVisible, setIsOpen]);
 
   const handleBlur = useCallback(() => {
     inputFocused.current = false;
-  }, []);
 
-  useEffect(() => {
-    const ele = inputRef.current;
+    if (isFocusVisible) setIsOpen(false);
+  }, [isFocusVisible, setIsOpen]);
 
-    if (!ele) return;
+  const onSelect =
+    ({ option, isDisabled }: { option: SelectOption; isDisabled?: boolean }) =>
+    (e: React.PointerEvent) => {
+      
 
-    setInputWrapper(ele.inputWrapper);
-    setInputLabel(ele.inputLabel);
-  }, []);
+      if (e.button !== 0) return;
+
+      if (isDisabled) return;
+
+      setSelected(option);
+    };
+
+  const handleListboxToggle = useCallback(
+    (e: React.PointerEvent) => {
+      
+
+      if (e.button !== 0) return;
+
+      if (!inputFocused.current) {
+        inputWrapper?.focus();
+      }
+
+      setIsOpen((p) => !p);
+    },
+    [inputWrapper, setIsOpen],
+  );
+
+  const setOutsideEle = useClickOutside<HTMLDivElement>({
+    isDisabled: !isOpen,
+    onEvent: "pointerdown",
+    callback: (e) => {
+      if (inputWrapper?.contains(e.target as Node)) return;
+      setIsOpen(false);
+    },
+  });
 
   const styles = select({ ...variantProps, rounded: listboxRounded, color: inputProps.color });
 
@@ -140,13 +218,18 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     <>
       <Input
         {...inputProps}
-        ref={mergeRefs(ref, inputRef)}
+        ref={mergeRefs(ref, setInputWrapper)}
+        value={(selected && (getOptionLabel ? getOptionLabel(selected) : selected.label)) || ""}
+        onChange={() => {}}
         inputProps={{
-          "aria-expanded": false,
-          "aria-controls": "",
+          ...inputProps.inputProps,
+          onPointerDown: handlePointerDown,
+          "aria-expanded": isOpen,
+          "aria-controls": lisboxId,
           "aria-haspopup": "listbox",
           role: "combobox",
           autoComplete: "off",
+          readOnly: true,
         }}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -159,14 +242,8 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
               rounded="full"
               aria-label="toggle listbox"
               asChild
-              style={{ cursor: "pointer" }}
-              onPointerUp={() => {
-                setIsOpen((p) => !p);
-
-                if (!inputFocused.current) {
-                  inputRef.current?.focus();
-                }
-              }}
+              style={{ cursor: "pointer", rotate: isOpen ? "180deg" : "0deg" }}
+              onPointerUp={handleListboxToggle}
             >
               <div>{caretDown}</div>
             </Button>
@@ -182,24 +259,43 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         {isOpen && (
           <Popper.Floating sticky="always" mainOffset={offset || 5}>
             <div
-              ref={setListboxRef}
+              ref={setOutsideEle}
+              id={lisboxId}
               className={styles.listbox({ className: listboxClassNames?.listbox })}
               role="listbox"
               aria-activedescendant=""
-              aria-roledescription=""
+              aria-roledescription="select one" // TODO: make it correct according to select/multiselect
               style={{ maxHeight }}
             >
               {options?.length ? (
-                options.map((ele, i) => {
+                options.map((option, i) => {
+                  const key = getOptionKey ? getOptionKey(option) : option.label;
+                  const isDisabled = getOptionDisabled?.(option);
+                  const isSelected = isOptionEqualToValue
+                    ? isOptionEqualToValue(option, selected)
+                    : selected === option;
+
                   return (
-                    <div
-                      key={i}
-                      role="option"
-                      aria-checked={false}
-                      className={styles.option({ className: listboxClassNames?.option })}
-                    >
-                      <span>{typeof ele === "string" ? ele : ele.label}</span>
-                    </div>
+                    <Fragment key={key}>
+                      <div
+                        data-disabled={isDisabled}
+                        data-selected={isSelected}
+                        role="option"
+                        className={styles.option({ className: listboxClassNames?.option })}
+                        aria-checked={isDisabled ? undefined : isSelected}
+                        onPointerUp={isDisabled ? undefined : onSelect({ option, isDisabled })}
+                      >
+                        {<span>{getOptionLabel ? getOptionLabel(option) : option.label}</span>}
+                      </div>
+
+                      {i + 1 !== options.length && (
+                        <div
+                          className={styles.optionSeperator({
+                            className: listboxClassNames?.optionSeperator,
+                          })}
+                        />
+                      )}
+                    </Fragment>
                   );
                 })
               ) : (
