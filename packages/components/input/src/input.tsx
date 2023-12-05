@@ -164,8 +164,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
         {...hoverProps}
         onPointerUp={(e) => {
-          
-
           hoverProps.onPointerUp?.(e);
 
           if (e.button !== 0) return;

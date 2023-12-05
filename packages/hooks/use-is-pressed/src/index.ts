@@ -6,16 +6,12 @@ const useIsPressed = <E extends HTMLElement>() => {
   const [isPressed, setIsPressed] = useState<false | "pointer" | "keyboard">(false);
 
   const onPointerDown = useCallback((e: React.PointerEvent<E>) => {
-    
-
     if (e.button !== 0) return;
 
     setIsPressed("pointer");
   }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent<E>) => {
-    
-
     if (e.button !== 0) return;
 
     setIsPressed(false);

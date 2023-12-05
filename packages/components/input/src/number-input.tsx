@@ -193,8 +193,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
   });
 
   const handleStepUpClear: React.PointerEventHandler = useCallback((e) => {
-    
-
     if (e.button !== 0) return;
 
     clearInterval(state.current.longPressInterval);
@@ -214,8 +212,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
   });
 
   const handleStepDownClear: React.PointerEventHandler = useCallback((e) => {
-    
-
     if (e.button !== 0) return;
 
     clearInterval(state.current.longPressInterval);

@@ -129,8 +129,6 @@ export const Trigger = (props: TriggerProps) => {
   const slotProps = useMemo(
     () => ({
       onPointerUp: (e: PointerEvent) => {
-        
-
         if (e.button !== 0) return;
 
         handleOpen();
@@ -173,8 +171,6 @@ export const Close = (props: CloseProps) => {
   const slotProps = useMemo(
     () => ({
       onPointerUp: (e: PointerEvent) => {
-        
-
         if (e.button !== 0) return;
 
         handleClose;

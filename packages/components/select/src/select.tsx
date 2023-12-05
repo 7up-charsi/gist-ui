@@ -155,8 +155,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      
-
       if (e.button !== 0) return;
 
       if (inputFocused.current && !isOpen) setIsOpen(true);
@@ -179,8 +177,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   const onSelect =
     ({ option, isDisabled }: { option: SelectOption; isDisabled?: boolean }) =>
     (e: React.PointerEvent) => {
-      
-
       if (e.button !== 0) return;
 
       if (isDisabled) return;
@@ -190,8 +186,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
   const handleListboxToggle = useCallback(
     (e: React.PointerEvent) => {
-      
-
       if (e.button !== 0) return;
 
       if (!inputFocused.current) {

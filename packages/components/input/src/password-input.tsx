@@ -28,8 +28,6 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref
   const [isPassword, setIsPassword] = useState(true);
 
   const handleToggle = useCallback((e: React.PointerEvent) => {
-    
-
     if (e.button !== 0) return;
 
     setIsPassword((p) => !p);
