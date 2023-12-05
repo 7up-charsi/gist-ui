@@ -128,7 +128,13 @@ export const Trigger = (props: TriggerProps) => {
 
   const slotProps = useMemo(
     () => ({
-      onPointerUp: handleOpen,
+      onPointerUp: (e: PointerEvent) => {
+        
+
+        if (e.button !== 0) return;
+
+        handleOpen();
+      },
     }),
     [handleOpen],
   );
@@ -166,7 +172,13 @@ export const Close = (props: CloseProps) => {
 
   const slotProps = useMemo(
     () => ({
-      onPointerUp: handleClose,
+      onPointerUp: (e: PointerEvent) => {
+        
+
+        if (e.button !== 0) return;
+
+        handleClose;
+      },
     }),
     [handleClose],
   );
@@ -205,10 +217,9 @@ export const Content = (props: ContentProps) => {
   const { children, ...restProps } = props;
 
   const context = useContext(Content_Name);
-  const [dialogRef, setDialogRef] = useState<HTMLDivElement | null>(null);
 
-  useClickOutside<HTMLDivElement>({
-    ref: dialogRef,
+  const setOutsideEle = useClickOutside<HTMLDivElement>({
+    isDisabled: !context.open,
     callback: () => {
       context.handleClose();
     },
@@ -226,7 +237,7 @@ export const Content = (props: ContentProps) => {
 
   return (
     <Popper.Floating {...restProps}>
-      <FocusTrap ref={setDialogRef} loop trapped asChild>
+      <FocusTrap ref={setOutsideEle} loop trapped asChild>
         {cloneElement(children, {
           role: "dialog",
           id: context.id,
