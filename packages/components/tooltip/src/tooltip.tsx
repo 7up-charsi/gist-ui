@@ -153,7 +153,7 @@ export const Root = (props: RootProps) => {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        e.stopPropagation();
+        
         hideTooltip(true);
       }
     };
