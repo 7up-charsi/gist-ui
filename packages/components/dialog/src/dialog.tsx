@@ -3,6 +3,7 @@ import { Slot } from "@gist-ui/slot";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
+import { usePointerEvents } from "@gist-ui/use-pointer-events";
 import { useScrollLock } from "@gist-ui/use-scroll-lock";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
@@ -19,7 +20,6 @@ import {
   useCallback,
   useEffect,
   useId,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -168,10 +168,10 @@ export const Root = (props: RootProps) => {
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeydown, true);
+      document.addEventListener("keydown", handleKeydown);
 
       return () => {
-        document.removeEventListener("keydown", handleKeydown, true);
+        document.removeEventListener("keydown", handleKeydown);
       };
     }
   }, [handleClose, isOpen]);
@@ -210,21 +210,15 @@ export const Trigger = (props: TriggerProps) => {
 
   const handleOpen = context.handleOpen;
 
-  const slotProps = useMemo(
-    () => ({
-      onPointerUp: (e: PointerEvent) => {
-        if (e.button !== 0) return;
-        handleOpen();
-      },
-    }),
-    [handleOpen],
-  );
+  const { pointerEventProps } = usePointerEvents({
+    onPointerUp: handleOpen,
+  });
 
   return (
     <Slot
       aria-expanded={context.isOpen}
       aria-controls={context.isOpen ? context.id : undefined}
-      {...slotProps}
+      {...pointerEventProps}
     >
       {children}
     </Slot>
@@ -248,17 +242,13 @@ export const Close = (props: CloseProps) => {
 
   const handleClose = context.handleClose;
 
-  const slotProps = useMemo(
-    () => ({
-      onPointerUp: (e: PointerEvent) => {
-        if (e.button !== 0) return;
-        handleClose("pointer");
-      },
-    }),
-    [handleClose],
-  );
+  const { pointerEventProps } = usePointerEvents({
+    onPointerUp: () => {
+      handleClose("pointer");
+    },
+  });
 
-  return <Slot {...slotProps}>{children}</Slot>;
+  return <Slot {...pointerEventProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;
