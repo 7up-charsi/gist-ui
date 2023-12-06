@@ -79,7 +79,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
           );
         };
 
-        document.addEventListener("pointerup", removeRipple, { once: true });
+        document.addEventListener("pointerup", removeRipple, true);
       });
     },
     [completedFactor, isDisabled, duration, props],
