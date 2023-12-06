@@ -43,7 +43,7 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref
       {isPassword
         ? showIcon || (
             <svg
-              style={{ minHeight: 18, minWidth: 18 }}
+              style={{ minHeight: 18, minWidth: 18, pointerEvents: "none" }}
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -57,7 +57,7 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref
           )
         : hideIcon || (
             <svg
-              style={{ minHeight: 18, minWidth: 18 }}
+              style={{ minHeight: 18, minWidth: 18, pointerEvents: "none" }}
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
