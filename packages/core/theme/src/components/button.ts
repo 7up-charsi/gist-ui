@@ -62,7 +62,7 @@ const button = tv({
       true: { base: "disabled" },
     },
     isIconOnly: {
-      true: {},
+      true: { base: "[&>*]:pointer-events-none" },
     },
   },
   defaultVariants: {
