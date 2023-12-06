@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useRef } from "react";
 import Input, { InputProps } from "./input";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
+import { Icon } from "@gist-ui/icon";
 import { Button } from "@gist-ui/button";
 import { useLongPress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
@@ -243,15 +244,11 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
         }}
       >
         <div>
-          <svg
-            fill="currentColor"
-            className={styles.icon({ className: classNames?.stepButton.icon })}
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 10"
-          >
-            <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
-          </svg>
+          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
+              <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
+            </svg>
+          </Icon>
         </div>
       </Button>
 
@@ -273,15 +270,16 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
         }}
       >
         <div>
-          <svg
-            fill="currentColor"
-            className={styles.icon({ className: classNames?.stepButton.icon })}
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 10"
-          >
-            <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
-          </svg>
+          <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
+            <svg
+              className={styles.icon({ className: classNames?.stepButton.icon })}
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 10"
+            >
+              <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+            </svg>
+          </Icon>
         </div>
       </Button>
     </div>

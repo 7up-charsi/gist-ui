@@ -42,12 +42,12 @@
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/use-ripple": "workspace:*",
-    "@gist-ui/use-is-pressed": "workspace:*",
     "@gist-ui/use-pointer-events": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
     "react-aria": "^3.29.0",
     "@gist-ui/slot": "workspace:*",
     "@gist-ui/error": "workspace:*",
+    "@gist-ui/icon": "workspace:*",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "react-loader-spinner": "^5.4.5"
