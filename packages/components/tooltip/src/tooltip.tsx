@@ -158,9 +158,9 @@ export const Root = (props: RootProps) => {
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", onKeyDown, true);
+      document.addEventListener("keydown", onKeyDown);
       return () => {
-        document.removeEventListener("keydown", onKeyDown, true);
+        document.removeEventListener("keydown", onKeyDown);
       };
     }
   }, [hideTooltip, isOpen]);
