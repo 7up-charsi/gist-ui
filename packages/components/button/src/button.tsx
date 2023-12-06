@@ -7,7 +7,6 @@ import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useFocusRing, useHover, HoverProps } from "react-aria";
-import { useIsPressed } from "@gist-ui/use-is-pressed";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { usePointerEvents } from "@gist-ui/use-pointer-events";
 import {
@@ -75,9 +74,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
-  const { isPressed, isPressedProps } = useIsPressed();
 
-  const { pointerEventProps } = usePointerEvents({ onPointerDown, onPointerUp });
+  const { pointerEventProps, isPressed } = usePointerEvents({ onPointerDown, onPointerUp });
 
   const styles = button(variantProps);
 
@@ -96,7 +94,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
       {...mergeProps(
         { onPointerDown: rippleEvent },
         pointerEventProps,
-        isPressedProps,
         focusProps,
         hoverProps,
         rest,
