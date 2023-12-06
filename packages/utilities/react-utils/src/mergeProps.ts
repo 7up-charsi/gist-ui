@@ -1,11 +1,7 @@
 import clsx from "clsx";
 
-interface Props {
-  [key: string]: unknown;
-}
-
-export const mergeProps = <T extends Props>(...props: T[]) => {
-  const result: Props = { ...props[0] };
+export const mergeProps = (...props: object[]) => {
+  const result: Record<string, unknown> = { ...props[0] };
 
   props.slice(1).forEach((obj) => {
     Object.entries(obj).forEach(([key, newValue]) => {
