@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useCallback, useState } from "react";
+import { ReactNode, forwardRef, useState } from "react";
 import Input, { InputProps } from "./input";
 import { Button } from "@gist-ui/button";
 
@@ -27,21 +27,18 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref
 
   const [isPassword, setIsPassword] = useState(true);
 
-  const handleToggle = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-
-    setIsPassword((p) => !p);
-  }, []);
-
   const toggleButton = (
     <Button
+      type="button"
       isIconOnly
       size="sm"
       rounded="full"
       variant="text"
       aria-label={isPassword ? showAriaLabel : hideAriaLabel}
-      onPointerUp={handleToggle}
       aria-pressed={isPassword}
+      onPointerUp={() => {
+        setIsPassword((p) => !p);
+      }}
     >
       {isPassword
         ? showIcon || (

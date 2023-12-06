@@ -192,12 +192,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     },
   });
 
-  const handleStepUpClear: React.PointerEventHandler = useCallback((e) => {
-    if (e.button !== 0) return;
-
+  const handleStepUpClear = () => {
     clearInterval(state.current.longPressInterval);
     state.current.longPressInterval = undefined;
-  }, []);
+  };
 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
     threshold,
@@ -211,12 +209,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     },
   });
 
-  const handleStepDownClear: React.PointerEventHandler = useCallback((e) => {
-    if (e.button !== 0) return;
-
+  const handleStepDownClear = () => {
     clearInterval(state.current.longPressInterval);
     state.current.longPressInterval = undefined;
-  }, []);
+  };
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,19 +227,20 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     <div ref={ref} className={styles.base({ className: classNames?.stepButton.base })}>
       {/* step up */}
       <Button
+        type="button"
         aria-label="increase value"
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
+        asChild
+        {...mergeProps({ onPointerUp: handleStepUpClear }, { ...stepUpLongPressProps })}
         classNames={{
           base: styles.button({
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
         }}
-        {...mergeProps({ onPointerUp: handleStepUpClear }, { ...stepUpLongPressProps })}
-        asChild
       >
         <div>
           <svg
@@ -260,19 +257,20 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
 
       {/* step down */}
       <Button
+        type="button"
         aria-label="decrease value"
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
+        asChild
+        {...mergeProps({ onPointerUp: handleStepDownClear }, { ...stepDownLongPressProps })}
         classNames={{
           base: styles.button({
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
         }}
-        {...mergeProps({ onPointerUp: handleStepDownClear }, { ...stepDownLongPressProps })}
-        asChild
       >
         <div>
           <svg

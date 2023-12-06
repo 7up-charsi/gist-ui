@@ -17,6 +17,7 @@ import {
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { usePointerEvents } from "@gist-ui/use-pointer-events";
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
@@ -125,6 +126,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     },
   });
 
+  const { pointerEventProps } = usePointerEvents({
+    onPointerUp: (e) => {
+      if (e.target === e.currentTarget) inputRef.current?.focus();
+    },
+  });
+
   const styles = input({
     ...variantProps,
     isDisabled,
@@ -168,12 +175,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
         {...hoverProps}
+        {...pointerEventProps}
         onPointerUp={(e) => {
           hoverProps.onPointerUp?.(e);
-
-          if (e.button !== 0) return;
-
-          if (e.target === e.currentTarget) inputRef.current?.focus();
+          pointerEventProps.onPointerUp(e);
         }}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
