@@ -7,6 +7,9 @@ import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useFocusRing, useHover, HoverProps } from "react-aria";
+import { useIsPressed } from "@gist-ui/use-is-pressed";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { usePointerEvents } from "@gist-ui/use-pointer-events";
 import {
   ButtonHTMLAttributes,
   Children,
@@ -14,10 +17,8 @@ import {
   forwardRef,
   isValidElement,
   ReactNode,
-  useCallback,
   useRef,
 } from "react";
-import { useIsPressed } from "@gist-ui/use-is-pressed";
 
 const ripplePropsKeys = ["duration", "timingFunction", "completedFactor", "pointerCenter"] as const;
 
@@ -42,9 +43,21 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const props = omit(_props, ...button.variantKeys, ...ripplePropsKeys, ...hoverPropsKeys);
 
-  const { startContent, endContent, classNames, asChild, children, ...rest } = props;
+  const {
+    startContent,
+    endContent,
+    classNames,
+    asChild,
+    children,
+    onPointerDown: onPointerDownProp,
+    onPointerUp: onPointerUpProp,
+    ...rest
+  } = props;
 
   const { isDisabled, isIconOnly } = variantProps;
+
+  const onPointerDown = useCallbackRef(onPointerDownProp);
+  const onPointerUp = useCallbackRef(onPointerUpProp);
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
@@ -62,18 +75,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
-  const { isPressed, isPressedProps } = useIsPressed<HTMLButtonElement>();
+  const { isPressed, isPressedProps } = useIsPressed();
 
-  const handleKeyUp = useCallback((e: React.KeyboardEvent) => {
-    if (e.key !== "Enter" && e.key !== " ") return;
-    if (e.repeat) return;
-
-    e.preventDefault();
-
-    const event = new PointerEvent("pointerup", { bubbles: true, cancelable: true });
-
-    e.target.dispatchEvent(event);
-  }, []);
+  const { pointerEventProps } = usePointerEvents({ onPointerDown, onPointerUp });
 
   const styles = button(variantProps);
 
@@ -90,14 +94,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   return (
     <Component
       {...mergeProps(
-        { onPointerDown: rippleEvent, onKeyUp: handleKeyUp },
-        { ...isPressedProps },
-        { ...focusProps },
-        { ...hoverProps },
-        { ...rest },
+        { onPointerDown: rippleEvent },
+        pointerEventProps,
+        isPressedProps,
+        focusProps,
+        hoverProps,
+        rest,
       )}
-      data-pointer-pressed={isPressed === "pointer"}
-      data-keyboard-pressed={isPressed === "keyboard"}
+      data-pressed={isPressed}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
