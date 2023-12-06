@@ -27,11 +27,15 @@ export interface UsePointerEventsProps<E> {
   /**
    * Indicates when element is button which event to dispatch on Space and Enter
    *
-   * if you want to simulate event on Space and Event then make sure button is not type of sumbit and reset otherwise browser default behaviour takes place
+   * if you want to simulate event on Space and Enter then make sure button is not type of sumbit and reset otherwise browser default behaviour takes place
    *
    * @default pointerup
    */
   simulateEvent?: "pointerup" | "pointerdown";
+  /**
+   * @default false
+   */
+  shouldCancelOnPointerExit?: boolean;
 }
 
 const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E> = {}) => {
@@ -42,6 +46,7 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
     pointerUpStopPropagation = true,
     button = 0,
     simulateEvent = "pointerup",
+    shouldCancelOnPointerExit = false,
   } = props;
 
   const onPointerDown = useCallbackRef(onPointerDownProp);
@@ -142,9 +147,17 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
     [button, onPointerUp, pointerUpStopPropagation, state],
   );
 
-  const handlePointerLeave: React.PointerEventHandler<E> = useCallback(() => {
-    state.target = null;
-  }, [state]);
+  const handlePointerLeave: React.PointerEventHandler<E> = useCallback(
+    (e) => {
+      if (!shouldCancelOnPointerExit) return;
+
+      state.target = null;
+
+      const event = new PointerEvent("pointerup", { bubbles: true, cancelable: true });
+      e.target.dispatchEvent(event);
+    },
+    [shouldCancelOnPointerExit, state],
+  );
 
   return {
     isPressed,
