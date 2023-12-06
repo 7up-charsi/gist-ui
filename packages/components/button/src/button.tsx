@@ -8,7 +8,7 @@ import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useFocusRing, useHover, HoverProps } from "react-aria";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { usePointerEvents } from "@gist-ui/use-pointer-events";
+import { usePointerEvents, UsePointerEventsProps } from "@gist-ui/use-pointer-events";
 import {
   ButtonHTMLAttributes,
   Children,
@@ -21,12 +21,21 @@ import {
 
 const ripplePropsKeys = ["duration", "timingFunction", "completedFactor", "pointerCenter"] as const;
 
+const pointerEventsKeys = [
+  "pointerDownStopPropagation",
+  "pointerUpStopPropagation",
+  "button",
+  "simulateEvent",
+  "shouldCancelOnPointerExit",
+] as const;
+
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className" | "disabled">,
     UseRippleProps,
+    UsePointerEventsProps<HTMLButtonElement>,
     HoverProps {
   startContent?: ReactNode;
   endContent?: ReactNode;
@@ -37,10 +46,17 @@ export interface ButtonProps
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const variantProps = pick(_props, ...button.variantKeys);
+  const pointerEventsProps = pick(_props, ...pointerEventsKeys);
   const rippleProps = pick(_props, ...ripplePropsKeys);
   const hoverHookProps = pick(_props, ...hoverPropsKeys);
 
-  const props = omit(_props, ...button.variantKeys, ...ripplePropsKeys, ...hoverPropsKeys);
+  const props = omit(
+    _props,
+    ...button.variantKeys,
+    ...pointerEventsKeys,
+    ...ripplePropsKeys,
+    ...hoverPropsKeys,
+  );
 
   const {
     startContent,
@@ -75,7 +91,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
   const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
 
-  const { pointerEventProps, isPressed } = usePointerEvents({ onPointerDown, onPointerUp });
+  const { pointerEventProps, isPressed } = usePointerEvents({
+    onPointerDown,
+    onPointerUp,
+    ...pointerEventsProps,
+  });
 
   const styles = button(variantProps);
 
