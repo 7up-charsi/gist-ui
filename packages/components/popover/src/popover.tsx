@@ -4,20 +4,20 @@ import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { FocusTrap } from "@gist-ui/focus-trap";
 import { useClickOutside } from "@gist-ui/use-click-outside";
+import { usePointerEvents } from "@gist-ui/use-pointer-events";
 import * as Popper from "@gist-ui/popper";
 import { createPortal } from "react-dom";
+import { useIsDisabled } from "@gist-ui/use-is-disabled";
+import { createContextScope } from "@gist-ui/context";
 import {
   cloneElement,
   isValidElement,
   useCallback,
   useEffect,
   useId,
-  useMemo,
   useRef,
   useState,
 } from "react";
-import { useIsDisabled } from "@gist-ui/use-is-disabled";
-import { createContextScope } from "@gist-ui/context";
 
 interface PopoverContext {
   isOpen: boolean;
@@ -81,10 +81,10 @@ export const Root = (props: RootProps) => {
       handleClose();
     };
 
-    document.addEventListener("keydown", handler, true);
+    document.addEventListener("keydown", handler);
 
     return () => {
-      document.removeEventListener("keydown", handler, true);
+      document.removeEventListener("keydown", handler);
     };
   }, [handleClose, isOpen]);
 
@@ -124,18 +124,9 @@ export const Trigger = (props: TriggerProps) => {
     },
   });
 
-  const handleOpen = context.handleOpen;
-
-  const slotProps = useMemo(
-    () => ({
-      onPointerUp: (e: PointerEvent) => {
-        if (e.button !== 0) return;
-
-        handleOpen();
-      },
-    }),
-    [handleOpen],
-  );
+  const { pointerEventProps } = usePointerEvents({
+    onPointerUp: context.handleOpen,
+  });
 
   return (
     <Popper.Reference>
@@ -143,7 +134,7 @@ export const Trigger = (props: TriggerProps) => {
         ref={ref}
         aria-expanded={context.isOpen}
         aria-controls={context.isOpen ? context.id : undefined}
-        {...slotProps}
+        {...pointerEventProps}
       >
         {children}
       </Slot>
@@ -166,20 +157,11 @@ export const Close = (props: CloseProps) => {
 
   const context = useContext(Close_Name);
 
-  const handleClose = context.handleClose;
+  const { pointerEventProps } = usePointerEvents({
+    onPointerUp: context.handleClose,
+  });
 
-  const slotProps = useMemo(
-    () => ({
-      onPointerUp: (e: PointerEvent) => {
-        if (e.button !== 0) return;
-
-        handleClose;
-      },
-    }),
-    [handleClose],
-  );
-
-  return <Slot {...slotProps}>{children}</Slot>;
+  return <Slot {...pointerEventProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;
