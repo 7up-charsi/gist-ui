@@ -1,10 +1,10 @@
-import { Dispatch, ForwardedRef, MutableRefObject, SetStateAction } from "react";
-
 export const mergeRefs = <T>(
-  ...refs: (ForwardedRef<T> | MutableRefObject<T> | Dispatch<SetStateAction<T>>)[]
-) => {
-  if (refs.length === 1) return refs[0];
-
+  ...refs: (
+    | React.ForwardedRef<T>
+    | React.MutableRefObject<T>
+    | React.Dispatch<React.SetStateAction<T>>
+  )[]
+): React.RefCallback<T> => {
   return (node: T) => {
     const filtered = refs.filter(Boolean);
 

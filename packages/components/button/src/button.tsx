@@ -6,8 +6,9 @@ import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
-import { useFocusRing, useHover, HoverProps } from "react-aria";
+import { useFocusRing } from "react-aria";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { useHover, UseHoverProps } from "@gist-ui/use-hover";
 import { usePointerEvents, UsePointerEventsProps } from "@gist-ui/use-pointer-events";
 import {
   ButtonHTMLAttributes,
@@ -29,14 +30,14 @@ const pointerEventsKeys = [
   "shouldCancelOnPointerExit",
 ] as const;
 
-const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
+const hoverPropsKeys = ["onHoverStart", "onHoverEnd"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className" | "disabled">,
     UseRippleProps,
     UsePointerEventsProps<HTMLButtonElement>,
-    HoverProps {
+    UseHoverProps<HTMLButtonElement> {
   startContent?: ReactNode;
   endContent?: ReactNode;
   classNames?: ButtonClassNames;
