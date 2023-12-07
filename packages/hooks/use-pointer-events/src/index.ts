@@ -36,6 +36,12 @@ export interface UsePointerEventsProps<E> {
    * @default false
    */
   shouldCancelOnPointerExit?: boolean;
+  /**
+   * Indicates dispatch pointerup event on pointer exit
+   *
+   * @default true
+   */
+  shouldDispatchOnExit?: boolean;
 }
 
 const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E> = {}) => {
@@ -47,6 +53,7 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
     button = 0,
     simulateEvent = "pointerup",
     shouldCancelOnPointerExit = false,
+    shouldDispatchOnExit = true,
   } = props;
 
   const onPointerDown = useCallbackRef(onPointerDownProp);
@@ -56,23 +63,26 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
 
   const state = useRef<{
     target?: E | null;
+    hasKeyboardEvent?: boolean;
+    hasPointerEvent?: boolean;
   }>({
     target: null,
+    hasKeyboardEvent: false,
+    hasPointerEvent: false,
   }).current;
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<E>) => {
-      if (!(e.target instanceof HTMLButtonElement)) {
-        state.target = null;
-        return;
-      }
+      if (state.hasPointerEvent) return;
+      if (state.hasKeyboardEvent) return;
+      if (state.target) return;
 
-      if (e.key !== "Enter" && e.key !== " ") {
-        state.target = null;
-        return;
-      }
+      if (!(e.target instanceof HTMLButtonElement)) return;
+      if (e.target.type !== "button") return;
+      if (e.key !== "Enter" && e.key !== " ") return;
 
       state.target = e.currentTarget;
+      state.hasKeyboardEvent = true;
 
       setIsPressed(true);
     },
@@ -81,36 +91,36 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
 
   const onKeyUp = useCallback(
     (e: React.KeyboardEvent<E>) => {
+      if (!state.hasKeyboardEvent) return;
       if (!state.target) return;
 
       if (state.target !== e.target) {
-        state.target = null;
         setIsPressed(false);
         return;
       }
-
-      state.target = null;
-      setIsPressed(false);
-
-      if (!(e.target instanceof HTMLButtonElement)) return;
-      if (e.target.type === "submit" || e.target.type === "reset") return;
-      if (e.key !== "Enter" && e.key !== " ") return;
 
       e.preventDefault();
 
       const event = new PointerEvent(simulateEvent, {
         bubbles: true,
         cancelable: true,
-        pointerType: "simulate_keyboard",
+        pointerType: "simulate",
       });
 
       e.target.dispatchEvent(event);
+
+      state.target = null;
+      state.hasKeyboardEvent = false;
+      setIsPressed(false);
     },
     [simulateEvent, state],
   );
 
   const handlePointerDown: React.PointerEventHandler<E> = useCallback(
     (e) => {
+      if (state.hasKeyboardEvent) return;
+      if (state.hasPointerEvent) return;
+      if (state.target) return;
       if (button !== "all" && e.button !== button) return;
 
       onPointerDown(e);
@@ -118,24 +128,17 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
       if (pointerDownStopPropagation) e.stopPropagation();
 
       state.target = e.currentTarget;
+      state.hasPointerEvent = true;
     },
     [button, onPointerDown, pointerDownStopPropagation, state],
   );
 
   const handlePointerUp: React.PointerEventHandler<E> = useCallback(
     (e) => {
-      if (e.pointerType !== ("simulate_keyboard" as string)) {
+      if (e.pointerType !== ("simulate" as string)) {
+        if (!state.hasPointerEvent) return;
         if (!state.target) return;
-
-        if (e.target !== state.target) {
-          state.target = null;
-          return;
-        }
-
-        if (button !== "all" && e.button !== button) {
-          state.target = null;
-          return;
-        }
+        if (e.target !== state.target) return;
       }
 
       onPointerUp(e);
@@ -143,8 +146,9 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
       if (pointerUpStopPropagation) e.stopPropagation();
 
       state.target = null;
+      state.hasPointerEvent = false;
     },
-    [button, onPointerUp, pointerUpStopPropagation, state],
+    [onPointerUp, pointerUpStopPropagation, state],
   );
 
   const handlePointerLeave: React.PointerEventHandler<E> = useCallback(
@@ -152,11 +156,15 @@ const usePointerEvents = <E extends HTMLElement>(props: UsePointerEventsProps<E>
       if (!shouldCancelOnPointerExit) return;
 
       state.target = null;
+      state.hasKeyboardEvent = false;
+      state.hasPointerEvent = false;
 
-      const event = new PointerEvent("pointerup", { bubbles: true, cancelable: true });
-      e.target.dispatchEvent(event);
+      if (shouldDispatchOnExit) {
+        const event = new PointerEvent("pointerup", { bubbles: true, cancelable: true });
+        e.target.dispatchEvent(event);
+      }
     },
-    [shouldCancelOnPointerExit, state],
+    [shouldCancelOnPointerExit, shouldDispatchOnExit, state],
   );
 
   return {
