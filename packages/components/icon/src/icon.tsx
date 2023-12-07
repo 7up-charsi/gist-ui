@@ -7,13 +7,16 @@ export interface IconProps extends IconVariantProps {
   children?: ReactNode;
 }
 
-const Icon = forwardRef<HTMLDivElement, IconProps>((props, ref) => {
+const Icon = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
   const { fill, size, children, classNames } = props;
 
   const styles = icon({ size, fill });
 
   return (
-    <Slot ref={ref} className={styles.base({ className: classNames?.base })}>
+    <Slot<SVGSVGElement, React.SVGAttributes<SVGSVGElement>>
+      ref={ref}
+      className={styles.base({ className: classNames?.base })}
+    >
       {children}
     </Slot>
   );

@@ -137,6 +137,9 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -152,9 +155,6 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../../hooks/use-callback-ref
-      '@gist-ui/use-is-pressed':
-        specifier: workspace:*
-        version: link:../../hooks/use-is-pressed
       '@gist-ui/use-pointer-events':
         specifier: workspace:*
         version: link:../../hooks/use-pointer-events
@@ -270,6 +270,25 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
+  packages/components/icon:
+    dependencies:
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
   packages/components/input:
     dependencies:
       '@gist-ui/button':
@@ -278,6 +297,9 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
       '@gist-ui/react-utils':
         specifier: workspace:*
         version: link:../../utilities/react-utils
@@ -679,22 +701,6 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../use-callback-ref
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
-  packages/hooks/use-is-pressed:
-    dependencies:
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../use-pointer-events
       react:
         specifier: '>=18'
         version: 18.2.0

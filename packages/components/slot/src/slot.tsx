@@ -1,12 +1,12 @@
-import { Children, ForwardedRef, ReactNode, cloneElement, forwardRef, isValidElement } from "react";
+import { Children, cloneElement, forwardRef, isValidElement } from "react";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
 export interface SlotProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
-const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
+const Slot = <E extends HTMLElement>(props: SlotProps, ref: React.ForwardedRef<E>) => {
   const { children, ...slotProps } = props;
 
   const count = Children.count(children);
@@ -17,11 +17,13 @@ const Slot = forwardRef<HTMLElement, SlotProps>((props, ref) => {
   return cloneElement(children, {
     ...mergeProps(slotProps, children.props),
     ref: ref
-      ? mergeRefs(ref, (children as unknown as { ref: ForwardedRef<HTMLElement> }).ref)
-      : (children as unknown as { ref: ForwardedRef<HTMLElement> }).ref,
+      ? mergeRefs(ref, (children as unknown as { ref: React.ForwardedRef<E> }).ref)
+      : (children as unknown as { ref: React.ForwardedRef<E> }).ref,
   } as Partial<unknown>);
-});
+};
 
 Slot.displayName = "gist-ui.Slot";
 
-export default Slot;
+export default forwardRef(Slot) as <T, P>(
+  props: SlotProps & P & { ref?: React.ForwardedRef<T> },
+) => ReturnType<typeof Slot>;
