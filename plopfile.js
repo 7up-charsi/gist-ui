@@ -6,7 +6,6 @@ const camelCase = (str) => {
   return str.replace(/[-_](\w)/g, (_, c) => c.toUpperCase());
 };
 
-const workspaces = ["components", "core", "hooks", "utilities"];
 const generators = ["component", "hook", "package"];
 
 const defaultOutDirs = {
@@ -15,7 +14,10 @@ const defaultOutDirs = {
   package: "utilities",
 };
 
-module.exports = function main(plop) {
+module.exports = function main(
+  /** @type {import('plop').NodePlopAPI} */
+  plop,
+) {
   plop.setHelper("capitalize", (text) => {
     return capitalize(camelCase(text));
   });
@@ -52,11 +54,12 @@ module.exports = function main(plop) {
           message: `The description of this ${gen} :`,
         },
         {
+          when: gen === "package",
           type: "list",
           name: "outDir",
           message: `where should this ${gen} live? :`,
           default: defaultOutDirs[gen],
-          choices: workspaces,
+          choices: ["core", "utilities"],
           validate: (value) => {
             if (!value) {
               return `outDir is required`;
@@ -76,7 +79,10 @@ module.exports = function main(plop) {
         const data = {
           name,
           description,
-          outDir,
+          outDir:
+            gen === "package"
+              ? outDir
+              : (gen === "component" && "components") || (gen === "hook" && "hooks"),
         };
 
         actions.push({
