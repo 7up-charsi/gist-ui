@@ -6,10 +6,7 @@ import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
-import { useFocusRing } from "react-aria";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { useHover, UseHoverProps } from "@gist-ui/use-hover";
-import { usePointerEvents, UsePointerEventsProps } from "@gist-ui/use-pointer-events";
+import { useFocusRing, PressProps, usePress, useHover, HoverEvents } from "react-aria";
 import {
   ButtonHTMLAttributes,
   Children,
@@ -19,25 +16,31 @@ import {
   ReactNode,
   useRef,
 } from "react";
+import { useCallbackRef } from "@gist-ui/use-callback-ref";
+
+// const sss: { [key in keyof HoverEvents]: string } = {};
 
 const ripplePropsKeys = ["duration", "timingFunction", "completedFactor", "pointerCenter"] as const;
 
-const pointerEventsKeys = [
-  "pointerDownStopPropagation",
-  "pointerUpStopPropagation",
-  "button",
-  "simulateEvent",
+const pressPropsKeys = [
+  "onPress",
+  "onPressStart",
+  "onPressEnd",
+  "onPressUp",
+  "onPressChange",
+  "allowTextSelectionOnPress",
+  "preventFocusOnPress",
   "shouldCancelOnPointerExit",
 ] as const;
 
-const hoverPropsKeys = ["onHoverStart", "onHoverEnd"] as const;
+const hoverPropsKeys = ["onHoverChange", "onHoverEnd", "onHoverStart"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className" | "disabled">,
     UseRippleProps,
-    UsePointerEventsProps<HTMLButtonElement>,
-    UseHoverProps<HTMLButtonElement> {
+    Omit<PressProps, "isPressed" | "isDisabled">,
+    HoverEvents {
   startContent?: ReactNode;
   endContent?: ReactNode;
   classNames?: ButtonClassNames;
@@ -47,33 +50,23 @@ export interface ButtonProps
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const variantProps = pick(_props, ...button.variantKeys);
-  const pointerEventsProps = pick(_props, ...pointerEventsKeys);
+  const { onPress: onPressProp, ...pressHookProps } = pick(_props, ...pressPropsKeys);
   const rippleProps = pick(_props, ...ripplePropsKeys);
   const hoverHookProps = pick(_props, ...hoverPropsKeys);
 
   const props = omit(
     _props,
     ...button.variantKeys,
-    ...pointerEventsKeys,
+    ...pressPropsKeys,
     ...ripplePropsKeys,
     ...hoverPropsKeys,
   );
 
-  const {
-    startContent,
-    endContent,
-    classNames,
-    asChild,
-    children,
-    onPointerDown: onPointerDownProp,
-    onPointerUp: onPointerUpProp,
-    ...rest
-  } = props;
+  const { startContent, endContent, classNames, asChild, children, ...rest } = props;
+
+  const onPress = useCallbackRef(onPressProp);
 
   const { isDisabled, isIconOnly } = variantProps;
-
-  const onPointerDown = useCallbackRef(onPointerDownProp);
-  const onPointerUp = useCallbackRef(onPointerUpProp);
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
@@ -90,13 +83,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   );
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
-  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
-
-  const { pointerEventProps, isPressed } = usePointerEvents({
-    onPointerDown,
-    onPointerUp,
-    ...pointerEventsProps,
-  });
+  const { hoverProps, isHovered } = useHover({ isDisabled, ...hoverHookProps });
+  const { pressProps, isPressed } = usePress({ isDisabled, onPress, ...pressHookProps });
 
   const styles = button(variantProps);
 
@@ -112,14 +100,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   return (
     <Component
-      {...mergeProps(
-        { onPointerDown: rippleEvent },
-        pointerEventProps,
-        focusProps,
-        hoverProps,
-        rest,
-      )}
-      data-pressed={isPressed}
+      {...mergeProps({ onPointerDown: rippleEvent }, pressProps, focusProps, hoverProps, rest)}
+      data-pointer-pressed={isPressed}
+      data-keyboard-pressed={isFocusVisible && isPressed}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
