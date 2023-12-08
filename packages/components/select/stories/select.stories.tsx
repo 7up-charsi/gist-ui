@@ -23,7 +23,11 @@ const Template = (args: SelectProps) => (
     label="select"
     options={options}
     getOptionDisabled={(option) =>
-      typeof option === "string" ? false : option.value === "option 2"
+      typeof option === "string"
+        ? false
+        : option.value === "option 1" ||
+          option.value === "option 15" ||
+          option.value === "option 10"
     }
     defaultValue={options[2]}
     getOptionLabel={(option) => `${option.label} very long label too much`}

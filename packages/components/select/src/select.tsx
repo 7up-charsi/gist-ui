@@ -234,12 +234,45 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
       const option = options[index];
 
+      const isDisabled = getOptionDisabled?.(option);
+
+      if (isDisabled)
+        throw new GistUiError("Select", "`defaultValue` is disabled. Please select another");
+
       state.focused = option;
       state.focusedIndex = index;
       state.value = option;
       state.index = index;
     }
-  }, [defaultValue, options, state]);
+  }, [defaultValue, getOptionDisabled, options, state]);
+
+  const getNextIndex = useCallback(
+    (currentIndex: number) => {
+      if (!getOptionDisabled) return currentIndex;
+
+      for (let i = currentIndex; i <= options!.length; i++) {
+        const option = getOptionDisabled(options![i]);
+
+        if (!option) return i;
+        if (i === options!.length - 1) i = 0;
+      }
+    },
+    [getOptionDisabled, options],
+  );
+
+  const getPreviousIndex = useCallback(
+    (currentIndex: number) => {
+      if (!getOptionDisabled) return currentIndex;
+
+      for (let i = currentIndex; i >= 0; i--) {
+        const option = getOptionDisabled(options![i]);
+
+        if (!option) return i;
+        if (i === 0) i = options!.length;
+      }
+    },
+    [getOptionDisabled, options],
+  );
 
   useEffect(() => {
     if (!options) return;
@@ -250,12 +283,14 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     }
 
     if (!state.value && !state.index) {
-      const index = 0;
-      const option = options[index];
+      const index = getNextIndex(0);
+      if (index === 0 || index) {
+        const option = options[index];
 
-      state.focused = option;
-      state.focusedIndex = index;
-      setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex = index;
+        setFocused({ option, index });
+      }
     } else {
       const index = state.index;
       const option = state.value;
@@ -281,45 +316,55 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
       if (state.handledArrowDown) return;
 
       if (ArrowDown && state.focusedIndex === options.length - 1) {
-        const index = 0;
-        const option = options[index];
+        const index = getNextIndex(0);
 
-        setFocused({ option, index });
-        state.focused = option;
-        state.focusedIndex = index;
+        if (index === 0 || index) {
+          const option = options[index];
+
+          setFocused({ option, index });
+          state.focused = option;
+          state.focusedIndex = index;
+        }
 
         return;
       }
 
       if (ArrowDown && state.focusedIndex !== options.length - 1) {
-        const index = state.focusedIndex! + 1;
-        const option = options[index];
+        const index = getNextIndex(state.focusedIndex! + 1);
 
-        setFocused({ option, index });
-        state.focused = option;
-        state.focusedIndex! += 1;
+        if (index === 0 || index) {
+          const option = options[index];
+
+          setFocused({ option, index });
+          state.focused = option;
+          state.focusedIndex! = index;
+        }
 
         return;
       }
 
       if (ArrowUp && state.focusedIndex === 0) {
-        const index = options.length - 1;
-        const option = options[index];
+        const index = getPreviousIndex(options.length - 1);
+        if (index === 0 || index) {
+          const option = options[index];
 
-        setFocused({ option, index });
-        state.focused = option;
-        state.focusedIndex! = index;
+          setFocused({ option, index });
+          state.focused = option;
+          state.focusedIndex! = index;
+        }
 
         return;
       }
 
       if (ArrowUp && state.focusedIndex !== 0) {
-        const index = state.focusedIndex! - 1;
-        const option = options[index];
+        const index = getPreviousIndex(state.focusedIndex! - 1);
+        if (index === 0 || index) {
+          const option = options[index];
 
-        setFocused({ option, index });
-        state.focused = option;
-        state.focusedIndex! -= 1;
+          setFocused({ option, index });
+          state.focused = option;
+          state.focusedIndex! = index;
+        }
 
         return;
       }
@@ -345,7 +390,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
       document.removeEventListener("keydown", hanldeKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [handleClose, isOpen, onSelect, options, state, undoValue]);
+  }, [getNextIndex, getPreviousIndex, handleClose, isOpen, onSelect, options, state, undoValue]);
 
   const handleInputArrowDown = useCallback(
     (e: React.KeyboardEvent) => {
