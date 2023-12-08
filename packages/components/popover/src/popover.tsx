@@ -4,7 +4,7 @@ import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { FocusTrap } from "@gist-ui/focus-trap";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePointerEvents } from "@gist-ui/use-pointer-events";
+import { usePress } from "react-aria";
 import * as Popper from "@gist-ui/popper";
 import { createPortal } from "react-dom";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
@@ -124,9 +124,7 @@ export const Trigger = (props: TriggerProps) => {
     },
   });
 
-  const { pointerEventProps } = usePointerEvents({
-    onPointerUp: context.handleOpen,
-  });
+  const { pressProps } = usePress({ onPress: context.handleOpen });
 
   return (
     <Popper.Reference>
@@ -134,7 +132,7 @@ export const Trigger = (props: TriggerProps) => {
         ref={ref}
         aria-expanded={context.isOpen}
         aria-controls={context.isOpen ? context.id : undefined}
-        {...pointerEventProps}
+        {...pressProps}
       >
         {children}
       </Slot>
@@ -157,11 +155,9 @@ export const Close = (props: CloseProps) => {
 
   const context = useContext(Close_Name);
 
-  const { pointerEventProps } = usePointerEvents({
-    onPointerUp: context.handleClose,
-  });
+  const { pressProps } = usePress({ onPress: context.handleClose });
 
-  return <Slot {...pointerEventProps}>{children}</Slot>;
+  return <Slot {...pressProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;

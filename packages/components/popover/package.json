@@ -45,7 +45,6 @@
     "@gist-ui/slot": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/use-is-disabled": "workspace:*",
-    "@gist-ui/use-pointer-events": "workspace:*",
     "@gist-ui/visually-hidden": "workspace:*",
     "@gist-ui/context": "workspace:*",
     "@gist-ui/popper": "workspace:*",
