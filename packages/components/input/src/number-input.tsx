@@ -190,10 +190,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
     },
-    onLongPressEnd: () => {
-      clearInterval(state.current.longPressInterval);
-      state.current.longPressInterval = undefined;
-    },
   });
 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
@@ -204,10 +200,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     },
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
-    },
-    onLongPressEnd: () => {
-      clearInterval(state.current.longPressInterval);
-      state.current.longPressInterval = undefined;
     },
   });
 
@@ -238,6 +230,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
         }}
+        onPressEnd={() => {
+          clearInterval(state.current.longPressInterval);
+          state.current.longPressInterval = undefined;
+        }}
       >
         <div>
           <Icon fill classNames={{ base: styles.icon({ className: classNames?.stepButton.icon }) }}>
@@ -263,6 +259,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
           base: styles.button({
             className: `text-default-500 ${classNames?.stepButton.button}`,
           }),
+        }}
+        onPressEnd={() => {
+          clearInterval(state.current.longPressInterval);
+          state.current.longPressInterval = undefined;
         }}
       >
         <div>
