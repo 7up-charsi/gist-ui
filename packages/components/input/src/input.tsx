@@ -1,23 +1,13 @@
 import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mergeRefs } from "@gist-ui/react-utils";
+import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { HoverProps, useFocus, useFocusRing, useHover } from "react-aria";
 import { NativeInputProps } from "./types";
-import {
-  ChangeEventHandler,
-  FocusEventHandler,
-  ReactNode,
-  forwardRef,
-  useId,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { usePointerEvents } from "@gist-ui/use-pointer-events";
+import { forwardRef, useId, useImperativeHandle, useRef, useState } from "react";
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
@@ -27,17 +17,17 @@ export interface InputProps extends InputVariantProps, HoverProps {
   placeholder?: string;
   value?: string;
   defaultValue?: string;
-  onFocus?: FocusEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   required?: boolean;
   name?: string;
   label?: string;
   helperText?: string;
   error?: boolean;
   errorMessage?: string;
-  startContent?: ReactNode;
-  endContent?: ReactNode;
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
   classNames?: InputClassNames;
   hideLabel?: boolean;
   /**
@@ -126,12 +116,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     },
   });
 
-  const { pointerEventProps } = usePointerEvents({
-    onPointerUp: (e) => {
-      if (e.target === e.currentTarget) inputRef.current?.focus();
-    },
-  });
-
   const styles = input({
     ...variantProps,
     isDisabled,
@@ -165,7 +149,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
-      data-filled-within={isFocused || filled || !!placeholder || !!startContent}
+      data-filled-within={isFocused || filled || !!placeholder}
       data-hovered={isHovered}
       data-is-disabled={isDisabled}
     >
@@ -174,12 +158,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
       <div
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
-        {...hoverProps}
-        {...pointerEventProps}
-        onPointerUp={(e) => {
-          hoverProps.onPointerUp?.(e);
-          pointerEventProps.onPointerUp(e);
-        }}
+        {...mergeProps(hoverProps, {
+          onPointerUp: (e: React.PointerEvent) => {
+            if (e.button !== 0) return;
+            if (e.currentTarget === e.target) inputRef.current?.focus();
+          },
+        })}
       >
         {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
 

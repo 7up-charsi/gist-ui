@@ -1,13 +1,13 @@
 import { forwardRef, useCallback, useRef } from "react";
 import Input, { InputProps } from "./input";
-import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
+import { mergeRefs } from "@gist-ui/react-utils";
 import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
 import { Icon } from "@gist-ui/icon";
 import { Button } from "@gist-ui/button";
-import { useLongPress } from "react-aria";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
+import { useLongPress } from "react-aria";
 
 export interface NumberInputProps extends Omit<InputProps, "type" | "onChange" | "defaultValue"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
@@ -183,7 +183,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
 
   const { longPressProps: stepUpLongPressProps } = useLongPress({
     threshold,
-    accessibilityDescription: "long press to increase speedly",
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepUp();
@@ -191,16 +190,14 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
     },
+    onLongPressEnd: () => {
+      clearInterval(state.current.longPressInterval);
+      state.current.longPressInterval = undefined;
+    },
   });
-
-  const handleStepUpClear = () => {
-    clearInterval(state.current.longPressInterval);
-    state.current.longPressInterval = undefined;
-  };
 
   const { longPressProps: stepDownLongPressProps } = useLongPress({
     threshold,
-    accessibilityDescription: "long press to decrease speedly",
     onLongPressStart: () => {
       innerRef.current?.focus();
       handleStepDown();
@@ -208,12 +205,11 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     onLongPress: () => {
       state.current.longPressInterval = setInterval(handleStepDown, repeatRate);
     },
+    onLongPressEnd: () => {
+      clearInterval(state.current.longPressInterval);
+      state.current.longPressInterval = undefined;
+    },
   });
-
-  const handleStepDownClear = () => {
-    clearInterval(state.current.longPressInterval);
-    state.current.longPressInterval = undefined;
-  };
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,15 +224,15 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
     <div ref={ref} className={styles.base({ className: classNames?.stepButton.base })}>
       {/* step up */}
       <Button
-        type="button"
         aria-label="increase value"
+        aria-description="long press to increase speedly"
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
         asChild
-        {...mergeProps({ onPointerUp: handleStepUpClear }, { ...stepUpLongPressProps })}
+        {...stepUpLongPressProps}
         classNames={{
           base: styles.button({
             className: `text-default-500 ${classNames?.stepButton.button}`,
@@ -254,15 +250,15 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>((props, ref) =>
 
       {/* step down */}
       <Button
-        type="button"
         aria-label="decrease value"
+        aria-description="long press to decrease speedly"
         tabIndex={-1}
         isIconOnly
         size="sm"
         variant="text"
         rounded="none"
         asChild
-        {...mergeProps({ onPointerUp: handleStepDownClear }, { ...stepDownLongPressProps })}
+        {...stepDownLongPressProps}
         classNames={{
           base: styles.button({
             className: `text-default-500 ${classNames?.stepButton.button}`,

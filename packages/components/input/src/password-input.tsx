@@ -37,7 +37,7 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>((props, ref
       variant="text"
       aria-label={isPassword ? showAriaLabel : hideAriaLabel}
       aria-pressed={isPassword}
-      onPointerUp={() => {
+      onPress={() => {
         setIsPassword((p) => !p);
       }}
     >
