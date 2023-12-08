@@ -199,6 +199,8 @@ export const Content = (props: ContentProps) => {
     },
   });
 
+  const { pressProps } = usePress({ onPress: context.handleClose });
+
   useEffect(() => {
     if (isValidElement(children)) {
       context.setGivenId(children.props.id || "");
@@ -218,13 +220,13 @@ export const Content = (props: ContentProps) => {
           children: (
             <>
               <VisuallyHidden asChild>
-                <button onClick={context.handleClose}>close</button>
+                <button {...pressProps}>close</button>
               </VisuallyHidden>
 
               {children.props.children}
 
               <VisuallyHidden asChild>
-                <button onClick={context.handleClose}>close</button>
+                <button {...pressProps}>close</button>
               </VisuallyHidden>
             </>
           ),
