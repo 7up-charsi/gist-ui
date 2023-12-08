@@ -3,7 +3,7 @@ import { Slot } from "@gist-ui/slot";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePointerEvents } from "@gist-ui/use-pointer-events";
+import { usePress } from "react-aria";
 import { useScrollLock } from "@gist-ui/use-scroll-lock";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";
@@ -208,17 +208,13 @@ export const Trigger = (props: TriggerProps) => {
 
   const context = useContext(Trigger_Name);
 
-  const handleOpen = context.handleOpen;
-
-  const { pointerEventProps } = usePointerEvents({
-    onPointerUp: handleOpen,
-  });
+  const { pressProps } = usePress({ onPress: context.handleOpen });
 
   return (
     <Slot
       aria-expanded={context.isOpen}
       aria-controls={context.isOpen ? context.id : undefined}
-      {...pointerEventProps}
+      {...pressProps}
     >
       {children}
     </Slot>
@@ -242,13 +238,13 @@ export const Close = (props: CloseProps) => {
 
   const handleClose = context.handleClose;
 
-  const { pointerEventProps } = usePointerEvents({
-    onPointerUp: () => {
+  const { pressProps } = usePress({
+    onPress: () => {
       handleClose("pointer");
     },
   });
 
-  return <Slot {...pointerEventProps}>{children}</Slot>;
+  return <Slot {...pressProps}>{children}</Slot>;
 };
 
 Close.displayName = "gist-ui." + Close_Name;

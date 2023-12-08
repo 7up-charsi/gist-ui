@@ -42,7 +42,6 @@
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/use-scroll-lock": "workspace:*",
-    "@gist-ui/use-pointer-events": "workspace:*",
     "@gist-ui/focus-trap": "workspace:*",
     "@gist-ui/error": "workspace:*",
     "@gist-ui/slot": "workspace:*",
