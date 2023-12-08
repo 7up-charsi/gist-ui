@@ -155,12 +155,6 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../../hooks/use-callback-ref
-      '@gist-ui/use-hover':
-        specifier: workspace:*
-        version: link:../../hooks/use-hover
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../../hooks/use-pointer-events
       '@gist-ui/use-ripple':
         specifier: workspace:*
         version: link:../../hooks/use-ripple
@@ -225,9 +219,6 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../../hooks/use-pointer-events
       '@gist-ui/use-scroll-lock':
         specifier: workspace:*
         version: link:../../hooks/use-scroll-lock
@@ -318,12 +309,6 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
-      '@gist-ui/use-long-press':
-        specifier: workspace:*
-        version: link:../../hooks/use-long-press
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../../hooks/use-pointer-events
       '@gist-ui/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
@@ -388,9 +373,6 @@ importers:
       '@gist-ui/use-is-disabled':
         specifier: workspace:*
         version: link:../../hooks/use-is-disabled
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../../hooks/use-pointer-events
       '@gist-ui/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
@@ -466,6 +448,9 @@ importers:
       '@gist-ui/button':
         specifier: workspace:*
         version: link:../button
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
       '@gist-ui/input':
         specifier: workspace:*
         version: link:../input
@@ -702,22 +687,6 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/hooks/use-hover:
-    dependencies:
-      '@gist-ui/use-callback-ref':
-        specifier: workspace:*
-        version: link:../use-callback-ref
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
   packages/hooks/use-is-disabled:
     dependencies:
       '@gist-ui/use-callback-ref':
@@ -734,43 +703,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
-  packages/hooks/use-long-press:
-    dependencies:
-      '@gist-ui/use-callback-ref':
-        specifier: workspace:*
-        version: link:../use-callback-ref
-      '@gist-ui/use-pointer-events':
-        specifier: workspace:*
-        version: link:../use-pointer-events
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
   packages/hooks/use-media-query:
     dependencies:
-      react:
-        specifier: '>=18'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=18'
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-
-  packages/hooks/use-pointer-events:
-    dependencies:
-      '@gist-ui/use-callback-ref':
-        specifier: workspace:*
-        version: link:../use-callback-ref
       react:
         specifier: '>=18'
         version: 18.2.0

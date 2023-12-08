@@ -42,6 +42,7 @@
     "@gist-ui/input": "workspace:*",
     "@gist-ui/popper": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
+    "@gist-ui/error": "workspace:*",
     "@gist-ui/button": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",

@@ -26,13 +26,10 @@ const Template = (args: SelectProps) => (
       typeof option === "string" ? false : option.value === "option 2"
     }
     defaultValue={options[2]}
-    getOptionLabel={(option) => `${option.label} cute`}
+    getOptionLabel={(option) => `${option.label} very long label too much`}
   />
 );
 
 export const Default: StoryObj<SelectProps> = {
   render: Template,
-  args: {
-    defaultOpen: true,
-  },
 };

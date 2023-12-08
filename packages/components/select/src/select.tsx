@@ -1,4 +1,4 @@
-import { Fragment, forwardRef, useCallback, useId, useRef, useState } from "react";
+import { Fragment, forwardRef, useCallback, useEffect, useId, useRef, useState } from "react";
 import * as Popper from "@gist-ui/popper";
 import { CustomInputElement, Input, InputProps } from "@gist-ui/input";
 import { SelectClassNames, SelectVariantProps, select } from "@gist-ui/theme";
@@ -9,6 +9,8 @@ import pick from "lodash.pick";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { useClickOutside } from "@gist-ui/use-click-outside";
 import { useFocusVisible } from "react-aria";
+import { Option } from "./option";
+import { GistUiError } from "@gist-ui/error";
 
 const caretDown = (
   <svg
@@ -24,6 +26,24 @@ const caretDown = (
     <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
   </svg>
 );
+
+const closeIcon = (
+  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+    />
+  </svg>
+);
+
+export interface onSelectProps {
+  option: SelectOption;
+  isDisabled: boolean;
+  index: number;
+}
 
 export type SelectOption = {
   label: string;
@@ -102,14 +122,14 @@ export interface SelectProps
    * by default `option.label` is used
    */
   getOptionLabel?: (options: SelectOption) => string;
-  isOptionEqualToValue?: (option: SelectOption, value?: SelectOption) => boolean;
+  isOptionEqualToValue?: (option: SelectOption, value?: SelectOption | null) => boolean;
   defaultValue?: SelectOption;
-  value?: SelectOption;
-  onChange?: (e: { target: { value?: SelectOption } }) => void;
+  value?: SelectOption | null;
+  onChange?: (e: { target: { value?: SelectOption | null } }) => void;
 }
 
 const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
-  const inputProps = pick(_props, ...inputPropsKeys);
+  const { isDisabled, ...inputProps } = pick(_props, ...inputPropsKeys);
   const variantProps = pick(_props, ...variantPropsKeys);
   const props = omit(_props, ...variantPropsKeys, ...inputPropsKeys);
 
@@ -125,12 +145,14 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     empltyText = "no options",
     defaultOpen = false,
     defaultValue,
-    value,
+    value: valueProp,
     onChange,
     getOptionKey,
     getOptionLabel,
     isOptionEqualToValue,
   } = props;
+
+  const [focused, setFocused] = useState<{ option: SelectOption; index: number } | null>(null);
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -138,64 +160,32 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     onChange: onOpenChange,
   });
 
-  const [selected, setSelected] = useControllableState({
+  const [value, setValue] = useControllableState({
     defaultValue,
-    value,
+    value: valueProp,
     onChange: (value) => {
       onChange?.({ target: { value: value || null } });
     },
   });
+
+  const state = useRef<{
+    focused?: SelectOption;
+    focusedIndex?: number;
+    value?: SelectOption;
+    index?: number;
+    handledArrowDown?: boolean;
+  }>({}).current;
 
   const [inputWrapper, setInputWrapper] = useState<HTMLDivElement | null>(null);
   const inputFocused = useRef(inputProps.inputProps?.autoFocus || false);
 
   const lisboxId = useId();
 
-  const { isFocusVisible } = useFocusVisible();
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
 
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (e.button !== 0) return;
-
-      if (inputFocused.current && !isOpen) setIsOpen(true);
-    },
-    [isOpen, setIsOpen],
-  );
-
-  const handleFocus = useCallback(() => {
-    inputFocused.current = true;
-
-    if (!isFocusVisible) setIsOpen(true);
-  }, [isFocusVisible, setIsOpen]);
-
-  const handleBlur = useCallback(() => {
-    inputFocused.current = false;
-
-    if (isFocusVisible) setIsOpen(false);
-  }, [isFocusVisible, setIsOpen]);
-
-  const onSelect =
-    ({ option, isDisabled }: { option: SelectOption; isDisabled?: boolean }) =>
-    (e: React.PointerEvent) => {
-      if (e.button !== 0) return;
-
-      if (isDisabled) return;
-
-      setSelected(option);
-    };
-
-  const handleListboxToggle = useCallback(
-    (e: React.PointerEvent) => {
-      if (e.button !== 0) return;
-
-      if (!inputFocused.current) {
-        inputWrapper?.focus();
-      }
-
-      setIsOpen((p) => !p);
-    },
-    [inputWrapper, setIsOpen],
-  );
+    inputWrapper?.focus();
+  }, [inputWrapper, setIsOpen]);
 
   const setOutsideEle = useClickOutside<HTMLDivElement>({
     isDisabled: !isOpen,
@@ -206,18 +196,243 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     },
   });
 
+  const { isFocusVisible } = useFocusVisible();
+
+  const onSelect = useCallback(
+    ({ option, isDisabled, index }: onSelectProps, select: boolean) =>
+      () => {
+        if (isDisabled) return;
+
+        if (select) {
+          setValue(option);
+          state.value = option;
+          state.index = index;
+          handleClose();
+        }
+
+        setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex = index;
+      },
+
+    [handleClose, setValue, state],
+  );
+
+  const undoValue = useCallback(() => {
+    if (state.value && state.index) setFocused({ option: state.value, index: state.index });
+    else setFocused(null);
+    state.focused = undefined;
+    state.focusedIndex = undefined;
+  }, [state]);
+
+  useEffect(() => {
+    if (defaultValue && options) {
+      const index = options?.findIndex((ele) => ele === defaultValue);
+
+      if (index < 0)
+        throw new GistUiError("Select", "`defaultValue` must be from provided `options`");
+
+      const option = options[index];
+
+      state.focused = option;
+      state.focusedIndex = index;
+      state.value = option;
+      state.index = index;
+    }
+  }, [defaultValue, options, state]);
+
+  useEffect(() => {
+    if (!options) return;
+
+    if (!isOpen) {
+      undoValue();
+      return;
+    }
+
+    if (!state.value && !state.index) {
+      const index = 0;
+      const option = options[index];
+
+      state.focused = option;
+      state.focusedIndex = index;
+      setFocused({ option, index });
+    } else {
+      const index = state.index;
+      const option = state.value;
+
+      state.focused = option;
+      state.focusedIndex = index;
+    }
+
+    const hanldeKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+
+      const ArrowUp = e.key === "ArrowUp";
+      const ArrowDown = e.key === "ArrowDown";
+      const Escape = e.key === "Escape";
+
+      if (Escape) {
+        undoValue();
+        handleClose();
+
+        return;
+      }
+
+      if (state.handledArrowDown) return;
+
+      if (ArrowDown && state.focusedIndex === options.length - 1) {
+        const index = 0;
+        const option = options[index];
+
+        setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex = index;
+
+        return;
+      }
+
+      if (ArrowDown && state.focusedIndex !== options.length - 1) {
+        const index = state.focusedIndex! + 1;
+        const option = options[index];
+
+        setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex! += 1;
+
+        return;
+      }
+
+      if (ArrowUp && state.focusedIndex === 0) {
+        const index = options.length - 1;
+        const option = options[index];
+
+        setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex! = index;
+
+        return;
+      }
+
+      if (ArrowUp && state.focusedIndex !== 0) {
+        const index = state.focusedIndex! - 1;
+        const option = options[index];
+
+        setFocused({ option, index });
+        state.focused = option;
+        state.focusedIndex! -= 1;
+
+        return;
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+
+      const Space = e.key === " ";
+      const Enter = e.key === "Enter";
+
+      if (Space || Enter) {
+        onSelect({ option: state.focused!, index: state.focusedIndex!, isDisabled: false }, true)();
+
+        return;
+      }
+    };
+
+    document.addEventListener("keydown", hanldeKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", hanldeKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [handleClose, isOpen, onSelect, options, state, undoValue]);
+
+  const handleInputArrowDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (isDisabled) return;
+      if (e.repeat) return;
+
+      const ArrowDown = e.key === "ArrowDown";
+
+      if (ArrowDown) {
+        setIsOpen(true);
+      }
+
+      if (isOpen) {
+        state.handledArrowDown = false;
+      } else {
+        state.handledArrowDown = true;
+      }
+    },
+
+    [isDisabled, isOpen, setIsOpen, state],
+  );
+
+  const handleFocus = useCallback(() => {
+    inputFocused.current = true;
+
+    if (!isFocusVisible) {
+      setIsOpen(true);
+    }
+  }, [isFocusVisible, setIsOpen]);
+
+  const handleBlur = useCallback(() => {
+    inputFocused.current = false;
+
+    if (isFocusVisible) {
+      setIsOpen(false);
+    }
+  }, [isFocusVisible, setIsOpen]);
+
+  const handleInputInteraction = useCallback(
+    (e: React.PointerEvent) => {
+      if (isDisabled) return;
+      if (e.button !== 0) return;
+
+      if (inputFocused.current && !isOpen) {
+        setIsOpen(true);
+      }
+    },
+    [isDisabled, isOpen, setIsOpen],
+  );
+
+  const handleListboxToggle = useCallback(() => {
+    if (isDisabled) return;
+
+    if (!inputFocused.current) {
+      inputWrapper?.focus();
+    }
+
+    setIsOpen((p) => !p);
+  }, [inputWrapper, isDisabled, setIsOpen]);
+
+  const handleClear = useCallback(() => {
+    if (!inputFocused.current) {
+      inputWrapper?.focus();
+    }
+
+    setValue(null);
+    setIsOpen(true);
+    state.focused = undefined;
+    state.focusedIndex = undefined;
+    state.index = undefined;
+    state.value = undefined;
+  }, [inputWrapper, setIsOpen, setValue, state]);
+
   const styles = select({ ...variantProps, rounded: listboxRounded, color: inputProps.color });
 
   return (
     <>
       <Input
         {...inputProps}
+        isDisabled={isDisabled}
         ref={mergeRefs(ref, setInputWrapper)}
-        value={(selected && (getOptionLabel ? getOptionLabel(selected) : selected.label)) || ""}
+        value={(value && (getOptionLabel ? getOptionLabel(value) : value.label)) || ""}
         onChange={() => {}}
         inputProps={{
           ...inputProps.inputProps,
-          onPointerDown: handlePointerDown,
+          onPointerDown: handleInputInteraction,
+          onKeyDown: handleInputArrowDown,
           "aria-expanded": isOpen,
           "aria-controls": lisboxId,
           "aria-haspopup": "listbox",
@@ -228,7 +443,21 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
         endContent={
-          <>
+          <div>
+            {!value ? null : (
+              <Button
+                isIconOnly
+                variant="text"
+                size="sm"
+                rounded="full"
+                aria-label="toggle listbox"
+                asChild
+                onPress={handleClear}
+              >
+                <div>{closeIcon}</div>
+              </Button>
+            )}
+
             <Button
               isIconOnly
               variant="text"
@@ -236,14 +465,14 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
               rounded="full"
               aria-label="toggle listbox"
               asChild
-              style={{ cursor: "pointer", rotate: isOpen ? "180deg" : "0deg" }}
-              onPointerUp={handleListboxToggle}
+              style={{ rotate: isOpen ? "180deg" : "0deg" }}
+              onPress={handleListboxToggle}
             >
               <div>{caretDown}</div>
             </Button>
 
             {inputProps.endContent}
-          </>
+          </div>
         }
       />
 
@@ -262,27 +491,27 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
               style={{ maxHeight }}
             >
               {options?.length ? (
-                options.map((option, i) => {
-                  const key = getOptionKey ? getOptionKey(option) : option.label;
-                  const isDisabled = getOptionDisabled?.(option);
-                  const isSelected = isOptionEqualToValue
-                    ? isOptionEqualToValue(option, selected)
-                    : selected === option;
+                options.map((option, index) => {
+                  const isDisabled = getOptionDisabled?.(option) || false;
 
                   return (
-                    <Fragment key={key}>
-                      <div
-                        data-disabled={isDisabled}
-                        data-selected={isSelected}
-                        role="option"
+                    <Fragment key={getOptionKey ? getOptionKey(option) : option.label}>
+                      <Option
+                        option={option}
                         className={styles.option({ className: listboxClassNames?.option })}
-                        aria-checked={isDisabled ? undefined : isSelected}
-                        onPointerUp={isDisabled ? undefined : onSelect({ option, isDisabled })}
-                      >
-                        {<span>{getOptionLabel ? getOptionLabel(option) : option.label}</span>}
-                      </div>
+                        isDisabled={isDisabled}
+                        isSelected={
+                          isOptionEqualToValue
+                            ? isOptionEqualToValue(option, value)
+                            : value === option
+                        }
+                        isFocused={focused?.index === index}
+                        index={index}
+                        onSelect={onSelect}
+                        getOptionLabel={getOptionLabel}
+                      />
 
-                      {i + 1 !== options.length && (
+                      {index + 1 !== options.length && (
                         <div
                           className={styles.optionSeperator({
                             className: listboxClassNames?.optionSeperator,
