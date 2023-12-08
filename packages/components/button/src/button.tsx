@@ -50,7 +50,14 @@ export interface ButtonProps
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const variantProps = pick(_props, ...button.variantKeys);
-  const { onPress: onPressProp, ...pressHookProps } = pick(_props, ...pressPropsKeys);
+  const {
+    onPress: onPressProp,
+    onPressEnd: onPressEndProp,
+    onPressStart: onPressStartProp,
+    onPressUp: onPressUpProp,
+    onPressChange: onPressChangeProp,
+    ...pressHookProps
+  } = pick(_props, ...pressPropsKeys);
   const rippleProps = pick(_props, ...ripplePropsKeys);
   const hoverHookProps = pick(_props, ...hoverPropsKeys);
 
@@ -65,6 +72,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   const { startContent, endContent, classNames, asChild, children, ...rest } = props;
 
   const onPress = useCallbackRef(onPressProp);
+  const onPressEnd = useCallbackRef(onPressEndProp);
+  const onPressStart = useCallbackRef(onPressStartProp);
+  const onPressUp = useCallbackRef(onPressUpProp);
+  const onPressChange = useCallbackRef(onPressChangeProp);
 
   const { isDisabled, isIconOnly } = variantProps;
 
@@ -84,7 +95,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
   const { hoverProps, isHovered } = useHover({ isDisabled, ...hoverHookProps });
-  const { pressProps, isPressed } = usePress({ isDisabled, onPress, ...pressHookProps });
+  const { pressProps, isPressed } = usePress({
+    isDisabled,
+    onPress,
+    onPressEnd,
+    onPressStart,
+    onPressUp,
+    onPressChange,
+    ...pressHookProps,
+  });
 
   const styles = button(variantProps);
 
