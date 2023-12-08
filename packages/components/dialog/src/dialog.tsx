@@ -305,6 +305,8 @@ export const Content = (props: ContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
+  const { pressProps } = usePress({ onPress: () => context.handleClose("virtual") });
+
   const childCount = Children.count(children);
   if (!childCount) return;
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
@@ -332,13 +334,13 @@ export const Content = (props: ContentProps) => {
         children: (
           <>
             <VisuallyHidden asChild>
-              <button onClick={() => context.handleClose("virtual")}>close</button>
+              <button {...pressProps}>close</button>
             </VisuallyHidden>
 
             {children.props.children}
 
             <VisuallyHidden asChild>
-              <button onClick={() => context.handleClose("virtual")}>close</button>
+              <button {...pressProps}>close</button>
             </VisuallyHidden>
           </>
         ),
