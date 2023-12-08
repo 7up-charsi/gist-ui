@@ -318,6 +318,9 @@ importers:
       '@gist-ui/use-controllable-state':
         specifier: workspace:*
         version: link:../../hooks/use-controllable-state
+      '@gist-ui/use-long-press':
+        specifier: workspace:*
+        version: link:../../hooks/use-long-press
       '@gist-ui/use-pointer-events':
         specifier: workspace:*
         version: link:../../hooks/use-pointer-events
@@ -720,6 +723,25 @@ importers:
       '@gist-ui/use-callback-ref':
         specifier: workspace:*
         version: link:../use-callback-ref
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
+  packages/hooks/use-long-press:
+    dependencies:
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../use-callback-ref
+      '@gist-ui/use-pointer-events':
+        specifier: workspace:*
+        version: link:../use-pointer-events
       react:
         specifier: '>=18'
         version: 18.2.0
