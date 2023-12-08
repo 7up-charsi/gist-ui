@@ -8,7 +8,7 @@ const input = tv({
       "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2",
       groupDataFocusVisible,
     ],
-    input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0",
+    input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0 truncate",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
     required: "text-danger ml-1",

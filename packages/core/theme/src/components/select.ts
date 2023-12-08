@@ -4,7 +4,7 @@ const select = tv({
   slots: {
     listbox: "w-[--reference-width] bg-white border overflow-y-auto",
     option:
-      "h-10 flex gap-2 items-center px-2 select-none [&>span]:first-letter:uppercase cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 hover:bg-default-100",
+      "h-10 flex gap-2 items-center px-2 select-none [&>span]:first-letter:uppercase [&>span]:truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]data-[=true]:bg-info-100",
     emptyText: "h-10 flex items-center justify-center capitalize text-default",
     optionSeperator: "h-px bg-default-200",
   },
