@@ -513,6 +513,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         ref={mergeRefs(ref, setInputWrapper)}
         value={(value && (getOptionLabel ? getOptionLabel(value) : value.label)) || ""}
         onChange={() => {}}
+        hideNativeInput
         inputProps={{
           ...inputProps.inputProps,
           onPointerDown: handleInputInteraction,
@@ -527,7 +528,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
         endContent={
-          <div>
+          <div className={styles.endContent()}>
             {!value ? null : (
               <Button
                 isIconOnly

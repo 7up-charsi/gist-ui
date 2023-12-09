@@ -7,6 +7,7 @@ const select = tv({
       "h-10 flex gap-2 items-center px-2 select-none [&>span]:first-letter:uppercase [&>span]:truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-default-200",
     emptyText: "h-10 flex items-center justify-center capitalize text-default",
     optionSeperator: "h-px bg-default-200",
+    endContent: "flex",
   },
   variants: {
     rounded: {

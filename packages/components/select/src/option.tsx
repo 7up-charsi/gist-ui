@@ -26,6 +26,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
   });
 
   const { hoverProps, isHovered } = useHover({
+    isDisabled,
     onHoverStart: onSelect({ index, isDisabled, option }, false),
   });
 
