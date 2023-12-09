@@ -1,10 +1,10 @@
 import { forwardRef, useEffect, useRef } from "react";
-import { SelectOption, SelectProps, onSelectProps } from "./select";
+import { InternalSelectOption, SelectProps, onSelectProps } from "./select";
 import { useHover, usePress } from "react-aria";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
 interface OptionProps {
-  option: SelectOption;
+  option: InternalSelectOption;
   isDisabled: boolean;
   isSelected: boolean;
   isFocused: boolean;
@@ -37,6 +37,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
 
   return (
     <div
+      id={option.id}
       ref={mergeRefs(ref, innerRef)}
       data-hovered={isHovered}
       data-disabled={isDisabled}

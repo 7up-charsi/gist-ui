@@ -1,4 +1,3 @@
-import { Fragment, forwardRef, useCallback, useEffect, useId, useRef, useState } from "react";
 import * as Popper from "@gist-ui/popper";
 import { CustomInputElement, Input, InputProps } from "@gist-ui/input";
 import { SelectClassNames, SelectVariantProps, select } from "@gist-ui/theme";
@@ -11,6 +10,17 @@ import { useClickOutside } from "@gist-ui/use-click-outside";
 import { useFocusVisible } from "react-aria";
 import { Option } from "./option";
 import { GistUiError } from "@gist-ui/error";
+import { v4 as uuidv4 } from "uuid";
+import {
+  Fragment,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const caretDown = (
   <svg
@@ -40,7 +50,7 @@ const closeIcon = (
 );
 
 export interface onSelectProps {
-  option: SelectOption;
+  option: InternalSelectOption;
   isDisabled: boolean;
   index: number;
 }
@@ -48,6 +58,12 @@ export interface onSelectProps {
 export type SelectOption = {
   label: string;
   value: string;
+};
+
+export type InternalSelectOption = {
+  label: string;
+  value: string;
+  id: string;
 };
 
 // const keys: { [key in keyof Popper.FloatingProps]: undefined } = {};
@@ -134,7 +150,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   const props = omit(_props, ...variantPropsKeys, ...inputPropsKeys);
 
   const {
-    options,
+    options: optionsProp,
     listboxClassNames,
     listboxRounded,
     offset,
@@ -152,7 +168,16 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     isOptionEqualToValue,
   } = props;
 
-  const [focused, setFocused] = useState<{ option: SelectOption; index: number } | null>(null);
+  const options = useMemo(
+    () => optionsProp?.map((ele) => ({ ...ele, id: uuidv4() })),
+    [optionsProp],
+  );
+
+  const [focused, setFocused] = useState<{
+    option: SelectOption;
+    index: number;
+    id: string;
+  } | null>(null);
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -169,9 +194,10 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   });
 
   const state = useRef<{
-    focused?: SelectOption;
+    focused?: InternalSelectOption;
     focusedIndex?: number;
-    value?: SelectOption;
+    focusedId?: string;
+    value?: InternalSelectOption;
     index?: number;
     handledArrowDown?: boolean;
   }>({}).current;
@@ -210,16 +236,18 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
           handleClose();
         }
 
-        setFocused({ option, index });
+        setFocused({ option, index, id: option.id });
         state.focused = option;
         state.focusedIndex = index;
+        state.focusedId = option.id;
       },
 
     [handleClose, setValue, state],
   );
 
   const undoValue = useCallback(() => {
-    if (state.value && state.index) setFocused({ option: state.value, index: state.index });
+    if (state.value && state.index && state.focusedId)
+      setFocused({ option: state.value, index: state.index, id: state.focusedId });
     else setFocused(null);
     state.focused = undefined;
     state.focusedIndex = undefined;
@@ -227,7 +255,9 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
   useEffect(() => {
     if (defaultValue && options) {
-      const index = options?.findIndex((ele) => ele === defaultValue);
+      const index = options?.findIndex(
+        (ele) => ele.label === defaultValue.label && ele.value === defaultValue.value,
+      );
 
       if (index < 0)
         throw new GistUiError("Select", "`defaultValue` must be from provided `options`");
@@ -241,6 +271,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
       state.focused = option;
       state.focusedIndex = index;
+      state.focusedId = option.id;
       state.value = option;
       state.index = index;
     }
@@ -289,7 +320,8 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
         state.focused = option;
         state.focusedIndex = index;
-        setFocused({ option, index });
+        state.focusedId = option.id;
+        setFocused({ option, index, id: option.id });
       }
     } else {
       const index = state.index;
@@ -297,6 +329,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
       state.focused = option;
       state.focusedIndex = index;
+      state.focusedId = option?.id;
     }
 
     const hanldeKeyDown = (e: KeyboardEvent) => {
@@ -305,6 +338,8 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
       const ArrowUp = e.key === "ArrowUp";
       const ArrowDown = e.key === "ArrowDown";
       const Escape = e.key === "Escape";
+      const Home = e.key === "Home";
+      const End = e.key === "End";
 
       if (Escape) {
         undoValue();
@@ -315,15 +350,16 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
 
       if (state.handledArrowDown) return;
 
-      if (ArrowDown && state.focusedIndex === options.length - 1) {
+      if (Home || (ArrowDown && state.focusedIndex === options.length - 1)) {
         const index = getNextIndex(0);
 
         if (index === 0 || index) {
           const option = options[index];
 
-          setFocused({ option, index });
+          setFocused({ option, index, id: option.id });
           state.focused = option;
           state.focusedIndex = index;
+          state.focusedId = option.id;
         }
 
         return;
@@ -335,22 +371,24 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         if (index === 0 || index) {
           const option = options[index];
 
-          setFocused({ option, index });
+          setFocused({ option, index, id: option.id });
           state.focused = option;
           state.focusedIndex! = index;
+          state.focusedId = option.id;
         }
 
         return;
       }
 
-      if (ArrowUp && state.focusedIndex === 0) {
+      if (End || (ArrowUp && state.focusedIndex === 0)) {
         const index = getPreviousIndex(options.length - 1);
         if (index === 0 || index) {
           const option = options[index];
 
-          setFocused({ option, index });
+          setFocused({ option, index, id: option.id });
           state.focused = option;
           state.focusedIndex! = index;
+          state.focusedId = option.id;
         }
 
         return;
@@ -361,9 +399,10 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         if (index === 0 || index) {
           const option = options[index];
 
-          setFocused({ option, index });
+          setFocused({ option, index, id: option.id });
           state.focused = option;
           state.focusedIndex! = index;
+          state.focusedId = option.id;
         }
 
         return;
@@ -531,13 +570,16 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
               id={lisboxId}
               className={styles.listbox({ className: listboxClassNames?.listbox })}
               role="listbox"
-              aria-activedescendant=""
+              aria-activedescendant={focused?.id}
               aria-roledescription="select one" // TODO: make it correct according to select/multiselect
               style={{ maxHeight }}
             >
               {options?.length ? (
                 options.map((option, index) => {
                   const isDisabled = getOptionDisabled?.(option) || false;
+                  const isSelected = isOptionEqualToValue
+                    ? isOptionEqualToValue(option, value)
+                    : value?.label === option.label && value.value === option.value;
 
                   return (
                     <Fragment key={getOptionKey ? getOptionKey(option) : option.label}>
@@ -545,15 +587,11 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
                         option={option}
                         className={styles.option({ className: listboxClassNames?.option })}
                         isDisabled={isDisabled}
-                        isSelected={
-                          isOptionEqualToValue
-                            ? isOptionEqualToValue(option, value)
-                            : value === option
-                        }
                         isFocused={focused?.index === index}
                         index={index}
                         onSelect={onSelect}
                         getOptionLabel={getOptionLabel}
+                        isSelected={isSelected}
                       />
 
                       {index + 1 !== options.length && (

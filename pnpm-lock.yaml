@@ -484,6 +484,9 @@ importers:
       react-dom:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     devDependencies:
       '@types/lodash.omit':
         specifier: ^4.5.8
@@ -491,6 +494,9 @@ importers:
       '@types/lodash.pick':
         specifier: ^4.4.9
         version: 4.4.9
+      '@types/uuid':
+        specifier: ^9.0.7
+        version: 9.0.7
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -13081,7 +13087,6 @@ packages:
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
-    dev: true
 
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
