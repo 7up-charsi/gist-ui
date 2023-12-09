@@ -65,7 +65,7 @@ const input = tv({
     },
     hideNativeInput: {
       true: {
-        input: "aboslute bottom-0 left-0 opacity-0 pointer-events-none",
+        input: "absolute bottom-0 left-0 opacity-0 pointer-events-none",
       },
     },
     customPlaceholder: {
