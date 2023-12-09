@@ -5,13 +5,14 @@ const input = tv({
   slots: {
     base: "flex flex-col gap-1 w-64 group",
     inputWrapper: [
-      "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2",
+      "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2 relative",
       groupDataFocusVisible,
     ],
     input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0 truncate",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
     required: "text-danger ml-1",
+    customInput: "grow text-inherit truncate pointer-events-none select-none",
   },
   variants: {
     variant: {
@@ -60,6 +61,16 @@ const input = tv({
       },
       outside: {
         label: "ml-2 font-medium cursor-pointer place-self-start",
+      },
+    },
+    hideNativeInput: {
+      true: {
+        input: "aboslute bottom-0 left-0 opacity-0 pointer-events-none",
+      },
+    },
+    customPlaceholder: {
+      true: {
+        customInput: "opacity-80",
       },
     },
   },

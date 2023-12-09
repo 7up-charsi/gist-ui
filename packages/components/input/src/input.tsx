@@ -11,7 +11,9 @@ import { forwardRef, useId, useImperativeHandle, useRef, useState } from "react"
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
-export interface InputProps extends InputVariantProps, HoverProps {
+export interface InputProps
+  extends Omit<InputVariantProps, "hideNativeInput" | "customPlaceholder">,
+    HoverProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
   id?: string;
   placeholder?: string;
@@ -36,6 +38,11 @@ export interface InputProps extends InputVariantProps, HoverProps {
    */
   a11yFeedback?: "polite" | "assertive";
   inputProps?: NativeInputProps;
+  /**
+   * Indicates whether to use native input or div. As div is used when you dont want to allow select input text
+   * @default false
+   */
+  hideNativeInput?: boolean;
 }
 
 const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
@@ -67,7 +74,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     onChange: onChangeProp,
   } = props;
 
-  const { color, isDisabled, labelPlacement = "outside" } = variantProps;
+  const { color, isDisabled, labelPlacement = "outside", hideNativeInput } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -173,6 +180,17 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         {hideLabel && <VisuallyHidden asChild>{labelHTML}</VisuallyHidden>}
 
         {startContent}
+
+        {hideNativeInput ? (
+          <div
+            className={styles.customInput({
+              className: classNames?.input,
+              customPlaceholder: !!(placeholder && !value),
+            })}
+          >
+            {value || placeholder}
+          </div>
+        ) : null}
         <input
           {...inputProps}
           {...focusProps}
