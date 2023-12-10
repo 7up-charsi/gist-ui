@@ -3,7 +3,7 @@ import { Slot } from "@gist-ui/slot";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePress } from "react-aria";
+import { usePress } from "@react-aria/interactions";
 import { useScrollLock } from "@gist-ui/use-scroll-lock";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
 import { createPortal } from "react-dom";

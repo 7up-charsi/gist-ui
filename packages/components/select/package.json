@@ -48,7 +48,7 @@
     "@gist-ui/use-controllable-state": "workspace:*",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
-    "react-aria": "^3.29.0",
+    "@react-aria/interactions": "^3.20.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef } from "react";
 import { InternalSelectOption, SelectProps, onSelectProps } from "./select";
-import { useHover, usePress } from "react-aria";
+import { useHover, usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
 interface OptionProps {

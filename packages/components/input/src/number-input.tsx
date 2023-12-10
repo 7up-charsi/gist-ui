@@ -7,7 +7,7 @@ import { Button } from "@gist-ui/button";
 import { __DEV__ } from "@gist-ui/shared-utils";
 import { GistUiError } from "@gist-ui/error";
 import { useControllableState } from "@gist-ui/use-controllable-state";
-import { useLongPress } from "react-aria";
+import { useLongPress } from "@react-aria/interactions";
 
 export interface NumberInputProps extends Omit<InputProps, "type" | "onChange" | "defaultValue"> {
   classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };

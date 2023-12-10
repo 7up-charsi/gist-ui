@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useHover, useFocus, useFocusVisible } from "react-aria";
+import { useHover, useFocus, useFocusVisible } from "@react-aria/interactions";
 import { mergeProps } from "@gist-ui/react-utils";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";

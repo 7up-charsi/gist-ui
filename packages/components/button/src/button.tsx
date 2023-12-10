@@ -6,7 +6,8 @@ import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
-import { useFocusRing, PressProps, usePress, useHover, HoverEvents } from "react-aria";
+import { PressProps, usePress, useHover, HoverEvents } from "@react-aria/interactions";
+import { useFocusRing } from "@react-aria/focus";
 import {
   ButtonHTMLAttributes,
   Children,

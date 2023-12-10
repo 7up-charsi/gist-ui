@@ -7,7 +7,7 @@ import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { useFocusVisible } from "react-aria";
+import { useFocusVisible } from "@react-aria/interactions";
 import { Option } from "./option";
 import { GistUiError } from "@gist-ui/error";
 import { v4 as uuidv4 } from "uuid";

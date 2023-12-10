@@ -4,7 +4,7 @@ import { VisuallyHidden } from "@gist-ui/visually-hidden";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { FocusTrap } from "@gist-ui/focus-trap";
 import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePress } from "react-aria";
+import { usePress } from "@react-aria/interactions";
 import * as Popper from "@gist-ui/popper";
 import { createPortal } from "react-dom";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
