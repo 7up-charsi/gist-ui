@@ -40,7 +40,6 @@
   "dependencies": {
     "@gist-ui/error": "workspace:*",
     "@gist-ui/icon": "workspace:*",
-    "@gist-ui/input": "workspace:^",
     "@gist-ui/react-utils": "workspace:*",
     "@gist-ui/shared-utils": "workspace:*",
     "@gist-ui/slot": "workspace:*",
