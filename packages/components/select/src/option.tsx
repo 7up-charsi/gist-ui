@@ -1,33 +1,43 @@
-import { forwardRef, useEffect, useRef } from "react";
-import { InternalSelectOption, SelectProps, onSelectProps } from "./select";
+import { cloneElement, forwardRef, isValidElement, useEffect, useRef } from "react";
+import { InternalSelectOption, SelectOptionProps } from "./select";
 import { useHover, usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 
-interface OptionProps {
+export interface OptionProps {
   option: InternalSelectOption;
   isDisabled: boolean;
   isSelected: boolean;
   isFocused: boolean;
   className: string;
-  index: number;
-  onSelect: (options: onSelectProps, select: boolean) => () => void;
-  getOptionLabel: SelectProps["getOptionLabel"];
+  onSelect: () => void;
+  onFocus: () => void;
+  label: string;
+  children?: React.ReactNode;
 }
 
 export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
-  const { option, className, isDisabled, isSelected, isFocused, onSelect, getOptionLabel, index } =
-    props;
+  const {
+    option,
+    className,
+    isDisabled,
+    isSelected,
+    isFocused,
+    onSelect,
+    label,
+    onFocus,
+    children,
+  } = props;
 
   const innerRef = useRef<HTMLDivElement>(null);
 
-  const { pressProps } = usePress({
+  const { pressProps, isPressed } = usePress({
     isDisabled,
-    onPress: onSelect({ index, isDisabled, option }, true),
+    onPress: onSelect,
   });
 
   const { hoverProps, isHovered } = useHover({
     isDisabled,
-    onHoverStart: onSelect({ index, isDisabled, option }, false),
+    onHoverStart: onFocus,
   });
 
   useEffect(() => {
@@ -44,12 +54,26 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
       data-disabled={isDisabled}
       data-selected={isSelected}
       data-focused={isFocused}
+      data-pressed={isPressed}
       role="option"
       className={className}
       aria-checked={isDisabled ? undefined : isSelected}
       {...mergeProps(pressProps, hoverProps)}
     >
-      {<span>{getOptionLabel ? getOptionLabel(option) : option.label}</span>}
+      {children
+        ? isValidElement(children) &&
+          cloneElement(children, {
+            option,
+            label,
+            state: {
+              isPressed,
+              isHovered,
+              isDisabled,
+              isSelected,
+              isFocused,
+            },
+          } as SelectOptionProps)
+        : label}
     </div>
   );
 });

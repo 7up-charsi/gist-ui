@@ -22,6 +22,10 @@ const config: StorybookConfig = {
   features: {
     storyStoreV7: true,
   },
+
+  typescript: {
+    reactDocgen: "react-docgen",
+  },
 };
 
 export default config;

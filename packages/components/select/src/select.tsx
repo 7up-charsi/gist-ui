@@ -49,10 +49,22 @@ const closeIcon = (
   </svg>
 );
 
-export interface onSelectProps {
+interface onSelectProps {
   option: InternalSelectOption;
   isDisabled: boolean;
   index: number;
+}
+
+export interface SelectOptionProps {
+  option: SelectOption;
+  label: string;
+  state: {
+    isPressed: boolean;
+    isHovered: boolean;
+    isDisabled: boolean;
+    isSelected: boolean;
+    isFocused: boolean;
+  };
 }
 
 export type SelectOption = {
@@ -102,7 +114,7 @@ const variantPropsKeys = select.variantKeys.filter((e) => e !== "rounded");
 
 export interface SelectProps
   extends Omit<SelectVariantProps, "rounded">,
-    Omit<InputProps, "defaultValue" | "value" | "onChange"> {
+    Omit<InputProps, "defaultValue" | "value" | "onChange" | "hideNativeInput"> {
   listboxRounded?: SelectVariantProps["rounded"];
   /**
    * This prop value is use in `listbox` style.maxHeight
@@ -142,6 +154,10 @@ export interface SelectProps
   defaultValue?: SelectOption;
   value?: SelectOption | null;
   onChange?: (e: { target: { value?: SelectOption | null } }) => void;
+  /**
+   * Used to customize options
+   */
+  children?: React.ReactNode;
 }
 
 const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
@@ -166,6 +182,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     getOptionKey,
     getOptionLabel,
     isOptionEqualToValue,
+    children,
   } = props;
 
   const options = useMemo(
@@ -225,16 +242,14 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   const { isFocusVisible } = useFocusVisible();
 
   const onSelect = useCallback(
-    ({ option, isDisabled, index }: onSelectProps, select: boolean) =>
+    ({ option, isDisabled, index }: onSelectProps) =>
       () => {
         if (isDisabled) return;
 
-        if (select) {
-          setValue(option);
-          state.value = option;
-          state.index = index;
-          handleClose();
-        }
+        setValue(option);
+        state.value = option;
+        state.index = index;
+        handleClose();
 
         setFocused({ option, index, id: option.id });
         state.focused = option;
@@ -243,6 +258,19 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
       },
 
     [handleClose, setValue, state],
+  );
+
+  const onFocus = useCallback(
+    ({ option, isDisabled, index }: onSelectProps) =>
+      () => {
+        if (isDisabled) return;
+
+        setFocused({ option, index, id: option.id });
+        state.focused = option;
+        state.focusedIndex = index;
+        state.focusedId = option.id;
+      },
+    [state],
   );
 
   const undoValue = useCallback(() => {
@@ -416,7 +444,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
       const Enter = e.key === "Enter";
 
       if (Space || Enter) {
-        onSelect({ option: state.focused!, index: state.focusedIndex!, isDisabled: false }, true)();
+        onSelect({ option: state.focused!, index: state.focusedIndex!, isDisabled: false })();
 
         return;
       }
@@ -586,14 +614,16 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
                     <Fragment key={getOptionKey ? getOptionKey(option) : option.label}>
                       <Option
                         option={option}
-                        className={styles.option({ className: listboxClassNames?.option })}
                         isDisabled={isDisabled}
-                        isFocused={focused?.index === index}
-                        index={index}
-                        onSelect={onSelect}
-                        getOptionLabel={getOptionLabel}
                         isSelected={isSelected}
-                      />
+                        isFocused={focused?.index === index}
+                        label={getOptionLabel ? getOptionLabel(option) : option.label}
+                        className={styles.option({ className: listboxClassNames?.option })}
+                        onSelect={onSelect({ index, isDisabled, option })}
+                        onFocus={onFocus({ index, isDisabled, option })}
+                      >
+                        {children}
+                      </Option>
 
                       {index + 1 !== options.length && (
                         <div
