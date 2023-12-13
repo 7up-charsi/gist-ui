@@ -37,7 +37,7 @@ const caretDown = (
   </svg>
 );
 
-const closeIcon = (
+const clearIcon = (
   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
     <path
       stroke="currentColor"
@@ -55,18 +55,6 @@ interface onSelectProps {
   index: number;
 }
 
-export interface SelectOptionProps {
-  option: SelectOption;
-  label: string;
-  state: {
-    isPressed: boolean;
-    isHovered: boolean;
-    isDisabled: boolean;
-    isSelected: boolean;
-    isFocused: boolean;
-  };
-}
-
 export type SelectOption = {
   label: string;
   value: string;
@@ -78,7 +66,17 @@ export type InternalSelectOption = {
   id: string;
 };
 
-// const keys: { [key in keyof Popper.FloatingProps]: undefined } = {};
+export type RenderOptionProps = {
+  option: SelectOption;
+  label: string;
+  state: {
+    isPressed: boolean;
+    isHovered: boolean;
+    isDisabled: boolean;
+    isSelected: boolean;
+    isFocused: boolean;
+  };
+};
 
 const inputPropsKeys = [
   "a11yFeedback",
@@ -154,10 +152,7 @@ export interface SelectProps
   defaultValue?: SelectOption;
   value?: SelectOption | null;
   onChange?: (e: { target: { value?: SelectOption | null } }) => void;
-  /**
-   * Used to customize options
-   */
-  children?: React.ReactNode;
+  renderOption?: (props: RenderOptionProps) => React.ReactNode;
 }
 
 const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
@@ -182,7 +177,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     getOptionKey,
     getOptionLabel,
     isOptionEqualToValue,
-    children,
+    renderOption,
   } = props;
 
   const options = useMemo(
@@ -567,7 +562,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
                 asChild
                 onPress={handleClear}
               >
-                <div>{closeIcon}</div>
+                <div>{clearIcon}</div>
               </Button>
             )}
 
@@ -621,9 +616,8 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
                         className={styles.option({ className: listboxClassNames?.option })}
                         onSelect={onSelect({ index, isDisabled, option })}
                         onFocus={onFocus({ index, isDisabled, option })}
-                      >
-                        {children}
-                      </Option>
+                        renderOption={renderOption}
+                      />
 
                       {index + 1 !== options.length && (
                         <div

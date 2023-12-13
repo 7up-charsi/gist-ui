@@ -1,7 +1,8 @@
-import { cloneElement, forwardRef, isValidElement, useEffect, useRef } from "react";
-import { InternalSelectOption, SelectOptionProps } from "./select";
+import { forwardRef, useEffect, useRef } from "react";
+import { InternalSelectOption, SelectProps } from "./select";
 import { useHover, usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
+import { Slot } from "@gist-ui/slot";
 
 export interface OptionProps {
   option: InternalSelectOption;
@@ -12,7 +13,7 @@ export interface OptionProps {
   onSelect: () => void;
   onFocus: () => void;
   label: string;
-  children?: React.ReactNode;
+  renderOption?: SelectProps["renderOption"];
 }
 
 export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
@@ -25,7 +26,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
     onSelect,
     label,
     onFocus,
-    children,
+    renderOption,
   } = props;
 
   const innerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
   }, [isFocused]);
 
   return (
-    <div
+    <Slot<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>
       id={option.id}
       ref={mergeRefs(ref, innerRef)}
       data-hovered={isHovered}
@@ -60,21 +61,22 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
       aria-checked={isDisabled ? undefined : isSelected}
       {...mergeProps(pressProps, hoverProps)}
     >
-      {children
-        ? isValidElement(children) &&
-          cloneElement(children, {
-            option,
-            label,
-            state: {
-              isPressed,
-              isHovered,
-              isDisabled,
-              isSelected,
-              isFocused,
-            },
-          } as SelectOptionProps)
-        : label}
-    </div>
+      {renderOption ? (
+        renderOption({
+          option,
+          label,
+          state: {
+            isPressed,
+            isHovered,
+            isDisabled,
+            isSelected,
+            isFocused,
+          },
+        })
+      ) : (
+        <div>{label}</div>
+      )}
+    </Slot>
   );
 });
 

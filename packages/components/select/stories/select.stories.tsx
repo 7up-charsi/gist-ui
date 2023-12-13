@@ -17,7 +17,7 @@ const options = Array.from({ length: 15 }).map((_ele, i) => ({
   value: `option ${i + 1}`,
 }));
 
-const Template = (args: SelectProps) => (
+const DefaultTemplate = (args: SelectProps) => (
   <Select
     {...args}
     label="select"
@@ -35,5 +35,34 @@ const Template = (args: SelectProps) => (
 );
 
 export const Default: StoryObj<SelectProps> = {
-  render: Template,
+  render: DefaultTemplate,
+};
+
+const CustomOptionTemplate = (args: SelectProps) => (
+  <Select
+    {...args}
+    label="select"
+    options={options}
+    getOptionDisabled={(option) =>
+      typeof option === "string"
+        ? false
+        : option.value === "option 1" ||
+          option.value === "option 15" ||
+          option.value === "option 10"
+    }
+    defaultValue={options[2]}
+    getOptionLabel={(option) => `${option.label} very long label too much`}
+    renderOption={({ label, state }) => {
+      return (
+        <div>
+          <input type="checkbox" checked={state.isSelected} />
+          <span className="ml-2 truncate">{label}</span>
+        </div>
+      );
+    }}
+  />
+);
+
+export const CustomOption: StoryObj<SelectProps> = {
+  render: CustomOptionTemplate,
 };
