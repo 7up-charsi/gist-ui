@@ -1,13 +1,40 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { select } from "@gist-ui/theme";
+import { input, select } from "@gist-ui/theme";
 
 import { Select, SelectProps } from "../src";
 
 const meta: Meta<SelectProps> = {
   title: "Components/Select",
   component: Select,
-  args: select.defaultVariants,
+  args: { ...select.defaultVariants, fullWidth: true },
+  argTypes: {
+    variant: {
+      control: { type: "select" },
+      options: Object.keys(input.variants.variant),
+    },
+    color: {
+      control: { type: "select" },
+      options: Object.keys(input.variants.color),
+    },
+    shadow: {
+      control: { type: "select" },
+      options: Object.keys(select.variants.shadow),
+    },
+    rounded: {
+      control: { type: "select" },
+      options: Object.keys(input.variants.rounded),
+      if: { arg: "rounded", exists: true },
+    },
+    size: {
+      control: { type: "select" },
+      options: Object.keys(input.variants.size),
+    },
+    fullWidth: {
+      control: { type: "boolean" },
+      name: "full width",
+    },
+  },
 };
 
 export default meta;
