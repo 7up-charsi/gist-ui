@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, VariantProps, tv } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  VariantProps,
+  tv,
+} from "tailwind-variants";
 
 const floatingArrow = tv({
   slots: {
@@ -7,6 +12,9 @@ const floatingArrow = tv({
 });
 
 export type FloatingArrowVariantProps = VariantProps<typeof floatingArrow>;
-export type FloatingArrowClassNames = SlotsClassValue<typeof floatingArrow.slots, ClassValue>;
+export type FloatingArrowClassNames = SlotsClassValue<
+  typeof floatingArrow.slots,
+  ClassValue
+>;
 
 export { floatingArrow };

@@ -10,7 +10,11 @@ export const createContextScope = <ContextValue extends object>(
   const Provider = (props: ContextValue & { children?: React.ReactNode }) => {
     const { children, ...rest } = props;
 
-    return <Context.Provider value={rest as ContextValue}>{children}</Context.Provider>;
+    return (
+      <Context.Provider value={rest as ContextValue}>
+        {children}
+      </Context.Provider>
+    );
   };
 
   const useContext = (consumerName: string) => {

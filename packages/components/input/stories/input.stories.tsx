@@ -64,7 +64,9 @@ export const Input: StoryObj<InputProps> = {
   render: InputTemplate,
 };
 
-const PasswordTemplate = (args: PasswordInputProps) => <PasswordInput {...args} />;
+const PasswordTemplate = (args: PasswordInputProps) => (
+  <PasswordInput {...args} />
+);
 
 export const Password: StoryObj<PasswordInputProps> = {
   render: PasswordTemplate,

@@ -50,25 +50,29 @@ const reactIcon = (
 
 const DefaultTemplate = (args: ButtonProps) => (
   <div className="p-5 flex flex-col gap-6 items-center">
-    {(Object.keys(button.variants.variant) as [keyof typeof button.variants.variant]).map(
-      (variant, idx) => (
-        <div key={idx} className="flex flex-col gap-4">
-          <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
-            {variant}
-          </span>
+    {(
+      Object.keys(button.variants.variant) as [
+        keyof typeof button.variants.variant,
+      ]
+    ).map((variant, idx) => (
+      <div key={idx} className="flex flex-col gap-4">
+        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+          {variant}
+        </span>
 
-          <div className="flex flex-wrap gap-4">
-            {(Object.keys(button.variants.color) as [keyof typeof button.variants.color]).map(
-              (color, i) => (
-                <Button key={i} {...args} variant={variant} color={color}>
-                  {color[0].toUpperCase() + color.slice(1)}
-                </Button>
-              ),
-            )}
-          </div>
+        <div className="flex flex-wrap gap-4">
+          {(
+            Object.keys(button.variants.color) as [
+              keyof typeof button.variants.color,
+            ]
+          ).map((color, i) => (
+            <Button key={i} {...args} variant={variant} color={color}>
+              {color[0].toUpperCase() + color.slice(1)}
+            </Button>
+          ))}
         </div>
-      ),
-    )}
+      </div>
+    ))}
   </div>
 );
 
@@ -82,52 +86,56 @@ export const Default: StoryObj<ButtonProps> = {
 
 const WithConentTemplate = (args: ButtonProps) => (
   <div className="p-5 flex flex-col gap-6 items-center data-[theme=dark]:bg-background">
-    {(Object.keys(button.variants.variant) as [keyof typeof button.variants.variant]).map(
-      (variant, idx) => (
-        <div key={idx} className="flex flex-col gap-4">
-          <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
-            {variant}
-          </span>
+    {(
+      Object.keys(button.variants.variant) as [
+        keyof typeof button.variants.variant,
+      ]
+    ).map((variant, idx) => (
+      <div key={idx} className="flex flex-col gap-4">
+        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+          {variant}
+        </span>
 
-          {["start", "end", "start / end"].map((position, i) => (
-            <div key={i} className="pl-5 flex flex-col gap-3">
-              <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
-                {position} content
-              </span>
+        {["start", "end", "start / end"].map((position, i) => (
+          <div key={i} className="pl-5 flex flex-col gap-3">
+            <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+              {position} content
+            </span>
 
-              <div className="flex flex-wrap gap-4 pl-5">
-                {(Object.keys(button.variants.color) as [keyof typeof button.variants.color]).map(
-                  (color, i) => (
-                    <Button
-                      key={i}
-                      {...args}
-                      variant={variant}
-                      color={color}
-                      startContent={
-                        position !== "end" && (
-                          <Icon fill size={args.size}>
-                            {reactIcon}
-                          </Icon>
-                        )
-                      }
-                      endContent={
-                        position !== "start" && (
-                          <Icon fill size={args.size}>
-                            {reactIcon}
-                          </Icon>
-                        )
-                      }
-                    >
-                      {color[0].toUpperCase() + color.slice(1)}
-                    </Button>
-                  ),
-                )}
-              </div>
+            <div className="flex flex-wrap gap-4 pl-5">
+              {(
+                Object.keys(button.variants.color) as [
+                  keyof typeof button.variants.color,
+                ]
+              ).map((color, i) => (
+                <Button
+                  key={i}
+                  {...args}
+                  variant={variant}
+                  color={color}
+                  startContent={
+                    position !== "end" && (
+                      <Icon fill size={args.size}>
+                        {reactIcon}
+                      </Icon>
+                    )
+                  }
+                  endContent={
+                    position !== "start" && (
+                      <Icon fill size={args.size}>
+                        {reactIcon}
+                      </Icon>
+                    )
+                  }
+                >
+                  {color[0].toUpperCase() + color.slice(1)}
+                </Button>
+              ))}
             </div>
-          ))}
-        </div>
-      ),
-    )}
+          </div>
+        ))}
+      </div>
+    ))}
   </div>
 );
 
@@ -141,25 +149,37 @@ export const WithContent: StoryObj<ButtonProps> = {
 
 const IconOnlyTemplate = (args: ButtonProps) => (
   <div className="p-5 flex flex-col gap-6 items-center data-[theme=dark]:bg-background">
-    {(Object.keys(button.variants.variant) as [keyof typeof button.variants.variant]).map(
-      (variant, idx) => (
-        <div key={idx} className="flex flex-col gap-4">
-          <span className="text-foreground pl-3 uppercase text-sm font-medium">{variant}</span>
+    {(
+      Object.keys(button.variants.variant) as [
+        keyof typeof button.variants.variant,
+      ]
+    ).map((variant, idx) => (
+      <div key={idx} className="flex flex-col gap-4">
+        <span className="text-foreground pl-3 uppercase text-sm font-medium">
+          {variant}
+        </span>
 
-          <div className="flex flex-wrap gap-4">
-            {(Object.keys(button.variants.color) as [keyof typeof button.variants.color]).map(
-              (color, i) => (
-                <Button key={i} {...args} variant={variant} color={color} isIconOnly>
-                  <Icon fill size={args.size}>
-                    {reactIcon}
-                  </Icon>
-                </Button>
-              ),
-            )}
-          </div>
+        <div className="flex flex-wrap gap-4">
+          {(
+            Object.keys(button.variants.color) as [
+              keyof typeof button.variants.color,
+            ]
+          ).map((color, i) => (
+            <Button
+              key={i}
+              {...args}
+              variant={variant}
+              color={color}
+              isIconOnly
+            >
+              <Icon fill size={args.size}>
+                {reactIcon}
+              </Icon>
+            </Button>
+          ))}
         </div>
-      ),
-    )}
+      </div>
+    ))}
   </div>
 );
 

@@ -6,7 +6,10 @@ export interface SlotProps {
   children?: React.ReactNode;
 }
 
-const Slot = <E extends HTMLElement>(props: SlotProps, ref: React.ForwardedRef<E>) => {
+const Slot = <E extends HTMLElement>(
+  props: SlotProps,
+  ref: React.ForwardedRef<E>,
+) => {
   const { children, ...slotProps } = props;
 
   const count = Children.count(children);
@@ -17,7 +20,10 @@ const Slot = <E extends HTMLElement>(props: SlotProps, ref: React.ForwardedRef<E
   return cloneElement(children, {
     ...mergeProps(slotProps, children.props),
     ref: ref
-      ? mergeRefs(ref, (children as unknown as { ref: React.ForwardedRef<E> }).ref)
+      ? mergeRefs(
+          ref,
+          (children as unknown as { ref: React.ForwardedRef<E> }).ref,
+        )
       : (children as unknown as { ref: React.ForwardedRef<E> }).ref,
   } as Partial<unknown>);
 };

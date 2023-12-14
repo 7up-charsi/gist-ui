@@ -265,7 +265,9 @@ export const Portal = (props: PortalProps) => {
 
   if (context.keepMounted) {
     return createPortal(
-      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>{children}</div>,
+      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>
+        {children}
+      </div>,
       container,
     );
   }
@@ -305,15 +307,25 @@ export const Content = (props: ContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
-  const { pressProps } = usePress({ onPress: () => context.handleClose("virtual") });
+  const { pressProps } = usePress({
+    onPress: () => context.handleClose("virtual"),
+  });
 
   const childCount = Children.count(children);
   if (!childCount) return;
   if (childCount > 1) throw new GistUiError("Content", onlyChildError);
-  if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
+  if (!isValidElement(children))
+    throw new GistUiError("Content", validChildError);
 
-  if (__DEV__ && !children.props["aria-label"] && !children.props["aria-labelledby"])
-    throw new GistUiError("Content", 'add "aria-label" or "aria-labelledby" for accessibility');
+  if (
+    __DEV__ &&
+    !children.props["aria-label"] &&
+    !children.props["aria-labelledby"]
+  )
+    throw new GistUiError(
+      "Content",
+      'add "aria-label" or "aria-labelledby" for accessibility',
+    );
 
   if (__DEV__ && !children.props["aria-describedby"])
     console.warn("Content", '"aria-describedby" is optional but recommended');

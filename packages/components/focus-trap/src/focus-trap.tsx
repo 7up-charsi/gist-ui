@@ -32,7 +32,15 @@ export interface FocusTrapProps {
 }
 
 const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
-  const { loop = true, trapped = true, asChild, children, isDisabled, scope, ...restProps } = props;
+  const {
+    loop = true,
+    trapped = true,
+    asChild,
+    children,
+    isDisabled,
+    scope,
+    ...restProps
+  } = props;
 
   const Component = asChild ? Slot : "div";
 
@@ -98,7 +106,8 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     document.addEventListener("focusout", handleFocusOut);
 
     const mutationObserver = new MutationObserver(handleMutations);
-    if (container) mutationObserver.observe(container, { childList: true, subtree: true });
+    if (container)
+      mutationObserver.observe(container, { childList: true, subtree: true });
 
     return () => {
       document.removeEventListener("focusin", handleFocusIn);
@@ -111,12 +120,16 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     if (!container) return;
     if (isDisabled) return;
 
-    const previouslyActiveElement = document.activeElement as HTMLElement | null;
+    const previouslyActiveElement =
+      document.activeElement as HTMLElement | null;
 
     focusScopesStack?.add(focusScope);
 
     if (!("focus" in container))
-      throw new GistUiError("FocusTrap", "container must be focusable, hint =  set tabIndex to -1");
+      throw new GistUiError(
+        "FocusTrap",
+        "container must be focusable, hint =  set tabIndex to -1",
+      );
 
     container.focus?.();
 

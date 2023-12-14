@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, VariantProps, tv } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  VariantProps,
+  tv,
+} from "tailwind-variants";
 import { dataFocusVisible } from "../classes";
 
 const button = tv({

@@ -71,7 +71,9 @@ export const Reference = (props: ReferenceProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virturalElement]);
 
-  return virturalElement ? null : <Slot ref={context.setReference}>{children}</Slot>;
+  return virturalElement ? null : (
+    <Slot ref={context.setReference}>{children}</Slot>
+  );
 };
 
 Reference.displayName = "gist-ui." + Reference_Name;
@@ -86,7 +88,8 @@ interface ArrowContext {
   shouldHideArrow: boolean;
 }
 
-const [ArrowProvider, useArrowContext] = createContextScope<ArrowContext>(Floating_Name);
+const [ArrowProvider, useArrowContext] =
+  createContextScope<ArrowContext>(Floating_Name);
 
 export interface FloatingProps {
   children?: React.ReactNode;
@@ -184,7 +187,9 @@ export const Floating = (props: FloatingProps) => {
     placement: placementProp,
     elements: { reference: context.reference },
     whileElementsMounted: (...args) =>
-      autoUpdate(...args, { animationFrame: updatePositionStrategy === "always" }),
+      autoUpdate(...args, {
+        animationFrame: updatePositionStrategy === "always",
+      }),
     middleware: [
       offset({
         mainAxis: mainOffset + (arrowSize?.height ?? 0),
@@ -209,7 +214,8 @@ export const Floating = (props: FloatingProps) => {
           }),
         }),
       arrowProp && arrowMiddleware({ padding: arrowPadding, element: arrow }),
-      hideWhenDetached && hide({ strategy: "referenceHidden", ...detectOverflow }),
+      hideWhenDetached &&
+        hide({ strategy: "referenceHidden", ...detectOverflow }),
     ],
   });
 
@@ -252,7 +258,10 @@ const OPPOSITE_SIDE: Record<Side, Side> = {
   left: "right",
 };
 
-export const Arrow = forwardRef<SVGSVGElement, React.SVGAttributes<SVGSVGElement>>((props, ref) => {
+export const Arrow = forwardRef<
+  SVGSVGElement,
+  React.SVGAttributes<SVGSVGElement>
+>((props, ref) => {
   const context = useArrowContext(Arrow_Name);
   const baseSide = OPPOSITE_SIDE[context.side];
 

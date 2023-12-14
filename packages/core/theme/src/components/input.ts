@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, VariantProps, tv } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  VariantProps,
+  tv,
+} from "tailwind-variants";
 import { groupDataFocusVisible } from "../classes";
 
 const input = tv({
@@ -8,7 +13,8 @@ const input = tv({
       "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2 relative",
       groupDataFocusVisible,
     ],
-    input: "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0 truncate",
+    input:
+      "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0 truncate",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
     helperText: "px-1 text-xs",
     required: "text-danger ml-1",
@@ -57,7 +63,8 @@ const input = tv({
     },
     labelPlacement: {
       inside: {
-        label: "-order-1 pointer-events-none select-none text-sm mr-2 font-medium cursor-text",
+        label:
+          "-order-1 pointer-events-none select-none text-sm mr-2 font-medium cursor-text",
       },
       outside: {
         label: "ml-2 font-medium cursor-pointer place-self-start",

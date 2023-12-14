@@ -6,7 +6,12 @@ import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
 import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
-import { PressProps, usePress, useHover, HoverEvents } from "@react-aria/interactions";
+import {
+  PressProps,
+  usePress,
+  useHover,
+  HoverEvents,
+} from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import {
   ButtonHTMLAttributes,
@@ -21,7 +26,12 @@ import { useCallbackRef } from "@gist-ui/use-callback-ref";
 
 // const sss: { [key in keyof HoverEvents]: string } = {};
 
-const ripplePropsKeys = ["duration", "timingFunction", "completedFactor", "pointerCenter"] as const;
+const ripplePropsKeys = [
+  "duration",
+  "timingFunction",
+  "completedFactor",
+  "pointerCenter",
+] as const;
 
 const pressPropsKeys = [
   "onPress",
@@ -38,7 +48,10 @@ const hoverPropsKeys = ["onHoverChange", "onHoverEnd", "onHoverStart"] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | "className" | "disabled">,
+    Omit<
+      ButtonHTMLAttributes<HTMLButtonElement>,
+      "color" | "className" | "disabled"
+    >,
     UseRippleProps,
     Omit<PressProps, "isPressed" | "isDisabled">,
     HoverEvents {
@@ -70,7 +83,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
     ...hoverPropsKeys,
   );
 
-  const { startContent, endContent, classNames, asChild, children, ...rest } = props;
+  const { startContent, endContent, classNames, asChild, children, ...rest } =
+    props;
 
   const onPress = useCallbackRef(onPressProp);
   const onPressEnd = useCallbackRef(onPressEndProp);
@@ -108,19 +122,33 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const styles = button(variantProps);
 
-  if (__DEV__ && isIconOnly && !props["aria-label"] && !props["aria-labelledby"])
-    console.warn('Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"');
+  if (
+    __DEV__ &&
+    isIconOnly &&
+    !props["aria-label"] &&
+    !props["aria-labelledby"]
+  )
+    console.warn(
+      'Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"',
+    );
 
   if (asChild) {
     const countChild = Children.count(children);
     if (!countChild) return;
     if (countChild > 1) throw new GistUiError("button", onlyChildError);
-    if (!isValidElement(children)) throw new GistUiError("button", validChildError);
+    if (!isValidElement(children))
+      throw new GistUiError("button", validChildError);
   }
 
   return (
     <Component
-      {...mergeProps({ onPointerDown: rippleEvent }, pressProps, focusProps, hoverProps, rest)}
+      {...mergeProps(
+        { onPointerDown: rippleEvent },
+        pressProps,
+        focusProps,
+        hoverProps,
+        rest,
+      )}
       data-pointer-pressed={isPressed}
       data-keyboard-pressed={isFocusVisible && isPressed}
       data-hovered={isHovered}

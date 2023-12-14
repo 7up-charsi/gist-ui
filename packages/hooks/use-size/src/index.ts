@@ -1,7 +1,9 @@
 import { useLayoutEffect, useState } from "react";
 
 const useSize = <E extends HTMLElement>(element: E | null) => {
-  const [size, setSize] = useState<{ width: number; height: number } | undefined>(undefined);
+  const [size, setSize] = useState<
+    { width: number; height: number } | undefined
+  >(undefined);
 
   useLayoutEffect(() => {
     if (element) {

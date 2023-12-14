@@ -11,7 +11,12 @@ const meta: Meta<IconProps> = {
 export default meta;
 
 const svgIcon = (
-  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 20 18"
+  >
     <path
       stroke="currentColor"
       strokeLinecap="round"

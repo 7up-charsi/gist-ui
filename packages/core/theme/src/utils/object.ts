@@ -37,7 +37,9 @@ export function removeDefaultKeys<T extends Record<string, string>>(obj: T) {
   return newObj;
 }
 
-export const flattenThemeObject = <T, R extends Record<string, string>>(obj: T) =>
+export const flattenThemeObject = <T, R extends Record<string, string>>(
+  obj: T,
+) =>
   removeDefaultKeys(
     flatten<T, R>(obj, {
       safe: true,

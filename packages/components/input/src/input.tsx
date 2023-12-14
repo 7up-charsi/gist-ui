@@ -8,7 +8,13 @@ import { NativeInputProps } from "./types";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { forwardRef, useId, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useId,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
@@ -75,7 +81,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     onChange: onChangeProp,
   } = props;
 
-  const { color, isDisabled, labelPlacement = "outside", hideNativeInput } = variantProps;
+  const {
+    color,
+    isDisabled,
+    labelPlacement = "outside",
+    hideNativeInput,
+  } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -138,7 +149,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     >
       {label}
       {required && (
-        <span className={styles.required({ className: classNames?.required })} aria-hidden="true">
+        <span
+          className={styles.required({ className: classNames?.required })}
+          aria-hidden="true"
+        >
           *
         </span>
       )}
@@ -214,7 +228,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
       </div>
 
       {helperText && (
-        <div id={helperTextId} className={styles.helperText({ className: classNames?.helperText })}>
+        <div
+          id={helperTextId}
+          className={styles.helperText({ className: classNames?.helperText })}
+        >
           {helperText}
         </div>
       )}

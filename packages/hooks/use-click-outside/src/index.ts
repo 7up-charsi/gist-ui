@@ -25,8 +25,15 @@ export interface UseClickOutsideProps {
   onEvent?: "pointerup" | "pointerdown";
 }
 
-const useClickOutside = <R extends HTMLElement>(props: UseClickOutsideProps) => {
-  const { callback, isDisabled, closeButton = 0, onEvent = "pointerup" } = props;
+const useClickOutside = <R extends HTMLElement>(
+  props: UseClickOutsideProps,
+) => {
+  const {
+    callback,
+    isDisabled,
+    closeButton = 0,
+    onEvent = "pointerup",
+  } = props;
 
   const callbackRef = useCallbackRef(callback);
 

@@ -33,7 +33,9 @@ export interface UseScrollOverflowProps<R> {
   ref?: RefObject<R>;
 }
 
-const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<R> = {}) => {
+const useScrollOverflow = <R extends HTMLElement>(
+  props: UseScrollOverflowProps<R> = {},
+) => {
   const {
     isDisabled,
     direction = "vertical",
@@ -51,9 +53,11 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
     if (!el || isDisabled) return;
 
     const clearOverflow = () => {
-      ["top", "bottom", "top-bottom", "left", "right", "left-right"].forEach((attr) => {
-        el.removeAttribute(`data-${attr}-scroll`);
-      });
+      ["top", "bottom", "top-bottom", "left", "right", "left-right"].forEach(
+        (attr) => {
+          el.removeAttribute(`data-${attr}-scroll`);
+        },
+      );
     };
 
     // controlled
@@ -88,7 +92,10 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
 
       directions.forEach(({ type, prefix, suffix }) => {
         if (direction === type || direction === "both") {
-          const hasBefore = type === "vertical" ? el.scrollTop > offset : el.scrollLeft > offset;
+          const hasBefore =
+            type === "vertical"
+              ? el.scrollTop > offset
+              : el.scrollLeft > offset;
           const hasAfter =
             type === "vertical"
               ? el.scrollTop + el.clientHeight + offset < el.scrollHeight
@@ -114,7 +121,13 @@ const useScrollOverflow = <R extends HTMLElement>(props: UseScrollOverflowProps<
             */
 
             const next: ScrollOverflowVisibility =
-              hasBefore && hasAfter ? "both" : hasBefore ? prefix : hasAfter ? suffix : "none";
+              hasBefore && hasAfter
+                ? "both"
+                : hasBefore
+                ? prefix
+                : hasAfter
+                ? suffix
+                : "none";
 
             if (next !== prevVisiblility.current) {
               onVisibilityChange?.(next);

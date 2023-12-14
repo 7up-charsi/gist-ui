@@ -1,7 +1,12 @@
 import * as dialog from "./dialog";
 
 // export types
-export type { RootProps, ContentProps, PortalProps, TriggerProps } from "./dialog";
+export type {
+  RootProps,
+  ContentProps,
+  PortalProps,
+  TriggerProps,
+} from "./dialog";
 
 // export component
 export const Root = dialog.Root;

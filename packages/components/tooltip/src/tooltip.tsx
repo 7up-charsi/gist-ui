@@ -3,7 +3,11 @@ import { useHover, useFocus, useFocusVisible } from "@react-aria/interactions";
 import { mergeProps } from "@gist-ui/react-utils";
 import { useControllableState } from "@gist-ui/use-controllable-state";
 import { Slot } from "@gist-ui/slot";
-import { TooltipClassNames, TooltipVariantProps, tooltip } from "@gist-ui/theme";
+import {
+  TooltipClassNames,
+  TooltipVariantProps,
+  tooltip,
+} from "@gist-ui/theme";
 import { useIsDisabled } from "@gist-ui/use-is-disabled";
 import { createContextScope } from "@gist-ui/context";
 import * as Popper from "@gist-ui/popper";
@@ -298,7 +302,9 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(Portal_Name);
 
-  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
+  return (
+    <>{context.isOpen && createPortal(children, container || document.body)}</>
+  );
 };
 
 Portal.displayName = "gist-ui." + Portal_Name;
@@ -307,56 +313,60 @@ Portal.displayName = "gist-ui." + Portal_Name;
 
 const Content_Name = "Tooltip.Content";
 
-export interface ContentProps extends TooltipVariantProps, Popper.FloatingProps {
+export interface ContentProps
+  extends TooltipVariantProps,
+    Popper.FloatingProps {
   children?: ReactNode;
   asChild?: boolean;
   classNames?: TooltipClassNames;
   disableInteractive?: boolean;
 }
 
-export const Content = forwardRef<HTMLDivElement, ContentProps>((_props, ref) => {
-  const variantProps = pick(_props, ...tooltip.variantKeys);
-  const props = omit(_props, ...tooltip.variantKeys);
+export const Content = forwardRef<HTMLDivElement, ContentProps>(
+  (_props, ref) => {
+    const variantProps = pick(_props, ...tooltip.variantKeys);
+    const props = omit(_props, ...tooltip.variantKeys);
 
-  const { children, asChild, disableInteractive, classNames } = props;
+    const { children, asChild, disableInteractive, classNames } = props;
 
-  const context = useContext(Content_Name);
+    const context = useContext(Content_Name);
 
-  const Component = asChild ? Slot : "div";
+    const Component = asChild ? Slot : "div";
 
-  const { hoverProps: tooltipHoverProps } = useHover({
-    isDisabled: disableInteractive,
-    onHoverStart: () => {
-      context.showTooltip(true);
-    },
-    onHoverEnd: () => {
-      context.hideTooltip();
-    },
-  });
+    const { hoverProps: tooltipHoverProps } = useHover({
+      isDisabled: disableInteractive,
+      onHoverStart: () => {
+        context.showTooltip(true);
+      },
+      onHoverEnd: () => {
+        context.hideTooltip();
+      },
+    });
 
-  useEffect(() => {
-    if (isValidElement(children)) {
-      context.setGivenId((children.props as { id?: string }).id || "");
-    }
+    useEffect(() => {
+      if (isValidElement(children)) {
+        context.setGivenId((children.props as { id?: string }).id || "");
+      }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [children]);
 
-  const styles = tooltip(variantProps);
+    const styles = tooltip(variantProps);
 
-  return (
-    <Popper.Floating>
-      <Component
-        ref={ref}
-        role="tooltip"
-        className={styles.base({ className: classNames?.base })}
-        {...tooltipHoverProps}
-        id={context.id}
-      >
-        {children}
-      </Component>
-    </Popper.Floating>
-  );
-});
+    return (
+      <Popper.Floating>
+        <Component
+          ref={ref}
+          role="tooltip"
+          className={styles.base({ className: classNames?.base })}
+          {...tooltipHoverProps}
+          id={context.id}
+        >
+          {children}
+        </Component>
+      </Popper.Floating>
+    );
+  },
+);
 
 Content.displayName = "gist-ui." + Content_Name;

@@ -75,9 +75,10 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
               <h3 className="text-lg first-letter:uppercase">nice heading</h3>
 
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis aperiam facere,
-                molestias eius suscipit in, est distinctio deserunt culpa odit, sunt nostrum. Ad
-                culpa excepturi assumenda perferendis similique dolore qui.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+                aperiam facere, molestias eius suscipit in, est distinctio
+                deserunt culpa odit, sunt nostrum. Ad culpa excepturi assumenda
+                perferendis similique dolore qui.
               </p>
             </div>
           </Popover.Content>

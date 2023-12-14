@@ -3,7 +3,13 @@ import * as popover from "./popover";
 export { Arrow } from "@gist-ui/popper";
 
 // export types
-export type { RootProps, TriggerProps, CloseProps, ContentProps, PortalProps } from "./popover";
+export type {
+  RootProps,
+  TriggerProps,
+  CloseProps,
+  ContentProps,
+  PortalProps,
+} from "./popover";
 
 // export component
 export const Root = popover.Root;

@@ -16,7 +16,9 @@ export interface UseScrollLockProps<E> {
   direction?: Direction;
 }
 
-const useScrollLock = <E extends HTMLElement>(props: UseScrollLockProps<E> = {}) => {
+const useScrollLock = <E extends HTMLElement>(
+  props: UseScrollLockProps<E> = {},
+) => {
   const { ref, enabled, direction = "both" } = props;
 
   useEffect(() => {
@@ -42,8 +44,12 @@ const useScrollLock = <E extends HTMLElement>(props: UseScrollLockProps<E> = {})
       ? innerHeight - document.documentElement.offsetHeight
       : ele.offsetHeight - ele.clientHeight;
 
-    const paddingRight = `${parseInt(originalPaddingRight, 10) + verticalScrollBarWidth}px`;
-    const paddingBottom = `${parseInt(originalPaddingBottom, 10) + horizontalScrollBarHeight}px`;
+    const paddingRight = `${
+      parseInt(originalPaddingRight, 10) + verticalScrollBarWidth
+    }px`;
+    const paddingBottom = `${
+      parseInt(originalPaddingBottom, 10) + horizontalScrollBarHeight
+    }px`;
 
     if (direction === "both") {
       ele.style.overflowY = "hidden";

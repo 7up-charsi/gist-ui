@@ -75,7 +75,9 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
                 if (e.propertyName === "opacity") ripple.remove();
               });
             },
-            diff > completedFactor * duration ? 0 : completedFactor * duration - diff,
+            diff > completedFactor * duration
+              ? 0
+              : completedFactor * duration - diff,
           );
         };
 
@@ -117,7 +119,9 @@ const createRipple = (
     border-radius: 50%;
     background-color: var(--rippleBg);
     scale: 0;
-    transition: scale ${duration}ms ${timingFunction}, opacity ${duration * 0.7}ms ease-in-out;
+    transition: scale ${duration}ms ${timingFunction}, opacity ${
+      duration * 0.7
+    }ms ease-in-out;
     `;
 
   requestAnimationFrame(() => {

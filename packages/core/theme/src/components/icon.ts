@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  tv,
+  VariantProps,
+} from "tailwind-variants";
 
 const icon = tv({
   slots: {

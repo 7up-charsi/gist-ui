@@ -6,10 +6,18 @@ import Color from "color";
 import { GistUiError } from "@gist-ui/error";
 import { semanticColors } from "./semantic";
 import { flattenThemeObject } from "./utils/object";
-import { ConfigTheme, ConfigThemes, DefaultThemeType, GistuiConfig } from "./types";
+import {
+  ConfigTheme,
+  ConfigThemes,
+  DefaultThemeType,
+  GistuiConfig,
+} from "./types";
 import { defaultLayout, lightLayout, darkLayout } from "./layout";
 
-const corePlugin = (themes: ConfigThemes = {}, defaultTheme: DefaultThemeType) => {
+const corePlugin = (
+  themes: ConfigThemes = {},
+  defaultTheme: DefaultThemeType,
+) => {
   const variants: { name: string; definition: string[] }[] = [];
   const utilities: Record<string, Record<string, unknown>> = {};
   const colorObject: Record<string, string> = {};
@@ -17,7 +25,8 @@ const corePlugin = (themes: ConfigThemes = {}, defaultTheme: DefaultThemeType) =
 
   Object.entries(themes).forEach(([themeName, { extend, colors, layout }]) => {
     let selector = `.${themeName} ,[data-theme="${themeName}"]`;
-    const scheme = themeName === "light" || themeName === "dark" ? themeName : extend;
+    const scheme =
+      themeName === "light" || themeName === "dark" ? themeName : extend;
 
     if (themeName === defaultTheme) {
       selector = `:root,${selector}`;
@@ -136,20 +145,26 @@ export const gistui = (config: GistuiConfig) => {
 
   const otherThemes = omit(userThemes, "light", "dark") || {};
 
-  Object.entries(otherThemes).forEach(([themeName, { extend, colors, layout }]) => {
-    const baseTheme = extend === "light" || extend === "dark" ? extend : defaultExtendTheme;
+  Object.entries(otherThemes).forEach(
+    ([themeName, { extend, colors, layout }]) => {
+      const baseTheme =
+        extend === "light" || extend === "dark" ? extend : defaultExtendTheme;
 
-    if (colors && typeof colors === "object") {
-      otherThemes[themeName].colors = deepmerge(semanticColors[baseTheme], colors);
-    }
+      if (colors && typeof colors === "object") {
+        otherThemes[themeName].colors = deepmerge(
+          semanticColors[baseTheme],
+          colors,
+        );
+      }
 
-    if (layout && typeof layout === "object") {
-      otherThemes[themeName].layout = deepmerge(
-        extend ? baseLayouts[extend] : defaultLayoutObj,
-        layout,
-      );
-    }
-  });
+      if (layout && typeof layout === "object") {
+        otherThemes[themeName].layout = deepmerge(
+          extend ? baseLayouts[extend] : defaultLayoutObj,
+          layout,
+        );
+      }
+    },
+  );
 
   const lightTheme: ConfigTheme = {
     colors: deepmerge(semanticColors.light, userLightTheme),

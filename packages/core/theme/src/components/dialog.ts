@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  tv,
+  VariantProps,
+} from "tailwind-variants";
 
 const dialog = tv({
   slots: {
@@ -8,7 +13,8 @@ const dialog = tv({
     header:
       "grow-0 shrink-0 min-h-[55px] flex items-center justify-start py-2 px-6 text-large font-semibold",
     body: "flex-1 px-6 py-2",
-    footer: "grow-0 shrink-0 flex gap-2 px-6 py-2 items-center justify-end min-h-[55px]",
+    footer:
+      "grow-0 shrink-0 flex gap-2 px-6 py-2 items-center justify-end min-h-[55px]",
   },
   variants: {
     backdrop: {
@@ -89,7 +95,9 @@ const dialog = tv({
       "3xl": { base: "max-w-3xl" },
       "4xl": { base: "max-w-4xl" },
       "5xl": { base: "max-w-5xl" },
-      full: { base: "my-0 mx-0 max-w-full max-h-full h-[100dvh] !rounded-none" },
+      full: {
+        base: "my-0 mx-0 max-w-full max-h-full h-[100dvh] !rounded-none",
+      },
     },
     fullWidth: {
       true: {

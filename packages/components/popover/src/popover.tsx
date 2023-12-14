@@ -174,7 +174,9 @@ export interface PortalProps {
 export const Portal = ({ children, container }: PortalProps) => {
   const context = useContext(Portal_Name);
 
-  return <>{context.isOpen && createPortal(children, container || document.body)}</>;
+  return (
+    <>{context.isOpen && createPortal(children, container || document.body)}</>
+  );
 };
 
 Portal.displayName = "gist-ui." + Portal_Name;
@@ -209,7 +211,8 @@ export const Content = (props: ContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
-  if (!isValidElement(children)) throw new GistUiError("Content", validChildError);
+  if (!isValidElement(children))
+    throw new GistUiError("Content", validChildError);
 
   return (
     <Popper.Floating {...restProps}>

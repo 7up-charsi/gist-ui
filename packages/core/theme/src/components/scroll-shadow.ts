@@ -1,4 +1,9 @@
-import { ClassValue, SlotsClassValue, tv, type VariantProps } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  tv,
+  type VariantProps,
+} from "tailwind-variants";
 
 const verticalShadow = [
   "data-[top-scroll=true]:shadow-[inset_0px_10px_9px_-3px_rgba(0,0,0,0.1)]",
@@ -56,6 +61,9 @@ const scrollShadow = tv({
 });
 
 export type ScrollShadowVariantProps = VariantProps<typeof scrollShadow>;
-export type ScrollShadowClassNames = SlotsClassValue<typeof scrollShadow.slots, ClassValue>;
+export type ScrollShadowClassNames = SlotsClassValue<
+  typeof scrollShadow.slots,
+  ClassValue
+>;
 
 export { scrollShadow };
