@@ -2,12 +2,17 @@ import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { input, select } from "@gist-ui/theme";
 
-import { Select, SelectProps } from "../src";
+import {
+  Select,
+  SelectProps,
+  MultipleSelect,
+  MultipleSelectProps,
+} from "../src";
 
 const meta: Meta<SelectProps> = {
   title: "Components/Select",
   component: Select,
-  args: { ...select.defaultVariants, fullWidth: true },
+  args: { ...select.defaultVariants, fullWidth: false },
   argTypes: {
     variant: {
       control: { type: "select" },
@@ -57,7 +62,6 @@ const DefaultTemplate = (args: SelectProps) => (
           option.value === "option 10"
     }
     defaultValue={options[2]}
-    getOptionLabel={(option) => `${option.label} very long label too much`}
   />
 );
 
@@ -78,12 +82,11 @@ const CustomOptionTemplate = (args: SelectProps) => (
           option.value === "option 10"
     }
     defaultValue={options[2]}
-    getOptionLabel={(option) => `${option.label} very long label too much`}
-    renderOption={({ label, state }) => {
+    renderOption={({ option, state }) => {
       return (
         <div>
-          <input type="checkbox" checked={state.isSelected} />
-          <span className="ml-2 truncate">{label}</span>
+          <input type="checkbox" checked={state.isSelected} readOnly />
+          <span className="ml-2 truncate">{option.label}</span>
         </div>
       );
     }}
@@ -92,4 +95,32 @@ const CustomOptionTemplate = (args: SelectProps) => (
 
 export const CustomOption: StoryObj<SelectProps> = {
   render: CustomOptionTemplate,
+};
+
+const MultipleSelectTemplate = (args: MultipleSelectProps) => (
+  <MultipleSelect
+    {...args}
+    label="select"
+    options={options}
+    getOptionDisabled={(option) =>
+      typeof option === "string"
+        ? false
+        : option.value === "option 1" ||
+          option.value === "option 15" ||
+          option.value === "option 10"
+    }
+    defaultValue={[options[2]]}
+    renderOption={({ option, state }) => {
+      return (
+        <div>
+          <input type="checkbox" checked={state.isSelected} readOnly />
+          <span className="ml-2 truncate">{option.label}</span>
+        </div>
+      );
+    }}
+  />
+);
+
+export const Multiple: StoryObj<MultipleSelectProps> = {
+  render: MultipleSelectTemplate,
 };

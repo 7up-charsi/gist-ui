@@ -1,19 +1,20 @@
-import { forwardRef, useEffect, useRef } from "react";
-import { InternalSelectOption, SelectProps } from "./select";
+import { forwardRef, useEffect, useId, useRef } from "react";
+import { SelectProps, SelectOption } from "./select";
 import { useHover, usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
 import { Slot } from "@gist-ui/slot";
 
-export interface OptionProps {
-  option: InternalSelectOption;
+interface OptionProps {
+  option: SelectOption;
   isDisabled: boolean;
   isSelected: boolean;
   isFocused: boolean;
   className: string;
   onSelect: () => void;
   onFocus: () => void;
-  label: string;
   renderOption?: SelectProps["renderOption"];
+  setFocusedId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  label: string;
 }
 
 export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
@@ -24,12 +25,14 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
     isSelected,
     isFocused,
     onSelect,
-    label,
     onFocus,
     renderOption,
+    setFocusedId,
+    label,
   } = props;
 
   const innerRef = useRef<HTMLDivElement>(null);
+  const id = useId();
 
   const { pressProps, isPressed } = usePress({
     isDisabled,
@@ -42,14 +45,21 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
   });
 
   useEffect(() => {
+    if (isFocused) setFocusedId(id);
+  }, [id, isFocused, setFocusedId]);
+
+  useEffect(() => {
     if (isFocused) {
-      innerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      innerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     }
   }, [isFocused]);
 
   return (
     <Slot<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>
-      id={option.id}
+      id={id}
       ref={mergeRefs(ref, innerRef)}
       data-hovered={isHovered}
       data-disabled={isDisabled}

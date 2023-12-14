@@ -1,10 +1,15 @@
-import { ClassValue, SlotsClassValue, tv, VariantProps } from "tailwind-variants";
+import {
+  ClassValue,
+  SlotsClassValue,
+  tv,
+  VariantProps,
+} from "tailwind-variants";
 
 const select = tv({
   slots: {
     listbox: "w-[--reference-width] bg-white border overflow-y-auto",
     option:
-      "flex items-center px-2 select-none truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-default-200",
+      "flex items-center px-2 select-none truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-default-200 data-[focused=true]:data-[selected=true]:bg-info-300",
     emptyText: "h-10 flex items-center justify-center capitalize text-default",
     optionSeperator: "h-px bg-default-200",
     endContent: "flex",

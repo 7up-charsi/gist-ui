@@ -1,10 +1,10 @@
 import * as select from "./select";
-import * as option from "./option";
+import * as multipleSelect from "./multiple-select";
 
 // export types
-export type { SelectProps } from "./select";
-export type { OptionProps } from "./option";
+export type { SelectProps, RenderOptionProps, SelectOption } from "./select";
+export type { MultipleSelectProps } from "./multiple-select";
 
 // export component
 export const Select = select.default;
-export const Option = option.Option;
+export const MultipleSelect = multipleSelect.default;
