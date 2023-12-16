@@ -59,7 +59,7 @@ const input = tv({
       true: { base: "w-full" },
     },
     isDisabled: {
-      true: { inputWrapper: "disabled" },
+      true: { base: "disabled" },
     },
     labelPlacement: {
       inside: {

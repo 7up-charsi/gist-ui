@@ -1,6 +1,7 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { input, select } from "@gist-ui/theme";
+import { select } from "@gist-ui/theme";
+import InputStoryMeta from "@gist-ui/input/stories/input.stories";
 
 import {
   Select,
@@ -12,32 +13,12 @@ import {
 const meta: Meta<SelectProps> = {
   title: "Components/Select",
   component: Select,
-  args: { ...select.defaultVariants, fullWidth: false },
+  args: { ...select.defaultVariants, ...InputStoryMeta.args },
   argTypes: {
-    variant: {
-      control: { type: "select" },
-      options: Object.keys(input.variants.variant),
-    },
-    color: {
-      control: { type: "select" },
-      options: Object.keys(input.variants.color),
-    },
+    ...InputStoryMeta.argTypes,
     shadow: {
       control: { type: "select" },
       options: Object.keys(select.variants.shadow),
-    },
-    rounded: {
-      control: { type: "select" },
-      options: Object.keys(input.variants.rounded),
-      if: { arg: "rounded", exists: true },
-    },
-    size: {
-      control: { type: "select" },
-      options: Object.keys(input.variants.size),
-    },
-    fullWidth: {
-      control: { type: "boolean" },
-      name: "full width",
     },
   },
 };
@@ -110,6 +91,26 @@ const MultipleSelectTemplate = (args: MultipleSelectProps) => (
           option.value === "option 10"
     }
     defaultValue={[options[2]]}
+  />
+);
+
+export const Multiple: StoryObj<MultipleSelectProps> = {
+  render: MultipleSelectTemplate,
+};
+
+const MultipleCustomOptonTemplate = (args: MultipleSelectProps) => (
+  <MultipleSelect
+    {...args}
+    label="select"
+    options={options}
+    getOptionDisabled={(option) =>
+      typeof option === "string"
+        ? false
+        : option.value === "option 1" ||
+          option.value === "option 15" ||
+          option.value === "option 10"
+    }
+    defaultValue={[options[2]]}
     renderOption={({ option, state }) => {
       return (
         <div>
@@ -121,6 +122,6 @@ const MultipleSelectTemplate = (args: MultipleSelectProps) => (
   />
 );
 
-export const Multiple: StoryObj<MultipleSelectProps> = {
-  render: MultipleSelectTemplate,
+export const MultipleCustomOption: StoryObj<MultipleSelectProps> = {
+  render: MultipleCustomOptonTemplate,
 };
