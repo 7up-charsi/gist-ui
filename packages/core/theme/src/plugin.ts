@@ -1,18 +1,12 @@
 import plugin from "tailwindcss/plugin";
-import omit from "lodash.omit";
 import kebabCase from "lodash.kebabcase";
 import deepmerge from "deepmerge";
 import Color from "color";
 import { GistUiError } from "@gist-ui/error";
 import { semanticColors } from "./semantic";
 import { flattenThemeObject } from "./utils/object";
-import {
-  ConfigTheme,
-  ConfigThemes,
-  DefaultThemeType,
-  GistuiConfig,
-} from "./types";
-import { defaultLayout, lightLayout, darkLayout } from "./layout";
+import { ConfigThemes, DefaultThemeType, GistuiConfig } from "./types";
+import { defaultLayout } from "./layout";
 
 const corePlugin = (
   themes: ConfigThemes = {},
@@ -114,73 +108,40 @@ const corePlugin = (
   );
 };
 
-export const gistui = (config: GistuiConfig) => {
-  const {
-    themes: userThemes = {},
-    layout: userLayout = {},
-    defaultExtendTheme = "light",
-    defaultTheme = "light",
-  } = config || {};
+export const gistui = ({
+  themes: userThemes = {},
+  defaultTheme = "light",
+}: GistuiConfig = {}) => {
+  //
+
   if (userThemes && typeof userThemes !== "object")
     throw new GistUiError("plugin", "themes must be object");
 
-  if (userLayout && typeof userLayout !== "object")
-    throw new GistUiError("plugin", "layout must be object");
-
-  const userLightTheme = userThemes?.light?.colors || {};
-  const userDarkTheme = userThemes?.dark?.colors || {};
-
-  const defaultLayoutObj = deepmerge(defaultLayout, userLayout);
-
-  const baseLayouts = {
+  const themes: ConfigThemes = {
+    ...userThemes,
     light: {
-      ...defaultLayout,
-      ...lightLayout,
+      extend: "light",
+      colors: userThemes?.light?.colors,
+      layout: userThemes?.light?.layout,
     },
     dark: {
-      ...defaultLayoutObj,
-      ...darkLayout,
+      extend: "dark",
+      colors: userThemes?.dark?.colors,
+      layout: userThemes?.dark?.layout,
     },
   };
 
-  const otherThemes = omit(userThemes, "light", "dark") || {};
-
-  Object.entries(otherThemes).forEach(
-    ([themeName, { extend, colors, layout }]) => {
-      const baseTheme =
-        extend === "light" || extend === "dark" ? extend : defaultExtendTheme;
-
+  Object.entries(themes).forEach(
+    ([themeName, { extend = "light", colors = {}, layout = {} }]) => {
       if (colors && typeof colors === "object") {
-        otherThemes[themeName].colors = deepmerge(
-          semanticColors[baseTheme],
-          colors,
-        );
+        themes[themeName].colors = deepmerge(semanticColors[extend], colors);
       }
 
       if (layout && typeof layout === "object") {
-        otherThemes[themeName].layout = deepmerge(
-          extend ? baseLayouts[extend] : defaultLayoutObj,
-          layout,
-        );
+        themes[themeName].layout = deepmerge(defaultLayout, layout);
       }
     },
   );
-
-  const lightTheme: ConfigTheme = {
-    colors: deepmerge(semanticColors.light, userLightTheme),
-    layout: deepmerge(baseLayouts.light, userThemes.light?.layout || {}),
-  };
-
-  const darkTheme: ConfigTheme = {
-    colors: deepmerge(semanticColors.dark, userDarkTheme),
-    layout: deepmerge(baseLayouts.dark, userThemes.dark?.layout || {}),
-  };
-
-  const themes = {
-    light: lightTheme,
-    dark: darkTheme,
-    ...otherThemes,
-  };
 
   return corePlugin(themes, defaultTheme);
 };

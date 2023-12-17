@@ -40,7 +40,8 @@ module.exports = function main(
               return "Hook name must start with 'use-'";
 
             // check is case is correct
-            if (value !== value.toLowerCase()) return `${gen} name must be in lowercase`;
+            if (value !== value.toLowerCase())
+              return `${gen} name must be in lowercase`;
 
             // cannot have spaces
             if (value.includes(" ")) return `${gen} name cannot have spaces`;
@@ -82,7 +83,8 @@ module.exports = function main(
           outDir:
             gen === "package"
               ? outDir
-              : (gen === "component" && "components") || (gen === "hook" && "hooks"),
+              : (gen === "component" && "components") ||
+                (gen === "hook" && "hooks"),
         };
 
         actions.push({

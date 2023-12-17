@@ -7,7 +7,3 @@ export const defaultLayout: LayoutTheme = {
     lg: "14px",
   },
 };
-
-export const lightLayout: LayoutTheme = {};
-
-export const darkLayout: LayoutTheme = {};
