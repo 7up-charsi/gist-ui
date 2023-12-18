@@ -8,6 +8,8 @@ import {
   SelectProps,
   MultipleSelect,
   MultipleSelectProps,
+  AutoComplete as AutoCompleteComp,
+  AutoCompleteProps,
 } from "../src";
 
 const meta: Meta<SelectProps> = {
@@ -124,4 +126,24 @@ const MultipleCustomOptonTemplate = (args: MultipleSelectProps) => (
 
 export const MultipleCustomOption: StoryObj<MultipleSelectProps> = {
   render: MultipleCustomOptonTemplate,
+};
+
+const AutoCompleteTemplate = (args: AutoCompleteProps) => (
+  <AutoCompleteComp
+    {...args}
+    label="select"
+    options={options}
+    getOptionDisabled={(option) =>
+      typeof option === "string"
+        ? false
+        : option.value === "option 1" ||
+          option.value === "option 15" ||
+          option.value === "option 10"
+    }
+    defaultValue={options[2]}
+  />
+);
+
+export const AutoComplete: StoryObj<AutoCompleteProps> = {
+  render: AutoCompleteTemplate,
 };
