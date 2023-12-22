@@ -1,24 +1,16 @@
-import { zinc, emerald, amber, red, blue, sky } from "tailwindcss/colors";
 import type { ThemeColors, SemanticBaseColors } from "./types";
 import { swapColorValues } from "./utils/object";
+import {
+  zinc,
+  emerald,
+  amber,
+  red,
+  blue,
+  sky,
+  neutral,
+} from "tailwindcss/colors";
 
-// tuscany
 const primary = {
-  "50": "#fef1f9",
-  "100": "#fee5f6",
-  "200": "#ffcbef",
-  "300": "#ffa1df",
-  "400": "#ff52bf",
-  "500": "#fa3aae",
-  "600": "#ea188b",
-  "700": "#cc0a70",
-  "800": "#a80c5c",
-  "900": "#8c0f4e",
-  "950": "#56012c",
-};
-
-// cerulean-blue
-const secondary = {
   "50": "#faf5ff",
   "100": "#f2e8ff",
   "200": "#e7d4ff",
@@ -30,6 +22,20 @@ const secondary = {
   "800": "#641faa",
   "900": "#531b88",
   "950": "#360665",
+};
+
+const secondary = {
+  "50": "#fdf3ff",
+  "100": "#fae7ff",
+  "200": "#f4ceff",
+  "300": "#f0a7ff",
+  "400": "#e97aff",
+  "500": "#d93ef7",
+  "600": "#c01edb",
+  "700": "#a315b6",
+  "800": "#871395",
+  "900": "#711679",
+  "950": "#4a0151",
 };
 
 const base: SemanticBaseColors = {
@@ -105,11 +111,6 @@ const base: SemanticBaseColors = {
 
 export const themeColorsLight: ThemeColors = {
   ...base.light,
-  default: {
-    ...zinc,
-    foreground: "#ffffff",
-    DEFAULT: zinc[500],
-  },
   primary: {
     ...primary,
     foreground: "#ffffff",
@@ -140,15 +141,15 @@ export const themeColorsLight: ThemeColors = {
     foreground: "#ffffff",
     DEFAULT: red[500],
   },
+  neutral: {
+    ...neutral,
+    foreground: "#ffffff",
+    DEFAULT: neutral[500],
+  },
 };
 
 export const themeColorsDark: ThemeColors = {
   ...base.dark,
-  default: {
-    ...swapColorValues(zinc),
-    foreground: "#ffffff",
-    DEFAULT: zinc[500],
-  },
   primary: {
     ...swapColorValues(primary),
     foreground: "#ffffff",
@@ -178,6 +179,11 @@ export const themeColorsDark: ThemeColors = {
     ...swapColorValues(red),
     foreground: "#ffffff",
     DEFAULT: red[500],
+  },
+  neutral: {
+    ...swapColorValues(neutral),
+    foreground: "#ffffff",
+    DEFAULT: neutral[500],
   },
 };
 

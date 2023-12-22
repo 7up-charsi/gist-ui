@@ -34,13 +34,13 @@ export type BaseColors = {
 };
 
 export type ThemeColors = BaseColors & {
-  default: ColorScale;
   primary: ColorScale;
   secondary: ColorScale;
   success: ColorScale;
   info: ColorScale;
   warning: ColorScale;
   danger: ColorScale;
+  neutral: ColorScale;
 };
 
 export type SemanticBaseColors = {

@@ -4,42 +4,42 @@ import {
   VariantProps,
   tv,
 } from "tailwind-variants";
-import { groupDataFocusVisible } from "../classes";
 
 const input = tv({
   slots: {
     base: "flex flex-col gap-1 w-64 group",
-    inputWrapper: [
-      "w-full flex gap-2 items-center cursor-text transition-[background,border] px-2 relative",
-      groupDataFocusVisible,
-    ],
-    input:
-      "appearance-none !bg-transparent outline-none h-full grow text-inherit w-0 truncate",
     label: "first-letter:uppercase whitespace-nowrap text-sm",
-    helperText: "px-1 text-xs",
+    inputWrapper: [],
+    input:
+      "appearance-none !bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:text-neutral-500",
+    helperText: "px-2 text-xs text-neutral",
     required: "text-danger ml-1",
-    customInput: "grow text-inherit truncate pointer-events-none select-none",
+    customInput: "grow truncate pointer-events-none select-none",
   },
   variants: {
     variant: {
-      border: { inputWrapper: "border" },
-      flat: {},
+      border: {
+        inputWrapper: [
+          "w-full flex gap-2 items-center cursor-text px-2 relative border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral rounded",
+        ],
+      },
+      filled: {
+        inputWrapper: [
+          "w-full flex gap-2 items-center cursor-text transition-colors px-2 relative bg-neutral-200/50 group-data-[hovered=true]:group-data-[focused=false]:bg-neutral-200/70 rounded-t",
+
+          "before:absolute before:left-0 before:bottom-0 before:w-full before:border-b before:border-b-neutral",
+
+          "after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center",
+        ],
+      },
     },
     color: {
-      default: {},
       primary: {},
       secondary: {},
       success: {},
       info: {},
       warning: {},
       danger: {},
-    },
-    rounded: {
-      none: { inputWrapper: "rounded-none" },
-      sm: { inputWrapper: "rounded-sm" },
-      md: { inputWrapper: "rounded-md" },
-      lg: { inputWrapper: "rounded-lg" },
-      full: { inputWrapper: "rounded-full !px-4" },
     },
     size: {
       sm: {
@@ -64,10 +64,10 @@ const input = tv({
     labelPlacement: {
       inside: {
         label:
-          "-order-1 pointer-events-none select-none text-sm mr-2 font-medium cursor-text",
+          "-order-1 pointer-events-none select-none text-sm mr-2 cursor-text",
       },
       outside: {
-        label: "ml-2 font-medium cursor-pointer place-self-start",
+        label: "ml-2 cursor-pointer place-self-start",
       },
     },
     hideNativeInput: {
@@ -77,175 +77,153 @@ const input = tv({
     },
     customPlaceholder: {
       true: {
-        customInput: "opacity-80",
+        customInput: "text-neutral-700 text-neutral-500",
       },
+    },
+    error: {
+      true: {},
     },
   },
   defaultVariants: {
-    color: "default",
+    color: "primary",
     fullWidth: false,
     isDisabled: false,
-    rounded: "md",
     size: "md",
-    variant: "flat",
+    variant: "filled",
     labelPlacement: "outside",
   },
   compoundVariants: [
-    // flat
+    // filled
     {
-      variant: "flat",
-      color: "default",
-      class: {
-        inputWrapper:
-          "border border-default-200 bg-default-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-default-400 text-default-700",
-        label: "text-default-600",
-        input: "placeholder:text-default-400",
-        helperText: "text-default-600",
-      },
-    },
-    {
-      variant: "flat",
+      variant: "filled",
       color: "primary",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-primary-200 bg-primary-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-primary-400 text-primary-600",
+        inputWrapper: "after:border-b-primary",
         label: "text-primary-600",
-        input: "placeholder:text-primary-400",
-        helperText: "text-primary-600",
       },
     },
     {
-      variant: "flat",
+      variant: "filled",
       color: "secondary",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-secondary-200 bg-secondary-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-secondary-400 text-secondary-600",
+        inputWrapper: "after:border-b-secondary",
         label: "text-secondary-600",
-        input: "placeholder:text-secondary-400",
-        helperText: "text-secondary-600",
       },
     },
     {
-      variant: "flat",
+      variant: "filled",
       color: "success",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-success-200 bg-success-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-success-400 text-success-600",
+        inputWrapper: "after:border-b-success",
         label: "text-success-600",
-        input: "placeholder:text-success-400",
-        helperText: "text-success-600",
       },
     },
     {
-      variant: "flat",
+      variant: "filled",
       color: "info",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-info-200 bg-info-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-info-400 text-info-600",
+        inputWrapper: "after:border-b-info",
         label: "text-info-600",
-        input: "placeholder:text-info-400",
-        helperText: "text-info-600",
       },
     },
     {
-      variant: "flat",
+      variant: "filled",
       color: "warning",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-warning-200 bg-warning-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-warning-400 text-warning-600",
+        inputWrapper: "after:border-b-warning",
         label: "text-warning-600",
-        input: "placeholder:text-warning-400",
-        helperText: "text-warning-600",
       },
     },
     {
-      variant: "flat",
+      variant: "filled",
       color: "danger",
+      error: false,
       class: {
-        inputWrapper:
-          "border border-danger-200 bg-danger-100 group-data-[focused=true]:group-data-[focus-visible=false]:border-danger-400 text-danger-600",
+        inputWrapper: "after:border-b-danger",
         label: "text-danger-600",
-        input: "placeholder:text-danger-400",
-        helperText: "text-danger-600",
       },
     },
 
     // border
     {
       variant: "border",
-      color: "default",
-      class: {
-        inputWrapper:
-          "border-default-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-default-600 text-default-600",
-        label: "text-default-600",
-        input: "placeholder:text-default-400",
-        helperText: "text-default-600",
-      },
-    },
-    {
-      variant: "border",
       color: "primary",
+      error: false,
       class: {
-        inputWrapper:
-          "border-primary-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-primary-600 text-primary-600",
+        inputWrapper: "group-data-[focused=true]:border-primary",
         label: "text-primary-600",
-        input: "placeholder:text-primary-400",
-        helperText: "text-primary-600",
       },
     },
     {
       variant: "border",
       color: "secondary",
+      error: false,
       class: {
-        inputWrapper:
-          "border-secondary-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-secondary-600 text-secondary-600",
+        inputWrapper: "group-data-[focused=true]:border-secondary",
         label: "text-secondary-600",
-        input: "placeholder:text-secondary-400",
-        helperText: "text-secondary-600",
       },
     },
     {
       variant: "border",
       color: "success",
+      error: false,
       class: {
-        inputWrapper:
-          "border-success-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-success-600 text-success-600",
+        inputWrapper: "group-data-[focused=true]:border-success",
         label: "text-success-600",
-        input: "placeholder:text-success-400",
-        helperText: "text-success-600",
       },
     },
     {
       variant: "border",
       color: "info",
+      error: false,
       class: {
-        inputWrapper:
-          "border-info-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-info-600 text-info-600",
+        inputWrapper: "group-data-[focused=true]:border-info",
         label: "text-info-600",
-        input: "placeholder:text-info-400",
-        helperText: "text-info-600",
       },
     },
     {
       variant: "border",
       color: "warning",
+      error: false,
       class: {
-        inputWrapper:
-          "border-warning-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-warning-600 text-warning-600",
+        inputWrapper: "group-data-[focused=true]:border-warning",
         label: "text-warning-600",
-        input: "placeholder:text-warning-400",
-        helperText: "text-warning-600",
       },
     },
     {
       variant: "border",
       color: "danger",
+      error: false,
       class: {
-        inputWrapper:
-          "border-danger-400 group-data-[focused=true]:group-data-[focus-visible=false]:border-danger-600 text-danger-600",
+        inputWrapper: "group-data-[focused=true]:border-danger",
         label: "text-danger-600",
-        input: "placeholder:text-danger-400",
-        helperText: "text-danger-600",
+      },
+    },
+
+    // error
+    {
+      variant: "filled",
+      error: true,
+      class: {
+        inputWrapper: ["before:border-b-danger", "after:border-b-danger"],
+        label: "text-danger",
+        helperText: "text-danger",
+      },
+    },
+    {
+      variant: "border",
+      error: true,
+      class: {
+        inputWrapper: [
+          "border-danger group-data-[focused=false]:group-data-[hovered=true]:border-danger",
+        ],
+        label: "text-danger",
+        helperText: "text-danger",
       },
     },
   ],

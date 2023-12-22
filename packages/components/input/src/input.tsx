@@ -19,7 +19,10 @@ import {
 const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
 
 export interface InputProps
-  extends Omit<InputVariantProps, "hideNativeInput" | "customPlaceholder">,
+  extends Omit<
+      InputVariantProps,
+      "hideNativeInput" | "customPlaceholder" | "error"
+    >,
     HoverProps {
   type?: "text" | "number" | "email" | "password" | "tel" | "url";
   id?: string;
@@ -63,7 +66,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     type = "text",
     id,
     helperText,
-    error,
     errorMessage,
     startContent,
     endContent,
@@ -82,7 +84,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   } = props;
 
   const {
-    color,
+    error,
     isDisabled,
     labelPlacement = "outside",
     hideNativeInput,
@@ -138,7 +140,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   const styles = input({
     ...variantProps,
     isDisabled,
-    color: error ? "danger" : color,
+    error,
   });
 
   const labelHTML = !!label && (
@@ -227,7 +229,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         {endContent}
       </div>
 
-      {helperText && (
+      {!error && helperText && (
         <div
           id={helperTextId}
           className={styles.helperText({ className: classNames?.helperText })}

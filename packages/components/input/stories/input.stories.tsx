@@ -33,11 +33,6 @@ const meta: Meta = {
       options: Object.keys(input.variants.color),
       if: { arg: "color", exists: true },
     },
-    rounded: {
-      control: { type: "select" },
-      options: Object.keys(input.variants.rounded),
-      if: { arg: "rounded", exists: true },
-    },
     size: {
       control: { type: "select" },
       options: Object.keys(input.variants.size),
