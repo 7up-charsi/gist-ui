@@ -21,9 +21,8 @@ const input = tv({
   variants: {
     variant: {
       border: {
-        inputWrapper: [
+        inputWrapper:
           'w-full flex items-center cursor-text transition-colors px-[14px]',
-        ],
         fieldset:
           'absolute left-0 right-0 bottom-0 -top-[10px] m-0 pointer-events-none rounded border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral',
         legend:
@@ -78,16 +77,6 @@ const input = tv({
   compoundVariants: [
     {
       variant: 'filled',
-      size: 'md',
-      hideLabel: false,
-      class: {
-        label: 'translate-y-4 group-data-[filled-within=true]:translate-y-2',
-        startContent: 'mt-[17px]',
-        input: 'pt-[25px] pb-2',
-      },
-    },
-    {
-      variant: 'filled',
       size: 'sm',
       hideLabel: false,
       class: {
@@ -96,17 +85,19 @@ const input = tv({
         input: 'pt-[21px] pb-1',
       },
     },
+    {
+      variant: 'filled',
+      size: 'md',
+      hideLabel: false,
+      class: {
+        label: 'translate-y-4 group-data-[filled-within=true]:translate-y-2',
+        startContent: 'mt-[17px]',
+        input: 'pt-[25px] pb-2',
+      },
+    },
 
     {
       variant: 'border',
-      size: 'md',
-      hideLabel: false,
-      class: {
-        label: 'translate-y-4',
-      },
-    },
-    {
-      variant: 'border',
       size: 'sm',
       hideLabel: false,
       class: {
@@ -116,9 +107,8 @@ const input = tv({
     {
       variant: 'border',
       size: 'md',
-      hideLabel: true,
+      hideLabel: false,
       class: {
-        fieldset: 'inset-0',
         label: 'translate-y-4',
       },
     },
@@ -129,6 +119,15 @@ const input = tv({
       class: {
         fieldset: 'inset-0',
         label: 'translate-y-3',
+      },
+    },
+    {
+      variant: 'border',
+      size: 'md',
+      hideLabel: true,
+      class: {
+        fieldset: 'inset-0',
+        label: 'translate-y-4',
       },
     },
 
