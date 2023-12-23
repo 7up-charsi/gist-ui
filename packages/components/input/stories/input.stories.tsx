@@ -20,7 +20,6 @@ const meta: Meta = {
     errorMessage: 'error message',
     label: 'label',
     error: false,
-    required: true,
     hideLabel: false,
   },
   argTypes: {
@@ -57,6 +56,7 @@ const InputTemplate = (args: InputProps) => (
     endContent={
       args.endContent && <p className="text-neutral">{args.endContent}</p>
     }
+    placeholder="very nice placeholder"
   />
 );
 

@@ -18,7 +18,7 @@ import {
 const hoverPropsKeys = ['onHoverStart', 'onHoverEnd', 'onHoverChange'] as const;
 
 export interface InputProps
-  extends Omit<InputVariantProps, 'customPlaceholder' | 'error'>,
+  extends Omit<InputVariantProps, 'error'>,
     HoverProps {
   type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
   id?: string;
@@ -72,8 +72,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     onChange: onChangeProp,
   } = props;
 
-  const { error, isDisabled, hideNativeInput, hideLabel, variant } =
-    variantProps;
+  const { error, isDisabled, hideLabel, variant } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -140,9 +139,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
-      data-filled-within={
-        isFocused || filled || !!placeholder || !!startContent
-      }
+      data-filled-within={isFocused || filled || !!startContent}
       data-hovered={isHovered}
       data-disabled={isDisabled}
     >
@@ -170,17 +167,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         {startContent && (
           <div className={styles.startContent()}>{startContent}</div>
         )}
-
-        {hideNativeInput ? (
-          <div
-            className={styles.customInput({
-              className: classNames?.input,
-              customPlaceholder: !!(placeholder && !value),
-            })}
-          >
-            {value || placeholder}
-          </div>
-        ) : null}
 
         <input
           {...inputProps}

@@ -11,9 +11,8 @@ const input = tv({
     label: 'first-letter:uppercase',
     inputWrapper: 'relative',
     input:
-      'appearance-none bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:text-neutral-500',
+      'appearance-none bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:opacity-0 placeholder:text-neutral-400 group-data-[filled-within=true]:placeholder:opacity-100',
     helperText: 'px-2 text-sm text-neutral',
-    customInput: 'grow truncate pointer-events-none select-none',
     startContent: 'h-[0.01px] flex items-center mr-2',
     endContent: 'h-[0.01px] flex items-center ml-2',
     fieldset: '',
@@ -61,16 +60,6 @@ const input = tv({
     },
     isDisabled: {
       true: { base: 'disabled' },
-    },
-    hideNativeInput: {
-      true: {
-        input: 'absolute bottom-0 left-0 opacity-0 pointer-events-none',
-      },
-    },
-    customPlaceholder: {
-      true: {
-        customInput: 'text-neutral-700 text-neutral-500',
-      },
     },
     error: {
       true: {},
