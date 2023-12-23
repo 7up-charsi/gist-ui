@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { Slot } from "@gist-ui/slot";
+import { forwardRef } from 'react';
+import { Slot } from '@gist-ui/slot';
 
 export interface VisuallyHiddenProps {
   children?: React.ReactNode;
@@ -10,21 +10,21 @@ const VisuallyHidden = forwardRef<HTMLSpanElement, VisuallyHiddenProps>(
   (props, ref) => {
     const { asChild, children } = props;
 
-    const Component = asChild ? Slot : "span";
+    const Component = asChild ? Slot : 'span';
 
     return (
       <Component
         ref={ref}
         tabIndex={-1}
         style={{
-          position: "absolute",
+          position: 'absolute',
           border: 0,
           width: 1,
           height: 1,
           padding: 0,
           margin: -1,
-          overflow: "hidden",
-          clip: "rect(0, 0, 0, 0)",
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
         }}
       >
         {children}
@@ -33,6 +33,6 @@ const VisuallyHidden = forwardRef<HTMLSpanElement, VisuallyHiddenProps>(
   },
 );
 
-VisuallyHidden.displayName = "gist-ui.VisuallyHidden";
+VisuallyHidden.displayName = 'gist-ui.VisuallyHidden';
 
 export default VisuallyHidden;

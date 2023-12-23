@@ -1,18 +1,18 @@
-import { forwardRef, useCallback, useRef } from "react";
-import Input, { InputProps } from "./input";
-import { mergeRefs } from "@gist-ui/react-utils";
-import { NumberInputClassNames, numberInput } from "@gist-ui/theme";
-import { Icon } from "@gist-ui/icon";
-import { Button } from "@gist-ui/button";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { GistUiError } from "@gist-ui/error";
-import { useControllableState } from "@gist-ui/use-controllable-state";
-import { useLongPress } from "@react-aria/interactions";
+import { forwardRef, useCallback, useRef } from 'react';
+import Input, { InputProps } from './input';
+import { mergeRefs } from '@gist-ui/react-utils';
+import { NumberInputClassNames, numberInput } from '@gist-ui/theme';
+import { Icon } from '@gist-ui/icon';
+import { Button } from '@gist-ui/button';
+import { __DEV__ } from '@gist-ui/shared-utils';
+import { GistUiError } from '@gist-ui/error';
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { useLongPress } from '@react-aria/interactions';
 
 export interface NumberInputProps
-  extends Omit<InputProps, "type" | "onChange" | "defaultValue"> {
-  classNames?: InputProps["classNames"] & { stepButton: NumberInputClassNames };
-  inputMode?: "decimal" | "numeric";
+  extends Omit<InputProps, 'type' | 'onChange' | 'defaultValue'> {
+  classNames?: InputProps['classNames'] & { stepButton: NumberInputClassNames };
+  inputMode?: 'decimal' | 'numeric';
   min?: number;
   max?: number;
   step?: number;
@@ -26,7 +26,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
   (props, ref) => {
     const {
       classNames,
-      inputMode = "numeric",
+      inputMode = 'numeric',
       inputProps,
       min,
       max,
@@ -43,7 +43,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
     const innerRef = useRef<HTMLDivElement>(null);
 
     const [value, setValue] = useControllableState<string>({
-      defaultValue: "",
+      defaultValue: '',
       value: valueProp,
       onChange: (val) => {
         onChange?.({ target: { value: val } });
@@ -62,10 +62,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           const val = +prev;
 
           if (val === max) return prev;
-          if (max && val > max) return max + "";
-          if (min && val < min) return min + "";
+          if (max && val > max) return max + '';
+          if (min && val < min) return min + '';
 
-          return max && val + toAdd > max ? max + "" : `${val + toAdd}`;
+          return max && val + toAdd > max ? max + '' : `${val + toAdd}`;
         });
       },
       [max, min, setValue, step],
@@ -77,22 +77,22 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           const val = +prev;
 
           if (val === min) return prev;
-          if (max && val > max) return max + "";
-          if (min && val < min) return min + "";
+          if (max && val > max) return max + '';
+          if (min && val < min) return min + '';
 
-          return min && +prev - toAdd < min ? min + "" : `${+prev - toAdd}`;
+          return min && +prev - toAdd < min ? min + '' : `${+prev - toAdd}`;
         });
       },
       [max, min, setValue, step],
     );
 
     const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-      const ArrowUp = e.key === "ArrowUp";
-      const ArrowDown = e.key === "ArrowDown";
-      const PageUp = e.key === "PageUp";
-      const PageDown = e.key === "PageDown";
-      const Home = e.key === "Home";
-      const End = e.key === "End";
+      const ArrowUp = e.key === 'ArrowUp';
+      const ArrowDown = e.key === 'ArrowDown';
+      const PageUp = e.key === 'PageUp';
+      const PageDown = e.key === 'PageDown';
+      const Home = e.key === 'Home';
+      const End = e.key === 'End';
       const repeatEvent = e.repeat;
 
       if (ArrowUp || ArrowDown || PageUp || PageDown || Home || End)
@@ -154,26 +154,26 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       if (!target) return;
 
       if (Home && min) {
-        setValue(min + "");
+        setValue(min + '');
         return;
       }
 
       if (Home && !min) {
-        setValue("0");
+        setValue('0');
         return;
       }
 
       if (End && max) {
-        setValue(max + "");
+        setValue(max + '');
         return;
       }
     };
 
     const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-      const ArrowUp = e.key === "ArrowUp";
-      const ArrowDown = e.key === "ArrowDown";
-      const PageUp = e.key === "PageUp";
-      const PageDown = e.key === "PageDown";
+      const ArrowUp = e.key === 'ArrowUp';
+      const ArrowDown = e.key === 'ArrowDown';
+      const PageUp = e.key === 'PageUp';
+      const PageDown = e.key === 'PageDown';
 
       if (ArrowUp || ArrowDown || PageUp || PageDown) {
         clearInterval(state.current.keyDownInterval);
@@ -193,7 +193,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       onLongPress: () => {
         state.current.longPressInterval = setInterval(handleStepUp, repeatRate);
         document.addEventListener(
-          "pointerup",
+          'pointerup',
           () => {
             clearInterval(state.current.longPressInterval);
             state.current.longPressInterval = undefined;
@@ -215,7 +215,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           repeatRate,
         );
         document.addEventListener(
-          "pointerup",
+          'pointerup',
           () => {
             clearInterval(state.current.longPressInterval);
             state.current.longPressInterval = undefined;
@@ -315,10 +315,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
     );
 
     if (__DEV__ && min && max && min > max)
-      throw new GistUiError("NumberInput", '"min" must be lower than "max"');
+      throw new GistUiError('NumberInput', '"min" must be lower than "max"');
     if (__DEV__ && step > largeStep)
       throw new GistUiError(
-        "NumberInput",
+        'NumberInput',
         '"step" must be lower than "largeStep"',
       );
 
@@ -356,6 +356,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
   },
 );
 
-NumberInput.displayName = "gist-ui.NumberInput";
+NumberInput.displayName = 'gist-ui.NumberInput';
 
 export default NumberInput;

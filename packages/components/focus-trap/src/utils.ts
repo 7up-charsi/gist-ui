@@ -44,7 +44,7 @@ export const getTabbables = (container: HTMLElement) => {
       if (
         (node as unknown as { disabled: boolean }).disabled ||
         node.hidden ||
-        (node.tagName === "INPUT" && node.hidden)
+        (node.tagName === 'INPUT' && node.hidden)
       )
         return NodeFilter.FILTER_SKIP;
 
@@ -63,13 +63,13 @@ export const isHidden = (
   node: HTMLElement,
   { upTo }: { upTo?: HTMLElement } = {},
 ) => {
-  if (getComputedStyle(node).visibility === "hidden") return true;
+  if (getComputedStyle(node).visibility === 'hidden') return true;
 
   let _node = node;
 
   while (_node) {
     if (upTo !== undefined && _node === upTo) return false;
-    if (getComputedStyle(_node).display === "none") return true;
+    if (getComputedStyle(_node).display === 'none') return true;
 
     _node = _node.parentElement as HTMLElement;
   }
@@ -89,7 +89,7 @@ export const focus = (
     if (
       element !== previousFocusedElement &&
       element instanceof HTMLInputElement &&
-      "select" in element &&
+      'select' in element &&
       select
     ) {
       element.select();
@@ -98,4 +98,4 @@ export const focus = (
 };
 
 export const removeLinks = (elements: HTMLElement[]) =>
-  elements.filter((ele) => ele.tagName !== "A");
+  elements.filter((ele) => ele.tagName !== 'A');

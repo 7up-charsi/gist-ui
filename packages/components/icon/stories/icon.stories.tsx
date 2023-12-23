@@ -1,10 +1,10 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { Icon, IconProps } from "../src";
+import { Icon, IconProps } from '../src';
 
 const meta: Meta<IconProps> = {
-  title: "Components/Icon",
+  title: 'Components/Icon',
   component: Icon,
 };
 

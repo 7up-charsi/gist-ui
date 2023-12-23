@@ -1,7 +1,7 @@
-import * as popper from "./popper";
+import * as popper from './popper';
 
 // export types
-export type { PopperProps, FloatingProps, ReferenceProps } from "./popper";
+export type { PopperProps, FloatingProps, ReferenceProps } from './popper';
 
 // export component
 export const Root = popper.Root;

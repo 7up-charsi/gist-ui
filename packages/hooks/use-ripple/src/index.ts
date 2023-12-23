@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from 'react';
 
 export interface UseRippleProps {
   /**
@@ -41,7 +41,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
   const props = useMemo(
     () => ({
       duration: 500,
-      timingFunction: "cubic-bezier(.42,.36,.28,.88)",
+      timingFunction: 'cubic-bezier(.42,.36,.28,.88)',
       isDisabled: false,
       completedFactor: 0.5,
       pointerCenter: true,
@@ -69,10 +69,10 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
 
           setTimeout(
             () => {
-              ripple.style.opacity = "0";
+              ripple.style.opacity = '0';
 
-              ripple.addEventListener("transitionend", (e) => {
-                if (e.propertyName === "opacity") ripple.remove();
+              ripple.addEventListener('transitionend', (e) => {
+                if (e.propertyName === 'opacity') ripple.remove();
               });
             },
             diff > completedFactor * duration
@@ -81,7 +81,7 @@ const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
           );
         };
 
-        document.addEventListener("pointerup", removeRipple, true);
+        document.addEventListener('pointerup', removeRipple, true);
       });
     },
     [completedFactor, isDisabled, duration, props],
@@ -104,14 +104,14 @@ const createRipple = (
   const maxWidth = Math.max(clientX - left, width - clientX + left);
   const size = Math.hypot(maxHeight, maxWidth) * 2;
 
-  const element = document.createElement("span");
+  const element = document.createElement('span');
 
   const { duration, timingFunction } = options as Required<UseRippleProps>;
 
   element.style.cssText = `
     position: absolute;
-    top: ${options.pointerCenter ? `${event.clientY - top}px` : "50%"};
-    left: ${options.pointerCenter ? `${event.clientX - left}px` : "50%"};
+    top: ${options.pointerCenter ? `${event.clientY - top}px` : '50%'};
+    left: ${options.pointerCenter ? `${event.clientX - left}px` : '50%'};
     height: ${size}px;
     width: ${size}px;
     translate: -50% -50%;
@@ -125,7 +125,7 @@ const createRipple = (
     `;
 
   requestAnimationFrame(() => {
-    element.style.scale = "1";
+    element.style.scale = '1';
   });
 
   return element;

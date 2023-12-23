@@ -3,34 +3,45 @@ import {
   SlotsClassValue,
   VariantProps,
   tv,
-} from "tailwind-variants";
+} from 'tailwind-variants';
 
 const input = tv({
   slots: {
-    base: "flex flex-col gap-1 w-64 group",
-    label: "first-letter:uppercase whitespace-nowrap text-sm",
-    inputWrapper: [],
+    base: 'flex flex-col gap-1 w-64 group',
+    label: 'first-letter:uppercase',
+    inputWrapper: 'relative',
     input:
-      "appearance-none !bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:text-neutral-500",
-    helperText: "px-2 text-xs text-neutral",
-    required: "text-danger ml-1",
-    customInput: "grow truncate pointer-events-none select-none",
+      'appearance-none bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:text-neutral-500',
+    helperText: 'px-2 text-sm text-neutral',
+    customInput: 'grow truncate pointer-events-none select-none',
+    startContent: 'h-[0.01px] flex items-center mr-2',
+    endContent: 'h-[0.01px] flex items-center ml-2',
+    fieldset: '',
+    legend: '',
   },
   variants: {
     variant: {
       border: {
         inputWrapper: [
-          "w-full flex gap-2 items-center cursor-text px-2 relative border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral rounded",
+          'w-full flex items-center cursor-text transition-colors px-[14px]',
         ],
+        fieldset:
+          'absolute left-0 right-0 bottom-0 -top-[10px] m-0 pointer-events-none rounded border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral',
+        legend:
+          'invisible w-0 ml-[10px] group-data-[filled-within=true]:pl-[2px] group-data-[filled-within=true]:pr-1 group-data-[filled-within=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
+        label:
+          'absolute top-0 left-0 translate-x-[14px] text-base group-data-[filled-within=true]:-translate-y-[10px] group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left',
       },
       filled: {
         inputWrapper: [
-          "w-full flex gap-2 items-center cursor-text transition-colors px-2 relative bg-neutral-200/50 group-data-[hovered=true]:group-data-[focused=false]:bg-neutral-200/70 rounded-t",
+          'w-full flex items-center cursor-text transition-colors px-3 bg-neutral-200/50 group-data-[hovered=true]:group-data-[focused=false]:bg-neutral-200/70 rounded-t',
 
-          "before:absolute before:left-0 before:bottom-0 before:w-full before:border-b before:border-b-neutral",
+          'before:absolute before:left-0 before:bottom-0 before:w-full before:border-b before:border-b-neutral',
 
-          "after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center",
+          'after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center',
         ],
+        label:
+          "absolute top-0 left-0 text-base translate-x-3 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left'",
       },
     },
     color: {
@@ -42,188 +53,206 @@ const input = tv({
       danger: {},
     },
     size: {
-      sm: {
-        inputWrapper: "h-[32px]",
-        input: "text-sm",
-      },
-      md: {
-        inputWrapper: "h-[40px]",
-        input: "",
-      },
-      lg: {
-        inputWrapper: "h-[48px]",
-        input: "text-lg",
-      },
+      sm: { inputWrapper: 'h-12' },
+      md: { inputWrapper: 'h-14' },
     },
     fullWidth: {
-      true: { base: "w-full" },
+      true: { base: 'w-full' },
     },
     isDisabled: {
-      true: { base: "disabled" },
-    },
-    labelPlacement: {
-      inside: {
-        label:
-          "-order-1 pointer-events-none select-none text-sm mr-2 cursor-text",
-      },
-      outside: {
-        label: "ml-2 cursor-pointer place-self-start",
-      },
+      true: { base: 'disabled' },
     },
     hideNativeInput: {
       true: {
-        input: "absolute bottom-0 left-0 opacity-0 pointer-events-none",
+        input: 'absolute bottom-0 left-0 opacity-0 pointer-events-none',
       },
     },
     customPlaceholder: {
       true: {
-        customInput: "text-neutral-700 text-neutral-500",
+        customInput: 'text-neutral-700 text-neutral-500',
       },
     },
     error: {
       true: {},
     },
+    hideLabel: {
+      true: {},
+    },
   },
   defaultVariants: {
-    color: "primary",
+    color: 'primary',
     fullWidth: false,
     isDisabled: false,
-    size: "md",
-    variant: "filled",
-    labelPlacement: "outside",
+    size: 'md',
+    variant: 'filled',
   },
   compoundVariants: [
+    {
+      variant: 'filled',
+      size: 'md',
+      hideLabel: false,
+      class: {
+        label: 'translate-y-4 group-data-[filled-within=true]:translate-y-2',
+        startContent: 'mt-[17px]',
+        input: 'pt-[25px] pb-2',
+      },
+    },
+    {
+      variant: 'filled',
+      size: 'sm',
+      hideLabel: false,
+      class: {
+        label: 'translate-y-3 group-data-[filled-within=true]:translate-y-1',
+        startContent: 'mt-[17px]',
+        input: 'pt-[21px] pb-1',
+      },
+    },
+
+    {
+      variant: 'border',
+      size: 'md',
+      class: {
+        label: 'translate-y-4',
+      },
+    },
+    {
+      variant: 'border',
+      size: 'sm',
+      class: {
+        label: 'translate-y-3',
+      },
+    },
+
     // filled
     {
-      variant: "filled",
-      color: "primary",
+      variant: 'filled',
+      color: 'primary',
       error: false,
       class: {
-        inputWrapper: "after:border-b-primary",
-        label: "text-primary-600",
+        inputWrapper: 'after:border-b-primary',
+        label: 'group-data-[focused=true]:text-primary-600',
       },
     },
     {
-      variant: "filled",
-      color: "secondary",
+      variant: 'filled',
+      color: 'secondary',
       error: false,
       class: {
-        inputWrapper: "after:border-b-secondary",
-        label: "text-secondary-600",
+        inputWrapper: 'after:border-b-secondary',
+        label: 'group-data-[focused=true]:text-secondary-600',
       },
     },
     {
-      variant: "filled",
-      color: "success",
+      variant: 'filled',
+      color: 'success',
       error: false,
       class: {
-        inputWrapper: "after:border-b-success",
-        label: "text-success-600",
+        inputWrapper: 'after:border-b-success',
+        label: 'group-data-[focused=true]:text-success-600',
       },
     },
     {
-      variant: "filled",
-      color: "info",
+      variant: 'filled',
+      color: 'info',
       error: false,
       class: {
-        inputWrapper: "after:border-b-info",
-        label: "text-info-600",
+        inputWrapper: 'after:border-b-info',
+        label: 'group-data-[focused=true]:text-info-600',
       },
     },
     {
-      variant: "filled",
-      color: "warning",
+      variant: 'filled',
+      color: 'warning',
       error: false,
       class: {
-        inputWrapper: "after:border-b-warning",
-        label: "text-warning-600",
+        inputWrapper: 'after:border-b-warning',
+        label: 'group-data-[focused=true]:text-warning-600',
       },
     },
     {
-      variant: "filled",
-      color: "danger",
+      variant: 'filled',
+      color: 'danger',
       error: false,
       class: {
-        inputWrapper: "after:border-b-danger",
-        label: "text-danger-600",
+        inputWrapper: 'after:border-b-danger',
+        label: 'group-data-[focused=true]:text-danger-600',
       },
     },
 
     // border
     {
-      variant: "border",
-      color: "primary",
+      variant: 'border',
+      color: 'primary',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-primary",
-        label: "text-primary-600",
+        fieldset: 'group-data-[focused=true]:border-primary',
+        label: 'group-data-[focused=true]:text-primary-600',
       },
     },
     {
-      variant: "border",
-      color: "secondary",
+      variant: 'border',
+      color: 'secondary',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-secondary",
-        label: "text-secondary-600",
+        fieldset: 'group-data-[focused=true]:border-secondary',
+        label: 'group-data-[focused=true]:text-secondary-600',
       },
     },
     {
-      variant: "border",
-      color: "success",
+      variant: 'border',
+      color: 'success',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-success",
-        label: "text-success-600",
+        fieldset: 'group-data-[focused=true]:border-success',
+        label: 'group-data-[focused=true]:text-success-600',
       },
     },
     {
-      variant: "border",
-      color: "info",
+      variant: 'border',
+      color: 'info',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-info",
-        label: "text-info-600",
+        fieldset: 'group-data-[focused=true]:border-info',
+        label: 'group-data-[focused=true]:text-info-600',
       },
     },
     {
-      variant: "border",
-      color: "warning",
+      variant: 'border',
+      color: 'warning',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-warning",
-        label: "text-warning-600",
+        fieldset: 'group-data-[focused=true]:border-warning',
+        label: 'group-data-[focused=true]:text-warning-600',
       },
     },
     {
-      variant: "border",
-      color: "danger",
+      variant: 'border',
+      color: 'danger',
       error: false,
       class: {
-        inputWrapper: "group-data-[focused=true]:border-danger",
-        label: "text-danger-600",
+        fieldset: 'group-data-[focused=true]:border-danger',
+        label: 'group-data-[focused=true]:text-danger-600',
       },
     },
 
     // error
     {
-      variant: "filled",
+      variant: 'filled',
       error: true,
       class: {
-        inputWrapper: ["before:border-b-danger", "after:border-b-danger"],
-        label: "text-danger",
-        helperText: "text-danger",
+        inputWrapper: ['before:border-b-danger', 'after:border-b-danger'],
+        label: 'text-danger',
+        helperText: 'text-danger',
       },
     },
     {
-      variant: "border",
+      variant: 'border',
       error: true,
       class: {
-        inputWrapper: [
-          "border-danger group-data-[focused=false]:group-data-[hovered=true]:border-danger",
-        ],
-        label: "text-danger",
-        helperText: "text-danger",
+        fieldset:
+          'border-danger group-data-[focused=false]:group-data-[hovered=true]:border-danger',
+        label: 'text-danger',
+        helperText: 'text-danger',
       },
     },
   ],

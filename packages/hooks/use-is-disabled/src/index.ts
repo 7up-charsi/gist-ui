@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { useEffect } from 'react';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 export interface UseIsDisabledProps<E> {
   ref?: React.RefObject<E>;
@@ -15,7 +15,7 @@ const useIsDisabled = <E extends HTMLElement>(props: UseIsDisabledProps<E>) => {
 
     const element = ref.current;
 
-    if (element.hasAttribute("disabled")) callbackRef?.(true);
+    if (element.hasAttribute('disabled')) callbackRef?.(true);
 
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
@@ -27,7 +27,7 @@ const useIsDisabled = <E extends HTMLElement>(props: UseIsDisabledProps<E>) => {
       }
     });
 
-    observer.observe(element, { attributeFilter: ["disabled"] });
+    observer.observe(element, { attributeFilter: ['disabled'] });
 
     return () => {
       observer.disconnect();

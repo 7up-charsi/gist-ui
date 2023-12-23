@@ -1,4 +1,4 @@
-import * as dialog from "./dialog";
+import * as dialog from './dialog';
 
 // export types
 export type {
@@ -6,7 +6,7 @@ export type {
   ContentProps,
   PortalProps,
   TriggerProps,
-} from "./dialog";
+} from './dialog';
 
 // export component
 export const Root = dialog.Root;

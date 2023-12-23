@@ -1,11 +1,11 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import { Button } from "@gist-ui/button";
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@gist-ui/button';
 
-import { FocusTrap, FocusTrapProps } from "../src";
+import { FocusTrap, FocusTrapProps } from '../src';
 
 const meta: Meta<FocusTrapProps> = {
-  title: "Components/FocusTrap",
+  title: 'Components/FocusTrap',
   component: FocusTrap,
 };
 
@@ -28,7 +28,7 @@ const DefaultTemplate = (args: FocusTrapProps) => {
         </div>
       </FocusTrap>
 
-      <Button variant="flat" color="secondary" classNames={{ base: "m-3" }}>
+      <Button variant="flat" color="secondary" classNames={{ base: 'm-3' }}>
         you cannot focus me when trapped is true
       </Button>
     </>

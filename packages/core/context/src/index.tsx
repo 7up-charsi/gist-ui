@@ -1,5 +1,5 @@
-import { createContext, useContext as _useContext } from "react";
-import { GistUiError } from "@gist-ui/error";
+import { createContext, useContext as _useContext } from 'react';
+import { GistUiError } from '@gist-ui/error';
 
 export const createContextScope = <ContextValue extends object>(
   rootName: string,
@@ -22,7 +22,7 @@ export const createContextScope = <ContextValue extends object>(
 
     if (!context)
       throw new GistUiError(
-        "createContextScope",
+        'createContextScope',
         `\`${consumerName}\` must be used within \`${rootName}\``,
       );
 

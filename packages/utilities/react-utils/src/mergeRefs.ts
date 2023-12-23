@@ -9,7 +9,7 @@ export const mergeRefs = <T>(
     const filtered = refs.filter(Boolean);
 
     filtered.forEach((ref) => {
-      if (typeof ref === "function") {
+      if (typeof ref === 'function') {
         ref(node);
       } else if (ref !== null) {
         ref.current = node;

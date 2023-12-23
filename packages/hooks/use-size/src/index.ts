@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from 'react';
 
 const useSize = <E extends HTMLElement>(element: E | null) => {
   const [size, setSize] = useState<
@@ -23,7 +23,7 @@ const useSize = <E extends HTMLElement>(element: E | null) => {
         });
       });
 
-      observer.observe(element, { box: "border-box" });
+      observer.observe(element, { box: 'border-box' });
 
       return () => {
         observer.unobserve(element);

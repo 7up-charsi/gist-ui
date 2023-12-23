@@ -1,9 +1,9 @@
-import { ReactNode, forwardRef, useState } from "react";
-import Input, { InputProps } from "./input";
-import { Button } from "@gist-ui/button";
-import { Icon } from "@gist-ui/icon";
+import { ReactNode, forwardRef, useState } from 'react';
+import Input, { InputProps } from './input';
+import { Button } from '@gist-ui/button';
+import { Icon } from '@gist-ui/icon';
 
-export interface PasswordInputProps extends Omit<InputProps, "type"> {
+export interface PasswordInputProps extends Omit<InputProps, 'type'> {
   /**
    * This prop value is used in `aria-label` of ToggleButton when it is not in pressed state
    */
@@ -89,13 +89,13 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>(
         ref={ref}
         {...rest}
         label={label}
-        type={isPassword ? "password" : "text"}
+        type={isPassword ? 'password' : 'text'}
         endContent={toggleButton}
       />
     );
   },
 );
 
-PasswordInput.displayName = "gist-ui.PasswordInput";
+PasswordInput.displayName = 'gist-ui.PasswordInput';
 
 export default PasswordInput;

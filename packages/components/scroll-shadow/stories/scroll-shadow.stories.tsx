@@ -1,23 +1,23 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { ScrollShadow, ScrollShadowProps } from "../src";
+import { ScrollShadow, ScrollShadowProps } from '../src';
 
 const meta: Meta<ScrollShadowProps> = {
-  title: "Components/ScrollShadow",
+  title: 'Components/ScrollShadow',
   component: ScrollShadow,
   argTypes: {
     visibility: {
-      control: "select",
-      options: ["auto", "top", "bottom", "left", "right", "both", "none"],
-      defaultValue: "auto",
+      control: 'select',
+      options: ['auto', 'top', 'bottom', 'left', 'right', 'both', 'none'],
+      defaultValue: 'auto',
     },
     offset: {
-      control: "number",
-      defaultValue: "0",
+      control: 'number',
+      defaultValue: '0',
     },
     isDisabled: {
-      control: "boolean",
+      control: 'boolean',
     },
   },
 };

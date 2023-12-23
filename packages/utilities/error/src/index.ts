@@ -9,5 +9,5 @@ export class GistUiError extends Error {
   }
 }
 
-export const onlyChildError = "must have only one child";
-export const validChildError = "child must be valid element";
+export const onlyChildError = 'must have only one child';
+export const validChildError = 'child must be valid element';

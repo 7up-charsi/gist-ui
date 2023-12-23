@@ -1,40 +1,40 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import { tooltip } from "@gist-ui/theme";
+import React, { useEffect, useRef, useState } from 'react';
+import { Meta, StoryObj } from '@storybook/react';
+import { tooltip } from '@gist-ui/theme';
 
-import * as Tooltip from "../src";
+import * as Tooltip from '../src';
 
 const meta: Meta = {
-  title: "Components/Tooltip",
+  title: 'Components/Tooltip',
   args: tooltip.defaultVariants,
   argTypes: {
     color: {
-      control: "select",
+      control: 'select',
       options: Object.keys(tooltip.variants.color),
     },
     rounded: {
-      control: "select",
+      control: 'select',
       options: Object.keys(tooltip.variants.rounded),
     },
     trigger: {
-      control: "select",
-      options: ["none", "focus", "hover"],
+      control: 'select',
+      options: ['none', 'focus', 'hover'],
     },
     placement: {
-      control: "select",
+      control: 'select',
       options: [
-        "top",
-        "right",
-        "bottom",
-        "left",
-        "top-start",
-        "top-end",
-        "right-start",
-        "right-end",
-        "bottom-start",
-        "bottom-end",
-        "left-start",
-        "left-end",
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'top-start',
+        'top-end',
+        'right-start',
+        'right-end',
+        'bottom-start',
+        'bottom-end',
+        'left-start',
+        'left-end',
       ],
     },
   },
@@ -49,9 +49,9 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({
-      behavior: "instant",
-      block: "center",
-      inline: "center",
+      behavior: 'instant',
+      block: 'center',
+      inline: 'center',
     });
   }, []);
 
@@ -98,8 +98,8 @@ export const Default: StoryObj<Tooltip.RootProps & Tooltip.ContentProps> = {
     arrowPadding: 10,
     hideWhenDetached: true,
     boundaryPadding: 0,
-    sticky: "partial",
-    placement: "bottom",
+    sticky: 'partial',
+    placement: 'bottom',
     arrow: true,
     allowMainAxisFlip: true,
     allowCrossAxisFlip: true,

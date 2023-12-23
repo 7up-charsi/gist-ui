@@ -1,15 +1,15 @@
-import { useControllableState } from "@gist-ui/use-controllable-state";
-import { Slot } from "@gist-ui/slot";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
-import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePress } from "@react-aria/interactions";
-import { useScrollLock } from "@gist-ui/use-scroll-lock";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { createPortal } from "react-dom";
-import { FocusTrap, FocusScope } from "@gist-ui/focus-trap";
-import { VisuallyHidden } from "@gist-ui/visually-hidden";
-import { createContextScope } from "@gist-ui/context";
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { Slot } from '@gist-ui/slot';
+import { __DEV__ } from '@gist-ui/shared-utils';
+import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
+import { useClickOutside } from '@gist-ui/use-click-outside';
+import { usePress } from '@react-aria/interactions';
+import { useScrollLock } from '@gist-ui/use-scroll-lock';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { createPortal } from 'react-dom';
+import { FocusTrap, FocusScope } from '@gist-ui/focus-trap';
+import { VisuallyHidden } from '@gist-ui/visually-hidden';
+import { createContextScope } from '@gist-ui/context';
 import {
   Children,
   Dispatch,
@@ -22,9 +22,9 @@ import {
   useId,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
-type Reason = "pointer" | "escape" | "outside" | "virtual";
+type Reason = 'pointer' | 'escape' | 'outside' | 'virtual';
 
 type CloseEvent = { preventDefault(): void };
 
@@ -45,7 +45,7 @@ interface Context {
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
-const Dialog_Name = "Dialog.Root";
+const Dialog_Name = 'Dialog.Root';
 
 const [Provider, useContext] = createContextScope<Context>(Dialog_Name);
 
@@ -119,7 +119,7 @@ export const Root = (props: RootProps) => {
 
   const id = useId();
 
-  const [givenId, setGivenId] = useState("");
+  const [givenId, setGivenId] = useState('');
 
   const scope = useRef<FocusScope>({
     paused: false,
@@ -162,16 +162,16 @@ export const Root = (props: RootProps) => {
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleClose("escape");
+      if (e.key === 'Escape') {
+        handleClose('escape');
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeydown);
+      document.addEventListener('keydown', handleKeydown);
 
       return () => {
-        document.removeEventListener("keydown", handleKeydown);
+        document.removeEventListener('keydown', handleKeydown);
       };
     }
   }, [handleClose, isOpen]);
@@ -193,11 +193,11 @@ export const Root = (props: RootProps) => {
   );
 };
 
-Root.displayName = "gist-ui." + Dialog_Name;
+Root.displayName = 'gist-ui.' + Dialog_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
 
-const Trigger_Name = "Dialog.Trigger";
+const Trigger_Name = 'Dialog.Trigger';
 
 export interface TriggerProps {
   children: ReactNode;
@@ -221,11 +221,11 @@ export const Trigger = (props: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui." + Trigger_Name;
+Trigger.displayName = 'gist-ui.' + Trigger_Name;
 
 // *-*-*-*-* Close *-*-*-*-*
 
-const Close_Name = "Dialog.Close";
+const Close_Name = 'Dialog.Close';
 
 export interface CloseProps {
   children: ReactNode;
@@ -240,18 +240,18 @@ export const Close = (props: CloseProps) => {
 
   const { pressProps } = usePress({
     onPress: () => {
-      handleClose("pointer");
+      handleClose('pointer');
     },
   });
 
   return <Slot {...pressProps}>{children}</Slot>;
 };
 
-Close.displayName = "gist-ui." + Close_Name;
+Close.displayName = 'gist-ui.' + Close_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
 
-const Portal_Name = "Dialog.Portal";
+const Portal_Name = 'Dialog.Portal';
 
 export interface PortalProps {
   children?: ReactNode;
@@ -265,7 +265,7 @@ export const Portal = (props: PortalProps) => {
 
   if (context.keepMounted) {
     return createPortal(
-      <div style={{ visibility: context.isOpen ? "visible" : "hidden" }}>
+      <div style={{ visibility: context.isOpen ? 'visible' : 'hidden' }}>
         {children}
       </div>,
       container,
@@ -275,11 +275,11 @@ export const Portal = (props: PortalProps) => {
   return context.isOpen ? createPortal(children, container) : null;
 };
 
-Portal.displayName = "gist-ui." + Portal_Name;
+Portal.displayName = 'gist-ui.' + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
 
-const Content_Name = "Dialog.Content";
+const Content_Name = 'Dialog.Content';
 
 export interface ContentProps {
   children?: ReactNode;
@@ -295,40 +295,40 @@ export const Content = (props: ContentProps) => {
   const setOutsideEle = useClickOutside<HTMLDivElement>({
     isDisabled: !context.isOpen,
     callback: () => {
-      context.handleClose("outside");
+      context.handleClose('outside');
     },
   });
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context.setGivenId(children.props.id || "");
+      context.setGivenId(children.props.id || '');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
   const { pressProps } = usePress({
-    onPress: () => context.handleClose("virtual"),
+    onPress: () => context.handleClose('virtual'),
   });
 
   const childCount = Children.count(children);
   if (!childCount) return;
-  if (childCount > 1) throw new GistUiError("Content", onlyChildError);
+  if (childCount > 1) throw new GistUiError('Content', onlyChildError);
   if (!isValidElement(children))
-    throw new GistUiError("Content", validChildError);
+    throw new GistUiError('Content', validChildError);
 
   if (
     __DEV__ &&
-    !children.props["aria-label"] &&
-    !children.props["aria-labelledby"]
+    !children.props['aria-label'] &&
+    !children.props['aria-labelledby']
   )
     throw new GistUiError(
-      "Content",
+      'Content',
       'add "aria-label" or "aria-labelledby" for accessibility',
     );
 
-  if (__DEV__ && !children.props["aria-describedby"])
-    console.warn("Content", '"aria-describedby" is optional but recommended');
+  if (__DEV__ && !children.props['aria-describedby'])
+    console.warn('Content', '"aria-describedby" is optional but recommended');
 
   return (
     <FocusTrap
@@ -340,8 +340,8 @@ export const Content = (props: ContentProps) => {
       isDisabled={!context.isOpen}
     >
       {cloneElement(children, {
-        role: "dialog",
-        "aria-modal": true,
+        role: 'dialog',
+        'aria-modal': true,
         id: context.id,
         children: (
           <>
@@ -361,4 +361,4 @@ export const Content = (props: ContentProps) => {
   );
 };
 
-Content.displayName = "gist-ui." + Content_Name;
+Content.displayName = 'gist-ui.' + Content_Name;

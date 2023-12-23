@@ -1,6 +1,6 @@
-import * as popover from "./popover";
+import * as popover from './popover';
 
-export { Arrow } from "@gist-ui/popper";
+export { Arrow } from '@gist-ui/popper';
 
 // export types
 export type {
@@ -9,7 +9,7 @@ export type {
   CloseProps,
   ContentProps,
   PortalProps,
-} from "./popover";
+} from './popover';
 
 // export component
 export const Root = popover.Root;

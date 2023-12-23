@@ -1,39 +1,39 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import { button } from "@gist-ui/theme";
-import { Button, ButtonProps } from "../src";
-import { Icon } from "@gist-ui/icon";
-import { Bars, Circles } from "react-loader-spinner";
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
+import { button } from '@gist-ui/theme';
+import { Button, ButtonProps } from '../src';
+import { Icon } from '@gist-ui/icon';
+import { Bars, Circles } from 'react-loader-spinner';
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Button",
+  title: 'Components/Button',
   component: Button,
   args: button.defaultVariants,
   argTypes: {
     variant: {
-      control: { type: "select" },
+      control: { type: 'select' },
       options: Object.keys(button.variants.variant),
-      if: { arg: "variant", exists: true },
+      if: { arg: 'variant', exists: true },
     },
     color: {
-      control: { type: "select" },
+      control: { type: 'select' },
       options: Object.keys(button.variants.color),
-      if: { arg: "color", exists: true },
+      if: { arg: 'color', exists: true },
     },
     rounded: {
-      control: { type: "select" },
+      control: { type: 'select' },
       options: Object.keys(button.variants.rounded),
-      if: { arg: "rounded", exists: true },
+      if: { arg: 'rounded', exists: true },
     },
     size: {
-      control: { type: "select" },
+      control: { type: 'select' },
       options: Object.keys(button.variants.size),
-      if: { arg: "size", exists: true },
+      if: { arg: 'size', exists: true },
     },
     fullWidth: {
-      control: { type: "boolean" },
-      if: { arg: "fullWidth", exists: true },
-      name: "full width",
+      control: { type: 'boolean' },
+      if: { arg: 'fullWidth', exists: true },
+      name: 'full width',
     },
   },
 };
@@ -96,7 +96,7 @@ const WithConentTemplate = (args: ButtonProps) => (
           {variant}
         </span>
 
-        {["start", "end", "start / end"].map((position, i) => (
+        {['start', 'end', 'start / end'].map((position, i) => (
           <div key={i} className="pl-5 flex flex-col gap-3">
             <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
               {position} content
@@ -114,14 +114,14 @@ const WithConentTemplate = (args: ButtonProps) => (
                   variant={variant}
                   color={color}
                   startContent={
-                    position !== "end" && (
+                    position !== 'end' && (
                       <Icon fill size={args.size}>
                         {reactIcon}
                       </Icon>
                     )
                   }
                   endContent={
-                    position !== "start" && (
+                    position !== 'start' && (
                       <Icon fill size={args.size}>
                         {reactIcon}
                       </Icon>
@@ -186,7 +186,7 @@ const IconOnlyTemplate = (args: ButtonProps) => (
 export const IconOnly: StoryObj<ButtonProps> = {
   render: IconOnlyTemplate,
   args: {
-    "aria-label": "house button",
+    'aria-label': 'house button',
     fullWidth: undefined,
     variant: undefined,
     color: undefined,
@@ -198,6 +198,6 @@ export const Spinner: StoryObj<ButtonProps> = {
   args: {
     startContent: <Bars wrapperClass="svg:fill-current" width={20} />,
     endContent: <Circles wrapperClass="svg:fill-current" width={20} />,
-    children: "with spinners",
+    children: 'with spinners',
   },
 };

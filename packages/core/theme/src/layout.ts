@@ -1,3 +1,3 @@
-import { LayoutTheme } from "./types";
+import { LayoutTheme } from './types';
 
 export const defaultLayout: LayoutTheme = {};

@@ -3,4 +3,4 @@ export const capitalize = (text: string) => {
 };
 
 export const isTouchDevice = () =>
-  "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;

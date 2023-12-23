@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { useEffect, useState } from 'react';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 export interface UseClickOutsideProps {
   /**
@@ -22,7 +22,7 @@ export interface UseClickOutsideProps {
   /**
    * @default "pointerup"
    */
-  onEvent?: "pointerup" | "pointerdown";
+  onEvent?: 'pointerup' | 'pointerdown';
 }
 
 const useClickOutside = <R extends HTMLElement>(
@@ -32,7 +32,7 @@ const useClickOutside = <R extends HTMLElement>(
     callback,
     isDisabled,
     closeButton = 0,
-    onEvent = "pointerup",
+    onEvent = 'pointerup',
   } = props;
 
   const callbackRef = useCallbackRef(callback);

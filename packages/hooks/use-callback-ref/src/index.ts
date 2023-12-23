@@ -1,4 +1,4 @@
-import { DependencyList, useCallback, useEffect, useRef } from "react";
+import { DependencyList, useCallback, useEffect, useRef } from 'react';
 
 type Callback = (...args: never[]) => unknown;
 

@@ -1,6 +1,6 @@
-import { ReactNode, forwardRef } from "react";
-import { IconClassNames, IconVariantProps, icon } from "@gist-ui/theme";
-import { Slot } from "@gist-ui/slot";
+import { ReactNode, forwardRef } from 'react';
+import { IconClassNames, IconVariantProps, icon } from '@gist-ui/theme';
+import { Slot } from '@gist-ui/slot';
 
 export interface IconProps extends IconVariantProps {
   classNames?: IconClassNames;
@@ -22,6 +22,6 @@ const Icon = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
   );
 });
 
-Icon.displayName = "gist-ui.Icon";
+Icon.displayName = 'gist-ui.Icon';
 
 export default Icon;

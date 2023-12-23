@@ -1,30 +1,26 @@
-import { input, InputClassNames, InputVariantProps } from "@gist-ui/theme";
-import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { VisuallyHidden } from "@gist-ui/visually-hidden";
-import { HoverProps, useFocus, useHover } from "@react-aria/interactions";
-import { useFocusRing } from "@react-aria/focus";
-import { NativeInputProps } from "./types";
-import omit from "lodash.omit";
-import pick from "lodash.pick";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+import { input, InputClassNames, InputVariantProps } from '@gist-ui/theme';
+import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
+import { __DEV__ } from '@gist-ui/shared-utils';
+import { HoverProps, useFocus, useHover } from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
+import { NativeInputProps } from './types';
+import omit from 'lodash.omit';
+import pick from 'lodash.pick';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import {
   forwardRef,
   useId,
   useImperativeHandle,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
-const hoverPropsKeys = ["onHoverStart", "onHoverEnd", "onHoverChange"] as const;
+const hoverPropsKeys = ['onHoverStart', 'onHoverEnd', 'onHoverChange'] as const;
 
 export interface InputProps
-  extends Omit<
-      InputVariantProps,
-      "hideNativeInput" | "customPlaceholder" | "error"
-    >,
+  extends Omit<InputVariantProps, 'customPlaceholder' | 'error'>,
     HoverProps {
-  type?: "text" | "number" | "email" | "password" | "tel" | "url";
+  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
   id?: string;
   placeholder?: string;
   value?: string;
@@ -41,18 +37,12 @@ export interface InputProps
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
   classNames?: InputClassNames;
-  hideLabel?: boolean;
   /**
    * When error prop is true, its value is used in "errorMessage" aria-live attribute
    * @default polite
    */
-  a11yFeedback?: "polite" | "assertive";
+  a11yFeedback?: 'polite' | 'assertive';
   inputProps?: NativeInputProps;
-  /**
-   * Indicates whether to use native input or div. As div is used when you dont want to allow select input text
-   * @default false
-   */
-  hideNativeInput?: boolean;
 }
 
 const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
@@ -63,7 +53,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
 
   const {
     label,
-    type = "text",
+    type = 'text',
     id,
     helperText,
     errorMessage,
@@ -76,19 +66,14 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     onFocus: onFocusProp,
     classNames,
     name,
-    hideLabel,
     required,
-    a11yFeedback = "polite",
+    a11yFeedback = 'polite',
     inputProps,
     onChange: onChangeProp,
   } = props;
 
-  const {
-    error,
-    isDisabled,
-    labelPlacement = "outside",
-    hideNativeInput,
-  } = variantProps;
+  const { error, isDisabled, hideNativeInput, hideLabel, variant } =
+    variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -143,24 +128,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     error,
   });
 
-  const labelHTML = !!label && (
-    <label
-      ref={inputLabelRef}
-      htmlFor={inputId}
-      className={styles.label({ className: classNames?.label })}
-    >
-      {label}
-      {required && (
-        <span
-          className={styles.required({ className: classNames?.required })}
-          aria-hidden="true"
-        >
-          *
-        </span>
-      )}
-    </label>
-  );
-
   if (__DEV__ && !label)
     console.warn(
       '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
@@ -173,12 +140,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       data-filled={filled}
-      data-filled-within={isFocused || filled || !!placeholder}
+      data-filled-within={
+        isFocused || filled || !!placeholder || !!startContent
+      }
       data-hovered={isHovered}
-      data-is-disabled={isDisabled}
+      data-disabled={isDisabled}
     >
-      {!hideLabel && labelPlacement?.includes("outside") && labelHTML}
-
       <div
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
@@ -190,13 +157,19 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
           },
         })}
       >
-        {!hideLabel && labelPlacement?.includes("inside") && labelHTML}
+        {!hideLabel && !!label && (
+          <label
+            ref={inputLabelRef}
+            htmlFor={inputId}
+            className={styles.label({ className: classNames?.label })}
+          >
+            {label}
+          </label>
+        )}
 
-        {/* show label inside inputWrapper when hideLabel is true,
-        because inputWrapper has position relative and VisuallyHidden element set position absolute */}
-        {hideLabel && <VisuallyHidden asChild>{labelHTML}</VisuallyHidden>}
-
-        {startContent}
+        {startContent && (
+          <div className={styles.startContent()}>{startContent}</div>
+        )}
 
         {hideNativeInput ? (
           <div
@@ -208,6 +181,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
             {value || placeholder}
           </div>
         ) : null}
+
         <input
           {...inputProps}
           {...focusProps}
@@ -217,6 +191,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
           placeholder={placeholder}
           type={type}
           onChange={onChange}
+          aria-label={hideLabel ? label : undefined}
           aria-describedby={helperText ? helperTextId : undefined}
           aria-errormessage={error && errorMessage ? errorMessageId : undefined}
           aria-required={required}
@@ -226,7 +201,14 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
           id={inputId}
           disabled={isDisabled}
         />
-        {endContent}
+
+        {endContent && <div className={styles.endContent()}>{endContent}</div>}
+
+        {variant === 'border' ? (
+          <fieldset aria-hidden="true" className={styles.fieldset()}>
+            {!hideLabel && <legend className={styles.legend()}>{label}</legend>}
+          </fieldset>
+        ) : null}
       </div>
 
       {!error && helperText && (
@@ -251,6 +233,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   );
 });
 
-Input.displayName = "gist-ui.Input";
+Input.displayName = 'gist-ui.Input';
 
 export default Input;

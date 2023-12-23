@@ -1,6 +1,6 @@
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect } from 'react';
 
-type Direction = "horizontal" | "vertical" | "both";
+type Direction = 'horizontal' | 'vertical' | 'both';
 
 export interface UseScrollLockProps<E> {
   /**
@@ -19,7 +19,7 @@ export interface UseScrollLockProps<E> {
 const useScrollLock = <E extends HTMLElement>(
   props: UseScrollLockProps<E> = {},
 ) => {
-  const { ref, enabled, direction = "both" } = props;
+  const { ref, enabled, direction = 'both' } = props;
 
   useEffect(() => {
     if (!enabled) return;
@@ -51,33 +51,33 @@ const useScrollLock = <E extends HTMLElement>(
       parseInt(originalPaddingBottom, 10) + horizontalScrollBarHeight
     }px`;
 
-    if (direction === "both") {
-      ele.style.overflowY = "hidden";
-      ele.style.overflowX = "hidden";
+    if (direction === 'both') {
+      ele.style.overflowY = 'hidden';
+      ele.style.overflowX = 'hidden';
       ele.style.paddingRight = paddingRight;
       ele.style.paddingBottom = paddingBottom;
     }
-    if (direction === "vertical") {
-      ele.style.overflowY = "hidden";
+    if (direction === 'vertical') {
+      ele.style.overflowY = 'hidden';
       ele.style.paddingRight = paddingRight;
     }
-    if (direction === "horizontal") {
-      ele.style.overflowX = "hidden";
+    if (direction === 'horizontal') {
+      ele.style.overflowX = 'hidden';
       ele.style.paddingBottom = paddingBottom;
     }
 
     return () => {
-      if (direction === "both") {
+      if (direction === 'both') {
         ele.style.overflowY = styleOverflowY;
         ele.style.overflowX = styleOverflowX;
         ele.style.paddingRight = stylePaddingRight;
         ele.style.paddingBottom = stylePaddingBottom;
       }
-      if (direction === "vertical") {
+      if (direction === 'vertical') {
         ele.style.overflowY = styleOverflowY;
         ele.style.paddingRight = stylePaddingRight;
       }
-      if (direction === "horizontal") {
+      if (direction === 'horizontal') {
         ele.style.overflowX = styleOverflowX;
         ele.style.paddingBottom = stylePaddingBottom;
       }

@@ -1,14 +1,14 @@
-import * as Popper from "@gist-ui/popper";
-import { CustomInputElement, Input, InputProps } from "@gist-ui/input";
-import { SelectClassNames, SelectVariantProps, select } from "@gist-ui/theme";
-import { mergeRefs } from "@gist-ui/react-utils";
-import { Button } from "@gist-ui/button";
-import omit from "lodash.omit";
-import pick from "lodash.pick";
-import { useControllableState } from "@gist-ui/use-controllable-state";
-import { useClickOutside } from "@gist-ui/use-click-outside";
-import { useFocusVisible } from "@react-aria/interactions";
-import { Option } from "./option";
+import * as Popper from '@gist-ui/popper';
+import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
+import { SelectClassNames, SelectVariantProps, select } from '@gist-ui/theme';
+import { mergeRefs } from '@gist-ui/react-utils';
+import { Button } from '@gist-ui/button';
+import omit from 'lodash.omit';
+import pick from 'lodash.pick';
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { useClickOutside } from '@gist-ui/use-click-outside';
+import { useFocusVisible } from '@react-aria/interactions';
+import { Option } from './option';
 import {
   Fragment,
   forwardRef,
@@ -17,8 +17,8 @@ import {
   useId,
   useRef,
   useState,
-} from "react";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+} from 'react';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 const caretDown = (
   <svg
@@ -76,44 +76,44 @@ export type RenderOptionProps = {
 };
 
 const inputPropsKeys = [
-  "a11yFeedback",
-  "classNames",
-  "color",
-  "isDisabled",
-  "endContent",
-  "error",
-  "errorMessage",
-  "fullWidth",
-  "helperText",
-  "hideLabel",
-  "id",
-  "inputProps",
-  "label",
-  "labelPlacement",
-  "name",
-  "onBlur",
-  "onFocus",
-  "placeholder",
-  "required",
-  "rounded",
-  "size",
-  "startContent",
-  "type",
-  "variant",
-  "onHoverChange",
-  "onHoverEnd",
-  "onHoverStart",
+  'a11yFeedback',
+  'classNames',
+  'color',
+  'isDisabled',
+  'endContent',
+  'error',
+  'errorMessage',
+  'fullWidth',
+  'helperText',
+  'hideLabel',
+  'id',
+  'inputProps',
+  'label',
+  'labelPlacement',
+  'name',
+  'onBlur',
+  'onFocus',
+  'placeholder',
+  'required',
+  'rounded',
+  'size',
+  'startContent',
+  'type',
+  'variant',
+  'onHoverChange',
+  'onHoverEnd',
+  'onHoverStart',
 ] as const;
 
-const variantPropsKeys = select.variantKeys.filter((e) => e !== "rounded");
+const variantPropsKeys = select.variantKeys.filter((e) => e !== 'rounded');
 
 export interface AutoCompleteProps
-  extends Omit<SelectVariantProps, "rounded">,
+  extends Omit<SelectVariantProps, 'rounded'>,
     Omit<
       InputProps,
-      "defaultValue" | "value" | "onChange" | "hideNativeInput"
+      'defaultValue' | 'value' | 'onChange' | 'hideNativeInput'
     > {
-  listboxRounded?: SelectVariantProps["rounded"];
+  listboxRounded?: SelectVariantProps['rounded'];
   /**
    * This prop value is use in `listbox` style.maxHeight
    *
@@ -129,7 +129,7 @@ export interface AutoCompleteProps
   /**
    * This prop add distance between `Input` and listbox
    */
-  offset?: Popper.FloatingProps["mainOffset"];
+  offset?: Popper.FloatingProps['mainOffset'];
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   /**
@@ -150,7 +150,7 @@ export interface AutoCompleteProps
   ) => boolean;
   defaultValue?: SelectOption;
   value?: SelectOption | null;
-  onChange?: (value: SelectOption | null, reason: "select" | "clear") => void;
+  onChange?: (value: SelectOption | null, reason: 'select' | 'clear') => void;
   renderOption?: (props: RenderOptionProps) => React.ReactNode;
   /**
    * @default option.label
@@ -177,7 +177,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
       isOpen: isOpenProp,
       onOpenChange,
       maxHeight = 300,
-      empltyText = "no options",
+      empltyText = 'no options',
       defaultOpen = false,
       defaultValue,
       value: valueProp,
@@ -203,7 +203,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
     });
     const [value, setValue] = useControllableState<
       SelectOption | null | undefined,
-      "select" | "clear"
+      'select' | 'clear'
     >({
       defaultValue,
       value: valueProp,
@@ -225,12 +225,12 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
 
     const setOutsideEle = useClickOutside<HTMLDivElement>({
       isDisabled: !isOpen,
-      onEvent: "pointerdown",
+      onEvent: 'pointerdown',
       callback: (e) => {
         if (inputWrapper?.contains(e.target as Node)) return;
         setIsOpen(false);
         setFocused(selectedIndex.current);
-        setInputValue(value?.label || "");
+        setInputValue(value?.label || '');
       },
     });
 
@@ -241,7 +241,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
         () => {
           if (isDisabled) return;
 
-          setValue(option, "select");
+          setValue(option, 'select');
           setInputValue(option.label);
           setFocused(index);
 
@@ -296,7 +296,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
         if (isDisabled) return;
         if (e.repeat) return;
 
-        const ArrowDown = e.key === "ArrowDown";
+        const ArrowDown = e.key === 'ArrowDown';
 
         if (ArrowDown) setIsOpen(true);
 
@@ -344,7 +344,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
     const handleClear = useCallback(() => {
       inputWrapper?.focus();
 
-      setValue(null, "clear");
+      setValue(null, 'clear');
       setIsOpen(true);
       setFocused(null);
       selectedIndex.current = null;
@@ -383,15 +383,15 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
       const hanldeKeyDown = (e: KeyboardEvent) => {
         if (e.repeat) return;
 
-        const ArrowUp = e.key === "ArrowUp";
-        const ArrowDown = e.key === "ArrowDown";
-        const Escape = e.key === "Escape";
-        const Home = e.key === "Home";
-        const End = e.key === "End";
+        const ArrowUp = e.key === 'ArrowUp';
+        const ArrowDown = e.key === 'ArrowDown';
+        const Escape = e.key === 'Escape';
+        const Home = e.key === 'Home';
+        const End = e.key === 'End';
 
         if (Escape) {
           setFocused(selectedIndex.current);
-          setInputValue(value?.label || "");
+          setInputValue(value?.label || '');
           inputWrapper?.focus();
           setIsOpen(false);
 
@@ -441,8 +441,8 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
       const handleKeyUp = (e: KeyboardEvent) => {
         if (e.repeat) return;
 
-        const Space = e.key === " ";
-        const Enter = e.key === "Enter";
+        const Space = e.key === ' ';
+        const Enter = e.key === 'Enter';
 
         if ((Space || Enter) && focused) {
           onSelect({
@@ -455,12 +455,12 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
         }
       };
 
-      document.addEventListener("keydown", hanldeKeyDown);
-      document.addEventListener("keyup", handleKeyUp);
+      document.addEventListener('keydown', hanldeKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
 
       return () => {
-        document.removeEventListener("keydown", hanldeKeyDown);
-        document.removeEventListener("keyup", handleKeyUp);
+        document.removeEventListener('keydown', hanldeKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
       };
     }, [
       focused,
@@ -493,11 +493,11 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
             ...inputProps.inputProps,
             onPointerDown: handleInputInteraction,
             onKeyDown: handleInputArrowDown,
-            "aria-expanded": isOpen,
-            "aria-controls": lisboxId,
-            "aria-haspopup": "listbox",
-            role: "combobox",
-            autoComplete: "off",
+            'aria-expanded': isOpen,
+            'aria-controls': lisboxId,
+            'aria-haspopup': 'listbox',
+            role: 'combobox',
+            autoComplete: 'off',
           }}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -524,7 +524,7 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
                 rounded="full"
                 aria-label="toggle listbox"
                 asChild
-                style={{ rotate: isOpen ? "180deg" : "0deg" }}
+                style={{ rotate: isOpen ? '180deg' : '0deg' }}
                 onPress={handleCaretDown}
               >
                 <div>{caretDown}</div>
@@ -605,6 +605,6 @@ const AutoComplete = forwardRef<CustomInputElement, AutoCompleteProps>(
   },
 );
 
-AutoComplete.displayName = "gist-ui.AutoComplete";
+AutoComplete.displayName = 'gist-ui.AutoComplete';
 
 export default AutoComplete;

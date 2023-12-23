@@ -1,8 +1,8 @@
-import { forwardRef, useEffect, useId, useRef } from "react";
-import { SelectProps, SelectOption } from "./select";
-import { useHover, usePress } from "@react-aria/interactions";
-import { mergeProps, mergeRefs } from "@gist-ui/react-utils";
-import { Slot } from "@gist-ui/slot";
+import { forwardRef, useEffect, useId, useRef } from 'react';
+import { SelectProps, SelectOption } from './select';
+import { useHover, usePress } from '@react-aria/interactions';
+import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
+import { Slot } from '@gist-ui/slot';
 
 interface OptionProps {
   option: SelectOption;
@@ -12,7 +12,7 @@ interface OptionProps {
   className: string;
   onSelect: () => void;
   onFocus: () => void;
-  renderOption?: SelectProps["renderOption"];
+  renderOption?: SelectProps['renderOption'];
   setFocusedId: React.Dispatch<React.SetStateAction<string | undefined>>;
   label: string;
 }
@@ -51,8 +51,8 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
   useEffect(() => {
     if (isFocused) {
       innerRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
+        behavior: 'smooth',
+        block: 'nearest',
       });
     }
   }, [isFocused]);
@@ -90,4 +90,4 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
   );
 });
 
-Option.displayName = "gist-ui.Select";
+Option.displayName = 'gist-ui.Select';

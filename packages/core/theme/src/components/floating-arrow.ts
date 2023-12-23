@@ -3,11 +3,11 @@ import {
   SlotsClassValue,
   VariantProps,
   tv,
-} from "tailwind-variants";
+} from 'tailwind-variants';
 
 const floatingArrow = tv({
   slots: {
-    base: "absolute w-3 h-3 fill-default-400 data-[side=top]:rotate-180 data-[side=bottom]:rotate-0 data-[side=right]:-rotate-90 data-[side=left]:rotate-90",
+    base: 'absolute w-3 h-3 fill-default-400 data-[side=top]:rotate-180 data-[side=bottom]:rotate-0 data-[side=right]:-rotate-90 data-[side=left]:rotate-90',
   },
 });
 

@@ -1,15 +1,15 @@
-import { RefObject, useEffect, useRef } from "react";
-import { capitalize } from "@gist-ui/shared-utils";
+import { RefObject, useEffect, useRef } from 'react';
+import { capitalize } from '@gist-ui/shared-utils';
 
-export type ScrollOverflowDirection = "horizontal" | "vertical" | "both";
+export type ScrollOverflowDirection = 'horizontal' | 'vertical' | 'both';
 export type ScrollOverflowVisibility =
-  | "auto"
-  | "top"
-  | "bottom"
-  | "left"
-  | "right"
-  | "both"
-  | "none";
+  | 'auto'
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'both'
+  | 'none';
 
 export interface UseScrollOverflowProps<R> {
   direction?: ScrollOverflowDirection;
@@ -38,10 +38,10 @@ const useScrollOverflow = <R extends HTMLElement>(
 ) => {
   const {
     isDisabled,
-    direction = "vertical",
+    direction = 'vertical',
     offset = 0,
     onVisibilityChange,
-    visibility = "auto",
+    visibility = 'auto',
     ref,
   } = props;
 
@@ -53,7 +53,7 @@ const useScrollOverflow = <R extends HTMLElement>(
     if (!el || isDisabled) return;
 
     const clearOverflow = () => {
-      ["top", "bottom", "top-bottom", "left", "right", "left-right"].forEach(
+      ['top', 'bottom', 'top-bottom', 'left', 'right', 'left-right'].forEach(
         (attr) => {
           el.removeAttribute(`data-${attr}-scroll`);
         },
@@ -61,22 +61,22 @@ const useScrollOverflow = <R extends HTMLElement>(
     };
 
     // controlled
-    if (visibility === "none") {
+    if (visibility === 'none') {
       clearOverflow();
     }
 
     // controlled
-    if (visibility !== "auto" && visibility !== "none") {
+    if (visibility !== 'auto' && visibility !== 'none') {
       clearOverflow();
 
-      if (visibility === "both") {
-        el.dataset.topBottomScroll = (direction === "vertical") + "";
-        el.dataset.leftRightScroll = (direction === "horizontal") + "";
+      if (visibility === 'both') {
+        el.dataset.topBottomScroll = (direction === 'vertical') + '';
+        el.dataset.leftRightScroll = (direction === 'horizontal') + '';
       } else {
-        el.dataset.topBottomScroll = "false";
-        el.dataset.leftRightScroll = "false";
+        el.dataset.topBottomScroll = 'false';
+        el.dataset.leftRightScroll = 'false';
 
-        el.dataset[`${visibility}Scroll`] = "true";
+        el.dataset[`${visibility}Scroll`] = 'true';
       }
     }
 
@@ -86,27 +86,27 @@ const useScrollOverflow = <R extends HTMLElement>(
         prefix: ScrollOverflowVisibility;
         suffix: ScrollOverflowVisibility;
       }[] = [
-        { type: "vertical", prefix: "top", suffix: "bottom" },
-        { type: "horizontal", prefix: "left", suffix: "right" },
+        { type: 'vertical', prefix: 'top', suffix: 'bottom' },
+        { type: 'horizontal', prefix: 'left', suffix: 'right' },
       ];
 
       directions.forEach(({ type, prefix, suffix }) => {
-        if (direction === type || direction === "both") {
+        if (direction === type || direction === 'both') {
           const hasBefore =
-            type === "vertical"
+            type === 'vertical'
               ? el.scrollTop > offset
               : el.scrollLeft > offset;
           const hasAfter =
-            type === "vertical"
+            type === 'vertical'
               ? el.scrollTop + el.clientHeight + offset < el.scrollHeight
               : el.scrollLeft + el.clientWidth + offset < el.scrollWidth;
 
           // if visibility is auto its mean we need to check whether scroll is at top, bottom or between
-          if (visibility === "auto") {
+          if (visibility === 'auto') {
             const both = `${prefix}${capitalize(suffix)}Scroll`;
 
             if (hasBefore && hasAfter) {
-              el.dataset[both] = "true";
+              el.dataset[both] = 'true';
               el.removeAttribute(`data-${prefix}-scroll`);
               el.removeAttribute(`data-${suffix}-scroll`);
             } else {
@@ -122,12 +122,12 @@ const useScrollOverflow = <R extends HTMLElement>(
 
             const next: ScrollOverflowVisibility =
               hasBefore && hasAfter
-                ? "both"
+                ? 'both'
                 : hasBefore
                 ? prefix
                 : hasAfter
                 ? suffix
-                : "none";
+                : 'none';
 
             if (next !== prevVisiblility.current) {
               onVisibilityChange?.(next);
@@ -139,10 +139,10 @@ const useScrollOverflow = <R extends HTMLElement>(
     };
 
     checkOverflow();
-    el.addEventListener("scroll", checkOverflow);
+    el.addEventListener('scroll', checkOverflow);
 
     return () => {
-      el.removeEventListener("scroll", checkOverflow);
+      el.removeEventListener('scroll', checkOverflow);
       clearOverflow();
     };
   }, [direction, isDisabled, offset, onVisibilityChange, ref, visibility]);

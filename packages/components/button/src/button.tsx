@@ -1,18 +1,18 @@
-import { button, ButtonClassNames, ButtonVariantProps } from "@gist-ui/theme";
-import { __DEV__ } from "@gist-ui/shared-utils";
-import { Slot } from "@gist-ui/slot";
-import { GistUiError, onlyChildError, validChildError } from "@gist-ui/error";
-import { useRipple, UseRippleProps } from "@gist-ui/use-ripple";
-import { mergeRefs, mergeProps } from "@gist-ui/react-utils";
-import omit from "lodash.omit";
-import pick from "lodash.pick";
+import { button, ButtonClassNames, ButtonVariantProps } from '@gist-ui/theme';
+import { __DEV__ } from '@gist-ui/shared-utils';
+import { Slot } from '@gist-ui/slot';
+import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
+import { useRipple, UseRippleProps } from '@gist-ui/use-ripple';
+import { mergeRefs, mergeProps } from '@gist-ui/react-utils';
+import omit from 'lodash.omit';
+import pick from 'lodash.pick';
 import {
   PressProps,
   usePress,
   useHover,
   HoverEvents,
-} from "@react-aria/interactions";
-import { useFocusRing } from "@react-aria/focus";
+} from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
 import {
   ButtonHTMLAttributes,
   Children,
@@ -21,39 +21,39 @@ import {
   isValidElement,
   ReactNode,
   useRef,
-} from "react";
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
+} from 'react';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 // const sss: { [key in keyof HoverEvents]: string } = {};
 
 const ripplePropsKeys = [
-  "duration",
-  "timingFunction",
-  "completedFactor",
-  "pointerCenter",
+  'duration',
+  'timingFunction',
+  'completedFactor',
+  'pointerCenter',
 ] as const;
 
 const pressPropsKeys = [
-  "onPress",
-  "onPressStart",
-  "onPressEnd",
-  "onPressUp",
-  "onPressChange",
-  "allowTextSelectionOnPress",
-  "preventFocusOnPress",
-  "shouldCancelOnPointerExit",
+  'onPress',
+  'onPressStart',
+  'onPressEnd',
+  'onPressUp',
+  'onPressChange',
+  'allowTextSelectionOnPress',
+  'preventFocusOnPress',
+  'shouldCancelOnPointerExit',
 ] as const;
 
-const hoverPropsKeys = ["onHoverChange", "onHoverEnd", "onHoverStart"] as const;
+const hoverPropsKeys = ['onHoverChange', 'onHoverEnd', 'onHoverStart'] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
     Omit<
       ButtonHTMLAttributes<HTMLButtonElement>,
-      "color" | "className" | "disabled"
+      'color' | 'className' | 'disabled'
     >,
     UseRippleProps,
-    Omit<PressProps, "isPressed" | "isDisabled">,
+    Omit<PressProps, 'isPressed' | 'isDisabled'>,
     HoverEvents {
   startContent?: ReactNode;
   endContent?: ReactNode;
@@ -96,7 +96,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
-  const Component = asChild ? Slot : "button";
+  const Component = asChild ? Slot : 'button';
 
   const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(
     isDisabled
@@ -125,8 +125,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   if (
     __DEV__ &&
     isIconOnly &&
-    !props["aria-label"] &&
-    !props["aria-labelledby"]
+    !props['aria-label'] &&
+    !props['aria-labelledby']
   )
     console.warn(
       'Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"',
@@ -135,9 +135,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   if (asChild) {
     const countChild = Children.count(children);
     if (!countChild) return;
-    if (countChild > 1) throw new GistUiError("button", onlyChildError);
+    if (countChild > 1) throw new GistUiError('button', onlyChildError);
     if (!isValidElement(children))
-      throw new GistUiError("button", validChildError);
+      throw new GistUiError('button', validChildError);
   }
 
   return (
@@ -157,7 +157,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
       disabled={isDisabled}
       ref={mergeRefs(ref, rippleRef, innerRef)}
       className={styles.base({ className: classNames?.base })}
-      role={asChild ? "button" : undefined}
+      role={asChild ? 'button' : undefined}
       aria-disabled={asChild ? isDisabled : undefined}
     >
       {asChild && isValidElement(children) ? (
@@ -181,6 +181,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
   );
 });
 
-Button.displayName = "gist-ui.Button";
+Button.displayName = 'gist-ui.Button';
 
 export default Button;

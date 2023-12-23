@@ -1,8 +1,8 @@
-import { focus, getTabbableEdges } from "./utils";
-import { Slot } from "@gist-ui/slot";
-import { mergeRefs } from "@gist-ui/react-utils";
-import { GistUiError } from "@gist-ui/error";
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { focus, getTabbableEdges } from './utils';
+import { Slot } from '@gist-ui/slot';
+import { mergeRefs } from '@gist-ui/react-utils';
+import { GistUiError } from '@gist-ui/error';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 export type FocusScope = { paused: boolean; pause(): void; resume(): void };
 
@@ -42,7 +42,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
     ...restProps
   } = props;
 
-  const Component = asChild ? Slot : "div";
+  const Component = asChild ? Slot : 'div';
 
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
@@ -102,16 +102,16 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       }
     };
 
-    document.addEventListener("focusin", handleFocusIn);
-    document.addEventListener("focusout", handleFocusOut);
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
 
     const mutationObserver = new MutationObserver(handleMutations);
     if (container)
       mutationObserver.observe(container, { childList: true, subtree: true });
 
     return () => {
-      document.removeEventListener("focusin", handleFocusIn);
-      document.removeEventListener("focusout", handleFocusOut);
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
       mutationObserver.disconnect();
     };
   }, [container, isDisabled, focusScope.paused, trapped]);
@@ -125,10 +125,10 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
 
     focusScopesStack?.add(focusScope);
 
-    if (!("focus" in container))
+    if (!('focus' in container))
       throw new GistUiError(
-        "FocusTrap",
-        "container must be focusable, hint =  set tabIndex to -1",
+        'FocusTrap',
+        'container must be focusable, hint =  set tabIndex to -1',
       );
 
     container.focus?.();
@@ -147,7 +147,7 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       if (focusScope.paused) return;
       if (isDisabled) return;
 
-      const isTab = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey;
+      const isTab = e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey;
       const focusedElement = document.activeElement as HTMLElement | null;
 
       if (isTab && focusedElement) {
@@ -182,14 +182,14 @@ const FocusTrap = forwardRef<HTMLDivElement, FocusTrapProps>((props, ref) => {
       ref={mergeRefs(ref, setContainer as React.ForwardedRef<HTMLDivElement>)}
       onKeyDown={handleKeyDown}
       {...restProps}
-      style={{ outline: "none", ...(restProps as { style: object }).style }}
+      style={{ outline: 'none', ...(restProps as { style: object }).style }}
     >
       {children}
     </Component>
   );
 });
 
-FocusTrap.displayName = "gist-ui.FocusTrap";
+FocusTrap.displayName = 'gist-ui.FocusTrap';
 
 export default FocusTrap;
 

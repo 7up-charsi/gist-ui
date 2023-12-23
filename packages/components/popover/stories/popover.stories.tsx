@@ -1,35 +1,35 @@
-import React, { useEffect, useRef } from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import { Button } from "@gist-ui/button";
+import React, { useEffect, useRef } from 'react';
+import { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@gist-ui/button';
 
-import * as Popover from "../src";
+import * as Popover from '../src';
 
 const meta: Meta<Popover.RootProps & Popover.ContentProps> = {
-  title: "Components/Popover",
+  title: 'Components/Popover',
   args: {
     defaultOpen: true,
   },
   argTypes: {
     placement: {
-      control: "select",
+      control: 'select',
       options: [
-        "top",
-        "right",
-        "bottom",
-        "left",
-        "top-end",
-        "top-start",
-        "right-end",
-        "right-start",
-        "bottom-end",
-        "bottom-start",
-        "left-end",
-        "left-start",
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'top-end',
+        'top-start',
+        'right-end',
+        'right-start',
+        'bottom-end',
+        'bottom-start',
+        'left-end',
+        'left-start',
       ],
     },
     sticky: {
-      control: "select",
-      options: ["partial", "always"],
+      control: 'select',
+      options: ['partial', 'always'],
     },
   },
 };
@@ -41,9 +41,9 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({
-      behavior: "instant",
-      block: "center",
-      inline: "center",
+      behavior: 'instant',
+      block: 'center',
+      inline: 'center',
     });
   }, []);
 
@@ -96,8 +96,8 @@ export const Default: StoryObj<Popover.RootProps & Popover.ContentProps> = {
     arrowPadding: 10,
     hideWhenDetached: true,
     boundaryPadding: 0,
-    sticky: "partial",
-    placement: "bottom",
+    sticky: 'partial',
+    placement: 'bottom',
     arrow: true,
     allowMainAxisFlip: true,
     allowCrossAxisFlip: true,

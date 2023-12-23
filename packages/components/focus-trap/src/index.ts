@@ -1,8 +1,8 @@
-import * as focusTrap from "./focus-trap";
-import * as utils from "./utils";
+import * as focusTrap from './focus-trap';
+import * as utils from './utils';
 
 // export types
-export type { FocusTrapProps, FocusScope } from "./focus-trap";
+export type { FocusTrapProps, FocusScope } from './focus-trap';
 
 export const FocusTrap = focusTrap.default;
 

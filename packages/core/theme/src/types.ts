@@ -52,7 +52,7 @@ export interface LayoutTheme {
   borderRadius?: BaseThemeUnit;
 }
 
-export type DefaultThemeType = "light" | "dark";
+export type DefaultThemeType = 'light' | 'dark';
 
 export type ConfigTheme = {
   /**
@@ -60,7 +60,7 @@ export type ConfigTheme = {
    *
    * @default light
    */
-  extend?: "light" | "dark";
+  extend?: 'light' | 'dark';
   colors?: Partial<ThemeColors>;
   layout?: LayoutTheme;
 };

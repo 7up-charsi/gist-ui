@@ -1,7 +1,7 @@
-import { createContextScope } from "@gist-ui/context";
-import { Slot } from "@gist-ui/slot";
-import { useSize } from "@gist-ui/use-size";
-import { forwardRef, useEffect, useState } from "react";
+import { createContextScope } from '@gist-ui/context';
+import { Slot } from '@gist-ui/slot';
+import { useSize } from '@gist-ui/use-size';
+import { forwardRef, useEffect, useState } from 'react';
 import {
   Boundary,
   DetectOverflowOptions,
@@ -17,14 +17,14 @@ import {
   offset,
   shift,
   useFloating,
-} from "@floating-ui/react-dom";
+} from '@floating-ui/react-dom';
 
 interface PopperContext {
   reference: HTMLElement | null;
   setReference: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
 }
 
-const Popper_Name = "Popper.Root";
+const Popper_Name = 'Popper.Root';
 
 const [Provider, useContext] = createContextScope<PopperContext>(Popper_Name);
 
@@ -44,9 +44,9 @@ export const Root = (props: PopperProps) => {
   );
 };
 
-Root.displayName = "gist-ui." + Popper_Name;
+Root.displayName = 'gist-ui.' + Popper_Name;
 
-const Reference_Name = "Popper.Reference";
+const Reference_Name = 'Popper.Reference';
 
 export interface ReferenceProps {
   children?: React.ReactNode;
@@ -76,9 +76,9 @@ export const Reference = (props: ReferenceProps) => {
   );
 };
 
-Reference.displayName = "gist-ui." + Reference_Name;
+Reference.displayName = 'gist-ui.' + Reference_Name;
 
-const Floating_Name = "Popper.Reference";
+const Floating_Name = 'Popper.Reference';
 
 interface ArrowContext {
   side: Side;
@@ -93,8 +93,8 @@ const [ArrowProvider, useArrowContext] =
 
 export interface FloatingProps {
   children?: React.ReactNode;
-  placement?: UseFloatingOptions["placement"];
-  updatePositionStrategy?: "optimized" | "always";
+  placement?: UseFloatingOptions['placement'];
+  updatePositionStrategy?: 'optimized' | 'always';
   /**
    * Represents the distance (gutter or margin) between the floating element and the reference element
    *
@@ -117,12 +117,12 @@ export interface FloatingProps {
    * @default 0
    */
   arrowPadding?: number;
-  sticky?: "partial" | "always";
+  sticky?: 'partial' | 'always';
   hideWhenDetached?: boolean;
   /**
    * @see {@link https://floating-ui.com/docs/flip#fallbackplacements fallbackPlacements}
    */
-  fallbackPlacements?: FlipOptions["fallbackPlacements"];
+  fallbackPlacements?: FlipOptions['fallbackPlacements'];
   /**
    * @see {@link https://floating-ui.com/docs/flip#mainaxis mainAxis}
    * @default true
@@ -155,18 +155,18 @@ export const Floating = (props: FloatingProps) => {
   const {
     children,
     placement: placementProp,
-    updatePositionStrategy = "optimized",
+    updatePositionStrategy = 'optimized',
     mainOffset = 0,
     alignOffset = 0,
     arrow: arrowProp = true,
     arrowPadding = 0,
-    sticky = "partial",
+    sticky = 'partial',
     hideWhenDetached = true,
     fallbackPlacements,
     allowCrossAxisFlip = true,
     allowMainAxisFlip = true,
     boundaryPadding = 0,
-    clippingBoundary = "clippingAncestors",
+    clippingBoundary = 'clippingAncestors',
   } = props;
 
   const context = useContext(Floating_Name);
@@ -176,19 +176,19 @@ export const Floating = (props: FloatingProps) => {
 
   const detectOverflow: DetectOverflowOptions = {
     padding:
-      typeof boundaryPadding === "number"
+      typeof boundaryPadding === 'number'
         ? boundaryPadding
         : { top: 0, left: 0, right: 0, bottom: 0, ...boundaryPadding },
     boundary: clippingBoundary,
   };
 
   const { middlewareData, placement, floatingStyles, refs } = useFloating({
-    strategy: "fixed",
+    strategy: 'fixed',
     placement: placementProp,
     elements: { reference: context.reference },
     whileElementsMounted: (...args) =>
       autoUpdate(...args, {
-        animationFrame: updatePositionStrategy === "always",
+        animationFrame: updatePositionStrategy === 'always',
       }),
     middleware: [
       offset({
@@ -200,22 +200,22 @@ export const Floating = (props: FloatingProps) => {
         : flip({
             fallbackPlacements,
             mainAxis: allowMainAxisFlip,
-            crossAxis: sticky === "partial" ? false : allowCrossAxisFlip,
+            crossAxis: sticky === 'partial' ? false : allowCrossAxisFlip,
             ...detectOverflow,
           }),
-      sticky === "partial" &&
+      sticky === 'partial' &&
         shift({
           ...detectOverflow,
           limiter: limitShift({
             offset: ({ placement, elements }) =>
-              placement.includes("top") || placement.includes("bottom")
+              placement.includes('top') || placement.includes('bottom')
                 ? elements.reference.offsetWidth / 2
                 : elements.reference.offsetHeight / 2,
           }),
         }),
       arrowProp && arrowMiddleware({ padding: arrowPadding, element: arrow }),
       hideWhenDetached &&
-        hide({ strategy: "referenceHidden", ...detectOverflow }),
+        hide({ strategy: 'referenceHidden', ...detectOverflow }),
     ],
   });
 
@@ -226,7 +226,7 @@ export const Floating = (props: FloatingProps) => {
     <ArrowProvider
       arrowX={arrowData?.x}
       arrowY={arrowData?.y}
-      side={placement.split("-")[0] as Side}
+      side={placement.split('-')[0] as Side}
       setArrow={setArrow}
       shouldHideArrow={!!hideData?.referenceHidden}
     >
@@ -235,9 +235,9 @@ export const Floating = (props: FloatingProps) => {
         {...{
           style: {
             ...floatingStyles,
-            visibility: hideData?.referenceHidden ? "hidden" : "visible",
-            "--reference-width": `${referenceSize?.width}px`,
-            "--reference-height": `${referenceSize?.height}px`,
+            visibility: hideData?.referenceHidden ? 'hidden' : 'visible',
+            '--reference-width': `${referenceSize?.width}px`,
+            '--reference-height': `${referenceSize?.height}px`,
           },
         }}
       >
@@ -247,15 +247,15 @@ export const Floating = (props: FloatingProps) => {
   );
 };
 
-Floating.displayName = "gist-ui." + Floating_Name;
+Floating.displayName = 'gist-ui.' + Floating_Name;
 
-const Arrow_Name = "Popper.Arrow";
+const Arrow_Name = 'Popper.Arrow';
 
 const OPPOSITE_SIDE: Record<Side, Side> = {
-  top: "bottom",
-  right: "left",
-  bottom: "top",
-  left: "right",
+  top: 'bottom',
+  right: 'left',
+  bottom: 'top',
+  left: 'right',
 };
 
 export const Arrow = forwardRef<
@@ -269,23 +269,23 @@ export const Arrow = forwardRef<
     <span
       ref={context.setArrow}
       style={{
-        position: "absolute",
+        position: 'absolute',
         left: context.arrowX,
         top: context.arrowY,
         [baseSide]: 0,
         transformOrigin: {
-          top: "",
-          right: "0 0",
-          bottom: "center 0",
-          left: "100% 0",
+          top: '',
+          right: '0 0',
+          bottom: 'center 0',
+          left: '100% 0',
         }[context.side],
         transform: {
-          top: "translateY(100%)",
-          right: "translateY(50%) rotate(90deg) translateX(-50%)",
+          top: 'translateY(100%)',
+          right: 'translateY(50%) rotate(90deg) translateX(-50%)',
           bottom: `rotate(180deg)`,
-          left: "translateY(50%) rotate(-90deg) translateX(50%)",
+          left: 'translateY(50%) rotate(-90deg) translateX(50%)',
         }[context.side],
-        visibility: context.shouldHideArrow ? "hidden" : "visible",
+        visibility: context.shouldHideArrow ? 'hidden' : 'visible',
       }}
     >
       <svg
@@ -302,4 +302,4 @@ export const Arrow = forwardRef<
   );
 });
 
-Arrow.displayName = "gist-ui." + Arrow_Name;
+Arrow.displayName = 'gist-ui.' + Arrow_Name;

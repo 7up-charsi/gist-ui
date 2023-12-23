@@ -1,12 +1,12 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import { DialogVariantProps, dialog } from "@gist-ui/theme";
-import { Button } from "@gist-ui/button";
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
+import { DialogVariantProps, dialog } from '@gist-ui/theme';
+import { Button } from '@gist-ui/button';
 
-import * as Dialog from "../src";
+import * as Dialog from '../src';
 
 const meta: Meta = {
-  title: "Components/Dialog",
+  title: 'Components/Dialog',
 };
 
 export default meta;
@@ -15,7 +15,7 @@ interface TemplateProps {
   defaultOpen?: boolean;
   modal?: boolean;
   keepMounted?: boolean;
-  size?: DialogVariantProps["size"];
+  size?: DialogVariantProps['size'];
   children?: React.ReactNode;
 }
 

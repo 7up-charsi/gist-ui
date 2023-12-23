@@ -1,14 +1,14 @@
-import { GistUiError, validChildError } from "@gist-ui/error";
-import { Slot } from "@gist-ui/slot";
-import { VisuallyHidden } from "@gist-ui/visually-hidden";
-import { useControllableState } from "@gist-ui/use-controllable-state";
-import { FocusTrap } from "@gist-ui/focus-trap";
-import { useClickOutside } from "@gist-ui/use-click-outside";
-import { usePress } from "@react-aria/interactions";
-import * as Popper from "@gist-ui/popper";
-import { createPortal } from "react-dom";
-import { useIsDisabled } from "@gist-ui/use-is-disabled";
-import { createContextScope } from "@gist-ui/context";
+import { GistUiError, validChildError } from '@gist-ui/error';
+import { Slot } from '@gist-ui/slot';
+import { VisuallyHidden } from '@gist-ui/visually-hidden';
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { FocusTrap } from '@gist-ui/focus-trap';
+import { useClickOutside } from '@gist-ui/use-click-outside';
+import { usePress } from '@react-aria/interactions';
+import * as Popper from '@gist-ui/popper';
+import { createPortal } from 'react-dom';
+import { useIsDisabled } from '@gist-ui/use-is-disabled';
+import { createContextScope } from '@gist-ui/context';
 import {
   cloneElement,
   isValidElement,
@@ -17,7 +17,7 @@ import {
   useId,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
 interface PopoverContext {
   isOpen: boolean;
@@ -27,7 +27,7 @@ interface PopoverContext {
   setGivenId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Popover_Name = "Popover.Root";
+const Popover_Name = 'Popover.Root';
 
 const [Provider, useContext] = createContextScope<PopoverContext>(Popover_Name);
 
@@ -62,7 +62,7 @@ export const Root = (props: RootProps) => {
 
   const id = useId();
 
-  const [givenId, setGivenId] = useState("");
+  const [givenId, setGivenId] = useState('');
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -76,15 +76,15 @@ export const Root = (props: RootProps) => {
     if (!isOpen) return;
 
     const handler = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
+      if (e.key !== 'Escape') return;
 
       handleClose();
     };
 
-    document.addEventListener("keydown", handler);
+    document.addEventListener('keydown', handler);
 
     return () => {
-      document.removeEventListener("keydown", handler);
+      document.removeEventListener('keydown', handler);
     };
   }, [handleClose, isOpen]);
 
@@ -101,11 +101,11 @@ export const Root = (props: RootProps) => {
   );
 };
 
-Root.displayName = "gist-ui." + Popover_Name;
+Root.displayName = 'gist-ui.' + Popover_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
 
-const Trigger_Name = "Popover.Trigger";
+const Trigger_Name = 'Popover.Trigger';
 
 export interface TriggerProps {
   children: React.ReactNode;
@@ -140,11 +140,11 @@ export const Trigger = (props: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui." + Trigger_Name;
+Trigger.displayName = 'gist-ui.' + Trigger_Name;
 
 // *-*-*-*-* Close *-*-*-*-*
 
-const Close_Name = "Popover.Close";
+const Close_Name = 'Popover.Close';
 
 export interface CloseProps {
   children: React.ReactNode;
@@ -160,11 +160,11 @@ export const Close = (props: CloseProps) => {
   return <Slot {...pressProps}>{children}</Slot>;
 };
 
-Close.displayName = "gist-ui." + Close_Name;
+Close.displayName = 'gist-ui.' + Close_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
 
-const Portal_Name = "Popover.Portal";
+const Portal_Name = 'Popover.Portal';
 
 export interface PortalProps {
   children?: React.ReactNode;
@@ -179,11 +179,11 @@ export const Portal = ({ children, container }: PortalProps) => {
   );
 };
 
-Portal.displayName = "gist-ui." + Portal_Name;
+Portal.displayName = 'gist-ui.' + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
 
-const Content_Name = "Popover.Content";
+const Content_Name = 'Popover.Content';
 
 export interface ContentProps extends Popper.FloatingProps {
   children?: React.ReactNode;
@@ -205,20 +205,20 @@ export const Content = (props: ContentProps) => {
 
   useEffect(() => {
     if (isValidElement(children)) {
-      context.setGivenId(children.props.id || "");
+      context.setGivenId(children.props.id || '');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
   if (!isValidElement(children))
-    throw new GistUiError("Content", validChildError);
+    throw new GistUiError('Content', validChildError);
 
   return (
     <Popper.Floating {...restProps}>
       <FocusTrap ref={setOutsideEle} loop trapped asChild>
         {cloneElement(children, {
-          role: "dialog",
+          role: 'dialog',
           id: context.id,
           children: (
             <>
@@ -239,4 +239,4 @@ export const Content = (props: ContentProps) => {
   );
 };
 
-Content.displayName = "gist-ui." + Content_Name;
+Content.displayName = 'gist-ui.' + Content_Name;

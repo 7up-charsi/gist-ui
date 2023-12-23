@@ -1,16 +1,16 @@
-import { createPortal } from "react-dom";
-import { useHover, useFocus, useFocusVisible } from "@react-aria/interactions";
-import { mergeProps } from "@gist-ui/react-utils";
-import { useControllableState } from "@gist-ui/use-controllable-state";
-import { Slot } from "@gist-ui/slot";
+import { createPortal } from 'react-dom';
+import { useHover, useFocus, useFocusVisible } from '@react-aria/interactions';
+import { mergeProps } from '@gist-ui/react-utils';
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { Slot } from '@gist-ui/slot';
 import {
   TooltipClassNames,
   TooltipVariantProps,
   tooltip,
-} from "@gist-ui/theme";
-import { useIsDisabled } from "@gist-ui/use-is-disabled";
-import { createContextScope } from "@gist-ui/context";
-import * as Popper from "@gist-ui/popper";
+} from '@gist-ui/theme';
+import { useIsDisabled } from '@gist-ui/use-is-disabled';
+import { createContextScope } from '@gist-ui/context';
+import * as Popper from '@gist-ui/popper';
 import {
   Dispatch,
   MutableRefObject,
@@ -24,11 +24,11 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import pick from "lodash.pick";
-import omit from "lodash.omit";
+} from 'react';
+import pick from 'lodash.pick';
+import omit from 'lodash.omit';
 
-type Trigger = "hover" | "focus";
+type Trigger = 'hover' | 'focus';
 
 interface TooltipContext {
   handleShow: (a?: boolean) => void;
@@ -43,7 +43,7 @@ interface TooltipContext {
   setGivenId: Dispatch<SetStateAction<string>>;
 }
 
-const Tooltip_Name = "Tooltip.Root";
+const Tooltip_Name = 'Tooltip.Root';
 
 const [Provider, useContext] = createContextScope<TooltipContext>(Tooltip_Name);
 
@@ -80,7 +80,7 @@ export const Root = (props: RootProps) => {
     onChange: onOpenChange,
   });
 
-  const [givenId, setGivenId] = useState("");
+  const [givenId, setGivenId] = useState('');
   const id = useId();
 
   const tooltipIdentifier = useMemo(() => `${++tooltipId}`, []);
@@ -156,15 +156,15 @@ export const Root = (props: RootProps) => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         hideTooltip(true);
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", onKeyDown);
+      document.addEventListener('keydown', onKeyDown);
       return () => {
-        document.removeEventListener("keydown", onKeyDown);
+        document.removeEventListener('keydown', onKeyDown);
       };
     }
   }, [hideTooltip, isOpen]);
@@ -201,11 +201,11 @@ export const Root = (props: RootProps) => {
   );
 };
 
-Root.displayName = "gist-ui." + Tooltip_Name;
+Root.displayName = 'gist-ui.' + Tooltip_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
 
-const Trigger_Name = "Tooltip.Trigger";
+const Trigger_Name = 'Tooltip.Trigger';
 
 export interface TriggerProps {
   children?: ReactNode;
@@ -228,7 +228,7 @@ export const Trigger = ({ children }: TriggerProps) => {
   const { hoverProps } = useHover({
     isDisabled: disabled,
     onHoverStart: () => {
-      if (context.trigger === "focus") return;
+      if (context.trigger === 'focus') return;
 
       context.isHovered.current = true;
       context.isFocused.current = false;
@@ -236,7 +236,7 @@ export const Trigger = ({ children }: TriggerProps) => {
       context.handleShow();
     },
     onHoverEnd: () => {
-      if (context.trigger === "focus") return;
+      if (context.trigger === 'focus') return;
 
       context.isFocused.current = false;
       context.isHovered.current = false;
@@ -253,7 +253,7 @@ export const Trigger = ({ children }: TriggerProps) => {
   const { isFocusVisible } = useFocusVisible();
   const { focusProps } = useFocus({
     onFocus: () => {
-      if (context.trigger === "hover") return;
+      if (context.trigger === 'hover') return;
 
       if (isFocusVisible) {
         context.isFocused.current = true;
@@ -262,7 +262,7 @@ export const Trigger = ({ children }: TriggerProps) => {
       }
     },
     onBlur: () => {
-      if (context.trigger === "hover") return;
+      if (context.trigger === 'hover') return;
 
       context.isFocused.current = false;
       context.isHovered.current = false;
@@ -288,11 +288,11 @@ export const Trigger = ({ children }: TriggerProps) => {
   );
 };
 
-Trigger.displayName = "gist-ui." + Trigger_Name;
+Trigger.displayName = 'gist-ui.' + Trigger_Name;
 
 // *-*-*-*-* Portal *-*-*-*-*
 
-const Portal_Name = "Tooltip.Portal";
+const Portal_Name = 'Tooltip.Portal';
 
 export interface PortalProps {
   children?: ReactNode;
@@ -307,11 +307,11 @@ export const Portal = ({ children, container }: PortalProps) => {
   );
 };
 
-Portal.displayName = "gist-ui." + Portal_Name;
+Portal.displayName = 'gist-ui.' + Portal_Name;
 
 // *-*-*-*-* Content *-*-*-*-*
 
-const Content_Name = "Tooltip.Content";
+const Content_Name = 'Tooltip.Content';
 
 export interface ContentProps
   extends TooltipVariantProps,
@@ -331,7 +331,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
 
     const context = useContext(Content_Name);
 
-    const Component = asChild ? Slot : "div";
+    const Component = asChild ? Slot : 'div';
 
     const { hoverProps: tooltipHoverProps } = useHover({
       isDisabled: disableInteractive,
@@ -345,7 +345,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
 
     useEffect(() => {
       if (isValidElement(children)) {
-        context.setGivenId((children.props as { id?: string }).id || "");
+        context.setGivenId((children.props as { id?: string }).id || '');
       }
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -369,4 +369,4 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
   },
 );
 
-Content.displayName = "gist-ui." + Content_Name;
+Content.displayName = 'gist-ui.' + Content_Name;

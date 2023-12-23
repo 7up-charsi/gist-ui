@@ -1,4 +1,4 @@
-import { flatten } from "flat";
+import { flatten } from 'flat';
 
 export function swapColorValues<T extends Record<string, unknown>>(colors: T) {
   const keys = Object.keys(colors);
@@ -27,8 +27,8 @@ export function removeDefaultKeys<T extends Record<string, string>>(obj: T) {
   const newObj: Record<string, string> = {};
 
   for (const key in obj) {
-    if (key.endsWith("-DEFAULT")) {
-      newObj[key.replace("-DEFAULT", "")] = obj[key];
+    if (key.endsWith('-DEFAULT')) {
+      newObj[key.replace('-DEFAULT', '')] = obj[key];
       continue;
     }
     newObj[key] = obj[key];
@@ -43,6 +43,6 @@ export const flattenThemeObject = <T, R extends Record<string, string>>(
   removeDefaultKeys(
     flatten<T, R>(obj, {
       safe: true,
-      delimiter: "-",
+      delimiter: '-',
     }),
   );

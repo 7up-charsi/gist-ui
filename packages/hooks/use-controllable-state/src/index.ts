@@ -1,5 +1,5 @@
-import { useCallbackRef } from "@gist-ui/use-callback-ref";
-import { useState } from "react";
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { useState } from 'react';
 
 export interface UseControllableStateProps<T, P> {
   /**
@@ -24,7 +24,7 @@ const useControllableState = <T, P>(
   const setValue = useCallbackRef(
     (next: React.SetStateAction<T>, payload?: P) => {
       const setter = next as (prevState?: T) => T;
-      const nextValue = typeof next === "function" ? setter(value) : next;
+      const nextValue = typeof next === 'function' ? setter(value) : next;
 
       if (!controlled) setState(nextValue);
 
