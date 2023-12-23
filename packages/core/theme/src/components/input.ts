@@ -111,6 +111,7 @@ const input = tv({
     {
       variant: 'border',
       size: 'md',
+      hideLabel: false,
       class: {
         label: 'translate-y-4',
       },
@@ -118,7 +119,26 @@ const input = tv({
     {
       variant: 'border',
       size: 'sm',
+      hideLabel: false,
       class: {
+        label: 'translate-y-3',
+      },
+    },
+    {
+      variant: 'border',
+      size: 'md',
+      hideLabel: true,
+      class: {
+        fieldset: 'inset-0',
+        label: 'translate-y-4',
+      },
+    },
+    {
+      variant: 'border',
+      size: 'sm',
+      hideLabel: true,
+      class: {
+        fieldset: 'inset-0',
         label: 'translate-y-3',
       },
     },
