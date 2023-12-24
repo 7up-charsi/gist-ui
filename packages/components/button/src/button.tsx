@@ -4,8 +4,6 @@ import { Slot } from '@gist-ui/slot';
 import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
 import { useRipple, UseRippleProps } from '@gist-ui/use-ripple';
 import { mergeRefs, mergeProps } from '@gist-ui/react-utils';
-import omit from 'lodash.omit';
-import pick from 'lodash.pick';
 import {
   PressProps,
   usePress,
@@ -20,31 +18,10 @@ import {
   forwardRef,
   isValidElement,
   ReactNode,
+  useEffect,
   useRef,
 } from 'react';
 import { useCallbackRef } from '@gist-ui/use-callback-ref';
-
-// const sss: { [key in keyof HoverEvents]: string } = {};
-
-const ripplePropsKeys = [
-  'duration',
-  'timingFunction',
-  'completedFactor',
-  'pointerCenter',
-] as const;
-
-const pressPropsKeys = [
-  'onPress',
-  'onPressStart',
-  'onPressEnd',
-  'onPressUp',
-  'onPressChange',
-  'allowTextSelectionOnPress',
-  'preventFocusOnPress',
-  'shouldCancelOnPointerExit',
-] as const;
-
-const hoverPropsKeys = ['onHoverChange', 'onHoverEnd', 'onHoverStart'] as const;
 
 export interface ButtonProps
   extends ButtonVariantProps,
@@ -52,7 +29,6 @@ export interface ButtonProps
       ButtonHTMLAttributes<HTMLButtonElement>,
       'color' | 'className' | 'disabled'
     >,
-    UseRippleProps,
     Omit<PressProps, 'isPressed' | 'isDisabled'>,
     HoverEvents {
   startContent?: ReactNode;
@@ -60,39 +36,42 @@ export interface ButtonProps
   classNames?: ButtonClassNames;
   children?: ReactNode;
   asChild?: boolean;
+  rippleDuration?: UseRippleProps['duration'];
+  rippleTimingFunction?: UseRippleProps['timingFunction'];
+  rippleCompletedFactor?: UseRippleProps['completedFactor'];
+  ripplePointerCenter?: UseRippleProps['pointerCenter'];
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
-  const variantProps = pick(_props, ...button.variantKeys);
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
+    startContent,
+    endContent,
+    classNames,
+    asChild,
+    children,
     onPress: onPressProp,
     onPressEnd: onPressEndProp,
     onPressStart: onPressStartProp,
     onPressUp: onPressUpProp,
     onPressChange: onPressChangeProp,
-    ...pressHookProps
-  } = pick(_props, ...pressPropsKeys);
-  const rippleProps = pick(_props, ...ripplePropsKeys);
-  const hoverHookProps = pick(_props, ...hoverPropsKeys);
-
-  const props = omit(
-    _props,
-    ...button.variantKeys,
-    ...pressPropsKeys,
-    ...ripplePropsKeys,
-    ...hoverPropsKeys,
-  );
-
-  const { startContent, endContent, classNames, asChild, children, ...rest } =
-    props;
+    rippleDuration,
+    rippleTimingFunction,
+    rippleCompletedFactor,
+    ripplePointerCenter,
+    color,
+    fullWidth,
+    isDisabled,
+    isIconOnly,
+    size,
+    variant,
+    ...buttonProps
+  } = props;
 
   const onPress = useCallbackRef(onPressProp);
   const onPressEnd = useCallbackRef(onPressEndProp);
   const onPressStart = useCallbackRef(onPressStartProp);
   const onPressUp = useCallbackRef(onPressUpProp);
   const onPressChange = useCallbackRef(onPressChangeProp);
-
-  const { isDisabled, isIconOnly } = variantProps;
 
   const innerRef = useRef<HTMLButtonElement>(null);
 
@@ -102,14 +81,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
     isDisabled
       ? { isDisabled: true }
       : {
-          pointerCenter: !isIconOnly,
-          duration: isIconOnly ? 450 : 500,
-          ...rippleProps,
+          pointerCenter: ripplePointerCenter ?? !isIconOnly,
+          duration: rippleDuration || isIconOnly ? 450 : 500,
+          timingFunction: rippleTimingFunction,
+          completedFactor: rippleCompletedFactor,
         },
   );
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
-  const { hoverProps, isHovered } = useHover({ isDisabled, ...hoverHookProps });
+  const { hoverProps, isHovered } = useHover({ isDisabled });
   const { pressProps, isPressed } = usePress({
     isDisabled,
     onPress,
@@ -117,20 +97,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
     onPressStart,
     onPressUp,
     onPressChange,
-    ...pressHookProps,
   });
 
-  const styles = button(variantProps);
+  const ariaLabel = props['aria-label'];
+  const ariaLabelledby = props['aria-labelledby'];
 
-  if (
-    __DEV__ &&
-    isIconOnly &&
-    !props['aria-label'] &&
-    !props['aria-labelledby']
-  )
-    console.warn(
-      'Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"',
-    );
+  useEffect(() => {
+    if (__DEV__ && isIconOnly && !ariaLabel && !ariaLabelledby)
+      console.warn(
+        'Gist-ui button: icon button must provide "aria-label" or "aria-labelledby"',
+      );
+  }, [ariaLabel, ariaLabelledby, isIconOnly]);
+
+  const styles = button({
+    color,
+    fullWidth,
+    isDisabled,
+    isIconOnly,
+    size,
+    variant,
+  });
 
   if (asChild) {
     const countChild = Children.count(children);
@@ -147,7 +133,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((_props, ref) => {
         pressProps,
         focusProps,
         hoverProps,
-        rest,
+        buttonProps,
       )}
       data-pointer-pressed={isPressed}
       data-keyboard-pressed={isFocusVisible && isPressed}

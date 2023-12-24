@@ -164,12 +164,6 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.pick:
-        specifier: ^4.4.0
-        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -180,12 +174,6 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
-      '@types/lodash.omit':
-        specifier: ^4.5.8
-        version: 4.5.8
-      '@types/lodash.pick':
-        specifier: ^4.4.9
-        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -318,12 +306,6 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.pick:
-        specifier: ^4.4.0
-        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -331,12 +313,6 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@types/lodash.omit':
-        specifier: ^4.5.8
-        version: 4.5.8
-      '@types/lodash.pick':
-        specifier: ^4.4.9
-        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -481,12 +457,6 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.pick:
-        specifier: ^4.4.0
-        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -494,15 +464,6 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@types/lodash.omit':
-        specifier: ^4.5.8
-        version: 4.5.8
-      '@types/lodash.pick':
-        specifier: ^4.4.9
-        version: 4.4.9
-      '@types/uuid':
-        specifier: ^9.0.7
-        version: 9.0.7
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -552,12 +513,6 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.pick:
-        specifier: ^4.4.0
-        version: 4.4.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -565,12 +520,6 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@types/lodash.omit':
-        specifier: ^4.5.8
-        version: 4.5.8
-      '@types/lodash.pick':
-        specifier: ^4.4.9
-        version: 4.4.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -631,9 +580,6 @@ importers:
       lodash.kebabcase:
         specifier: ^4.1.1
         version: 4.1.1
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
       tailwind-variants:
         specifier: ^0.1.14
         version: 0.1.14(tailwindcss@3.3.3)
@@ -647,9 +593,6 @@ importers:
       '@types/lodash.kebabcase':
         specifier: ^4.1.8
         version: 4.1.8
-      '@types/lodash.omit':
-        specifier: ^4.5.8
-        version: 4.5.8
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -5521,18 +5464,6 @@ packages:
       '@types/lodash': 4.14.202
     dev: true
 
-  /@types/lodash.omit@4.5.8:
-    resolution: {integrity: sha512-CeIDttD58jS7R7M4rI8ZNBbV6JGG+BkKQFnWjduFJwTxqo8NdT/xjbjmQc39MVB2TKJ0rvQxddNaIna+W/pQvw==}
-    dependencies:
-      '@types/lodash': 4.14.202
-    dev: true
-
-  /@types/lodash.pick@4.4.9:
-    resolution: {integrity: sha512-hDpr96x9xHClwy1KX4/RXRejqjDFTEGbEMT3t6wYSYeFDzxmMnSKB/xHIbktRlPj8Nii2g8L5dtFDRaNFBEzUQ==}
-    dependencies:
-      '@types/lodash': 4.14.202
-    dev: true
-
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
@@ -9682,14 +9613,6 @@ packages:
   /lodash.mergewith@4.6.2:
     resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
     dev: true
-
-  /lodash.omit@4.5.0:
-    resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
-    dev: false
-
-  /lodash.pick@4.4.0:
-    resolution: {integrity: sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==}
-    dev: false
 
   /lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}

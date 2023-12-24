@@ -48,14 +48,9 @@
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
-    "lodash.omit": "^4.5.0",
-    "lodash.pick": "^4.4.0",
     "@react-aria/interactions": "^3.20.0"
   },
   "devDependencies": {
-    "@types/lodash.omit": "^4.5.8",
-    "@types/lodash.pick": "^4.4.9",
-    "@types/uuid": "^9.0.7",
     "clean-package": "^2.2.0"
   },
   "clean-package": {

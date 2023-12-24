@@ -21,24 +21,9 @@ const select = tv({
       md: { listbox: 'shadow-md' },
       lg: { listbox: 'shadow-lg' },
     },
-    color: {
-      primary: {},
-      secondary: {},
-      success: {},
-      info: {},
-      warning: {},
-      danger: {},
-    },
-    size: {
-      sm: { option: 'h-8' },
-      md: { option: 'h-10' },
-      lg: { option: 'h-12' },
-    },
   },
   defaultVariants: {
     shadow: 'md',
-    color: 'primary',
-    size: 'md',
   },
 });
 

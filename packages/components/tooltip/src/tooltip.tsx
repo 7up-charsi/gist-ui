@@ -25,8 +25,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import pick from 'lodash.pick';
-import omit from 'lodash.omit';
 
 type Trigger = 'hover' | 'focus';
 
@@ -323,11 +321,14 @@ export interface ContentProps
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>(
-  (_props, ref) => {
-    const variantProps = pick(_props, ...tooltip.variantKeys);
-    const props = omit(_props, ...tooltip.variantKeys);
-
-    const { children, asChild, disableInteractive, classNames } = props;
+  (props, ref) => {
+    const {
+      children,
+      asChild,
+      disableInteractive,
+      classNames,
+      ...popperProps
+    } = props;
 
     const context = useContext(Content_Name);
 
@@ -351,10 +352,10 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [children]);
 
-    const styles = tooltip(variantProps);
+    const styles = tooltip();
 
     return (
-      <Popper.Floating>
+      <Popper.Floating {...popperProps}>
         <Component
           ref={ref}
           role="tooltip"

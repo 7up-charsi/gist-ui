@@ -299,13 +299,19 @@ export const Content = (props: ContentProps) => {
     },
   });
 
+  const setGivenId = context.setGivenId;
+
   useEffect(() => {
     if (isValidElement(children)) {
-      context.setGivenId(children.props.id || '');
-    }
+      setGivenId(children.props.id || '');
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
+      if (__DEV__ && !children.props['aria-describedby'])
+        console.warn(
+          'Content',
+          '"aria-describedby" is optional but recommended',
+        );
+    }
+  }, [children, setGivenId]);
 
   const { pressProps } = usePress({
     onPress: () => context.handleClose('virtual'),
@@ -326,9 +332,6 @@ export const Content = (props: ContentProps) => {
       'Content',
       'add "aria-label" or "aria-labelledby" for accessibility',
     );
-
-  if (__DEV__ && !children.props['aria-describedby'])
-    console.warn('Content', '"aria-describedby" is optional but recommended');
 
   return (
     <FocusTrap

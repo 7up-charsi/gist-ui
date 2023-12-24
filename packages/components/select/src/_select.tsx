@@ -3,8 +3,6 @@ import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
 import { SelectClassNames, SelectVariantProps, select } from '@gist-ui/theme';
 import { mergeRefs } from '@gist-ui/react-utils';
 import { Button } from '@gist-ui/button';
-import omit from 'lodash.omit';
-import pick from 'lodash.pick';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { useFocusVisible } from '@react-aria/interactions';
@@ -75,45 +73,9 @@ export type RenderOptionProps = {
   };
 };
 
-const inputPropsKeys = [
-  'a11yFeedback',
-  'classNames',
-  'color',
-  'isDisabled',
-  'endContent',
-  'error',
-  'errorMessage',
-  'fullWidth',
-  'helperText',
-  'hideLabel',
-  'id',
-  'inputProps',
-  'label',
-  'labelPlacement',
-  'name',
-  'onBlur',
-  'onFocus',
-  'placeholder',
-  'required',
-  'rounded',
-  'size',
-  'startContent',
-  'type',
-  'variant',
-  'onHoverChange',
-  'onHoverEnd',
-  'onHoverStart',
-] as const;
-
-const variantPropsKeys = select.variantKeys.filter((e) => e !== 'rounded');
-
 export interface SelectProps
-  extends Omit<SelectVariantProps, 'rounded'>,
-    Omit<
-      InputProps,
-      'defaultValue' | 'value' | 'onChange' | 'hideNativeInput'
-    > {
-  listboxRounded?: SelectVariantProps['rounded'];
+  extends SelectVariantProps,
+    Omit<InputProps, 'defaultValue' | 'value' | 'onChange'> {
   /**
    * This prop value is use in `listbox` style.maxHeight
    *
@@ -160,15 +122,10 @@ export interface SelectProps
 
 const GET_OPTION_LABEL = (option: SelectOption) => option.label;
 
-const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
-  const { isDisabled, ...inputProps } = pick(_props, ...inputPropsKeys);
-  const variantProps = pick(_props, ...variantPropsKeys);
-  const props = omit(_props, ...variantPropsKeys, ...inputPropsKeys);
-
+const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
   const {
     options,
     listboxClassNames,
-    listboxRounded,
     offset,
     getOptionDisabled,
     isOpen: isOpenProp,
@@ -183,6 +140,9 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
     isOptionEqualToValue,
     renderOption,
     getOptionLabel = GET_OPTION_LABEL,
+    shadow,
+    isDisabled,
+    ...inputProps
   } = props;
 
   const onChange = useCallbackRef(onChangeProp);
@@ -453,9 +413,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
   ]);
 
   const styles = select({
-    ...variantProps,
-    rounded: listboxRounded,
-    color: inputProps.color,
+    shadow,
   });
 
   return (
@@ -466,7 +424,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
         ref={mergeRefs(ref, setInputWrapper)}
         value={value ? getOptionLabel(value) : ''}
         onChange={() => {}}
-        hideNativeInput
         inputProps={{
           ...inputProps.inputProps,
           onPointerDown: handleInputInteraction,
@@ -487,7 +444,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
                 isIconOnly
                 variant="text"
                 size="sm"
-                rounded="full"
                 aria-label="toggle listbox"
                 asChild
                 onPress={handleClear}
@@ -500,7 +456,6 @@ const Select = forwardRef<CustomInputElement, SelectProps>((_props, ref) => {
               isIconOnly
               variant="text"
               size="sm"
-              rounded="full"
               aria-label="toggle listbox"
               asChild
               style={{ rotate: isOpen ? '180deg' : '0deg' }}

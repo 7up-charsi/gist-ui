@@ -4,18 +4,15 @@ import { __DEV__ } from '@gist-ui/shared-utils';
 import { HoverProps, useFocus, useHover } from '@react-aria/interactions';
 import { useFocusRing } from '@react-aria/focus';
 import { NativeInputProps } from './types';
-import omit from 'lodash.omit';
-import pick from 'lodash.pick';
 import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import {
   forwardRef,
+  useEffect,
   useId,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
-
-const hoverPropsKeys = ['onHoverStart', 'onHoverEnd', 'onHoverChange'] as const;
 
 export interface InputProps
   extends Omit<InputVariantProps, 'error'>,
@@ -45,12 +42,7 @@ export interface InputProps
   inputProps?: NativeInputProps;
 }
 
-const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
-  const variantProps = pick(_props, ...input.variantKeys);
-  const hoverHookProps = pick(_props, ...hoverPropsKeys);
-
-  const props = omit(_props, ...input.variantKeys, ...hoverPropsKeys);
-
+const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const {
     label,
     type = 'text',
@@ -70,9 +62,17 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     a11yFeedback = 'polite',
     inputProps,
     onChange: onChangeProp,
+    onHoverChange,
+    onHoverEnd,
+    onHoverStart,
+    isDisabled,
+    error,
+    color,
+    fullWidth,
+    hideLabel,
+    size,
+    variant,
   } = props;
-
-  const { error, isDisabled, hideLabel, variant } = variantProps;
 
   const labelId = useId();
   const helperTextId = useId();
@@ -88,6 +88,13 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const [filled, setFilled] = useState(!!defaultValue);
+
+  useEffect(() => {
+    if (__DEV__ && !label)
+      console.warn(
+        '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
+      );
+  }, [label]);
 
   useImperativeHandle(
     ref,
@@ -107,7 +114,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
     isFocused,
   } = useFocusRing({ isTextInput: true });
 
-  const { hoverProps, isHovered } = useHover({ ...hoverHookProps, isDisabled });
+  const { hoverProps, isHovered } = useHover({
+    isDisabled,
+    onHoverChange,
+    onHoverEnd,
+    onHoverStart,
+  });
 
   const { focusProps } = useFocus<HTMLInputElement>({
     onFocus: (e) => {
@@ -122,15 +134,14 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
   });
 
   const styles = input({
-    ...variantProps,
     isDisabled,
     error,
+    color,
+    fullWidth,
+    hideLabel,
+    size,
+    variant,
   });
-
-  if (__DEV__ && !label)
-    console.warn(
-      '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
-    );
 
   return (
     <div
@@ -165,7 +176,13 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
         )}
 
         {startContent && (
-          <div className={styles.startContent()}>{startContent}</div>
+          <div
+            className={styles.startContent({
+              className: classNames?.startContent,
+            })}
+          >
+            {startContent}
+          </div>
         )}
 
         <input
@@ -188,11 +205,26 @@ const Input = forwardRef<HTMLDivElement, InputProps>((_props, ref) => {
           disabled={isDisabled}
         />
 
-        {endContent && <div className={styles.endContent()}>{endContent}</div>}
+        {endContent && (
+          <div
+            className={styles.endContent({ className: classNames?.endContent })}
+          >
+            {endContent}
+          </div>
+        )}
 
         {variant === 'border' ? (
-          <fieldset aria-hidden="true" className={styles.fieldset()}>
-            {!hideLabel && <legend className={styles.legend()}>{label}</legend>}
+          <fieldset
+            aria-hidden="true"
+            className={styles.fieldset({ className: classNames?.fieldset })}
+          >
+            {!hideLabel && (
+              <legend
+                className={styles.legend({ className: classNames?.legend })}
+              >
+                {label}
+              </legend>
+            )}
           </fieldset>
         ) : null}
       </div>
