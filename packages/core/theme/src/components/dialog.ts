@@ -9,7 +9,7 @@ const dialog = tv({
   slots: {
     backdrop: 'w-screen h-screen fixed inset-0 z-50',
     container: 'w-screen h-[100dvh] fixed inset-0 z-50 flex',
-    base: 'flex flex-col bg-white w-full max-h-[calc(100%_-_7.5rem)] box-border outline-none m-5 overflow-hidden',
+    base: 'flex flex-col bg-white w-full max-h-[calc(100%_-_7.5rem)] box-border outline-none m-5 overflow-hidden rounded',
     header:
       'grow-0 shrink-0 min-h-[55px] flex items-center justify-start py-2 px-6 text-large font-semibold',
     body: 'flex-1 px-6 py-2',
@@ -31,14 +31,8 @@ const dialog = tv({
         base: 'border-0',
       },
       border: {
-        base: 'border border-default-300',
+        base: 'border border-neutral-300',
       },
-    },
-    rounded: {
-      none: { base: 'rounded-none' },
-      sm: { base: 'rounded-sm' },
-      md: { base: 'rounded-md' },
-      lg: { base: 'rounded-lg' },
     },
     placement: {
       'top-left': {
@@ -116,7 +110,7 @@ const dialog = tv({
     },
     borderedBody: {
       true: {
-        body: 'border-y border-default-300',
+        body: 'border-y border-neutral-300',
       },
       false: {
         body: 'border-y-0',
@@ -126,7 +120,6 @@ const dialog = tv({
   defaultVariants: {
     backdrop: 'opaque',
     size: 'md',
-    rounded: 'md',
     scrollBehavior: 'inside',
     shadow: 'lg',
     placement: 'center',

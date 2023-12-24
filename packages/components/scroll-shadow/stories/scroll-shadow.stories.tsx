@@ -26,7 +26,7 @@ export default meta;
 
 const VerticalTemplate = (args: ScrollShadowProps) => {
   return (
-    <div className="w-96 h-96 border-2 border-default-400 rounded-md p-3 flex flex-col gap-2">
+    <div className="w-96 h-96 border-2 border-neutral-400 rounded p-3 flex flex-col gap-2">
       <span className="capitalize font-medium">direction : vertical</span>
       <ScrollShadow {...args}>
         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam illo
@@ -58,7 +58,7 @@ export const Vertical: StoryObj<ScrollShadowProps> = {
 
 const HorizontalTemplate = (args: ScrollShadowProps) => {
   return (
-    <div className="w-96 h-96 border-2 border-default-400 rounded-md p-3 flex flex-col gap-2">
+    <div className="w-96 h-96 border-2 border-neutral-400 rounded p-3 flex flex-col gap-2">
       <span className="capitalize font-medium">direction : horizontal</span>
       <ScrollShadow {...args} direction="horizontal">
         <p className="h-full w-[500px]">
@@ -82,7 +82,7 @@ export const Horizontal: StoryObj<ScrollShadowProps> = {
 
 const BothTemplate = (args: ScrollShadowProps) => {
   return (
-    <div className="w-96 h-96 border-2 border-default-400 rounded-md p-3 flex flex-col gap-2">
+    <div className="w-96 h-96 border-2 border-neutral-400 rounded p-3 flex flex-col gap-2">
       <span className="capitalize font-medium">direction : both</span>
       <ScrollShadow {...args} direction="both">
         <p className="h-full w-[500px]">

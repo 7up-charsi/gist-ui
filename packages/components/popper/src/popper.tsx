@@ -290,8 +290,8 @@ export const Arrow = forwardRef<
     >
       <svg
         {...props}
-        width={props.width || 12}
-        height={props.height || 7}
+        width={props.width || 9}
+        height={props.height || 5}
         ref={ref}
         viewBox="0 0 30 10"
         preserveAspectRatio="none"

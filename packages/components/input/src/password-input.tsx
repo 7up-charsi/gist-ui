@@ -34,7 +34,6 @@ const PasswordInput = forwardRef<HTMLDivElement, PasswordInputProps>(
         type="button"
         isIconOnly
         size="sm"
-        rounded="full"
         variant="text"
         aria-label={isPassword ? showAriaLabel : hideAriaLabel}
         aria-pressed={isPassword}

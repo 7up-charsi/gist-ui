@@ -15,7 +15,7 @@ const DefaultTemplate = (args: FocusTrapProps) => {
   return (
     <>
       <FocusTrap {...args} asChild>
-        <div className="w-[500px] h-[500px] border-2 border-default-300 rounded-md flex flex-wrap content-center items-center gap-3 justify-center">
+        <div className="w-[500px] h-[500px] border-2 border-neutral-300 rounded flex flex-wrap content-center items-center gap-3 justify-center">
           <span className="w-full text-center font-medium mb-4 text-info-400">
             Focus can not escape this container with
             <span className="uppercase text-lg mx-1">keyboard</span>

@@ -20,11 +20,6 @@ const meta: Meta<typeof Button> = {
       options: Object.keys(button.variants.color),
       if: { arg: 'color', exists: true },
     },
-    rounded: {
-      control: { type: 'select' },
-      options: Object.keys(button.variants.rounded),
-      if: { arg: 'rounded', exists: true },
-    },
     size: {
       control: { type: 'select' },
       options: Object.keys(button.variants.size),
@@ -56,7 +51,7 @@ const DefaultTemplate = (args: ButtonProps) => (
       ]
     ).map((variant, idx) => (
       <div key={idx} className="flex flex-col gap-4">
-        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-neutral">
           {variant}
         </span>
 
@@ -92,13 +87,13 @@ const WithConentTemplate = (args: ButtonProps) => (
       ]
     ).map((variant, idx) => (
       <div key={idx} className="flex flex-col gap-4">
-        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+        <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-neutral">
           {variant}
         </span>
 
         {['start', 'end', 'start / end'].map((position, i) => (
           <div key={i} className="pl-5 flex flex-col gap-3">
-            <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-default-500">
+            <span className="text-foreground pl-3 uppercase font-medium place-self-start text-sm border-l-2 border-neutral">
               {position} content
             </span>
 

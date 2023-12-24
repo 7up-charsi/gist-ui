@@ -37,22 +37,22 @@ const svgIcon = (
 const SizeTemplate = (args: IconProps) => (
   <table className="w-52">
     <thead>
-      <tr className="border-b-2 border-default-300 h-10">
-        <th className="font-medium border-r-2 border-default-300">Sm</th>
-        <th className="font-medium border-r-2 border-default-300">Md</th>
+      <tr className="border-b-2 border-neutral-300 h-10">
+        <th className="font-medium border-r-2 border-neutral-300">Sm</th>
+        <th className="font-medium border-r-2 border-neutral-300">Md</th>
         <th className="font-medium">Lg</th>
       </tr>
     </thead>
     <tbody>
       <tr className="h-10 text-primary">
-        <td className="border-r-2 border-default-300">
+        <td className="border-r-2 border-neutral-300">
           <span className="flex items-center justify-center">
             <Icon {...args} size="sm">
               {svgIcon}
             </Icon>
           </span>
         </td>
-        <td className="border-r-2 border-default-300">
+        <td className="border-r-2 border-neutral-300">
           <span className="flex items-center justify-center">
             <Icon {...args} size="md">
               {svgIcon}

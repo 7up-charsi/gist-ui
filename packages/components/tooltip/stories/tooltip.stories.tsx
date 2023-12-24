@@ -8,14 +8,6 @@ const meta: Meta = {
   title: 'Components/Tooltip',
   args: tooltip.defaultVariants,
   argTypes: {
-    color: {
-      control: 'select',
-      options: Object.keys(tooltip.variants.color),
-    },
-    rounded: {
-      control: 'select',
-      options: Object.keys(tooltip.variants.rounded),
-    },
     trigger: {
       control: 'select',
       options: ['none', 'focus', 'hover'],
@@ -71,13 +63,9 @@ const Template = (args: Tooltip.RootProps & Tooltip.ContentProps) => {
               <button className="p-10 border">button</button>
             </Tooltip.Trigger>
             <Tooltip.Portal>
-              <Tooltip.Content
-                color={args.color}
-                rounded={args.rounded}
-                disableInteractive={args.disableInteractive}
-              >
+              <Tooltip.Content disableInteractive={args.disableInteractive}>
                 i am tooltip
-                <Tooltip.Arrow width={7} height={5} />
+                <Tooltip.Arrow />
               </Tooltip.Content>
             </Tooltip.Portal>
           </Tooltip.Root>

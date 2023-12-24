@@ -68,7 +68,7 @@ const Template = (args: Popover.RootProps & Popover.ContentProps) => {
           >
             <div
               aria-label="very nice label"
-              className="max-w-sm w-full bg-white border shadow-lg rounded-md p-4"
+              className="max-w-sm w-full bg-white border shadow-lg rounded p-4"
             >
               {args.arrow && <Popover.Arrow />}
 

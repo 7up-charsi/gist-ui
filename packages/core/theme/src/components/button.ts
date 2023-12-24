@@ -16,6 +16,7 @@ const button = tv({
       'items-center',
       'justify-center',
       'box-border',
+      'rounded',
       'appearance-none',
       'select-none',
       'whitespace-nowrap',
@@ -40,7 +41,6 @@ const button = tv({
       text: { base: 'bg-transparent' },
     },
     color: {
-      default: { base: '' },
       primary: { base: '' },
       secondary: { base: '' },
       success: { base: '' },
@@ -53,13 +53,6 @@ const button = tv({
       md: { base: 'px-4 h-10 min-w-[80px] gap-2' },
       lg: { base: 'px-6 h-12 min-w-[96px] text-lg gap-3' },
     },
-    rounded: {
-      none: { base: 'rounded-none' },
-      sm: { base: 'rounded-sm' },
-      md: { base: 'rounded-md' },
-      lg: { base: 'rounded-lg' },
-      full: { base: 'rounded-full' },
-    },
     fullWidth: {
       true: { base: 'w-full' },
     },
@@ -67,26 +60,18 @@ const button = tv({
       true: { base: 'disabled' },
     },
     isIconOnly: {
-      true: { base: '[&>*]:pointer-events-none' },
+      true: { base: '[&>svg]:pointer-events-none rounded-full' },
     },
   },
   defaultVariants: {
     size: 'md',
-    rounded: 'md',
     variant: 'solid',
-    color: 'default',
+    color: 'primary',
     fullWidth: false,
     isDisabled: false,
   },
   compoundVariants: [
     // color / solid
-    {
-      variant: 'solid',
-      color: 'default',
-      class: {
-        base: 'bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/30%)]',
-      },
-    },
     {
       variant: 'solid',
       color: 'primary',
@@ -133,13 +118,6 @@ const button = tv({
     // color / shadow
     {
       variant: 'shadow',
-      color: 'default',
-      class: {
-        base: 'bg-default text-default-foreground [--rippleBg:theme(colors.default-foreground/30%)] shadow-default-400/100',
-      },
-    },
-    {
-      variant: 'shadow',
       color: 'primary',
       class: {
         base: 'bg-primary text-primary-foreground [--rippleBg:theme(colors.primary-foreground/30%)] shadow-primary-400/80',
@@ -182,13 +160,6 @@ const button = tv({
     },
 
     // color / flat
-    {
-      variant: 'flat',
-      color: 'default',
-      class: {
-        base: 'bg-default-200 text-default-800 [--rippleBg:theme(colors.default-800/20%)]',
-      },
-    },
     {
       variant: 'flat',
       color: 'primary',
@@ -235,13 +206,6 @@ const button = tv({
     // color / text
     {
       variant: 'text',
-      color: 'default',
-      class: {
-        base: 'data-[hovered=true]:bg-default-200 text-default-700 [--rippleBg:theme(colors.default-700/20%)]',
-      },
-    },
-    {
-      variant: 'text',
       color: 'primary',
       class: {
         base: 'data-[hovered=true]:bg-primary-100 text-primary-700 [--rippleBg:theme(colors.primary-700/20%)]',
@@ -284,13 +248,6 @@ const button = tv({
     },
 
     // color / border
-    {
-      variant: 'border',
-      color: 'default',
-      class: {
-        base: 'border-default-700 text-default-800 [--rippleBg:theme(colors.default-800/20%)]',
-      },
-    },
     {
       variant: 'border',
       color: 'primary',

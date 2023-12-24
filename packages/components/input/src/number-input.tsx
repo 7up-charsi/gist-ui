@@ -42,7 +42,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
 
     const innerRef = useRef<HTMLDivElement>(null);
 
-    const [value, setValue] = useControllableState<string>({
+    const [value, setValue] = useControllableState<string, undefined>({
       defaultValue: '',
       value: valueProp,
       onChange: (val) => {
@@ -247,13 +247,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           isIconOnly
           size="sm"
           variant="text"
-          rounded="none"
           asChild
           {...stepUpLongPressProps}
           classNames={{
-            base: styles.button({
-              className: `text-default-500 ${classNames?.stepButton.button}`,
-            }),
+            base: styles.button({ className: classNames?.stepButton.button }),
           }}
         >
           <div>
@@ -282,13 +279,10 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           isIconOnly
           size="sm"
           variant="text"
-          rounded="none"
           asChild
           {...stepDownLongPressProps}
           classNames={{
-            base: styles.button({
-              className: `text-default-500 ${classNames?.stepButton.button}`,
-            }),
+            base: styles.button({ className: classNames?.stepButton.button }),
           }}
         >
           <div>

@@ -7,20 +7,14 @@ import {
 
 const select = tv({
   slots: {
-    listbox: 'w-[--reference-width] bg-white border overflow-y-auto',
+    listbox: 'w-[--reference-width] bg-white border overflow-y-auto rounded',
     option:
-      'flex items-center px-2 select-none truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-default-200 data-[focused=true]:data-[selected=true]:bg-info-300',
-    emptyText: 'h-10 flex items-center justify-center capitalize text-default',
-    optionSeperator: 'h-px bg-default-200',
+      'flex items-center px-2 select-none truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-neutral-200 data-[focused=true]:data-[selected=true]:bg-info-300',
+    emptyText: 'h-10 flex items-center justify-center capitalize text-neutral',
+    optionSeperator: 'h-px bg-neutral-200',
     endContent: 'flex',
   },
   variants: {
-    rounded: {
-      none: { listbox: 'rounded-none' },
-      sm: { listbox: 'rounded-sm' },
-      md: { listbox: 'rounded-md' },
-      lg: { listbox: 'rounded-lg' },
-    },
     shadow: {
       none: { listbox: 'shadow-none' },
       sm: { listbox: 'shadow-sm' },
@@ -28,7 +22,6 @@ const select = tv({
       lg: { listbox: 'shadow-lg' },
     },
     color: {
-      default: {},
       primary: {},
       secondary: {},
       success: {},
@@ -43,9 +36,8 @@ const select = tv({
     },
   },
   defaultVariants: {
-    rounded: 'md',
     shadow: 'md',
-    color: 'default',
+    color: 'primary',
     size: 'md',
   },
 });

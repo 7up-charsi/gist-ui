@@ -1,11 +1,14 @@
-import React from "react";
-import { Preview, ReactRenderer } from "@storybook/react";
-import { withThemeByClassName, withThemeByDataAttribute } from "@storybook/addon-themes";
+import React from 'react';
+import { Preview, ReactRenderer } from '@storybook/react';
+import {
+  withThemeByClassName,
+  withThemeByDataAttribute,
+} from '@storybook/addon-themes';
 
-import "./style.css";
+import './style.css';
 
 const preview: Preview = {
-  parameters: { layout: "fullscreen" },
+  parameters: { layout: 'fullscreen' },
   decorators: [
     (Story) => {
       return (
@@ -16,18 +19,18 @@ const preview: Preview = {
     },
     withThemeByClassName<ReactRenderer>({
       themes: {
-        light: "light",
-        dark: "dark",
+        light: 'light',
+        dark: 'dark',
       },
-      defaultTheme: "light",
+      defaultTheme: 'light',
     }),
     withThemeByDataAttribute<ReactRenderer>({
       themes: {
-        light: "light",
-        dark: "dark",
+        light: 'light',
+        dark: 'dark',
       },
-      defaultTheme: "light",
-      attributeName: "data-theme",
+      defaultTheme: 'light',
+      attributeName: 'data-theme',
     }),
   ],
 };
