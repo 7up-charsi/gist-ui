@@ -20,16 +20,6 @@ const input = tv({
   },
   variants: {
     variant: {
-      border: {
-        inputWrapper:
-          'w-full flex items-center cursor-text transition-colors px-[14px]',
-        fieldset:
-          'absolute left-0 right-0 bottom-0 -top-[10px] m-0 pointer-events-none rounded border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral',
-        legend:
-          'invisible w-0 ml-[10px] group-data-[filled-within=true]:pl-[2px] group-data-[filled-within=true]:pr-1 group-data-[filled-within=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
-        label:
-          'absolute top-0 left-0 translate-x-[14px] text-base group-data-[filled-within=true]:-translate-y-[10px] group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left',
-      },
       filled: {
         inputWrapper: [
           'w-full flex items-center cursor-text transition-colors px-3 bg-neutral-200/50 group-data-[hovered=true]:group-data-[focused=false]:bg-neutral-200/70 rounded-t',
@@ -39,7 +29,17 @@ const input = tv({
           'after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center',
         ],
         label:
-          "absolute top-0 left-0 text-base translate-x-3 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left'",
+          "absolute top-1/2 left-3 -translate-y-1/2 text-base group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left'",
+      },
+      border: {
+        inputWrapper:
+          'w-full flex items-center cursor-text transition-colors px-[14px]',
+        fieldset:
+          'absolute left-0 right-0 bottom-0 -top-[10px] m-0 pointer-events-none rounded border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral',
+        legend:
+          'invisible w-0 ml-[10px] group-data-[filled-within=true]:pl-[2px] group-data-[filled-within=true]:pr-1 group-data-[filled-within=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
+        label:
+          'absolute top-1/2 left-[14px] -translate-y-1/2 text-base group-data-[filled-within=true]:top-0 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left',
       },
     },
     color: {
@@ -80,7 +80,7 @@ const input = tv({
       size: 'sm',
       hideLabel: false,
       class: {
-        label: 'translate-y-3 group-data-[filled-within=true]:translate-y-1',
+        label: 'group-data-[filled-within=true]:top-3',
         startContent: 'mt-[17px]',
         input: 'pt-[21px] pb-1',
       },
@@ -90,7 +90,7 @@ const input = tv({
       size: 'md',
       hideLabel: false,
       class: {
-        label: 'translate-y-4 group-data-[filled-within=true]:translate-y-2',
+        label: 'group-data-[filled-within=true]:top-4',
         startContent: 'mt-[17px]',
         input: 'pt-[25px] pb-2',
       },
@@ -98,36 +98,9 @@ const input = tv({
 
     {
       variant: 'border',
-      size: 'sm',
-      hideLabel: false,
-      class: {
-        label: 'translate-y-3',
-      },
-    },
-    {
-      variant: 'border',
-      size: 'md',
-      hideLabel: false,
-      class: {
-        label: 'translate-y-4',
-      },
-    },
-    {
-      variant: 'border',
-      size: 'sm',
       hideLabel: true,
       class: {
         fieldset: 'inset-0',
-        label: 'translate-y-3',
-      },
-    },
-    {
-      variant: 'border',
-      size: 'md',
-      hideLabel: true,
-      class: {
-        fieldset: 'inset-0',
-        label: 'translate-y-4',
       },
     },
 
