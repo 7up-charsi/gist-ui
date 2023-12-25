@@ -11,6 +11,7 @@ import {
   Fragment,
   forwardRef,
   useCallback,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -236,56 +237,56 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
         return;
       }
 
-      if (e.key.length === 1) {
-        const key = e.key;
+      if (e.key.length === 1 && options) {
+        clearTimeout(state.searchedStringTimer);
 
-        if (options) {
-          clearTimeout(state.searchedStringTimer);
+        state.searchedStringTimer = setTimeout(() => {
+          state.searchedString = '';
+        }, 500);
 
-          state.searchedStringTimer = setTimeout(() => {
+        state.searchedString += e.key;
+
+        const startIndex =
+          focusedIndex || focusedIndex === 0 ? focusedIndex + 1 : 0;
+
+        const orderedOptions = [
+          ...options.slice(startIndex),
+          ...options.slice(0, startIndex),
+        ];
+
+        const filter = state.searchedString.toLowerCase();
+
+        const excatMatch = orderedOptions.find((ele) =>
+          ele.label.toLowerCase().startsWith(filter),
+        );
+
+        if (excatMatch) {
+          const isDisabled = getOptionDisabled?.(excatMatch);
+
+          if (!isDisabled) setFocusedIndex(options.indexOf(excatMatch));
+
+          return;
+        }
+
+        const sameLetters = filter
+          .split('')
+          .every((letter) => letter.toLowerCase() === filter[0]);
+
+        if (sameLetters) {
+          const matched = orderedOptions.find((ele) => {
+            return ele.label.toLowerCase().startsWith(filter[0]);
+          });
+
+          if (matched) {
+            const isDisabled = getOptionDisabled?.(matched);
+
+            if (!isDisabled) setFocusedIndex(options.indexOf(matched));
+          } else {
+            clearTimeout(state.searchedStringTimer);
             state.searchedString = '';
-          }, 500);
-
-          state.searchedString += key;
-
-          const startIndex =
-            focusedIndex || focusedIndex === 0 ? focusedIndex + 1 : 0;
-          const orderedOptions = [
-            ...options.slice(startIndex),
-            ...options.slice(0, startIndex),
-          ];
-          const filter = state.searchedString.toLowerCase();
-
-          const excatMatch = orderedOptions.find((ele) =>
-            ele.label.toLowerCase().startsWith(filter),
-          );
-
-          if (excatMatch) {
-            const isDisabled = getOptionDisabled?.(excatMatch);
-
-            if (!isDisabled) setFocusedIndex(options.indexOf(excatMatch));
-
-            return;
           }
 
-          const sameLetters = filter
-            .split('')
-            .every((letter) => letter.toLowerCase() === filter[0]);
-
-          if (sameLetters) {
-            const matched = orderedOptions.find((ele) => {
-              return ele.label.toLowerCase().startsWith(filter[0]);
-            });
-
-            if (matched) {
-              const isDisabled = getOptionDisabled?.(matched);
-
-              if (!isDisabled) setFocusedIndex(options.indexOf(matched));
-            } else {
-              clearTimeout(state.searchedStringTimer);
-              state.searchedString = '';
-            }
-          }
+          return;
         }
 
         return;
@@ -303,6 +304,12 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
       value,
     ],
   );
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(state.searchedStringTimer);
+    };
+  }, [state]);
 
   const styles = select({
     shadow,
