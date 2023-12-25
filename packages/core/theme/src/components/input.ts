@@ -29,7 +29,7 @@ const input = tv({
           'after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center',
         ],
         label:
-          "absolute top-1/2 left-3 -translate-y-1/2 text-base group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left'",
+          'absolute top-1/2 left-3 -translate-y-1/2 text-base group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
       },
       border: {
         inputWrapper:
@@ -39,7 +39,7 @@ const input = tv({
         legend:
           'invisible w-0 ml-[10px] group-data-[filled-within=true]:pl-[2px] group-data-[filled-within=true]:pr-1 group-data-[filled-within=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
         label:
-          'absolute top-1/2 left-[14px] -translate-y-1/2 text-base group-data-[filled-within=true]:top-0 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left',
+          'absolute top-1/2 left-[14px] -translate-y-1/2 text-base group-data-[filled-within=true]:top-0 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
       },
     },
     color: {

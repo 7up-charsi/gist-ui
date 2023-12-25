@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback } from 'react';
 
 export interface UseRippleProps {
   /**
@@ -29,70 +29,72 @@ export interface UseRippleProps {
   pointerCenter?: boolean;
 }
 
-export interface MinimalEvent {
-  clientX: number;
-  clientY: number;
-  button: number;
-}
+const useRipple = <E extends HTMLElement>({
+  duration = 500,
+  timingFunction = 'cubic-bezier(.42,.36,.28,.88)',
+  isDisabled = false,
+  completedFactor = 0.5,
+  pointerCenter = true,
+}: UseRippleProps = {}) => {
+  //
 
-const useRipple = <T extends HTMLElement>(_props?: UseRippleProps) => {
-  const ref = useRef<T>(null);
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent<E>) => {
+      if (isDisabled || e.button !== 0) return;
 
-  const props = useMemo(
-    () => ({
-      duration: 500,
-      timingFunction: 'cubic-bezier(.42,.36,.28,.88)',
-      isDisabled: false,
-      completedFactor: 0.5,
-      pointerCenter: true,
-      ...(_props || {}),
-    }),
-    [_props],
-  );
+      const target = e.target as HTMLElement;
 
-  const { isDisabled, duration, completedFactor } = props;
+      const begun = Date.now();
 
-  const event = useCallback(
-    (event: MinimalEvent) => {
-      if (!ref.current || isDisabled || event.button !== 0) return;
+      const ripple = createRipple(target, e, {
+        duration,
+        completedFactor,
+        isDisabled,
+        pointerCenter,
+        timingFunction,
+      });
 
-      const target = ref.current;
+      target.appendChild(ripple);
 
-      requestAnimationFrame(() => {
-        const begun = Date.now();
-        const ripple = createRipple(target, event, props);
-        target.appendChild(ripple);
+      const removeRipple = () => {
+        const now = Date.now();
+        const diff = now - begun;
 
-        const removeRipple = () => {
-          const now = Date.now();
-          const diff = now - begun;
+        setTimeout(
+          () => {
+            ripple.style.opacity = '0';
 
-          setTimeout(
-            () => {
-              ripple.style.opacity = '0';
-
-              ripple.addEventListener('transitionend', (e) => {
+            ripple.addEventListener(
+              'transitionend',
+              (e) => {
+                console.log(e.propertyName);
                 if (e.propertyName === 'opacity') ripple.remove();
-              });
-            },
-            diff > completedFactor * duration
-              ? 0
-              : completedFactor * duration - diff,
-          );
-        };
+              },
+              { once: true },
+            );
+          },
+          diff > completedFactor * duration
+            ? 0
+            : completedFactor * duration - diff,
+        );
+      };
 
-        document.addEventListener('pointerup', removeRipple, true);
+      document.addEventListener('pointerup', removeRipple, {
+        once: true,
+        capture: true,
       });
     },
-    [completedFactor, isDisabled, duration, props],
+    [completedFactor, duration, isDisabled, pointerCenter, timingFunction],
   );
 
-  return [ref, event] as const;
+  return {
+    rippleProps: { onPointerDown },
+  };
 };
 
 const createRipple = (
   target: HTMLElement,
-  event: MinimalEvent,
+  event: React.PointerEvent,
   options: UseRippleProps,
 ): HTMLElement => {
   const { height, width, top, left } = target.getBoundingClientRect();

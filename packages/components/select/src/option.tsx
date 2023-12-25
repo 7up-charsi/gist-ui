@@ -1,71 +1,72 @@
-import { forwardRef, useEffect, useId, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { SelectProps, SelectOption } from './select';
-import { useHover, usePress } from '@react-aria/interactions';
-import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
+import { mergeProps } from '@gist-ui/react-utils';
 import { Slot } from '@gist-ui/slot';
+import {
+  HoverEvent,
+  PressEvent,
+  useHover,
+  usePress,
+} from '@react-aria/interactions';
 
 interface OptionProps {
   option: SelectOption;
   isDisabled: boolean;
   isSelected: boolean;
-  isFocused: boolean;
+  isFocusVisible: boolean;
+  isHovered: boolean;
   className: string;
-  onSelect: () => void;
-  onFocus: () => void;
+  onSelect: (e: PressEvent) => void;
+  onHover: (e: HoverEvent) => void;
   renderOption?: SelectProps['renderOption'];
-  setFocusedId: React.Dispatch<React.SetStateAction<string | undefined>>;
   label: string;
+  id: string;
 }
 
-export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
+export const Option = (props: OptionProps) => {
   const {
     option,
     className,
     isDisabled,
     isSelected,
-    isFocused,
+    isFocusVisible,
+    isHovered,
     onSelect,
-    onFocus,
+    onHover,
     renderOption,
-    setFocusedId,
     label,
+    id,
   } = props;
 
-  const innerRef = useRef<HTMLDivElement>(null);
-  const id = useId();
+  const innerRef = useRef<HTMLLIElement>(null);
 
-  const { pressProps, isPressed } = usePress({
+  const { pressProps } = usePress({
     isDisabled,
     onPress: onSelect,
   });
 
-  const { hoverProps, isHovered } = useHover({
+  const { hoverProps } = useHover({
     isDisabled,
-    onHoverStart: onFocus,
+    onHoverStart: onHover,
   });
 
   useEffect(() => {
-    if (isFocused) setFocusedId(id);
-  }, [id, isFocused, setFocusedId]);
-
-  useEffect(() => {
-    if (isFocused) {
+    if (isFocusVisible) {
       innerRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
       });
     }
-  }, [isFocused]);
+  }, [isFocusVisible]);
 
   return (
-    <Slot<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>
+    <Slot<HTMLLIElement, React.HTMLAttributes<HTMLLIElement>>
       id={id}
-      ref={mergeRefs(ref, innerRef)}
+      ref={innerRef}
       data-hovered={isHovered}
       data-disabled={isDisabled}
       data-selected={isSelected}
-      data-focused={isFocused}
-      data-pressed={isPressed}
+      data-focused={isFocusVisible}
       role="option"
       className={className}
       aria-checked={isDisabled ? undefined : isSelected}
@@ -74,20 +75,18 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>((props, ref) => {
       {renderOption ? (
         renderOption({
           option,
-          label,
           state: {
-            isPressed,
-            isHovered,
             isDisabled,
             isSelected,
-            isFocused,
+            isFocusVisible,
+            isHovered,
           },
         })
       ) : (
-        <div>{label}</div>
+        <li>{label}</li>
       )}
     </Slot>
   );
-});
+};
 
 Option.displayName = 'gist-ui.Select';

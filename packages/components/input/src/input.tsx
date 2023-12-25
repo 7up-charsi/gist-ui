@@ -15,7 +15,8 @@ import {
 } from 'react';
 
 export interface InputProps
-  extends Omit<InputVariantProps, 'error'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
+    Omit<InputVariantProps, 'error'>,
     HoverProps {
   type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
   id?: string;
@@ -72,6 +73,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     hideLabel,
     size,
     variant,
+    ...inputWrapperProps
   } = props;
 
   const labelId = useId();
@@ -87,7 +89,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const inputBaseRef = useRef<HTMLDivElement>(null);
   const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
-  const [filled, setFilled] = useState(!!defaultValue);
+  const [filled, setFilled] = useState(!!value || !!defaultValue);
 
   useEffect(() => {
     if (__DEV__ && !label)
@@ -157,7 +159,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       <div
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
-        {...mergeProps(hoverProps, {
+        {...mergeProps(hoverProps, inputWrapperProps, {
           onPointerUp: (e: React.PointerEvent) => {
             if (isDisabled) return;
             if (e.button !== 0) return;

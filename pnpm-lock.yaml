@@ -430,6 +430,9 @@ importers:
       '@gist-ui/error':
         specifier: workspace:*
         version: link:../../utilities/error
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
       '@gist-ui/input':
         specifier: workspace:*
         version: link:../input

@@ -4,13 +4,14 @@ import { Slot } from '@gist-ui/slot';
 import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
 import { useRipple, UseRippleProps } from '@gist-ui/use-ripple';
 import { mergeRefs, mergeProps } from '@gist-ui/react-utils';
+import { useFocusRing } from '@react-aria/focus';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import {
-  PressProps,
   usePress,
   useHover,
   HoverEvents,
+  PressProps,
 } from '@react-aria/interactions';
-import { useFocusRing } from '@react-aria/focus';
 import {
   ButtonHTMLAttributes,
   Children,
@@ -21,7 +22,6 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 export interface ButtonProps
   extends ButtonVariantProps,
@@ -29,7 +29,7 @@ export interface ButtonProps
       ButtonHTMLAttributes<HTMLButtonElement>,
       'color' | 'className' | 'disabled'
     >,
-    Omit<PressProps, 'isPressed' | 'isDisabled'>,
+    Omit<PressProps, 'isPressed' | 'ref'>,
     HoverEvents {
   startContent?: ReactNode;
   endContent?: ReactNode;
@@ -39,7 +39,6 @@ export interface ButtonProps
   rippleDuration?: UseRippleProps['duration'];
   rippleTimingFunction?: UseRippleProps['timingFunction'];
   rippleCompletedFactor?: UseRippleProps['completedFactor'];
-  ripplePointerCenter?: UseRippleProps['pointerCenter'];
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
@@ -54,16 +53,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     onPressStart: onPressStartProp,
     onPressUp: onPressUpProp,
     onPressChange: onPressChangeProp,
-    rippleDuration,
+    isIconOnly,
+    rippleDuration = isIconOnly ? 450 : 500,
     rippleTimingFunction,
     rippleCompletedFactor,
-    ripplePointerCenter,
     color,
     fullWidth,
     isDisabled,
-    isIconOnly,
     size,
     variant,
+    allowTextSelectionOnPress,
+    preventFocusOnPress,
+    shouldCancelOnPointerExit,
     ...buttonProps
   } = props;
 
@@ -77,12 +78,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const Component = asChild ? Slot : 'button';
 
-  const [rippleRef, rippleEvent] = useRipple<HTMLButtonElement>(
+  const { rippleProps } = useRipple<HTMLButtonElement>(
     isDisabled
       ? { isDisabled: true }
       : {
-          pointerCenter: ripplePointerCenter ?? !isIconOnly,
-          duration: rippleDuration || isIconOnly ? 450 : 500,
+          pointerCenter: !isIconOnly,
+          duration: rippleDuration,
           timingFunction: rippleTimingFunction,
           completedFactor: rippleCompletedFactor,
         },
@@ -97,6 +98,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     onPressStart,
     onPressUp,
     onPressChange,
+    allowTextSelectionOnPress,
+    preventFocusOnPress,
+    shouldCancelOnPointerExit,
   });
 
   const ariaLabel = props['aria-label'];
@@ -129,7 +133,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   return (
     <Component
       {...mergeProps(
-        { onPointerDown: rippleEvent },
+        rippleProps,
         pressProps,
         focusProps,
         hoverProps,
@@ -141,7 +145,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       disabled={isDisabled}
-      ref={mergeRefs(ref, rippleRef, innerRef)}
+      ref={mergeRefs(ref, innerRef)}
       className={styles.base({ className: classNames?.base })}
       role={asChild ? 'button' : undefined}
       aria-disabled={asChild ? isDisabled : undefined}
