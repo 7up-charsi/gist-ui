@@ -13,8 +13,7 @@ interface OptionProps {
   option: SelectOption;
   isDisabled: boolean;
   isSelected: boolean;
-  isFocusVisible: boolean;
-  isHovered: boolean;
+  isFocused: boolean;
   className: string;
   onSelect: (e: PressEvent) => void;
   onHover: (e: HoverEvent) => void;
@@ -29,8 +28,7 @@ export const Option = (props: OptionProps) => {
     className,
     isDisabled,
     isSelected,
-    isFocusVisible,
-    isHovered,
+    isFocused,
     onSelect,
     onHover,
     renderOption,
@@ -38,35 +36,35 @@ export const Option = (props: OptionProps) => {
     id,
   } = props;
 
-  const innerRef = useRef<HTMLLIElement>(null);
+  const ref = useRef<HTMLLIElement>(null);
 
   const { pressProps } = usePress({
     isDisabled,
     onPress: onSelect,
   });
 
-  const { hoverProps } = useHover({
+  const { hoverProps, isHovered } = useHover({
     isDisabled,
     onHoverStart: onHover,
   });
 
   useEffect(() => {
-    if (isFocusVisible) {
-      innerRef.current?.scrollIntoView({
+    if (isFocused && !isHovered) {
+      ref.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
       });
     }
-  }, [isFocusVisible]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
 
   return (
     <Slot<HTMLLIElement, React.HTMLAttributes<HTMLLIElement>>
       id={id}
-      ref={innerRef}
-      data-hovered={isHovered}
+      ref={ref}
       data-disabled={isDisabled}
       data-selected={isSelected}
-      data-focused={isFocusVisible}
+      data-focused={isFocused}
       role="option"
       className={className}
       aria-checked={isDisabled ? undefined : isSelected}
@@ -78,8 +76,7 @@ export const Option = (props: OptionProps) => {
           state: {
             isDisabled,
             isSelected,
-            isFocusVisible,
-            isHovered,
+            isFocused,
           },
         })
       ) : (

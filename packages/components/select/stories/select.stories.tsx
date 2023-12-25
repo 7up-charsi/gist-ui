@@ -21,8 +21,7 @@ const meta: Meta<SelectProps> = {
 export default meta;
 
 const options = Array.from({ length: 15 }).map((_ele, i) => ({
-  label: `custom label ${i + 1}`,
-  value: `option ${i + 1}`,
+  label: i === 6 ? `6 test` : `${i + 1} custom label`,
 }));
 
 const DefaultTemplate = (args: SelectProps) => (
@@ -31,11 +30,9 @@ const DefaultTemplate = (args: SelectProps) => (
     label="select"
     options={options}
     getOptionDisabled={(option) =>
-      typeof option === 'string'
-        ? false
-        : option.value === 'option 1' ||
-          option.value === 'option 15' ||
-          option.value === 'option 10'
+      option.label.startsWith('1 c') ||
+      option.label.startsWith('10') ||
+      option.label.startsWith('15')
     }
     defaultValue={options[2]}
   />

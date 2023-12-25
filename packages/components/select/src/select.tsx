@@ -6,7 +6,6 @@ import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { mergeRefs } from '@gist-ui/react-utils';
 import { Option } from './option';
-import { useFocusVisible } from '@react-aria/interactions';
 import { Button } from '@gist-ui/button';
 import {
   Fragment,
@@ -49,8 +48,7 @@ export interface RenderOptionProps {
   state: {
     isDisabled: boolean;
     isSelected: boolean;
-    isFocusVisible: boolean;
-    isHovered: boolean;
+    isFocused: boolean;
   };
 }
 
@@ -141,8 +139,15 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
   });
 
   const inputRef = useRef<HTMLDivElement>(null);
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState<number>();
   const lisboxId = useId();
+  const state = useRef<{
+    selectedIndex?: number;
+    searchedString: string;
+    searchedStringTimer?: ReturnType<typeof setTimeout>;
+  }>({
+    searchedString: '',
+  }).current;
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -159,11 +164,29 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
     },
   });
 
-  const { isFocusVisible } = useFocusVisible();
+  const getNextIndex = useCallback(
+    (currentIndex: number) => {
+      if (!getOptionDisabled) return currentIndex;
+
+      for (let i = currentIndex; i < options!.length; i++) {
+        const isDisabled = getOptionDisabled(options![i]);
+
+        if (!isDisabled) return i;
+      }
+
+      return currentIndex;
+    },
+    [getOptionDisabled, options],
+  );
 
   const handleListboxOpen = useCallback(() => {
     setIsOpen(true);
-  }, [setIsOpen]);
+
+    if (!isOpen && !value && !focusedIndex) {
+      const index = getNextIndex(0);
+      setFocusedIndex(index);
+    }
+  }, [focusedIndex, getNextIndex, isOpen, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
     (index: number) => () => {
@@ -178,11 +201,108 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
         setFocusedIndex(index);
         setValue(option);
         setIsOpen(false);
+
+        state.selectedIndex = index;
       },
-    [setIsOpen, setValue],
+    [setIsOpen, setValue, state],
   );
 
-  // const handleOptionFocus = useCallback((index: number) => {}, []);
+  const handleInputKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const ArrowDown = e.key === 'ArrowDown';
+      const Escape = e.key === 'Escape';
+
+      if (ArrowDown && !isOpen) {
+        setIsOpen(true);
+        if (!value && !focusedIndex) {
+          const index = getNextIndex(0);
+          setFocusedIndex(index);
+        }
+
+        return;
+      }
+
+      if (Escape && isOpen) {
+        setIsOpen(false);
+        setFocusedIndex(state.selectedIndex);
+
+        return;
+      }
+      if (Escape && !isOpen) {
+        setValue(null);
+        setFocusedIndex(undefined);
+        state.selectedIndex = undefined;
+
+        return;
+      }
+
+      if (e.key.length === 1) {
+        const key = e.key;
+
+        if (options) {
+          clearTimeout(state.searchedStringTimer);
+
+          state.searchedStringTimer = setTimeout(() => {
+            state.searchedString = '';
+          }, 500);
+
+          state.searchedString += key;
+
+          const startIndex =
+            focusedIndex || focusedIndex === 0 ? focusedIndex + 1 : 0;
+          const orderedOptions = [
+            ...options.slice(startIndex),
+            ...options.slice(0, startIndex),
+          ];
+          const filter = state.searchedString.toLowerCase();
+
+          const excatMatch = orderedOptions.find((ele) =>
+            ele.label.toLowerCase().startsWith(filter),
+          );
+
+          if (excatMatch) {
+            const isDisabled = getOptionDisabled?.(excatMatch);
+
+            if (!isDisabled) setFocusedIndex(options.indexOf(excatMatch));
+
+            return;
+          }
+
+          const sameLetters = filter
+            .split('')
+            .every((letter) => letter.toLowerCase() === filter[0]);
+
+          if (sameLetters) {
+            const matched = orderedOptions.find((ele) => {
+              return ele.label.toLowerCase().startsWith(filter[0]);
+            });
+
+            if (matched) {
+              const isDisabled = getOptionDisabled?.(matched);
+
+              if (!isDisabled) setFocusedIndex(options.indexOf(matched));
+            } else {
+              clearTimeout(state.searchedStringTimer);
+              state.searchedString = '';
+            }
+          }
+        }
+
+        return;
+      }
+    },
+    [
+      focusedIndex,
+      getNextIndex,
+      getOptionDisabled,
+      isOpen,
+      options,
+      setIsOpen,
+      setValue,
+      state,
+      value,
+    ],
+  );
 
   const styles = select({
     shadow,
@@ -200,6 +320,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
             onPointerDown={handleListboxOpen}
             inputProps={{
               ...inputProps.inputProps,
+              onKeyDown: handleInputKeyDown,
               'aria-expanded': isOpen,
               'aria-controls': lisboxId,
               'aria-haspopup': 'listbox',
@@ -218,12 +339,15 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                     isIconOnly
                     size="sm"
                     variant="text"
+                    color="neutral"
                     preventFocusOnPress
                     tabIndex={-1}
                     onPress={() => {
-                      setValue(null);
                       setIsOpen(true);
-                      setFocusedIndex(null);
+                      setValue(null);
+                      setFocusedIndex(undefined);
+                      inputRef.current?.focus();
+                      state.selectedIndex = undefined;
                     }}
                   >
                     <svg
@@ -285,10 +409,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                         id={getOptionId(option).replaceAll(' ', '-')}
                         isDisabled={getOptionDisabled?.(option) ?? false}
                         isSelected={value?.label === option.label}
-                        isFocusVisible={
-                          focusedIndex === index && isFocusVisible
-                        }
-                        isHovered={focusedIndex === index}
+                        isFocused={focusedIndex === index}
                         label={getOptionLabel(option) ?? option.label}
                         onSelect={handleOptionSelect({ index, option })}
                         onHover={handleOptionHover(index)}
