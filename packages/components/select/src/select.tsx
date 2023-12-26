@@ -388,6 +388,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
               'aria-expanded': isOpen,
               'aria-controls': lisboxId,
               'aria-haspopup': 'listbox',
+              'aria-autocomplete': 'none',
               role: 'combobox',
               autoComplete: 'off',
               readOnly: true,
