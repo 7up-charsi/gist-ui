@@ -29,10 +29,10 @@ const DefaultTemplate = (args: SelectProps) => (
     {...args}
     label="select"
     options={options}
-    getOptionDisabled={(option) =>
-      option.label.startsWith('1 c') ||
-      option.label.startsWith('10') ||
-      option.label.startsWith('15')
+    getOptionDisabled={
+      (option) =>
+        option.label.startsWith('1 c') || option.label.startsWith('10')
+      // option.label.startsWith('15')
     }
     defaultValue={options[2]}
   />

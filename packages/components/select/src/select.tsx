@@ -140,10 +140,11 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
   });
 
   const inputRef = useRef<HTMLDivElement>(null);
-  const [focusedIndex, setFocusedIndex] = useState<number>();
+  const [focused, setFocused] = useState<SelectOption | null>(null);
+
   const lisboxId = useId();
+
   const state = useRef<{
-    selectedIndex?: number;
     searchedString: string;
     searchedStringTimer?: ReturnType<typeof setTimeout>;
   }>({
@@ -175,7 +176,22 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
         if (!isDisabled) return i;
       }
 
-      return currentIndex;
+      return -1;
+    },
+    [getOptionDisabled, options],
+  );
+
+  const getPreviousIndex = useCallback(
+    (currentIndex: number) => {
+      if (!getOptionDisabled) return currentIndex;
+
+      for (let i = currentIndex; i >= 0; i--) {
+        const isDisabled = getOptionDisabled(options![i]);
+
+        if (!isDisabled) return i;
+      }
+
+      return -1;
     },
     [getOptionDisabled, options],
   );
@@ -183,61 +199,43 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
   const handleListboxOpen = useCallback(() => {
     setIsOpen(true);
 
-    if (!isOpen && !value && !focusedIndex) {
+    if (isOpen) return;
+
+    if (!value && options) {
       const index = getNextIndex(0);
-      setFocusedIndex(index);
+      if (index >= 0) setFocused(options[index]);
     }
-  }, [focusedIndex, getNextIndex, isOpen, setIsOpen, value]);
+
+    if (value) {
+      setFocused(value);
+    }
+  }, [getNextIndex, isOpen, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
-    (index: number) => () => {
-      setFocusedIndex(index);
+    (option: SelectOption) => () => {
+      setFocused(option);
     },
     [],
   );
 
   const handleOptionSelect = useCallback(
-    ({ index, option }: OptionSelectProps) =>
+    ({ option }: OptionSelectProps) =>
       () => {
-        setFocusedIndex(index);
+        setFocused(null);
         setValue(option);
         setIsOpen(false);
-
-        state.selectedIndex = index;
       },
-    [setIsOpen, setValue, state],
+    [setIsOpen, setValue],
   );
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      const ArrowDown = e.key === 'ArrowDown';
-      const Escape = e.key === 'Escape';
+      if (!options) return;
 
-      if (ArrowDown && !isOpen) {
-        setIsOpen(true);
-        if (!value && !focusedIndex) {
-          const index = getNextIndex(0);
-          setFocusedIndex(index);
-        }
-
-        return;
-      }
-
-      if (Escape && isOpen) {
-        setIsOpen(false);
-        setFocusedIndex(state.selectedIndex);
-
-        return;
-      }
-      if (Escape && !isOpen) {
-        setValue(null);
-        setFocusedIndex(undefined);
-        state.selectedIndex = undefined;
-
-        return;
-      }
-
+      // handle any printable character
       if (e.key.length === 1 && options) {
+        setIsOpen(true);
+
         clearTimeout(state.searchedStringTimer);
 
         state.searchedStringTimer = setTimeout(() => {
@@ -246,8 +244,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
 
         state.searchedString += e.key;
 
-        const startIndex =
-          focusedIndex || focusedIndex === 0 ? focusedIndex + 1 : 0;
+        const startIndex = focused ? options.indexOf(focused) + 1 : 0;
 
         const orderedOptions = [
           ...options.slice(startIndex),
@@ -257,13 +254,13 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
         const filter = state.searchedString.toLowerCase();
 
         const excatMatch = orderedOptions.find((ele) =>
-          ele.label.toLowerCase().startsWith(filter),
+          getOptionDisabled?.(ele)
+            ? false
+            : ele.label.toLowerCase().startsWith(filter),
         );
 
         if (excatMatch) {
-          const isDisabled = getOptionDisabled?.(excatMatch);
-
-          if (!isDisabled) setFocusedIndex(options.indexOf(excatMatch));
+          setFocused(excatMatch);
 
           return;
         }
@@ -273,14 +270,14 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
           .every((letter) => letter.toLowerCase() === filter[0]);
 
         if (sameLetters) {
-          const matched = orderedOptions.find((ele) => {
-            return ele.label.toLowerCase().startsWith(filter[0]);
-          });
+          const matched = orderedOptions.find((ele) =>
+            getOptionDisabled?.(ele)
+              ? false
+              : ele.label.toLowerCase().startsWith(filter[0]),
+          );
 
           if (matched) {
-            const isDisabled = getOptionDisabled?.(matched);
-
-            if (!isDisabled) setFocusedIndex(options.indexOf(matched));
+            setFocused(matched);
           } else {
             clearTimeout(state.searchedStringTimer);
             state.searchedString = '';
@@ -291,17 +288,77 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
 
         return;
       }
+
+      const ArrowDown = e.key === 'ArrowDown';
+      const ArrowUp = e.key === 'ArrowUp';
+      const Escape = e.key === 'Escape';
+      const Enter = e.key === 'Enter';
+      const Home = e.key === 'Home';
+      const End = e.key === 'End';
+
+      if (ArrowDown && !isOpen) {
+        handleListboxOpen();
+        return;
+      }
+
+      if (Escape && isOpen) {
+        setIsOpen(false);
+
+        return;
+      }
+      if (Escape && !isOpen) {
+        setValue(null);
+        setFocused(null);
+
+        return;
+      }
+
+      if (Enter) {
+        setValue(focused);
+        setIsOpen(false);
+        setFocused(null);
+        return;
+      }
+
+      if (Home || ((ArrowDown || ArrowUp) && !focused)) {
+        const index = getNextIndex(0);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
+
+      if (ArrowDown && focused) {
+        const index = getNextIndex(options.indexOf(focused) + 1);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
+
+      if (ArrowUp && focused) {
+        const index = getPreviousIndex(options.indexOf(focused) - 1);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
+
+      if (End) {
+        const index = getPreviousIndex(options.length - 1);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
     },
     [
-      focusedIndex,
+      focused,
       getNextIndex,
       getOptionDisabled,
+      getPreviousIndex,
+      handleListboxOpen,
       isOpen,
       options,
       setIsOpen,
       setValue,
       state,
-      value,
     ],
   );
 
@@ -352,9 +409,8 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                     onPress={() => {
                       setIsOpen(true);
                       setValue(null);
-                      setFocusedIndex(undefined);
+                      setFocused(null);
                       inputRef.current?.focus();
-                      state.selectedIndex = undefined;
                     }}
                   >
                     <svg
@@ -398,9 +454,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
               })}
               role="listbox"
               aria-activedescendant={
-                focusedIndex && options?.[focusedIndex]
-                  ? getOptionId(options[focusedIndex]).replaceAll(' ', '-')
-                  : undefined
+                focused ? getOptionId(focused).replaceAll(' ', '-') : undefined
               }
               aria-roledescription="single select"
               style={{ maxHeight }}
@@ -416,10 +470,10 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                         id={getOptionId(option).replaceAll(' ', '-')}
                         isDisabled={getOptionDisabled?.(option) ?? false}
                         isSelected={value?.label === option.label}
-                        isFocused={focusedIndex === index}
+                        isFocused={focused === option}
                         label={getOptionLabel(option) ?? option.label}
                         onSelect={handleOptionSelect({ index, option })}
-                        onHover={handleOptionHover(index)}
+                        onHover={handleOptionHover(option)}
                         renderOption={renderOption}
                         className={styles.option({
                           className: listboxClassNames?.option,
