@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { SelectProps, SelectOption } from './select';
+import { SelectOption, RenderOption } from './select';
 import { mergeProps } from '@gist-ui/react-utils';
 import { Slot } from '@gist-ui/slot';
 import {
@@ -17,7 +17,7 @@ interface OptionProps {
   className: string;
   onSelect: (e: PressEvent) => void;
   onHover: (e: HoverEvent) => void;
-  renderOption?: SelectProps['renderOption'];
+  renderOption?: RenderOption;
   label: string;
   id: string;
 }

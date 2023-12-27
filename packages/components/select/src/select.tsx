@@ -43,7 +43,9 @@ export interface SelectOption {
   label: string;
 }
 
-export interface RenderOptionProps {
+export type Reason = 'select' | 'clear' | 'escape';
+
+interface RenderOptionProps {
   option: SelectOption;
   state: {
     isDisabled: boolean;
@@ -52,7 +54,7 @@ export interface RenderOptionProps {
   };
 }
 
-export type Reason = 'select' | 'clear' | 'escape';
+export type RenderOption = (props: RenderOptionProps) => React.ReactNode;
 
 interface CommonProps
   extends SelectVariantProps,
@@ -87,7 +89,7 @@ interface CommonProps
    * Used to determine the key for a given option. By default labels are used as keys
    */
   getOptionKey?: (options: SelectOption) => string;
-  renderOption?: (props: RenderOptionProps) => React.ReactNode;
+  renderOption?: RenderOption;
   /**
    * @default option.label
    */
@@ -96,6 +98,10 @@ interface CommonProps
    * @default option.label
    */
   getOptionId?: (option: SelectOption) => string;
+  /**
+   * when listbox is closed then on Escape value will be cleared. Disable this behaviour by defining this prop as true
+   */
+  disableClearOnEscape?: boolean;
 }
 
 export type SelectProps<M> = M extends true
@@ -137,6 +143,7 @@ const Select = <M extends boolean = false>(
     shadow,
     isDisabled,
     multiple,
+    disableClearOnEscape,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -146,8 +153,7 @@ const Select = <M extends boolean = false>(
     SelectOption | SelectOption[] | undefined | null
   >(defaultValue);
 
-  const isControlled = valueProp !== undefined;
-  const value = isControlled ? valueProp : internalValue;
+  const value = valueProp !== undefined ? valueProp : internalValue;
 
   const inputRef = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState<SelectOption | null>(null);
@@ -211,7 +217,7 @@ const Select = <M extends boolean = false>(
 
     if (isOpen) return;
 
-    if (!value && !defaultValue && options) {
+    if (!value && options) {
       const index = getNextIndex(0);
       if (index >= 0) setFocused(options[index]);
 
@@ -219,27 +225,17 @@ const Select = <M extends boolean = false>(
     }
 
     if (multiple) {
-      if (!value && defaultValue?.length) {
-        setFocused(defaultValue[0]);
-        return;
-      }
-
       if (value && isMultiple(value) && value.length) {
         setFocused(value[0]);
         return;
       }
     } else {
-      if (!value && defaultValue) {
-        setFocused(defaultValue);
-        return;
-      }
-
       if (value && isSingle(value)) {
         setFocused(value);
         return;
       }
     }
-  }, [defaultValue, getNextIndex, isOpen, multiple, options, setIsOpen, value]);
+  }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: SelectOption) => () => {
@@ -259,27 +255,27 @@ const Select = <M extends boolean = false>(
           ? _value.filter((ele) => ele !== option)
           : [..._value, option];
 
-        if (isControlled) onChange?.(val, 'select');
-        else setInternalValue(val);
+        onChange?.(val, 'select');
+        setInternalValue(val);
       } else {
-        if (isControlled) onChange?.(option, 'select');
-        else setInternalValue(option);
+        onChange?.(option, 'select');
+        setInternalValue(option);
       }
     },
-    [isControlled, multiple, onChange, value],
+    [multiple, onChange, value],
   );
 
   const clearValue = useCallback(
     (reason: Reason) => {
       if (multiple) {
-        if (isControlled) onChange?.([], reason);
-        else setInternalValue([]);
+        onChange?.([], reason);
+        setInternalValue([]);
       } else {
-        if (isControlled) onChange?.(null, reason);
-        else setInternalValue(null);
+        onChange?.(null, reason);
+        setInternalValue(null);
       }
     },
-    [isControlled, multiple, onChange],
+    [multiple, onChange],
   );
 
   const handleOptionSelect = useCallback(
@@ -440,26 +436,20 @@ const Select = <M extends boolean = false>(
   );
 
   const getInputValue = useCallback(() => {
-    if (multiple) {
-      if (!value && defaultValue?.length) {
-        return defaultValue.map((opt) => getOptionLabel(opt)).join(', ');
-      }
+    if (!value) return '';
 
+    if (multiple) {
       if (value && isMultiple(value) && value.length) {
         return value.map((opt) => getOptionLabel(opt)).join(', ');
       }
     } else {
-      if (!value && defaultValue) {
-        return getOptionLabel(defaultValue);
-      }
-
       if (value && isSingle(value)) {
         return getOptionLabel(value);
       }
     }
 
     return '';
-  }, [defaultValue, getOptionLabel, multiple, value]);
+  }, [getOptionLabel, multiple, value]);
 
   useEffect(() => {
     return () => {
@@ -511,7 +501,7 @@ const Select = <M extends boolean = false>(
                       setIsOpen(true);
                       setFocused(null);
                       inputRef.current?.focus();
-                      clearValue('clear');
+                      if (!disableClearOnEscape) clearValue('clear');
                     }}
                   >
                     <svg
