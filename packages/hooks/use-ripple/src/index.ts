@@ -67,7 +67,6 @@ const useRipple = <E extends HTMLElement>({
             ripple.addEventListener(
               'transitionend',
               (e) => {
-                console.log(e.propertyName);
                 if (e.propertyName === 'opacity') ripple.remove();
               },
               { once: true },

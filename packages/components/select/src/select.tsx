@@ -1,7 +1,6 @@
 import * as Popper from '@gist-ui/popper';
 import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
 import { SelectClassNames, SelectVariantProps, select } from '@gist-ui/theme';
-import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { mergeRefs } from '@gist-ui/react-utils';
@@ -53,7 +52,9 @@ export interface RenderOptionProps {
   };
 }
 
-export interface SelectProps
+export type Reason = 'select' | 'clear' | 'escape';
+
+interface CommonProps
   extends SelectVariantProps,
     Omit<InputProps, 'defaultValue' | 'value' | 'onChange'> {
   /**
@@ -86,9 +87,6 @@ export interface SelectProps
    * Used to determine the key for a given option. By default labels are used as keys
    */
   getOptionKey?: (options: SelectOption) => string;
-  defaultValue?: SelectOption;
-  value?: SelectOption | null;
-  onChange?: (value: SelectOption | null, reason: 'select' | 'clear') => void;
   renderOption?: (props: RenderOptionProps) => React.ReactNode;
   /**
    * @default option.label
@@ -100,10 +98,27 @@ export interface SelectProps
   getOptionId?: (option: SelectOption) => string;
 }
 
+export type SelectProps<M> = M extends true
+  ? {
+      multiple: M;
+      defaultValue?: SelectOption[];
+      value?: SelectOption[];
+      onChange?: (value: SelectOption[], reason: Reason) => void;
+    } & CommonProps
+  : {
+      multiple?: M;
+      defaultValue?: SelectOption;
+      value?: SelectOption | null;
+      onChange?: (value: SelectOption | null, reason: Reason) => void;
+    } & CommonProps;
+
 const GET_OPTION_LABEL = (option: SelectOption) => option.label;
 const GET_OPTION_ID = (option: SelectOption) => option.label;
 
-const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
+const Select = <M extends boolean = false>(
+  props: SelectProps<M>,
+  ref: React.ForwardedRef<CustomInputElement>,
+) => {
   const {
     options,
     listboxClassNames,
@@ -116,28 +131,23 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
     defaultOpen = false,
     defaultValue,
     value: valueProp,
-    onChange: onChangeProp,
+    onChange,
     getOptionKey,
     renderOption,
     shadow,
     isDisabled,
+    multiple,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
   } = props;
 
-  const onChange = useCallbackRef(onChangeProp);
+  const [internalValue, setInternalValue] = useState<
+    SelectOption | SelectOption[] | undefined | null
+  >(defaultValue);
 
-  const [value, setValue] = useControllableState<
-    SelectOption | null | undefined,
-    'select' | 'clear'
-  >({
-    defaultValue,
-    value: valueProp,
-    onChange: (value, payload) => {
-      onChange?.(value || null, payload!);
-    },
-  });
+  const isControlled = valueProp !== undefined;
+  const value = isControlled ? valueProp : internalValue;
 
   const inputRef = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState<SelectOption | null>(null);
@@ -201,15 +211,35 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
 
     if (isOpen) return;
 
-    if (!value && options) {
+    if (!value && !defaultValue && options) {
       const index = getNextIndex(0);
       if (index >= 0) setFocused(options[index]);
+
+      return;
     }
 
-    if (value) {
-      setFocused(value);
+    if (multiple) {
+      if (!value && defaultValue?.length) {
+        setFocused(defaultValue[0]);
+        return;
+      }
+
+      if (value && isMultiple(value) && value.length) {
+        setFocused(value[0]);
+        return;
+      }
+    } else {
+      if (!value && defaultValue) {
+        setFocused(defaultValue);
+        return;
+      }
+
+      if (value && isSingle(value)) {
+        setFocused(value);
+        return;
+      }
     }
-  }, [getNextIndex, isOpen, options, setIsOpen, value]);
+  }, [defaultValue, getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: SelectOption) => () => {
@@ -218,14 +248,53 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
     [],
   );
 
+  const toggleValue = useCallback(
+    (option: SelectOption) => {
+      if (multiple) {
+        const _value = value && isMultiple(value) ? value : [];
+
+        const isSelected = !!_value.find((ele) => ele === option);
+
+        const val = isSelected
+          ? _value.filter((ele) => ele !== option)
+          : [..._value, option];
+
+        if (isControlled) onChange?.(val, 'select');
+        else setInternalValue(val);
+      } else {
+        if (isControlled) onChange?.(option, 'select');
+        else setInternalValue(option);
+      }
+    },
+    [isControlled, multiple, onChange, value],
+  );
+
+  const clearValue = useCallback(
+    (reason: Reason) => {
+      if (multiple) {
+        if (isControlled) onChange?.([], reason);
+        else setInternalValue([]);
+      } else {
+        if (isControlled) onChange?.(null, reason);
+        else setInternalValue(null);
+      }
+    },
+    [isControlled, multiple, onChange],
+  );
+
   const handleOptionSelect = useCallback(
     ({ option }: OptionSelectProps) =>
       () => {
-        setFocused(null);
-        setValue(option);
-        setIsOpen(false);
+        if (multiple) {
+          setFocused(option);
+        } else {
+          setIsOpen(false);
+          setFocused(null);
+        }
+
+        toggleValue(option);
       },
-    [setIsOpen, setValue],
+    [multiple, setIsOpen, toggleValue],
   );
 
   const handleInputKeyDown = useCallback(
@@ -306,17 +375,23 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
 
         return;
       }
+
       if (Escape && !isOpen) {
-        setValue(null);
         setFocused(null);
+        clearValue('escape');
 
         return;
       }
 
-      if (Enter) {
-        setValue(focused);
-        setIsOpen(false);
-        setFocused(null);
+      if (Enter && isOpen && focused) {
+        if (multiple) {
+          setFocused(focused);
+        } else {
+          setIsOpen(false);
+          setFocused(null);
+        }
+
+        toggleValue(focused);
         return;
       }
 
@@ -349,18 +424,42 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
       }
     },
     [
+      clearValue,
       focused,
       getNextIndex,
       getOptionDisabled,
       getPreviousIndex,
       handleListboxOpen,
       isOpen,
+      multiple,
       options,
       setIsOpen,
-      setValue,
       state,
+      toggleValue,
     ],
   );
+
+  const getInputValue = useCallback(() => {
+    if (multiple) {
+      if (!value && defaultValue?.length) {
+        return defaultValue.map((opt) => getOptionLabel(opt)).join(', ');
+      }
+
+      if (value && isMultiple(value) && value.length) {
+        return value.map((opt) => getOptionLabel(opt)).join(', ');
+      }
+    } else {
+      if (!value && defaultValue) {
+        return getOptionLabel(defaultValue);
+      }
+
+      if (value && isSingle(value)) {
+        return getOptionLabel(value);
+      }
+    }
+
+    return '';
+  }, [defaultValue, getOptionLabel, multiple, value]);
 
   useEffect(() => {
     return () => {
@@ -378,7 +477,7 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
         <Popper.Reference>
           <Input
             {...inputProps}
-            value={value ? getOptionLabel(value) : ''}
+            value={getInputValue()}
             isDisabled={isDisabled}
             ref={mergeRefs(ref, inputRef)}
             onPointerDown={handleListboxOpen}
@@ -409,9 +508,9 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                     tabIndex={-1}
                     onPress={() => {
                       setIsOpen(true);
-                      setValue(null);
                       setFocused(null);
                       inputRef.current?.focus();
+                      clearValue('clear');
                     }}
                   >
                     <svg
@@ -470,7 +569,13 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
                         option={option}
                         id={getOptionId(option).replaceAll(' ', '-')}
                         isDisabled={getOptionDisabled?.(option) ?? false}
-                        isSelected={value?.label === option.label}
+                        isSelected={
+                          multiple
+                            ? !!value &&
+                              isMultiple(value) &&
+                              !!value.find((ele) => ele === option)
+                            : value === option
+                        }
                         isFocused={focused === option}
                         label={getOptionLabel(option) ?? option.label}
                         onSelect={handleOptionSelect({ index, option })}
@@ -506,8 +611,20 @@ const Select = forwardRef<CustomInputElement, SelectProps>((props, ref) => {
       </Popper.Root>
     </>
   );
-});
+};
 
 Select.displayName = 'gist-ui.Select';
 
-export default Select;
+export default forwardRef(Select) as <M extends boolean = false>(
+  props: SelectProps<M> & { ref?: React.ForwardedRef<CustomInputElement> },
+) => ReturnType<typeof Select>;
+
+// ********** utils **********
+
+const isMultiple = (
+  value: SelectOption | SelectOption[],
+): value is SelectOption[] => true;
+
+const isSingle = (
+  value: SelectOption | SelectOption[],
+): value is SelectOption => true;
