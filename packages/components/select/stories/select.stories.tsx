@@ -8,7 +8,11 @@ import { Select, SelectProps } from '../src';
 const meta: Meta = {
   title: 'Components/Select',
   component: Select,
-  args: { ...select.defaultVariants, ...InputStoryMeta.args },
+  args: {
+    ...select.defaultVariants,
+    ...InputStoryMeta.args,
+    disableClearOnEscape: false,
+  },
   argTypes: {
     ...InputStoryMeta.argTypes,
     shadow: {

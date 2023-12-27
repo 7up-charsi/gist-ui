@@ -1,6 +1,11 @@
 import * as Popper from '@gist-ui/popper';
 import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
-import { SelectClassNames, SelectVariantProps, select } from '@gist-ui/theme';
+import {
+  InputClassNames,
+  SelectClassNames,
+  SelectVariantProps,
+  select,
+} from '@gist-ui/theme';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { mergeRefs } from '@gist-ui/react-utils';
@@ -58,14 +63,14 @@ export type RenderOption = (props: RenderOptionProps) => React.ReactNode;
 
 interface CommonProps
   extends SelectVariantProps,
-    Omit<InputProps, 'defaultValue' | 'value' | 'onChange'> {
+    Omit<InputProps, 'defaultValue' | 'value' | 'onChange' | 'classNames'> {
   /**
    * This prop value is use in `listbox` style.maxHeight
    *
    * @default "300px"
    */
   maxHeight?: number;
-  listboxClassNames?: SelectClassNames;
+  classNames?: InputClassNames & SelectClassNames;
   /**
    * @default "no options"
    */
@@ -127,7 +132,7 @@ const Select = <M extends boolean = false>(
 ) => {
   const {
     options,
-    listboxClassNames,
+    classNames,
     offset,
     getOptionDisabled,
     isOpen: isOpenProp,
@@ -374,7 +379,7 @@ const Select = <M extends boolean = false>(
 
       if (Escape && !isOpen) {
         setFocused(null);
-        clearValue('escape');
+        if (!disableClearOnEscape) clearValue('escape');
 
         return;
       }
@@ -421,6 +426,7 @@ const Select = <M extends boolean = false>(
     },
     [
       clearValue,
+      disableClearOnEscape,
       focused,
       getNextIndex,
       getOptionDisabled,
@@ -471,6 +477,10 @@ const Select = <M extends boolean = false>(
             isDisabled={isDisabled}
             ref={mergeRefs(ref, inputRef)}
             onPointerDown={handleListboxOpen}
+            classNames={{
+              ...classNames,
+              input: styles.input({ className: classNames?.input }),
+            }}
             inputProps={{
               ...inputProps.inputProps,
               onKeyDown: handleInputKeyDown,
@@ -485,7 +495,7 @@ const Select = <M extends boolean = false>(
             endContent={
               <div
                 className={styles.endContent({
-                  className: listboxClassNames?.endContent,
+                  className: classNames?.endContent,
                 })}
               >
                 {((multiple && value && isMultiple(value) && value.length) ||
@@ -501,7 +511,7 @@ const Select = <M extends boolean = false>(
                       setIsOpen(true);
                       setFocused(null);
                       inputRef.current?.focus();
-                      if (!disableClearOnEscape) clearValue('clear');
+                      clearValue('clear');
                     }}
                   >
                     <svg
@@ -510,7 +520,7 @@ const Select = <M extends boolean = false>(
                       fill="none"
                       viewBox="0 0 14 14"
                       className={styles.clearButton({
-                        className: listboxClassNames?.clearButton,
+                        className: classNames?.clearButton,
                       })}
                     >
                       <path
@@ -527,7 +537,7 @@ const Select = <M extends boolean = false>(
                 <OpenIndicator
                   isOpen={isOpen}
                   className={styles.openIndicator({
-                    className: listboxClassNames?.openIndicator,
+                    className: classNames?.openIndicator,
                   })}
                 />
               </div>
@@ -541,7 +551,7 @@ const Select = <M extends boolean = false>(
               ref={setOutsideEle}
               id={lisboxId}
               className={styles.listbox({
-                className: listboxClassNames?.listbox,
+                className: classNames?.listbox,
               })}
               role="listbox"
               aria-activedescendant={
@@ -573,14 +583,14 @@ const Select = <M extends boolean = false>(
                         onHover={handleOptionHover(option)}
                         renderOption={renderOption}
                         className={styles.option({
-                          className: listboxClassNames?.option,
+                          className: classNames?.option,
                         })}
                       />
 
                       {index + 1 !== options.length && (
                         <div
                           className={styles.optionSeperator({
-                            className: listboxClassNames?.optionSeperator,
+                            className: classNames?.optionSeperator,
                           })}
                         />
                       )}
@@ -590,7 +600,7 @@ const Select = <M extends boolean = false>(
               ) : (
                 <div
                   className={styles.emptyText({
-                    className: listboxClassNames?.emptyText,
+                    className: classNames?.emptyText,
                   })}
                 >
                   {empltyText}

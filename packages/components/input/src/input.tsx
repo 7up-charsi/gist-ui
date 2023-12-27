@@ -15,7 +15,7 @@ import {
 } from 'react';
 
 export interface InputProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color' | 'className'>,
     Omit<InputVariantProps, 'error'>,
     HoverProps {
   type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';

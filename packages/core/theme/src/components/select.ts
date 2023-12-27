@@ -17,6 +17,7 @@ const select = tv({
       'fill-neutral-400 max-w-[theme(spacing.3)] max-h-[theme(spacing.3)] min-w-[theme(spacing.3)] min-h-[theme(spacing.3)]',
     clearButton:
       'max-w-[theme(spacing.3)] max-h-[theme(spacing.3)] min-w-[theme(spacing.3)] min-h-[theme(spacing.3)]',
+    input: 'truncate',
   },
   variants: {
     shadow: {
