@@ -498,7 +498,8 @@ const Select = <M extends boolean = false>(
                   className: listboxClassNames?.endContent,
                 })}
               >
-                {value && (
+                {((multiple && value && isMultiple(value) && value.length) ||
+                  (!multiple && value)) && (
                   <Button
                     isIconOnly
                     size="sm"
