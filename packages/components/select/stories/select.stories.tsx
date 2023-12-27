@@ -64,3 +64,35 @@ const MultipleTemplate = (args: SelectProps<true>) => (
 export const Multiple: StoryObj<SelectProps<true>> = {
   render: MultipleTemplate,
 };
+
+const CustomOptionTemplate = (args: SelectProps<false>) => (
+  <Select
+    label="custom option"
+    {...args}
+    options={options}
+    getOptionDisabled={(option) =>
+      option.label.startsWith('1 c') ||
+      option.label.startsWith('10') ||
+      option.label.startsWith('15')
+    }
+    defaultValue={options[2]}
+    renderOption={({ option, state }) => {
+      return (
+        <li className="flex gap-3 h-14">
+          <div className="flex items-center justify-center">
+            <input type="checkbox" checked={state.isSelected} readOnly />
+          </div>
+
+          <div className="flex flex-col">
+            <div className="">{option.label}</div>
+            <div className="text-sm text-neutral">very nice description</div>
+          </div>
+        </li>
+      );
+    }}
+  />
+);
+
+export const CutomOption: StoryObj<SelectProps<false>> = {
+  render: CustomOptionTemplate,
+};
