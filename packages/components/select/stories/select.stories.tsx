@@ -24,21 +24,39 @@ const options = Array.from({ length: 15 }).map((_ele, i) => ({
   label: i === 6 ? `6 test` : `${i + 1} custom label`,
 }));
 
-const DefaultTemplate = (args: SelectProps<true>) => (
+const SingleTemplate = (args: SelectProps<false>) => (
   <Select
+    label="single select"
     {...args}
-    multiple
-    label="select"
     options={options}
     getOptionDisabled={(option) =>
       option.label.startsWith('1 c') ||
       option.label.startsWith('10') ||
       option.label.startsWith('15')
     }
-    defaultValue={[options[2]]}
+    defaultValue={options[2]}
   />
 );
 
-export const Default: StoryObj<SelectProps<true>> = {
-  render: DefaultTemplate,
+export const Single: StoryObj<SelectProps<false>> = {
+  render: SingleTemplate,
+};
+
+const MultipleTemplate = (args: SelectProps<true>) => (
+  <Select
+    label="multiple select"
+    {...args}
+    multiple
+    options={options}
+    getOptionDisabled={(option) =>
+      option.label.startsWith('1 c') ||
+      option.label.startsWith('10') ||
+      option.label.startsWith('15')
+    }
+    defaultValue={[options[2], options[6]]}
+  />
+);
+
+export const Multiple: StoryObj<SelectProps<true>> = {
+  render: MultipleTemplate,
 };
