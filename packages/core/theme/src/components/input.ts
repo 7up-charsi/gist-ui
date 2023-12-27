@@ -73,6 +73,8 @@ const input = tv({
     isDisabled: false,
     size: 'md',
     variant: 'filled',
+    hideLabel: false,
+    error: false,
   },
   compoundVariants: [
     {

@@ -72,7 +72,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     fullWidth,
     hideLabel,
     size,
-    variant,
+    variant = 'filled',
     ...inputWrapperProps
   } = props;
 
