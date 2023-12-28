@@ -43,7 +43,7 @@ export interface SelectOption {
   label?: string;
 }
 
-export type Reason = 'select' | 'clear' | 'escape';
+export type Reason = 'select' | 'clear';
 
 interface RenderOptionProps<V> {
   option: V;
@@ -128,7 +128,6 @@ const Select = <
     options,
     classNames,
     offset,
-    getOptionDisabled,
     isOpen: isOpenProp,
     onOpenChange,
     maxHeight = 300,
@@ -142,6 +141,7 @@ const Select = <
     shadow,
     isDisabled,
     multiple,
+    getOptionDisabled,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -316,7 +316,6 @@ const Select = <
 
         if (excatMatch) {
           setFocused(excatMatch);
-
           return;
         }
 
@@ -333,9 +332,6 @@ const Select = <
 
           if (matched) {
             setFocused(matched);
-          } else {
-            clearTimeout(state.searchedStringTimer);
-            state.searchedString = '';
           }
 
           return;
@@ -351,14 +347,8 @@ const Select = <
       const Home = e.key === 'Home';
       const End = e.key === 'End';
 
-      if (ArrowDown && !isOpen) {
-        handleListboxOpen();
-        return;
-      }
-
       if (Escape && isOpen) {
         handleListboxClose();
-
         return;
       }
 
@@ -367,21 +357,19 @@ const Select = <
         return;
       }
 
-      if ((ArrowDown || ArrowUp) && !focused) {
-        const index = getNextIndex(0);
-        if (index >= 0) setFocused(options[index]);
-
+      if (ArrowDown && !isOpen) {
+        handleListboxOpen();
         return;
       }
 
-      if (ArrowDown && focused) {
+      if (ArrowDown && isOpen && focused) {
         const index = getNextIndex(options.indexOf(focused) + 1);
         if (index >= 0) setFocused(options[index]);
 
         return;
       }
 
-      if (ArrowUp && focused) {
+      if (ArrowUp && isOpen && focused) {
         const index = getPreviousIndex(options.indexOf(focused) - 1);
         if (index >= 0) setFocused(options[index]);
 
@@ -427,7 +415,7 @@ const Select = <
 
     if (multiple) {
       if (value && isMultiple(value) && value.length) {
-        return value.map((opt) => getOptionLabel(opt)).join(', ');
+        return value.map((opt) => getOptionLabel(opt))?.join(', ');
       }
     } else {
       if (value && isSingle(value)) {
@@ -571,7 +559,7 @@ const Select = <
                       {renderOption?.({
                         option,
                         state: { isDisabled, isFocused, isSelected },
-                      }) || <li>{getOptionLabel(option) ?? option.label}</li>}
+                      }) || <li>{getOptionLabel(option)}</li>}
                     </Option>
 
                     {index + 1 !== options.length && (

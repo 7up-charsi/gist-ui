@@ -138,7 +138,6 @@ const Autocomplete = <
     options: optionsProp,
     classNames,
     offset,
-    getOptionDisabled,
     isOpen: isOpenProp,
     onOpenChange,
     maxHeight = 300,
@@ -155,6 +154,7 @@ const Autocomplete = <
     inputValue: inputValueProp,
     onInputChange,
     filterOptions,
+    getOptionDisabled,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -314,20 +314,6 @@ const Autocomplete = <
 
       if (ArrowDown || ArrowUp) e.preventDefault();
 
-      if (e.key.length === 1) {
-        handleListboxOpen();
-
-        const index = getNextIndex(0);
-        if (index >= 0) setFocused(options[index]);
-
-        return;
-      }
-
-      if (ArrowDown && !isOpen) {
-        handleListboxOpen();
-        return;
-      }
-
       if (Escape && isOpen) {
         handleListboxClose();
         return;
@@ -345,21 +331,19 @@ const Autocomplete = <
         return;
       }
 
-      if ((ArrowDown || ArrowUp) && !focused) {
-        const index = getNextIndex(0);
-        if (index >= 0) setFocused(options[index]);
-
+      if (ArrowDown && !isOpen) {
+        handleListboxOpen();
         return;
       }
 
-      if (ArrowDown && focused) {
+      if (ArrowDown && isOpen && focused) {
         const index = getNextIndex(options.indexOf(focused) + 1);
         if (index >= 0) setFocused(options[index]);
 
         return;
       }
 
-      if (ArrowUp && focused) {
+      if (ArrowUp && isOpen && focused) {
         const index = getPreviousIndex(options.indexOf(focused) - 1);
         if (index >= 0) setFocused(options[index]);
 
@@ -518,7 +502,7 @@ const Autocomplete = <
                       {renderOption?.({
                         option,
                         state: { isDisabled, isFocused, isSelected },
-                      }) || <li>{getOptionLabel(option) ?? option.label}</li>}
+                      }) || <li>{getOptionLabel(option)}</li>}
                     </Option>
 
                     {index + 1 !== options.length && (

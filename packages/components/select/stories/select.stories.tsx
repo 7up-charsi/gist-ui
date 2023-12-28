@@ -11,7 +11,6 @@ const meta: Meta = {
   args: {
     ...select.defaultVariants,
     ...InputStoryMeta.args,
-    disableClearOnEscape: false,
   },
   argTypes: {
     ...InputStoryMeta.argTypes,
