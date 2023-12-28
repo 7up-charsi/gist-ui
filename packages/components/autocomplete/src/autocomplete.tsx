@@ -15,7 +15,6 @@ import {
   Fragment,
   forwardRef,
   useCallback,
-  useEffect,
   useId,
   useRef,
   useState,
@@ -55,6 +54,11 @@ interface RenderOptionProps<V> {
 }
 
 export type RenderOption<V> = (props: RenderOptionProps<V>) => React.ReactNode;
+
+export type FilterOptions<V> = (props: {
+  options: V[];
+  inputValue: string;
+}) => V[];
 
 interface CommonProps<V>
   extends SelectVariantProps,
@@ -99,14 +103,11 @@ interface CommonProps<V>
    */
   getOptionId?: (option: V) => string;
   /**
-   * when listbox is closed then on Escape value will be cleared. Disable this behaviour by defining this prop as true
-   */
-  disableClearOnEscape?: boolean;
-  /**
    * If inputValue is defined then this will behave as controlled.
    */
   inputValue?: string;
   onInputChange?: (value: string) => void;
+  filterOptions?: FilterOptions<V>;
 }
 
 export type SelectProps<M, V> = M extends true
@@ -134,7 +135,7 @@ const Autocomplete = <
   ref: React.ForwardedRef<CustomInputElement>,
 ) => {
   const {
-    options,
+    options: optionsProp,
     classNames,
     offset,
     getOptionDisabled,
@@ -151,9 +152,9 @@ const Autocomplete = <
     shadow,
     isDisabled,
     multiple,
-    disableClearOnEscape,
     inputValue: inputValueProp,
     onInputChange,
+    filterOptions,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -170,13 +171,6 @@ const Autocomplete = <
 
   const lisboxId = useId();
 
-  const state = useRef<{
-    searchedString: string;
-    searchedStringTimer?: ReturnType<typeof setTimeout>;
-  }>({
-    searchedString: '',
-  }).current;
-
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
     value: isOpenProp,
@@ -189,11 +183,18 @@ const Autocomplete = <
     onChange: onInputChange,
   });
 
+  const options =
+    optionsProp &&
+    (filterOptions
+      ? filterOptions({ options: optionsProp, inputValue })
+      : optionsProp.filter(
+          (opt) => opt.label?.toLowerCase().includes(inputValue.toLowerCase()),
+        ));
+
   const handleListboxClose = useCallback(() => {
     setIsOpen(false);
     setFocused(null);
-    setInputValue('');
-  }, [setInputValue, setIsOpen]);
+  }, [setIsOpen]);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !isOpen,
@@ -235,9 +236,9 @@ const Autocomplete = <
   );
 
   const handleListboxOpen = useCallback(() => {
-    setIsOpen(true);
-
     if (isOpen) return;
+
+    setIsOpen(true);
 
     if (!value && options) {
       const index = getNextIndex(0);
@@ -266,27 +267,6 @@ const Autocomplete = <
     [],
   );
 
-  const toggleValue = useCallback(
-    (option: V) => {
-      if (multiple) {
-        const _value = value && isMultiple(value) ? value : [];
-
-        const isSelected = !!_value.find((ele) => ele === option);
-
-        const val = isSelected
-          ? _value.filter((ele) => ele !== option)
-          : [..._value, option];
-
-        onChange?.(val, 'select');
-        setInternalValue(val);
-      } else {
-        onChange?.(option, 'select');
-        setInternalValue(option);
-      }
-    },
-    [multiple, onChange, value],
-  );
-
   const clearValue = useCallback(
     (reason: Reason) => {
       if (multiple) {
@@ -303,27 +283,45 @@ const Autocomplete = <
   const handleOptionSelect = useCallback(
     (option: V) => () => {
       if (multiple) {
+        const _value = value && isMultiple(value) ? value : [];
+
+        const isSelected = !!_value.find((ele) => ele === option);
+
+        const val = isSelected
+          ? _value.filter((ele) => ele !== option)
+          : [..._value, option];
+
+        onChange?.(val, 'select');
+        setInternalValue(val);
         setFocused(option);
       } else {
+        onChange?.(option, 'select');
+        setInternalValue(option);
         handleListboxClose();
       }
-
-      toggleValue(option);
     },
-    [handleListboxClose, multiple, toggleValue],
+    [handleListboxClose, multiple, onChange, value],
   );
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (!options) return;
-      if (e.key.length === 1) return;
 
       const ArrowDown = e.key === 'ArrowDown';
       const ArrowUp = e.key === 'ArrowUp';
       const Escape = e.key === 'Escape';
       const Enter = e.key === 'Enter';
-      const Home = e.key === 'Home';
-      const End = e.key === 'End';
+
+      if (ArrowDown || ArrowUp) e.preventDefault();
+
+      if (e.key.length === 1) {
+        handleListboxOpen();
+
+        const index = getNextIndex(0);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
 
       if (ArrowDown && !isOpen) {
         handleListboxOpen();
@@ -332,29 +330,22 @@ const Autocomplete = <
 
       if (Escape && isOpen) {
         handleListboxClose();
-
         return;
       }
 
       if (Escape && !isOpen) {
         setFocused(null);
-        if (!disableClearOnEscape) clearValue('escape');
+        setInputValue('');
 
         return;
       }
 
       if (Enter && isOpen && focused) {
-        if (multiple) {
-          setFocused(focused);
-        } else {
-          handleListboxClose();
-        }
-
-        toggleValue(focused);
+        handleOptionSelect(focused)();
         return;
       }
 
-      if (Home || ((ArrowDown || ArrowUp) && !focused)) {
+      if ((ArrowDown || ArrowUp) && !focused) {
         const index = getNextIndex(0);
         if (index >= 0) setFocused(options[index]);
 
@@ -374,26 +365,17 @@ const Autocomplete = <
 
         return;
       }
-
-      if (End) {
-        const index = getPreviousIndex(options.length - 1);
-        if (index >= 0) setFocused(options[index]);
-
-        return;
-      }
     },
     [
-      clearValue,
-      disableClearOnEscape,
       focused,
       getNextIndex,
       getPreviousIndex,
       handleListboxClose,
       handleListboxOpen,
+      handleOptionSelect,
       isOpen,
-      multiple,
       options,
-      toggleValue,
+      setInputValue,
     ],
   );
 
@@ -413,12 +395,6 @@ const Autocomplete = <
     return '';
   }, [getOptionLabel, multiple, value]);
 
-  useEffect(() => {
-    return () => {
-      clearTimeout(state.searchedStringTimer);
-    };
-  }, [state]);
-
   const styles = select({
     shadow,
   });
@@ -428,10 +404,7 @@ const Autocomplete = <
       <Popper.Reference>
         <Input
           {...inputProps}
-          value={focused ? inputValue : getInputValue()}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-          }}
+          value={getInputValue()}
           isDisabled={isDisabled}
           ref={mergeRefs(ref, inputRef)}
           onPointerDown={handleListboxOpen}
@@ -542,12 +515,10 @@ const Autocomplete = <
                         className: classNames?.option,
                       })}
                     >
-                      {(renderOption?.({
+                      {renderOption?.({
                         option,
                         state: { isDisabled, isFocused, isSelected },
-                      }) ||
-                        getOptionLabel(option)) ??
-                        option.label}
+                      }) || <li>{getOptionLabel(option) ?? option.label}</li>}
                     </Option>
 
                     {index + 1 !== options.length && (
