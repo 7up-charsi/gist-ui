@@ -134,9 +134,42 @@ importers:
 
   packages/components/autocomplete:
     dependencies:
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
+      '@gist-ui/error':
+        specifier: workspace:*
+        version: link:../../utilities/error
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
+      '@gist-ui/input':
+        specifier: workspace:*
+        version: link:../input
+      '@gist-ui/popper':
+        specifier: workspace:*
+        version: link:../popper
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
+      '@gist-ui/use-click-outside':
+        specifier: workspace:*
+        version: link:../../hooks/use-click-outside
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
+      '@react-aria/interactions':
+        specifier: ^3.20.0
+        version: 3.20.0(react@18.2.0)
       react:
         specifier: '>=18'
         version: 18.2.0

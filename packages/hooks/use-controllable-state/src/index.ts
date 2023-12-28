@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export interface UseControllableStateProps<T> {
   /**
-   * If value is true then this hook will behave as controlled
+   * If value is defined then this hook will behave as controlled
    */
   value?: T;
   defaultValue?: T | (() => T);

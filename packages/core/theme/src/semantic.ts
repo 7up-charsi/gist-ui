@@ -8,35 +8,9 @@ import {
   blue,
   sky,
   neutral,
+  purple,
+  fuchsia,
 } from 'tailwindcss/colors';
-
-const primary = {
-  '50': '#faf5ff',
-  '100': '#f2e8ff',
-  '200': '#e7d4ff',
-  '300': '#d4b3ff',
-  '400': '#ba83fd',
-  '500': '#a053f9',
-  '600': '#8a31ec',
-  '700': '#7520d0',
-  '800': '#641faa',
-  '900': '#531b88',
-  '950': '#360665',
-};
-
-const secondary = {
-  '50': '#fdf3ff',
-  '100': '#fae7ff',
-  '200': '#f4ceff',
-  '300': '#f0a7ff',
-  '400': '#e97aff',
-  '500': '#d93ef7',
-  '600': '#c01edb',
-  '700': '#a315b6',
-  '800': '#871395',
-  '900': '#711679',
-  '950': '#4a0151',
-};
 
 const base: SemanticBaseColors = {
   light: {
@@ -112,14 +86,14 @@ const base: SemanticBaseColors = {
 export const themeColorsLight: ThemeColors = {
   ...base.light,
   primary: {
-    ...primary,
+    ...purple,
     foreground: '#ffffff',
-    DEFAULT: primary[500],
+    DEFAULT: purple[500],
   },
   secondary: {
-    ...secondary,
+    ...fuchsia,
     foreground: '#ffffff',
-    DEFAULT: secondary[500],
+    DEFAULT: fuchsia[500],
   },
   success: {
     ...emerald,
@@ -151,14 +125,14 @@ export const themeColorsLight: ThemeColors = {
 export const themeColorsDark: ThemeColors = {
   ...base.dark,
   primary: {
-    ...swapColorValues(primary),
+    ...swapColorValues(purple),
     foreground: '#ffffff',
-    DEFAULT: primary[500],
+    DEFAULT: purple[500],
   },
   secondary: {
-    ...swapColorValues(secondary),
+    ...swapColorValues(fuchsia),
     foreground: '#ffffff',
-    DEFAULT: secondary[500],
+    DEFAULT: fuchsia[500],
   },
   success: {
     ...swapColorValues(emerald),
