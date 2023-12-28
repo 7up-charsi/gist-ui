@@ -98,10 +98,6 @@ interface CommonProps<V>
    * @default option.label
    */
   getOptionId?: (option: V) => string;
-  /**
-   * when listbox is closed then on Escape value will be cleared. Disable this behaviour by defining this prop as true
-   */
-  disableClearOnEscape?: boolean;
 }
 
 export type SelectProps<M, V> = M extends true
@@ -146,7 +142,6 @@ const Select = <
     shadow,
     isDisabled,
     multiple,
-    disableClearOnEscape,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -252,27 +247,6 @@ const Select = <
     [],
   );
 
-  const toggleValue = useCallback(
-    (option: V) => {
-      if (multiple) {
-        const _value = value && isMultiple(value) ? value : [];
-
-        const isSelected = !!_value.find((ele) => ele === option);
-
-        const val = isSelected
-          ? _value.filter((ele) => ele !== option)
-          : [..._value, option];
-
-        onChange?.(val, 'select');
-        setInternalValue(val);
-      } else {
-        onChange?.(option, 'select');
-        setInternalValue(option);
-      }
-    },
-    [multiple, onChange, value],
-  );
-
   const clearValue = useCallback(
     (reason: Reason) => {
       if (multiple) {
@@ -289,14 +263,24 @@ const Select = <
   const handleOptionSelect = useCallback(
     (option: V) => () => {
       if (multiple) {
+        const _value = value && isMultiple(value) ? value : [];
+
+        const isSelected = !!_value.find((ele) => ele === option);
+
+        const val = isSelected
+          ? _value.filter((ele) => ele !== option)
+          : [..._value, option];
+
+        onChange?.(val, 'select');
+        setInternalValue(val);
         setFocused(option);
       } else {
+        onChange?.(option, 'select');
+        setInternalValue(option);
         handleListboxClose();
       }
-
-      toggleValue(option);
     },
-    [handleListboxClose, multiple, toggleValue],
+    [handleListboxClose, multiple, onChange, value],
   );
 
   const handleInputKeyDown = useCallback(
@@ -378,25 +362,12 @@ const Select = <
         return;
       }
 
-      if (Escape && !isOpen) {
-        setFocused(null);
-        if (!disableClearOnEscape) clearValue('escape');
-
-        return;
-      }
-
       if (Enter && isOpen && focused) {
-        if (multiple) {
-          setFocused(focused);
-        } else {
-          handleListboxClose();
-        }
-
-        toggleValue(focused);
+        handleOptionSelect(focused)();
         return;
       }
 
-      if (Home || ((ArrowDown || ArrowUp) && !focused)) {
+      if ((ArrowDown || ArrowUp) && !focused) {
         const index = getNextIndex(0);
         if (index >= 0) setFocused(options[index]);
 
@@ -417,7 +388,18 @@ const Select = <
         return;
       }
 
+      if (Home) {
+        setIsOpen(true);
+
+        const index = getNextIndex(0);
+        if (index >= 0) setFocused(options[index]);
+
+        return;
+      }
+
       if (End) {
+        setIsOpen(true);
+
         const index = getPreviousIndex(options.length - 1);
         if (index >= 0) setFocused(options[index]);
 
@@ -425,8 +407,6 @@ const Select = <
       }
     },
     [
-      clearValue,
-      disableClearOnEscape,
       focused,
       getNextIndex,
       getOptionDisabled,
@@ -434,12 +414,11 @@ const Select = <
       getPreviousIndex,
       handleListboxClose,
       handleListboxOpen,
+      handleOptionSelect,
       isOpen,
-      multiple,
       options,
       setIsOpen,
       state,
-      toggleValue,
     ],
   );
 
@@ -589,12 +568,10 @@ const Select = <
                         className: classNames?.option,
                       })}
                     >
-                      {(renderOption?.({
+                      {renderOption?.({
                         option,
                         state: { isDisabled, isFocused, isSelected },
-                      }) ||
-                        getOptionLabel(option)) ??
-                        option.label}
+                      }) || <li>{getOptionLabel(option) ?? option.label}</li>}
                     </Option>
 
                     {index + 1 !== options.length && (
