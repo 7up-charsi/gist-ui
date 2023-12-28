@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { SelectOption, RenderOption } from './select';
 import { mergeProps } from '@gist-ui/react-utils';
 import { Slot } from '@gist-ui/slot';
 import {
@@ -9,33 +8,27 @@ import {
   usePress,
 } from '@react-aria/interactions';
 
-interface OptionProps<V> {
-  option: V;
+interface OptionProps {
   isDisabled: boolean;
   isSelected: boolean;
   isFocused: boolean;
   className: string;
   onSelect: (e: PressEvent) => void;
   onHover: (e: HoverEvent) => void;
-  renderOption?: RenderOption<V>;
-  label?: string;
   id?: string;
+  children: React.ReactNode;
 }
 
-export const Option = <V extends SelectOption = SelectOption>(
-  props: OptionProps<V>,
-) => {
+export const Option = (props: OptionProps) => {
   const {
-    option,
     className,
     isDisabled,
     isSelected,
     isFocused,
     onSelect,
     onHover,
-    renderOption,
-    label,
     id,
+    children,
   } = props;
 
   const ref = useRef<HTMLLIElement>(null);
@@ -72,18 +65,7 @@ export const Option = <V extends SelectOption = SelectOption>(
       aria-checked={isDisabled ? undefined : isSelected}
       {...mergeProps(pressProps, hoverProps)}
     >
-      {renderOption ? (
-        renderOption({
-          option,
-          state: {
-            isDisabled,
-            isSelected,
-            isFocused,
-          },
-        })
-      ) : (
-        <li>{label}</li>
-      )}
+      {children}
     </Slot>
   );
 };

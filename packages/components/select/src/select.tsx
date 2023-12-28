@@ -39,11 +39,6 @@ const OpenIndicator = ({
   </svg>
 );
 
-interface OptionSelectProps<V> {
-  option: V;
-  index: number;
-}
-
 export interface SelectOption {
   label?: string;
 }
@@ -181,12 +176,17 @@ const Select = <
     onChange: onOpenChange,
   });
 
+  const handleListboxClose = useCallback(() => {
+    setIsOpen(false);
+    setFocused(null);
+  }, [setIsOpen]);
+
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !isOpen,
     onEvent: 'pointerdown',
     callback: (e) => {
       if (inputRef.current?.contains(e.target as Node)) return;
-      setIsOpen(false);
+      handleListboxClose();
     },
   });
 
@@ -287,18 +287,16 @@ const Select = <
   );
 
   const handleOptionSelect = useCallback(
-    ({ option }: OptionSelectProps<V>) =>
-      () => {
-        if (multiple) {
-          setFocused(option);
-        } else {
-          setIsOpen(false);
-          setFocused(null);
-        }
+    (option: V) => () => {
+      if (multiple) {
+        setFocused(option);
+      } else {
+        handleListboxClose();
+      }
 
-        toggleValue(option);
-      },
-    [multiple, setIsOpen, toggleValue],
+      toggleValue(option);
+    },
+    [handleListboxClose, multiple, toggleValue],
   );
 
   const handleInputKeyDown = useCallback(
@@ -375,7 +373,7 @@ const Select = <
       }
 
       if (Escape && isOpen) {
-        setIsOpen(false);
+        handleListboxClose();
 
         return;
       }
@@ -391,8 +389,7 @@ const Select = <
         if (multiple) {
           setFocused(focused);
         } else {
-          setIsOpen(false);
-          setFocused(null);
+          handleListboxClose();
         }
 
         toggleValue(focused);
@@ -435,6 +432,7 @@ const Select = <
       getOptionDisabled,
       getOptionLabel,
       getPreviousIndex,
+      handleListboxClose,
       handleListboxOpen,
       isOpen,
       multiple,
@@ -472,149 +470,156 @@ const Select = <
   });
 
   return (
-    <>
-      <Popper.Root>
-        <Popper.Reference>
-          <Input
-            {...inputProps}
-            value={getInputValue()}
-            isDisabled={isDisabled}
-            ref={mergeRefs(ref, inputRef)}
-            onPointerDown={handleListboxOpen}
-            classNames={{
-              ...classNames,
-              input: styles.input({ className: classNames?.input }),
-            }}
-            inputProps={{
-              ...inputProps.inputProps,
-              onKeyDown: handleInputKeyDown,
-              'aria-expanded': isOpen,
-              'aria-controls': lisboxId,
-              'aria-haspopup': 'listbox',
-              'aria-autocomplete': 'none',
-              role: 'combobox',
-              autoComplete: 'off',
-              readOnly: true,
-            }}
-            endContent={
-              <div
-                className={styles.endContent({
-                  className: classNames?.endContent,
-                })}
-              >
-                {((multiple && value && isMultiple(value) && value.length) ||
-                  (!multiple && value)) && (
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="text"
-                    color="neutral"
-                    preventFocusOnPress
-                    tabIndex={-1}
-                    onPress={() => {
-                      setIsOpen(true);
-                      setFocused(null);
-                      inputRef.current?.focus();
-                      clearValue('clear');
-                    }}
+    <Popper.Root>
+      <Popper.Reference>
+        <Input
+          {...inputProps}
+          value={getInputValue()}
+          isDisabled={isDisabled}
+          ref={mergeRefs(ref, inputRef)}
+          onPointerDown={handleListboxOpen}
+          classNames={{
+            ...classNames,
+            input: styles.input({ className: classNames?.input }),
+            inputWrapper: styles.inputWrapper({
+              className: classNames?.inputWrapper,
+            }),
+          }}
+          inputProps={{
+            ...inputProps.inputProps,
+            onKeyDown: handleInputKeyDown,
+            'aria-expanded': isOpen,
+            'aria-controls': lisboxId,
+            'aria-haspopup': 'listbox',
+            'aria-autocomplete': 'none',
+            role: 'combobox',
+            autoComplete: 'off',
+            readOnly: true,
+          }}
+          endContent={
+            <div
+              className={styles.endContent({
+                className: classNames?.endContent,
+              })}
+            >
+              {((multiple && value && isMultiple(value) && value.length) ||
+                (!multiple && value)) && (
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="text"
+                  color="neutral"
+                  preventFocusOnPress
+                  tabIndex={-1}
+                  onPress={() => {
+                    setIsOpen(true);
+                    setFocused(null);
+                    inputRef.current?.focus();
+                    clearValue('clear');
+                  }}
+                >
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                    className={styles.clearButton({
+                      className: classNames?.clearButton,
+                    })}
                   >
-                    <svg
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 14"
-                      className={styles.clearButton({
-                        className: classNames?.clearButton,
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                </Button>
+              )}
+
+              <OpenIndicator
+                isOpen={isOpen}
+                className={styles.openIndicator({
+                  className: classNames?.openIndicator,
+                })}
+              />
+            </div>
+          }
+        />
+      </Popper.Reference>
+
+      {isOpen && (
+        <Popper.Floating sticky="always" mainOffset={offset || 5}>
+          <ul
+            ref={setOutsideEle}
+            id={lisboxId}
+            className={styles.listbox({
+              className: classNames?.listbox,
+            })}
+            role="listbox"
+            aria-activedescendant={
+              focused ? getOptionId(focused)?.replaceAll(' ', '-') : undefined
+            }
+            aria-roledescription="single select"
+            style={{ maxHeight }}
+          >
+            {options?.length ? (
+              options.map((option, index) => {
+                const isDisabled = getOptionDisabled?.(option) ?? false;
+                const isFocused = focused === option;
+                const isSelected = multiple
+                  ? !!value &&
+                    isMultiple(value) &&
+                    !!value.find((ele) => ele === option)
+                  : value === option;
+
+                return (
+                  <Fragment
+                    key={getOptionKey ? getOptionKey(option) : option.label}
+                  >
+                    <Option
+                      id={getOptionId(option)?.replaceAll(' ', '-')}
+                      isDisabled={isDisabled}
+                      isSelected={isSelected}
+                      isFocused={isFocused}
+                      onSelect={handleOptionSelect(option)}
+                      onHover={handleOptionHover(option)}
+                      className={styles.option({
+                        className: classNames?.option,
                       })}
                     >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                      />
-                    </svg>
-                  </Button>
-                )}
+                      {(renderOption?.({
+                        option,
+                        state: { isDisabled, isFocused, isSelected },
+                      }) ||
+                        getOptionLabel(option)) ??
+                        option.label}
+                    </Option>
 
-                <OpenIndicator
-                  isOpen={isOpen}
-                  className={styles.openIndicator({
-                    className: classNames?.openIndicator,
-                  })}
-                />
-              </div>
-            }
-          />
-        </Popper.Reference>
-
-        {isOpen && (
-          <Popper.Floating sticky="always" mainOffset={offset || 5}>
-            <ul
-              ref={setOutsideEle}
-              id={lisboxId}
-              className={styles.listbox({
-                className: classNames?.listbox,
-              })}
-              role="listbox"
-              aria-activedescendant={
-                focused ? getOptionId(focused)?.replaceAll(' ', '-') : undefined
-              }
-              aria-roledescription="single select"
-              style={{ maxHeight }}
-            >
-              {options?.length ? (
-                options.map((option, index) => {
-                  return (
-                    <Fragment
-                      key={getOptionKey ? getOptionKey(option) : option.label}
-                    >
-                      <Option<V>
-                        option={option}
-                        id={getOptionId(option)?.replaceAll(' ', '-')}
-                        isDisabled={getOptionDisabled?.(option) ?? false}
-                        isSelected={
-                          multiple
-                            ? !!value &&
-                              isMultiple(value) &&
-                              !!value.find((ele) => ele === option)
-                            : value === option
-                        }
-                        isFocused={focused === option}
-                        label={getOptionLabel(option) ?? option.label}
-                        onSelect={handleOptionSelect({ index, option })}
-                        onHover={handleOptionHover(option)}
-                        renderOption={renderOption}
-                        className={styles.option({
-                          className: classNames?.option,
+                    {index + 1 !== options.length && (
+                      <div
+                        className={styles.optionSeperator({
+                          className: classNames?.optionSeperator,
                         })}
                       />
-
-                      {index + 1 !== options.length && (
-                        <div
-                          className={styles.optionSeperator({
-                            className: classNames?.optionSeperator,
-                          })}
-                        />
-                      )}
-                    </Fragment>
-                  );
-                })
-              ) : (
-                <div
-                  className={styles.emptyText({
-                    className: classNames?.emptyText,
-                  })}
-                >
-                  {empltyText}
-                </div>
-              )}
-            </ul>
-          </Popper.Floating>
-        )}
-      </Popper.Root>
-    </>
+                    )}
+                  </Fragment>
+                );
+              })
+            ) : (
+              <div
+                className={styles.emptyText({
+                  className: classNames?.emptyText,
+                })}
+              >
+                {empltyText}
+              </div>
+            )}
+          </ul>
+        </Popper.Floating>
+      )}
+    </Popper.Root>
   );
 };
 
