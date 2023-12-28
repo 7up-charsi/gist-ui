@@ -9,20 +9,22 @@ import {
   usePress,
 } from '@react-aria/interactions';
 
-interface OptionProps {
-  option: SelectOption;
+interface OptionProps<V> {
+  option: V;
   isDisabled: boolean;
   isSelected: boolean;
   isFocused: boolean;
   className: string;
   onSelect: (e: PressEvent) => void;
   onHover: (e: HoverEvent) => void;
-  renderOption?: RenderOption;
-  label: string;
-  id: string;
+  renderOption?: RenderOption<V>;
+  label?: string;
+  id?: string;
 }
 
-export const Option = (props: OptionProps) => {
+export const Option = <V extends SelectOption = SelectOption>(
+  props: OptionProps<V>,
+) => {
   const {
     option,
     className,

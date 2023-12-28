@@ -39,19 +39,19 @@ const OpenIndicator = ({
   </svg>
 );
 
-interface OptionSelectProps {
-  option: SelectOption;
+interface OptionSelectProps<V> {
+  option: V;
   index: number;
 }
 
 export interface SelectOption {
-  label: string;
+  label?: string;
 }
 
 export type Reason = 'select' | 'clear' | 'escape';
 
-interface RenderOptionProps {
-  option: SelectOption;
+interface RenderOptionProps<V> {
+  option: V;
   state: {
     isDisabled: boolean;
     isSelected: boolean;
@@ -59,9 +59,9 @@ interface RenderOptionProps {
   };
 }
 
-export type RenderOption = (props: RenderOptionProps) => React.ReactNode;
+export type RenderOption<V> = (props: RenderOptionProps<V>) => React.ReactNode;
 
-interface CommonProps
+interface CommonProps<V>
   extends SelectVariantProps,
     Omit<InputProps, 'defaultValue' | 'value' | 'onChange' | 'classNames'> {
   /**
@@ -75,7 +75,7 @@ interface CommonProps
    * @default "no options"
    */
   empltyText?: string;
-  options?: SelectOption[];
+  options?: V[];
   /**
    * This prop add distance between `Input` and listbox
    */
@@ -89,45 +89,48 @@ interface CommonProps
   /**
    * Used to determine the disabled state for a given option
    */
-  getOptionDisabled?: (options: SelectOption) => boolean;
+  getOptionDisabled?: (options: V) => boolean;
   /**
    * Used to determine the key for a given option. By default labels are used as keys
    */
-  getOptionKey?: (options: SelectOption) => string;
-  renderOption?: RenderOption;
+  getOptionKey?: (options: V) => string;
+  renderOption?: RenderOption<V>;
   /**
    * @default option.label
    */
-  getOptionLabel?: (option: SelectOption) => string;
+  getOptionLabel?: (option: V) => string;
   /**
    * @default option.label
    */
-  getOptionId?: (option: SelectOption) => string;
+  getOptionId?: (option: V) => string;
   /**
    * when listbox is closed then on Escape value will be cleared. Disable this behaviour by defining this prop as true
    */
   disableClearOnEscape?: boolean;
 }
 
-export type SelectProps<M> = M extends true
+export type SelectProps<M, V> = M extends true
   ? {
       multiple: M;
-      defaultValue?: SelectOption[];
-      value?: SelectOption[];
-      onChange?: (value: SelectOption[], reason: Reason) => void;
-    } & CommonProps
+      defaultValue?: V[];
+      value?: V[];
+      onChange?: (value: V[], reason: Reason) => void;
+    } & CommonProps<V>
   : {
       multiple?: M;
-      defaultValue?: SelectOption;
-      value?: SelectOption | null;
-      onChange?: (value: SelectOption | null, reason: Reason) => void;
-    } & CommonProps;
+      defaultValue?: V;
+      value?: V | null;
+      onChange?: (value: V | null, reason: Reason) => void;
+    } & CommonProps<V>;
 
 const GET_OPTION_LABEL = (option: SelectOption) => option.label;
 const GET_OPTION_ID = (option: SelectOption) => option.label;
 
-const Select = <M extends boolean = false>(
-  props: SelectProps<M>,
+const Select = <
+  M extends boolean = false,
+  V extends SelectOption = SelectOption,
+>(
+  props: SelectProps<M, V>,
   ref: React.ForwardedRef<CustomInputElement>,
 ) => {
   const {
@@ -155,13 +158,13 @@ const Select = <M extends boolean = false>(
   } = props;
 
   const [internalValue, setInternalValue] = useState<
-    SelectOption | SelectOption[] | undefined | null
+    V | V[] | undefined | null
   >(defaultValue);
 
   const value = valueProp !== undefined ? valueProp : internalValue;
 
   const inputRef = useRef<HTMLDivElement>(null);
-  const [focused, setFocused] = useState<SelectOption | null>(null);
+  const [focused, setFocused] = useState<V | null>(null);
 
   const lisboxId = useId();
 
@@ -243,14 +246,14 @@ const Select = <M extends boolean = false>(
   }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
-    (option: SelectOption) => () => {
+    (option: V) => () => {
       setFocused(option);
     },
     [],
   );
 
   const toggleValue = useCallback(
-    (option: SelectOption) => {
+    (option: V) => {
       if (multiple) {
         const _value = value && isMultiple(value) ? value : [];
 
@@ -284,7 +287,7 @@ const Select = <M extends boolean = false>(
   );
 
   const handleOptionSelect = useCallback(
-    ({ option }: OptionSelectProps) =>
+    ({ option }: OptionSelectProps<V>) =>
       () => {
         if (multiple) {
           setFocused(option);
@@ -326,7 +329,7 @@ const Select = <M extends boolean = false>(
         const excatMatch = orderedOptions.find((ele) =>
           getOptionDisabled?.(ele)
             ? false
-            : ele.label.toLowerCase().startsWith(filter),
+            : getOptionLabel(ele)?.toLowerCase().startsWith(filter),
         );
 
         if (excatMatch) {
@@ -343,7 +346,7 @@ const Select = <M extends boolean = false>(
           const matched = orderedOptions.find((ele) =>
             getOptionDisabled?.(ele)
               ? false
-              : ele.label.toLowerCase().startsWith(filter[0]),
+              : getOptionLabel(ele)?.toLowerCase().startsWith(filter[0]),
           );
 
           if (matched) {
@@ -430,6 +433,7 @@ const Select = <M extends boolean = false>(
       focused,
       getNextIndex,
       getOptionDisabled,
+      getOptionLabel,
       getPreviousIndex,
       handleListboxOpen,
       isOpen,
@@ -555,7 +559,7 @@ const Select = <M extends boolean = false>(
               })}
               role="listbox"
               aria-activedescendant={
-                focused ? getOptionId(focused).replaceAll(' ', '-') : undefined
+                focused ? getOptionId(focused)?.replaceAll(' ', '-') : undefined
               }
               aria-roledescription="single select"
               style={{ maxHeight }}
@@ -566,9 +570,9 @@ const Select = <M extends boolean = false>(
                     <Fragment
                       key={getOptionKey ? getOptionKey(option) : option.label}
                     >
-                      <Option
+                      <Option<V>
                         option={option}
-                        id={getOptionId(option).replaceAll(' ', '-')}
+                        id={getOptionId(option)?.replaceAll(' ', '-')}
                         isDisabled={getOptionDisabled?.(option) ?? false}
                         isSelected={
                           multiple
@@ -616,8 +620,11 @@ const Select = <M extends boolean = false>(
 
 Select.displayName = 'gist-ui.Select';
 
-export default forwardRef(Select) as <M extends boolean = false>(
-  props: SelectProps<M> & { ref?: React.ForwardedRef<CustomInputElement> },
+export default forwardRef(Select) as <
+  M extends boolean = false,
+  V extends SelectOption = SelectOption,
+>(
+  props: SelectProps<M, V> & { ref?: React.ForwardedRef<CustomInputElement> },
 ) => ReturnType<typeof Select>;
 
 // ********** utils **********

@@ -26,9 +26,13 @@ export default meta;
 
 const options = Array.from({ length: 15 }).map((_ele, i) => ({
   label: i === 6 ? `6 test` : `${i + 1} custom label`,
+  id: i,
+  value: i,
 }));
 
-const SingleTemplate = (args: SelectProps<false>) => (
+type Option = (typeof options)[number];
+
+const SingleTemplate = (args: SelectProps<false, Option>) => (
   <Select
     label="single select"
     {...args}
@@ -42,11 +46,11 @@ const SingleTemplate = (args: SelectProps<false>) => (
   />
 );
 
-export const Single: StoryObj<SelectProps<false>> = {
+export const Single: StoryObj<SelectProps<false, Option>> = {
   render: SingleTemplate,
 };
 
-const MultipleTemplate = (args: SelectProps<true>) => (
+const MultipleTemplate = (args: SelectProps<true, Option>) => (
   <Select
     label="multiple select"
     {...args}
@@ -61,11 +65,11 @@ const MultipleTemplate = (args: SelectProps<true>) => (
   />
 );
 
-export const Multiple: StoryObj<SelectProps<true>> = {
+export const Multiple: StoryObj<SelectProps<true, Option>> = {
   render: MultipleTemplate,
 };
 
-const CustomOptionTemplate = (args: SelectProps<false>) => (
+const CustomOptionTemplate = (args: SelectProps<false, Option>) => (
   <Select
     label="custom option"
     {...args}
@@ -93,6 +97,6 @@ const CustomOptionTemplate = (args: SelectProps<false>) => (
   />
 );
 
-export const CutomOption: StoryObj<SelectProps<false>> = {
+export const CutomOption: StoryObj<SelectProps<false, Option>> = {
   render: CustomOptionTemplate,
 };
