@@ -114,7 +114,7 @@ export type SelectProps<M, V> = M extends true
       onChange?: (value: V | null, reason: Reason) => void;
     } & CommonProps<V>;
 
-const GET_OPTION_LABEL = (option: SelectOption) => option.label;
+const GET_OPTION_LABEL = (option: SelectOption) => option.label || '';
 const GET_OPTION_ID = (option: SelectOption) => option.label;
 
 const Select = <
@@ -311,7 +311,7 @@ const Select = <
         const excatMatch = orderedOptions.find((ele) =>
           getOptionDisabled?.(ele)
             ? false
-            : getOptionLabel(ele)?.toLowerCase().startsWith(filter),
+            : getOptionLabel(ele).toLowerCase().startsWith(filter),
         );
 
         if (excatMatch) {
@@ -327,7 +327,7 @@ const Select = <
           const matched = orderedOptions.find((ele) =>
             getOptionDisabled?.(ele)
               ? false
-              : getOptionLabel(ele)?.toLowerCase().startsWith(filter[0]),
+              : getOptionLabel(ele).toLowerCase().startsWith(filter[0]),
           );
 
           if (matched) {
@@ -415,7 +415,7 @@ const Select = <
 
     if (multiple) {
       if (value && isMultiple(value) && value.length) {
-        return value.map((opt) => getOptionLabel(opt))?.join(', ');
+        return value.map((opt) => getOptionLabel(opt)).join(', ');
       }
     } else {
       if (value && isSingle(value)) {
