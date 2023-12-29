@@ -1,16 +1,17 @@
 import * as Popper from '@gist-ui/popper';
 import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
+import { useControllableState } from '@gist-ui/use-controllable-state';
+import { useClickOutside } from '@gist-ui/use-click-outside';
+import { mergeRefs } from '@gist-ui/react-utils';
+import { Option } from './option';
+import { Button } from '@gist-ui/button';
+import { useFocusVisible } from '@react-aria/interactions';
 import {
   InputClassNames,
   SelectClassNames,
   SelectVariantProps,
   select,
 } from '@gist-ui/theme';
-import { useControllableState } from '@gist-ui/use-controllable-state';
-import { useClickOutside } from '@gist-ui/use-click-outside';
-import { mergeRefs } from '@gist-ui/react-utils';
-import { Option } from './option';
-import { Button } from '@gist-ui/button';
 import {
   Fragment,
   forwardRef,
@@ -170,6 +171,7 @@ const Autocomplete = <
   const [focused, setFocused] = useState<V | null>(null);
   const [options, setOptions] = useState(optionsProp);
   const [isInputActive, setIsInputActive] = useState(false);
+  const { isFocusVisible } = useFocusVisible({ isTextInput: true });
 
   const lisboxId = useId();
 
@@ -193,11 +195,19 @@ const Autocomplete = <
     setInputValue('');
   }, [optionsProp, setInputValue, setIsOpen]);
 
-  const setOutsideEle = useClickOutside<HTMLUListElement>({
-    isDisabled: !isOpen,
+  const setListboxOutsideEle = useClickOutside<HTMLUListElement>({
     onEvent: 'pointerdown',
     callback: (e) => {
       if (inputRef.current?.contains(e.target as Node)) return;
+      handleListboxClose();
+    },
+  });
+
+  const setInputOutsideEle = useClickOutside<HTMLUListElement>({
+    isDisabled: !isOpen && !isInputActive,
+    onEvent: 'pointerdown',
+    callback: () => {
+      console.log('clicked');
       handleListboxClose();
     },
   });
@@ -238,7 +248,9 @@ const Autocomplete = <
     setIsOpen(true);
     setIsInputActive(true);
 
-    if (!value && options?.length) {
+    if (!options?.length) return;
+
+    if ((value && !focused) || !value) {
       const index = getNextIndex(0, options);
       if (index >= 0) setFocused(options[index]);
 
@@ -256,7 +268,7 @@ const Autocomplete = <
         return;
       }
     }
-  }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
+  }, [focused, getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: V) => () => {
@@ -305,8 +317,6 @@ const Autocomplete = <
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!options?.length) return;
-
       const ArrowDown = e.key === 'ArrowDown';
       const ArrowUp = e.key === 'ArrowUp';
       const Escape = e.key === 'Escape';
@@ -315,17 +325,20 @@ const Autocomplete = <
       if (ArrowDown || ArrowUp) e.preventDefault();
 
       if (Escape && isOpen) {
-        handleListboxClose();
-        return;
-      }
-
-      if (Enter && isOpen && focused) {
-        handleOptionSelect(focused)();
+        setIsOpen(false);
+        setFocused(null);
         return;
       }
 
       if (ArrowDown && !isOpen) {
         handleListboxOpen();
+        return;
+      }
+
+      if (!options?.length) return;
+
+      if (Enter && isOpen && focused) {
+        handleOptionSelect(focused)();
         return;
       }
 
@@ -347,11 +360,11 @@ const Autocomplete = <
       focused,
       getNextIndex,
       getPreviousIndex,
-      handleListboxClose,
       handleListboxOpen,
       handleOptionSelect,
       isOpen,
       options,
+      setIsOpen,
     ],
   );
 
@@ -376,12 +389,25 @@ const Autocomplete = <
 
       const index = getNextIndex(0, opts);
       if (index >= 0) setFocused(opts[index]);
+      else setFocused(null);
 
       setOptions(opts);
       setFocused(opts[index]);
     },
     [filterOptions, getNextIndex, optionsProp, setInputValue, setIsOpen],
   );
+
+  const handleOnFocus = useCallback(() => {
+    if (isFocusVisible) {
+      setIsInputActive(true);
+    }
+  }, [isFocusVisible]);
+
+  const handleOnBlur = useCallback(() => {
+    if (isFocusVisible) {
+      handleListboxClose();
+    }
+  }, [handleListboxClose, isFocusVisible]);
 
   const getInputValue = useCallback(() => {
     if (!value) return '';
@@ -411,8 +437,10 @@ const Autocomplete = <
           value={isInputActive ? inputValue : getInputValue()}
           onChange={handleInputChange}
           isDisabled={isDisabled}
-          ref={mergeRefs(ref, inputRef)}
+          ref={mergeRefs(ref, inputRef, setInputOutsideEle)}
           onPointerDown={handleListboxOpen}
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
           classNames={{
             ...classNames,
             input: styles.input({ className: classNames?.input }),
@@ -484,7 +512,7 @@ const Autocomplete = <
       {isOpen && (
         <Popper.Floating sticky="always" mainOffset={offset || 5}>
           <ul
-            ref={setOutsideEle}
+            ref={setListboxOutsideEle}
             id={lisboxId}
             className={styles.listbox({
               className: classNames?.listbox,
