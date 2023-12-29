@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { select } from '@gist-ui/theme';
 import InputStoryMeta from '@gist-ui/input/stories/input.stories';
 
-import { Autocomplete, SelectProps } from '../src';
+import { Autocomplete, AutocompleteProps } from '../src';
 
 const meta: Meta = {
   title: 'Components/Autocomplete',
@@ -31,7 +31,7 @@ const options = Array.from({ length: 15 }).map((_ele, i) => ({
 
 type Option = (typeof options)[number];
 
-const SingleTemplate = (args: SelectProps<false, Option>) => (
+const SingleTemplate = (args: AutocompleteProps<false, Option>) => (
   <Autocomplete
     label="single select"
     {...args}
@@ -45,6 +45,6 @@ const SingleTemplate = (args: SelectProps<false, Option>) => (
   />
 );
 
-export const Single: StoryObj<SelectProps<false, Option>> = {
+export const Single: StoryObj<AutocompleteProps<false, Option>> = {
   render: SingleTemplate,
 };

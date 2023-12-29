@@ -38,7 +38,7 @@ const OpenIndicator = ({
   </svg>
 );
 
-export interface SelectOption {
+export interface AutocompleteOption {
   label?: string;
 }
 
@@ -110,7 +110,7 @@ interface CommonProps<V>
   filterOptions?: FilterOptions<V>;
 }
 
-export type SelectProps<M, V> = M extends true
+export type AutocompleteProps<M, V> = M extends true
   ? {
       multiple: M;
       defaultValue?: V[];
@@ -124,14 +124,14 @@ export type SelectProps<M, V> = M extends true
       onChange?: (value: V | null, reason: Reason) => void;
     } & CommonProps<V>;
 
-const GET_OPTION_LABEL = (option: SelectOption) => option.label;
-const GET_OPTION_ID = (option: SelectOption) => option.label;
+const GET_OPTION_LABEL = (option: AutocompleteOption) => option.label || '';
+const GET_OPTION_ID = (option: AutocompleteOption) => option.label;
 
 const Autocomplete = <
   M extends boolean = false,
-  V extends SelectOption = SelectOption,
+  V extends AutocompleteOption = AutocompleteOption,
 >(
-  props: SelectProps<M, V>,
+  props: AutocompleteProps<M, V>,
   ref: React.ForwardedRef<CustomInputElement>,
 ) => {
   const {
@@ -153,8 +153,8 @@ const Autocomplete = <
     multiple,
     inputValue: inputValueProp,
     onInputChange,
-    filterOptions,
     getOptionDisabled,
+    filterOptions,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -168,7 +168,6 @@ const Autocomplete = <
 
   const inputRef = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState<V | null>(null);
-  const [inputInteraction, setInputInteraction] = useState(false);
   const [options, setOptions] = useState(optionsProp);
 
   const lisboxId = useId();
@@ -188,10 +187,8 @@ const Autocomplete = <
   const handleListboxClose = useCallback(() => {
     setIsOpen(false);
     setFocused(null);
-    setInputInteraction(false);
-    setInputValue('');
     setOptions(optionsProp);
-  }, [optionsProp, setInputValue, setIsOpen]);
+  }, [optionsProp, setIsOpen]);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !isOpen,
@@ -199,6 +196,7 @@ const Autocomplete = <
     callback: (e) => {
       if (inputRef.current?.contains(e.target as Node)) return;
       handleListboxClose();
+      undoInputValue();
     },
   });
 
@@ -277,6 +275,18 @@ const Autocomplete = <
     [multiple, onChange],
   );
 
+  const undoInputValue = useCallback(() => {
+    if (multiple) {
+      //
+    } else {
+      if (value && isSingle(value)) {
+        setInputValue(getOptionLabel(value));
+      } else {
+        setInputValue('');
+      }
+    }
+  }, [getOptionLabel, multiple, setInputValue, value]);
+
   const handleOptionSelect = useCallback(
     (option: V) => () => {
       if (multiple) {
@@ -295,9 +305,17 @@ const Autocomplete = <
         onChange?.(option, 'select');
         setInternalValue(option);
         handleListboxClose();
+        setInputValue(getOptionLabel(option));
       }
     },
-    [handleListboxClose, multiple, onChange, value],
+    [
+      getOptionLabel,
+      handleListboxClose,
+      multiple,
+      onChange,
+      setInputValue,
+      value,
+    ],
   );
 
   const handleInputKeyDown = useCallback(
@@ -313,6 +331,7 @@ const Autocomplete = <
 
       if (Escape && isOpen) {
         handleListboxClose();
+        undoInputValue();
         return;
       }
 
@@ -349,7 +368,35 @@ const Autocomplete = <
       handleOptionSelect,
       isOpen,
       options,
+      undoInputValue,
     ],
+  );
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+
+      setIsOpen(true);
+      setInputValue(val);
+
+      if (!optionsProp?.length) return;
+
+      const filter =
+        filterOptions ||
+        (({ options, inputValue }) =>
+          options.filter((opt) => opt.label?.includes(inputValue)));
+
+      const opts = val
+        ? filter({ options: optionsProp, inputValue: val })
+        : optionsProp;
+
+      const index = getNextIndex(0, opts);
+      if (index >= 0) setFocused(opts[index]);
+
+      setOptions(opts);
+      setFocused(opts[index]);
+    },
+    [filterOptions, getNextIndex, optionsProp, setInputValue, setIsOpen],
   );
 
   const getInputValue = useCallback(() => {
@@ -377,34 +424,8 @@ const Autocomplete = <
       <Popper.Reference>
         <Input
           {...inputProps}
-          value={inputInteraction ? inputValue : getInputValue()}
-          onChange={(e) => {
-            const val = e.target.value;
-
-            setIsOpen(true);
-            setInputValue(val);
-            setInputInteraction(true);
-
-            if (!optionsProp?.length) return;
-
-            if (!val) {
-              setOptions(optionsProp);
-
-              const index = getNextIndex(0, optionsProp);
-              if (index >= 0) setFocused(optionsProp[index]);
-
-              return;
-            }
-
-            const opts = filterOptions
-              ? filterOptions({ options: optionsProp, inputValue: val })
-              : optionsProp.filter((opt) =>
-                  getOptionDisabled?.(opt) ? false : opt.label?.includes(val),
-                );
-
-            setOptions(opts);
-            setFocused(opts[0]);
-          }}
+          value={multiple ? getInputValue() : inputValue}
+          onChange={handleInputChange}
           isDisabled={isDisabled}
           ref={mergeRefs(ref, inputRef)}
           onPointerDown={handleListboxOpen}
@@ -551,17 +572,19 @@ Autocomplete.displayName = 'gist-ui.Autocomplete';
 
 export default forwardRef(Autocomplete) as <
   M extends boolean = false,
-  V extends SelectOption = SelectOption,
+  V extends AutocompleteOption = AutocompleteOption,
 >(
-  props: SelectProps<M, V> & { ref?: React.ForwardedRef<CustomInputElement> },
+  props: AutocompleteProps<M, V> & {
+    ref?: React.ForwardedRef<CustomInputElement>;
+  },
 ) => ReturnType<typeof Autocomplete>;
 
 // ********** utils **********
 
 const isMultiple = (
-  value: SelectOption | SelectOption[],
-): value is SelectOption[] => true;
+  value: AutocompleteOption | AutocompleteOption[],
+): value is AutocompleteOption[] => true;
 
 const isSingle = (
-  value: SelectOption | SelectOption[],
-): value is SelectOption => true;
+  value: AutocompleteOption | AutocompleteOption[],
+): value is AutocompleteOption => true;

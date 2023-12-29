@@ -2,10 +2,11 @@ import * as autocomplete from './autocomplete';
 
 // export types
 export type {
-  SelectProps,
+  AutocompleteOption,
+  AutocompleteProps,
+  FilterOptions,
   Reason,
   RenderOption,
-  SelectOption,
 } from './autocomplete';
 
 // export component
