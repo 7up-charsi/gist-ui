@@ -11,7 +11,6 @@ import {
   useId,
   useImperativeHandle,
   useRef,
-  useState,
 } from 'react';
 
 export interface InputProps
@@ -89,7 +88,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const inputBaseRef = useRef<HTMLDivElement>(null);
   const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
-  const [filled, setFilled] = useState(!!value || !!defaultValue);
 
   useEffect(() => {
     if (__DEV__ && !label)
@@ -129,7 +127,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       focusRingProps.onFocus?.(e);
     },
     onBlur: (e) => {
-      setFilled(!!e.target.value.length);
       onBlur?.(e);
       focusRingProps.onBlur?.(e);
     },
@@ -144,6 +141,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     size,
     variant,
   });
+
+  const filled = !!value || !!defaultValue;
 
   return (
     <div
