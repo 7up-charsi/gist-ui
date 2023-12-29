@@ -169,6 +169,7 @@ const Autocomplete = <
   const inputRef = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState<V | null>(null);
   const [options, setOptions] = useState(optionsProp);
+  const [isInputActive, setIsInputActive] = useState(false);
 
   const lisboxId = useId();
 
@@ -188,7 +189,9 @@ const Autocomplete = <
     setIsOpen(false);
     setFocused(null);
     setOptions(optionsProp);
-  }, [optionsProp, setIsOpen]);
+    setIsInputActive(false);
+    setInputValue('');
+  }, [optionsProp, setInputValue, setIsOpen]);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !isOpen,
@@ -196,7 +199,6 @@ const Autocomplete = <
     callback: (e) => {
       if (inputRef.current?.contains(e.target as Node)) return;
       handleListboxClose();
-      undoInputValue();
     },
   });
 
@@ -234,6 +236,7 @@ const Autocomplete = <
     if (isOpen) return;
 
     setIsOpen(true);
+    setIsInputActive(true);
 
     if (!value && options?.length) {
       const index = getNextIndex(0, options);
@@ -264,6 +267,8 @@ const Autocomplete = <
 
   const clearValue = useCallback(
     (reason: Reason) => {
+      setInputValue('');
+
       if (multiple) {
         onChange?.([], reason);
         setInternalValue([]);
@@ -272,20 +277,8 @@ const Autocomplete = <
         setInternalValue(null);
       }
     },
-    [multiple, onChange],
+    [multiple, onChange, setInputValue],
   );
-
-  const undoInputValue = useCallback(() => {
-    if (multiple) {
-      //
-    } else {
-      if (value && isSingle(value)) {
-        setInputValue(getOptionLabel(value));
-      } else {
-        setInputValue('');
-      }
-    }
-  }, [getOptionLabel, multiple, setInputValue, value]);
 
   const handleOptionSelect = useCallback(
     (option: V) => () => {
@@ -305,17 +298,9 @@ const Autocomplete = <
         onChange?.(option, 'select');
         setInternalValue(option);
         handleListboxClose();
-        setInputValue(getOptionLabel(option));
       }
     },
-    [
-      getOptionLabel,
-      handleListboxClose,
-      multiple,
-      onChange,
-      setInputValue,
-      value,
-    ],
+    [handleListboxClose, multiple, onChange, value],
   );
 
   const handleInputKeyDown = useCallback(
@@ -331,7 +316,6 @@ const Autocomplete = <
 
       if (Escape && isOpen) {
         handleListboxClose();
-        undoInputValue();
         return;
       }
 
@@ -368,7 +352,6 @@ const Autocomplete = <
       handleOptionSelect,
       isOpen,
       options,
-      undoInputValue,
     ],
   );
 
@@ -378,6 +361,7 @@ const Autocomplete = <
 
       setIsOpen(true);
       setInputValue(val);
+      setIsInputActive(true);
 
       if (!optionsProp?.length) return;
 
@@ -424,7 +408,7 @@ const Autocomplete = <
       <Popper.Reference>
         <Input
           {...inputProps}
-          value={multiple ? getInputValue() : inputValue}
+          value={isInputActive ? inputValue : getInputValue()}
           onChange={handleInputChange}
           isDisabled={isDisabled}
           ref={mergeRefs(ref, inputRef)}
@@ -450,40 +434,41 @@ const Autocomplete = <
               })}
             >
               {((multiple && value && isMultiple(value) && value.length) ||
-                (!multiple && value)) && (
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="text"
-                  color="neutral"
-                  preventFocusOnPress
-                  tabIndex={-1}
-                  onPress={() => {
-                    setIsOpen(true);
-                    setFocused(null);
-                    inputRef.current?.focus();
-                    clearValue('clear');
-                  }}
-                >
-                  <svg
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                    className={styles.clearButton({
-                      className: classNames?.clearButton,
-                    })}
+                (!multiple && value)) &&
+                !isInputActive && (
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="text"
+                    color="neutral"
+                    preventFocusOnPress
+                    tabIndex={-1}
+                    onPress={() => {
+                      setIsOpen(true);
+                      setFocused(null);
+                      inputRef.current?.focus();
+                      clearValue('clear');
+                    }}
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </Button>
-              )}
+                    <svg
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 14"
+                      className={styles.clearButton({
+                        className: classNames?.clearButton,
+                      })}
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                      />
+                    </svg>
+                  </Button>
+                )}
 
               <OpenIndicator
                 isOpen={isOpen}

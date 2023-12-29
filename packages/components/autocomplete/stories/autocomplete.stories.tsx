@@ -48,3 +48,22 @@ const SingleTemplate = (args: AutocompleteProps<false, Option>) => (
 export const Single: StoryObj<AutocompleteProps<false, Option>> = {
   render: SingleTemplate,
 };
+
+const MultipleTemplate = (args: AutocompleteProps<true, Option>) => (
+  <Autocomplete
+    label="single select"
+    {...args}
+    multiple
+    options={options}
+    getOptionDisabled={(option) =>
+      option.label.startsWith('1 c') ||
+      option.label.startsWith('10') ||
+      option.label.startsWith('15')
+    }
+    defaultValue={[options[2]]}
+  />
+);
+
+export const Multiple: StoryObj<AutocompleteProps<true, Option>> = {
+  render: MultipleTemplate,
+};
