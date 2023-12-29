@@ -285,10 +285,8 @@ const Select = <
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!options) return;
-
       // handle any printable character
-      if (e.key.length === 1 && options) {
+      if (e.key.length === 1 && options?.length) {
         setIsOpen(true);
 
         clearTimeout(state.searchedStringTimer);
@@ -352,13 +350,15 @@ const Select = <
         return;
       }
 
-      if (Enter && isOpen && focused) {
-        handleOptionSelect(focused)();
+      if (ArrowDown && !isOpen) {
+        handleListboxOpen();
         return;
       }
 
-      if (ArrowDown && !isOpen) {
-        handleListboxOpen();
+      if (!options) return;
+
+      if (Enter && isOpen && focused) {
+        handleOptionSelect(focused)();
         return;
       }
 
