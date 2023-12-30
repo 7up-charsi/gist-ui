@@ -69,7 +69,7 @@ interface CommonProps<V>
   /**
    * @default "no options"
    */
-  empltyText?: string;
+  noOptionsText?: string;
   options?: V[];
   /**
    * This prop add distance between `Input` and listbox
@@ -102,6 +102,11 @@ interface CommonProps<V>
    * By default it return true when option and value are equal by reference e.g. optoin === value
    */
   isOptionEqualToValue?: (option: V, value: V) => boolean;
+  loading?: boolean;
+  /**
+   * @default "loading ..."
+   */
+  loadingText?: string;
 }
 
 export type SelectProps<M, V> = M extends true
@@ -137,7 +142,6 @@ const Select = <
     isOpen: isOpenProp,
     onOpenChange,
     maxHeight = 300,
-    empltyText = 'no options',
     defaultOpen = false,
     defaultValue,
     value: valueProp,
@@ -148,6 +152,9 @@ const Select = <
     isDisabled,
     multiple,
     getOptionDisabled,
+    loading,
+    noOptionsText = 'no options',
+    loadingText = 'loading ...',
     isOptionEqualToValue = IS_OPTION_EQUAL_TO_VALUE,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
@@ -538,58 +545,68 @@ const Select = <
             aria-roledescription="single select"
             style={{ maxHeight }}
           >
-            {options?.length ? (
-              options.map((option, index) => {
-                const isDisabled = getOptionDisabled?.(option) ?? false;
-                const isFocused = focused === option;
-                const isSelected = multiple
-                  ? !!value &&
-                    isMultiple(value) &&
-                    !!value.find((ele) => isOptionEqualToValue(ele, option))
-                  : !!value &&
-                    isSingle(value) &&
-                    isOptionEqualToValue(value, option);
+            {options?.length
+              ? options.map((option, index) => {
+                  const isDisabled = getOptionDisabled?.(option) ?? false;
+                  const isFocused = focused === option;
+                  const isSelected = multiple
+                    ? !!value &&
+                      isMultiple(value) &&
+                      !!value.find((ele) => isOptionEqualToValue(ele, option))
+                    : !!value &&
+                      isSingle(value) &&
+                      isOptionEqualToValue(value, option);
 
-                return (
-                  <Fragment
-                    key={getOptionKey ? getOptionKey(option) : option.label}
-                  >
-                    <Option
-                      id={getOptionId(option)?.replaceAll(' ', '-')}
-                      isDisabled={isDisabled}
-                      isSelected={isSelected}
-                      isFocused={isFocused}
-                      onSelect={handleOptionSelect(option)}
-                      onHover={handleOptionHover(option)}
-                      className={styles.option({
-                        className: classNames?.option,
-                      })}
+                  return (
+                    <Fragment
+                      key={getOptionKey ? getOptionKey(option) : option.label}
                     >
-                      {renderOption?.({
-                        option,
-                        state: { isDisabled, isFocused, isSelected },
-                      }) || <li>{getOptionLabel(option)}</li>}
-                    </Option>
-
-                    {index + 1 !== options.length && (
-                      <div
-                        className={styles.optionSeperator({
-                          className: classNames?.optionSeperator,
+                      <Option
+                        id={getOptionId(option)?.replaceAll(' ', '-')}
+                        isDisabled={isDisabled}
+                        isSelected={isSelected}
+                        isFocused={isFocused}
+                        onSelect={handleOptionSelect(option)}
+                        onHover={handleOptionHover(option)}
+                        className={styles.option({
+                          className: classNames?.option,
                         })}
-                      />
-                    )}
-                  </Fragment>
-                );
-              })
-            ) : (
+                      >
+                        {renderOption?.({
+                          option,
+                          state: { isDisabled, isFocused, isSelected },
+                        }) || <li>{getOptionLabel(option)}</li>}
+                      </Option>
+
+                      {index + 1 !== options.length && (
+                        <div
+                          className={styles.optionSeperator({
+                            className: classNames?.optionSeperator,
+                          })}
+                        />
+                      )}
+                    </Fragment>
+                  );
+                })
+              : null}
+
+            {loading && !options?.length ? (
               <div
-                className={styles.emptyText({
-                  className: classNames?.emptyText,
+                className={styles.loading({ className: classNames?.loading })}
+              >
+                {loadingText}
+              </div>
+            ) : null}
+
+            {!loading && !options?.length ? (
+              <div
+                className={styles.noOptions({
+                  className: classNames?.noOptions,
                 })}
               >
-                {empltyText}
+                {noOptionsText}
               </div>
-            )}
+            ) : null}
           </ul>
         </Popper.Floating>
       )}

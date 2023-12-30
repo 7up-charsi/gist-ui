@@ -11,6 +11,7 @@ const meta: Meta = {
   args: {
     ...select.defaultVariants,
     ...InputStoryMeta.args,
+    loading: false,
   },
   argTypes: {
     ...InputStoryMeta.argTypes,
