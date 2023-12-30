@@ -109,6 +109,10 @@ interface CommonProps<V>
   inputValue?: string;
   onInputChange?: (value: string) => void;
   filterOptions?: FilterOptions<V>;
+  /**
+   * By default it return true when option and value are equal by reference e.g. optoin === value
+   */
+  isOptionEqualToValue?: (option: V, value: V) => boolean;
 }
 
 export type AutocompleteProps<M, V> = M extends true
@@ -127,6 +131,10 @@ export type AutocompleteProps<M, V> = M extends true
 
 const GET_OPTION_LABEL = (option: AutocompleteOption) => option.label || '';
 const GET_OPTION_ID = (option: AutocompleteOption) => option.label;
+const IS_OPTION_EQUAL_TO_VALUE = (
+  option: AutocompleteOption,
+  value: AutocompleteOption,
+) => option === value;
 
 const Autocomplete = <
   M extends boolean = false,
@@ -156,6 +164,7 @@ const Autocomplete = <
     onInputChange,
     getOptionDisabled,
     filterOptions,
+    isOptionEqualToValue = IS_OPTION_EQUAL_TO_VALUE,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -531,8 +540,10 @@ const Autocomplete = <
                 const isSelected = multiple
                   ? !!value &&
                     isMultiple(value) &&
-                    !!value.find((ele) => ele === option)
-                  : value === option;
+                    !!value.find((ele) => isOptionEqualToValue(ele, option))
+                  : !!value &&
+                    isSingle(value) &&
+                    isOptionEqualToValue(value, option);
 
                 return (
                   <Fragment

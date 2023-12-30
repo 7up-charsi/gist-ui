@@ -54,7 +54,7 @@ interface RenderOptionProps<V> {
   };
 }
 
-export type RenderOption<V> = (props: RenderOptionProps<V>) => React.ReactNode;
+type RenderOption<V> = (props: RenderOptionProps<V>) => React.ReactNode;
 
 interface CommonProps<V>
   extends SelectVariantProps,
@@ -98,6 +98,10 @@ interface CommonProps<V>
    * @default option.label
    */
   getOptionId?: (option: V) => string;
+  /**
+   * By default it return true when option and value are equal by reference e.g. optoin === value
+   */
+  isOptionEqualToValue?: (option: V, value: V) => boolean;
 }
 
 export type SelectProps<M, V> = M extends true
@@ -116,6 +120,8 @@ export type SelectProps<M, V> = M extends true
 
 const GET_OPTION_LABEL = (option: SelectOption) => option.label || '';
 const GET_OPTION_ID = (option: SelectOption) => option.label;
+const IS_OPTION_EQUAL_TO_VALUE = (option: SelectOption, value: SelectOption) =>
+  option === value;
 
 const Select = <
   M extends boolean = false,
@@ -142,6 +148,7 @@ const Select = <
     isDisabled,
     multiple,
     getOptionDisabled,
+    isOptionEqualToValue = IS_OPTION_EQUAL_TO_VALUE,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
     ...inputProps
@@ -538,8 +545,10 @@ const Select = <
                 const isSelected = multiple
                   ? !!value &&
                     isMultiple(value) &&
-                    !!value.find((ele) => ele === option)
-                  : value === option;
+                    !!value.find((ele) => isOptionEqualToValue(ele, option))
+                  : !!value &&
+                    isSingle(value) &&
+                    isOptionEqualToValue(value, option);
 
                 return (
                   <Fragment
