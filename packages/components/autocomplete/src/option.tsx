@@ -47,7 +47,7 @@ export const Option = (props: OptionProps) => {
     if (isFocused && !isHovered) {
       ref.current?.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest',
+        block: 'end',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -40,18 +40,20 @@
   "dependencies": {
     "@gist-ui/button": "workspace:*",
     "@gist-ui/error": "workspace:*",
+    "@gist-ui/icon": "workspace:*",
     "@gist-ui/input": "workspace:*",
     "@gist-ui/popper": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",
-    "@gist-ui/theme": "workspace:*",
     "@gist-ui/slot": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
+    "@gist-ui/theme": "workspace:*",
+    "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/use-click-outside": "workspace:*",
     "@gist-ui/use-controllable-state": "workspace:*",
-    "@gist-ui/use-callback-ref": "workspace:*",
-    "@react-aria/interactions": "^3.20.0"
+    "@react-aria/interactions": "^3.20.0",
+    "lodash.groupby": "^4.6.0"
   },
   "devDependencies": {
+    "@types/lodash.groupby": "^4.6.9",
     "clean-package": "^2.2.0"
   },
   "clean-package": {

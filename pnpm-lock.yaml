@@ -170,6 +170,9 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
+      lodash.groupby:
+        specifier: ^4.6.0
+        version: 4.6.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -177,6 +180,9 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@types/lodash.groupby':
+        specifier: ^4.6.9
+        version: 4.6.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -509,6 +515,9 @@ importers:
       '@react-aria/interactions':
         specifier: ^3.20.0
         version: 3.20.0(react@18.2.0)
+      lodash.groupby:
+        specifier: ^4.6.0
+        version: 4.6.0
       react:
         specifier: '>=18'
         version: 18.2.0
@@ -516,6 +525,9 @@ importers:
         specifier: '>=18'
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@types/lodash.groupby':
+        specifier: ^4.6.9
+        version: 4.6.9
       clean-package:
         specifier: ^2.2.0
         version: 2.2.0
@@ -5500,6 +5512,12 @@ packages:
       '@types/node': 20.8.6
     dev: true
 
+  /@types/lodash.groupby@4.6.9:
+    resolution: {integrity: sha512-z2xtCX2ko7GrqORnnYea4+ksT7jZNAvaOcLd6mP9M7J09RHvJs06W8BGdQQAX8ARef09VQLdeRilSOcfHlDQJQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
   /@types/lodash.kebabcase@4.1.8:
     resolution: {integrity: sha512-ZwdT+S6Ejbl2KEw/nunwO63hMzABqzVdWonRMEuhKs0GfwqffaQ3tSJo+/wmDCCaGUHIiObsBFY59GUYjYMk5A==}
     dependencies:
@@ -9636,6 +9654,10 @@ packages:
   /lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
     dev: true
+
+  /lodash.groupby@4.6.0:
+    resolution: {integrity: sha512-5dcWxm23+VAoz+awKmBaiBvzox8+RqMgFhi7UvX9DHZr2HdxHXM/Wrf8cfKpsW37RNrvtPn6hSwNqurSILbmJw==}
+    dev: false
 
   /lodash.isfunction@3.0.9:
     resolution: {integrity: sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==}

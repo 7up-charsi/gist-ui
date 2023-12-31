@@ -12,7 +12,6 @@ const autocomplete = tv({
       'h-10 flex items-center px-2 select-none truncate cursor-pointer data-[disabled=true]:disabled data-[selected=true]:bg-info-200 data-[focused=true]:data-[selected=false]:bg-neutral-200 data-[focused=true]:data-[selected=true]:bg-info-300 data-[hovered=true]:data-[selected=false]:bg-neutral-200 data-[hovered=true]:data-[selected=true]:bg-info-300',
     noOptions: 'h-10 flex items-center justify-center capitalize text-neutral',
     loading: 'h-10 flex items-center justify-center capitalize text-neutral',
-    optionSeperator: 'h-px bg-neutral-200',
     endContent: 'flex items-center gap-1',
     openIndicator:
       'fill-neutral-400 max-w-[theme(spacing.3)] max-h-[theme(spacing.3)] min-w-[theme(spacing.3)] min-h-[theme(spacing.3)]',
@@ -20,6 +19,10 @@ const autocomplete = tv({
       'max-w-[theme(spacing.3)] max-h-[theme(spacing.3)] min-w-[theme(spacing.3)] min-h-[theme(spacing.3)]',
     input: 'truncate !cursor-pointer',
     inputWrapper: '!cursor-pointer',
+    group: 'relative isolate',
+    groupHeader:
+      'sticky top-0 bg-white px-1 py-2 z-50 text-sm text-neutral-600',
+    groupItems: '',
   },
   variants: {
     shadow: {
@@ -27,6 +30,12 @@ const autocomplete = tv({
       sm: { listbox: 'shadow-sm' },
       md: { listbox: 'shadow-md' },
       lg: { listbox: 'shadow-lg' },
+    },
+    grouped: {
+      true: {
+        group: 'pl-2',
+        groupItems: 'pl-1',
+      },
     },
   },
   defaultVariants: {

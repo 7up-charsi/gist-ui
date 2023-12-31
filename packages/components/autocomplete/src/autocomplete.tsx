@@ -1,25 +1,26 @@
 import * as Popper from '@gist-ui/popper';
-import { CustomInputElement, Input, InputProps } from '@gist-ui/input';
+import { Input, InputProps } from '@gist-ui/input';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { mergeRefs } from '@gist-ui/react-utils';
 import { Option } from './option';
+import _groupby from 'lodash.groupby';
 import { Button } from '@gist-ui/button';
 import { useFocusVisible } from '@react-aria/interactions';
 import {
-  InputClassNames,
-  SelectClassNames,
-  SelectVariantProps,
-  select,
-} from '@gist-ui/theme';
-import {
   Fragment,
-  forwardRef,
   useCallback,
+  useEffect,
   useId,
   useRef,
   useState,
 } from 'react';
+import {
+  InputClassNames,
+  AutocompleteClassNames,
+  AutocompleteVariantProps,
+  autocomplete,
+} from '@gist-ui/theme';
 
 const OpenIndicator = ({
   isOpen,
@@ -39,114 +40,118 @@ const OpenIndicator = ({
   </svg>
 );
 
-export interface AutocompleteOption {
-  label?: string;
-}
-
 export type Reason = 'select' | 'clear' | 'escape';
 
-interface RenderOptionProps<V> {
-  option: V;
-  state: {
-    isDisabled: boolean;
-    isSelected: boolean;
-    isFocused: boolean;
-  };
-}
+export type AutocompleteProps<
+  Value,
+  Multiple extends boolean = false,
+  DisableClearable extends boolean = false,
+> = (AutocompleteVariantProps &
+  Omit<InputProps, 'defaultValue' | 'value' | 'onChange' | 'classNames'> & {
+    /**
+     * This prop value is use in `listbox` style.maxHeight
+     *
+     * @default "300px"
+     */
+    maxHeight?: number;
+    classNames?: InputClassNames & AutocompleteClassNames;
+    /**
+     * @default "no options"
+     */
+    noOptionsText?: string;
+    options?: Value[];
+    /**
+     * This prop add distance between `Input` and listbox
+     */
+    offset?: Popper.FloatingProps['mainOffset'];
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+    /**
+     * @default false
+     */
+    defaultOpen?: boolean;
+    /**
+     * Used to determine the disabled state for a given option
+     */
+    getOptionDisabled?: (options: Value) => boolean;
+    /**
+     * Used to determine the key for a given option. By default labels are used as keys
+     */
+    getOptionKey?: (options: Value) => string;
+    renderOption?: (props: {
+      option: Value;
+      state: {
+        isDisabled: boolean;
+        isSelected: boolean;
+        isFocused: boolean;
+      };
+    }) => React.ReactNode;
+    /**
+     * @default option.label
+     */
+    getOptionLabel?: (option: Value) => string;
+    /**
+     * @default option.label
+     */
+    getOptionId?: (option: Value) => string;
+    /**
+     * If inputValue is defined then this will behave as controlled.
+     */
+    inputValue?: string;
+    onInputChange?: (value: string) => void;
+    filterOptions?: (props: {
+      options: Value[];
+      inputValue: string;
+    }) => Value[];
+    /**
+     * By default it return true when option and value are equal by reference e.g. optoin === value
+     */
+    isOptionEqualToValue?: (option: Value, value: Value) => boolean;
+    loading?: boolean;
+    /**
+     * @default "loading ..."
+     */
+    loadingText?: string;
+    groupBy?: (option: Value) => string;
+  }) &
+  (Multiple extends true
+    ? {
+        multiple: Multiple;
+        defaultValue?: Value[];
+        value?: Value[];
+        onChange?: (value: Value[], reason: Reason) => void;
+        disableClearable?: undefined;
+      }
+    : DisableClearable extends true
+    ? {
+        multiple?: Multiple;
+        defaultValue?: Value;
+        value?: Value;
+        onChange?: (value: Value, reason: Reason) => void;
+        disableClearable: DisableClearable;
+      }
+    : {
+        multiple?: Multiple;
+        defaultValue?: Value;
+        value?: Value | null;
+        onChange?: (value: Value | null, reason: Reason) => void;
+        disableClearable?: DisableClearable;
+      });
 
-export type RenderOption<V> = (props: RenderOptionProps<V>) => React.ReactNode;
-
-export type FilterOptions<V> = (props: {
-  options: V[];
-  inputValue: string;
-}) => V[];
-
-interface CommonProps<V>
-  extends SelectVariantProps,
-    Omit<InputProps, 'defaultValue' | 'value' | 'onChange' | 'classNames'> {
-  /**
-   * This prop value is use in `listbox` style.maxHeight
-   *
-   * @default "300px"
-   */
-  maxHeight?: number;
-  classNames?: InputClassNames & SelectClassNames;
-  /**
-   * @default "no options"
-   */
-  noOptionsText?: string;
-  options?: V[];
-  /**
-   * This prop add distance between `Input` and listbox
-   */
-  offset?: Popper.FloatingProps['mainOffset'];
-  isOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-  /**
-   * @default false
-   */
-  defaultOpen?: boolean;
-  /**
-   * Used to determine the disabled state for a given option
-   */
-  getOptionDisabled?: (options: V) => boolean;
-  /**
-   * Used to determine the key for a given option. By default labels are used as keys
-   */
-  getOptionKey?: (options: V) => string;
-  renderOption?: RenderOption<V>;
-  /**
-   * @default option.label
-   */
-  getOptionLabel?: (option: V) => string;
-  /**
-   * @default option.label
-   */
-  getOptionId?: (option: V) => string;
-  /**
-   * If inputValue is defined then this will behave as controlled.
-   */
-  inputValue?: string;
-  onInputChange?: (value: string) => void;
-  filterOptions?: FilterOptions<V>;
-  /**
-   * By default it return true when option and value are equal by reference e.g. optoin === value
-   */
-  isOptionEqualToValue?: (option: V, value: V) => boolean;
-  loading?: boolean;
-  /**
-   * @default "loading ..."
-   */
-  loadingText?: string;
-}
-
-export type AutocompleteProps<M, V> = M extends true
-  ? {
-      multiple: M;
-      defaultValue?: V[];
-      value?: V[];
-      onChange?: (value: V[], reason: Reason) => void;
-    } & CommonProps<V>
-  : {
-      multiple?: M;
-      defaultValue?: V;
-      value?: V | null;
-      onChange?: (value: V | null, reason: Reason) => void;
-    } & CommonProps<V>;
-
-const GET_OPTION_LABEL = (option: AutocompleteOption) => option.label || '';
-const GET_OPTION_ID = (option: AutocompleteOption) => option.label;
-const IS_OPTION_EQUAL_TO_VALUE = (
-  option: AutocompleteOption,
-  value: AutocompleteOption,
-) => option === value;
+const GET_OPTION_LABEL = <V,>(option: V) =>
+  (option as { label?: string }).label || '';
+const GET_OPTION_ID = <V,>(option: V) =>
+  (option as { label?: string }).label || '';
+const GET_OPTION_KEY = <V,>(option: V) =>
+  (option as { label?: string }).label || '';
+const IS_OPTION_EQUAL_TO_VALUE = <V,>(option: V, value: V) => option === value;
 
 const Autocomplete = <
-  M extends boolean = false,
-  V extends AutocompleteOption = AutocompleteOption,
+  Value,
+  Multiple extends boolean = false,
+  DisableClearable extends boolean = false,
 >(
-  props: AutocompleteProps<M, V>,
-  ref: React.ForwardedRef<CustomInputElement>,
+  props: AutocompleteProps<Value, Multiple, DisableClearable>,
 ) => {
   const {
     options: optionsProp,
@@ -159,7 +164,6 @@ const Autocomplete = <
     defaultValue,
     value: valueProp,
     onChange,
-    getOptionKey,
     renderOption,
     shadow,
     isDisabled,
@@ -169,27 +173,34 @@ const Autocomplete = <
     getOptionDisabled,
     filterOptions,
     loading,
+    groupBy,
     noOptionsText = 'no options',
     loadingText = 'loading ...',
+    getOptionKey = GET_OPTION_KEY,
     isOptionEqualToValue = IS_OPTION_EQUAL_TO_VALUE,
     getOptionLabel = GET_OPTION_LABEL,
     getOptionId = GET_OPTION_ID,
+    disableClearable,
     ...inputProps
   } = props;
 
   const [internalValue, setInternalValue] = useState<
-    V | V[] | undefined | null
+    Value | Value[] | undefined | null
   >(defaultValue);
 
   const value = valueProp !== undefined ? valueProp : internalValue;
 
   const inputRef = useRef<HTMLDivElement>(null);
-  const [focused, setFocused] = useState<V | null>(null);
+  const [focused, setFocused] = useState<Value | null>(null);
   const [options, setOptions] = useState(optionsProp);
+  const [groupedOptions, setgroupedOptions] = useState<
+    [string, Value[]][] | null
+  >(null);
   const [isInputActive, setIsInputActive] = useState(false);
   const { isFocusVisible } = useFocusVisible({ isTextInput: true });
 
   const lisboxId = useId();
+  const listboxRef = useRef<HTMLUListElement>(null);
 
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -219,16 +230,17 @@ const Autocomplete = <
     },
   });
 
-  const setInputOutsideEle = useClickOutside<HTMLUListElement>({
+  const setInputOutsideEle = useClickOutside<HTMLDivElement>({
     isDisabled: !isOpen && !isInputActive,
     onEvent: 'pointerdown',
-    callback: () => {
+    callback: (e) => {
+      if (listboxRef.current?.contains(e.target as Node)) return;
       handleListboxClose();
     },
   });
 
   const getNextIndex = useCallback(
-    (currentIndex: number, options: V[]) => {
+    (currentIndex: number, options: Value[]) => {
       if (!getOptionDisabled) return currentIndex;
 
       for (let i = currentIndex; i < options.length; i++) {
@@ -243,7 +255,7 @@ const Autocomplete = <
   );
 
   const getPreviousIndex = useCallback(
-    (currentIndex: number, options: V[]) => {
+    (currentIndex: number, options: Value[]) => {
       if (!getOptionDisabled) return currentIndex;
 
       for (let i = currentIndex; i >= 0; i--) {
@@ -286,29 +298,14 @@ const Autocomplete = <
   }, [focused, getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
-    (option: V) => () => {
+    (option: Value) => () => {
       setFocused(option);
     },
     [],
   );
 
-  const clearValue = useCallback(
-    (reason: Reason) => {
-      setInputValue('');
-
-      if (multiple) {
-        onChange?.([], reason);
-        setInternalValue([]);
-      } else {
-        onChange?.(null, reason);
-        setInternalValue(null);
-      }
-    },
-    [multiple, onChange, setInputValue],
-  );
-
   const handleOptionSelect = useCallback(
-    (option: V) => () => {
+    (option: Value) => () => {
       if (multiple) {
         const _value = value && isMultiple(value) ? value : [];
 
@@ -396,7 +393,7 @@ const Autocomplete = <
       const filter =
         filterOptions ||
         (({ options, inputValue }) =>
-          options.filter((opt) => opt.label?.includes(inputValue)));
+          options.filter((opt) => getOptionLabel(opt)?.includes(inputValue)));
 
       const opts = val
         ? filter({ options: optionsProp, inputValue: val })
@@ -409,7 +406,14 @@ const Autocomplete = <
       setOptions(opts);
       setFocused(opts[index]);
     },
-    [filterOptions, getNextIndex, optionsProp, setInputValue, setIsOpen],
+    [
+      filterOptions,
+      getNextIndex,
+      getOptionLabel,
+      optionsProp,
+      setInputValue,
+      setIsOpen,
+    ],
   );
 
   const handleOnFocus = useCallback(() => {
@@ -440,9 +444,65 @@ const Autocomplete = <
     return '';
   }, [getOptionLabel, multiple, value]);
 
-  const styles = select({
+  useEffect(() => {
+    if (!groupBy) return;
+
+    const grouped = Object.entries(
+      _groupby(options, (opt) => {
+        const by = groupBy(opt);
+
+        if (!isNaN(+by)) return '0-9';
+
+        return by;
+      }),
+    ).sort((a, b) => {
+      const a_key = a[0];
+      const b_key = b[0];
+
+      if (a_key < b_key) return -1;
+      if (a_key > b_key) return 1;
+      return 0;
+    });
+
+    setgroupedOptions(grouped);
+    setOptions(grouped.reduce<Value[]>((acc, ele) => [...acc, ...ele[1]], []));
+  }, [groupBy, options]);
+
+  const styles = autocomplete({
     shadow,
+    grouped: !!groupBy,
   });
+
+  const __renderOption = (option: Value) => {
+    const isDisabled = getOptionDisabled?.(option) ?? false;
+    const isFocused = focused === option;
+    const isSelected = multiple
+      ? !!value &&
+        isMultiple(value) &&
+        !!value.find((ele) => isOptionEqualToValue(ele, option))
+      : !!value && isSingle(value) && isOptionEqualToValue(value, option);
+
+    return (
+      <Fragment key={getOptionKey(option)}>
+        <Option
+          id={getOptionId(option)?.replaceAll(' ', '-')}
+          isDisabled={isDisabled}
+          isSelected={isSelected}
+          isFocused={isFocused}
+          onSelect={handleOptionSelect(option)}
+          onHover={handleOptionHover(option)}
+          className={styles.option({
+            className: classNames?.option,
+          })}
+        >
+          {renderOption?.({
+            option,
+            state: { isDisabled, isFocused, isSelected },
+          }) || <li>{getOptionLabel(option)}</li>}
+        </Option>
+      </Fragment>
+    );
+  };
 
   return (
     <Popper.Root>
@@ -452,7 +512,7 @@ const Autocomplete = <
           value={isInputActive ? inputValue : getInputValue()}
           onChange={handleInputChange}
           isDisabled={isDisabled}
-          ref={mergeRefs(ref, inputRef, setInputOutsideEle)}
+          ref={mergeRefs(inputRef, setInputOutsideEle)}
           onPointerDown={handleListboxOpen}
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
@@ -478,7 +538,8 @@ const Autocomplete = <
             >
               {((multiple && value && isMultiple(value) && value.length) ||
                 (!multiple && value)) &&
-                !isInputActive && (
+                !isInputActive &&
+                !disableClearable && (
                   <Button
                     isIconOnly
                     size="sm"
@@ -490,7 +551,16 @@ const Autocomplete = <
                       setIsOpen(true);
                       setFocused(null);
                       inputRef.current?.focus();
-                      clearValue('clear');
+
+                      if (multiple && !disableClearable) {
+                        onChange?.([], 'clear');
+                        setInternalValue([]);
+                      }
+
+                      if (!multiple && !disableClearable) {
+                        onChange?.(null, 'clear');
+                        setInternalValue(null);
+                      }
                     }}
                   >
                     <svg
@@ -527,7 +597,7 @@ const Autocomplete = <
       {isOpen && (
         <Popper.Floating sticky="always" mainOffset={offset || 5}>
           <ul
-            ref={setListboxOutsideEle}
+            ref={mergeRefs(listboxRef, setListboxOutsideEle)}
             id={lisboxId}
             className={styles.listbox({
               className: classNames?.listbox,
@@ -540,48 +610,31 @@ const Autocomplete = <
             style={{ maxHeight }}
           >
             {options?.length
-              ? options.map((option, index) => {
-                  const isDisabled = getOptionDisabled?.(option) ?? false;
-                  const isFocused = focused === option;
-                  const isSelected = multiple
-                    ? !!value &&
-                      isMultiple(value) &&
-                      !!value.find((ele) => isOptionEqualToValue(ele, option))
-                    : !!value &&
-                      isSingle(value) &&
-                      isOptionEqualToValue(value, option);
-
-                  return (
-                    <Fragment
-                      key={getOptionKey ? getOptionKey(option) : option.label}
+              ? groupedOptions
+                ? groupedOptions.map(([groupByKey, optionsGroup]) => (
+                    <li
+                      key={groupByKey}
+                      className={styles.group({
+                        className: classNames?.group,
+                      })}
                     >
-                      <Option
-                        id={getOptionId(option)?.replaceAll(' ', '-')}
-                        isDisabled={isDisabled}
-                        isSelected={isSelected}
-                        isFocused={isFocused}
-                        onSelect={handleOptionSelect(option)}
-                        onHover={handleOptionHover(option)}
-                        className={styles.option({
-                          className: classNames?.option,
+                      <div
+                        className={styles.groupHeader({
+                          className: classNames?.groupHeader,
                         })}
                       >
-                        {renderOption?.({
-                          option,
-                          state: { isDisabled, isFocused, isSelected },
-                        }) || <li>{getOptionLabel(option)}</li>}
-                      </Option>
-
-                      {index + 1 !== options.length && (
-                        <div
-                          className={styles.optionSeperator({
-                            className: classNames?.optionSeperator,
-                          })}
-                        />
-                      )}
-                    </Fragment>
-                  );
-                })
+                        {groupByKey}
+                      </div>
+                      <ul
+                        className={styles.groupItems({
+                          className: classNames?.groupItems,
+                        })}
+                      >
+                        {optionsGroup.map(__renderOption)}
+                      </ul>
+                    </li>
+                  ))
+                : options.map(__renderOption)
               : null}
 
             {loading && !options?.length ? (
@@ -610,21 +663,10 @@ const Autocomplete = <
 
 Autocomplete.displayName = 'gist-ui.Autocomplete';
 
-export default forwardRef(Autocomplete) as <
-  M extends boolean = false,
-  V extends AutocompleteOption = AutocompleteOption,
->(
-  props: AutocompleteProps<M, V> & {
-    ref?: React.ForwardedRef<CustomInputElement>;
-  },
-) => ReturnType<typeof Autocomplete>;
+export default Autocomplete;
 
 // ********** utils **********
 
-const isMultiple = (
-  value: AutocompleteOption | AutocompleteOption[],
-): value is AutocompleteOption[] => true;
+const isMultiple = <Value,>(value: Value | Value[]): value is Value[] => true;
 
-const isSingle = (
-  value: AutocompleteOption | AutocompleteOption[],
-): value is AutocompleteOption => true;
+const isSingle = <Value,>(value: Value | Value[]): value is Value => true;
