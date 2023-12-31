@@ -34,8 +34,10 @@ export const Option = (props: OptionProps) => {
   const ref = useRef<HTMLLIElement>(null);
 
   const { pressProps } = usePress({
-    isDisabled,
-    onPress: onSelect,
+    onPress: (e) => {
+      if (isDisabled) return;
+      onSelect(e);
+    },
   });
 
   const { hoverProps, isHovered } = useHover({
