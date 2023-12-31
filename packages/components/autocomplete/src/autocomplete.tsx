@@ -217,10 +217,18 @@ const Autocomplete = <
   const handleListboxClose = useCallback(() => {
     setIsOpen(false);
     setFocused(null);
-    setOptions(optionsProp);
     setIsInputActive(false);
     setInputValue('');
-  }, [optionsProp, setInputValue, setIsOpen]);
+
+    if (groupBy && optionsProp?.length) {
+      const grouped = getGroupedOptions(optionsProp, groupBy);
+
+      setgroupedOptions(grouped);
+      setOptions(flatGroupedOptions(grouped));
+    } else {
+      setOptions(optionsProp);
+    }
+  }, [groupBy, optionsProp, setInputValue, setIsOpen]);
 
   const setListboxOutsideEle = useClickOutside<HTMLUListElement>({
     onEvent: 'pointerdown',
@@ -277,7 +285,7 @@ const Autocomplete = <
 
     if (!options?.length) return;
 
-    if ((value && !focused) || !value) {
+    if (!value) {
       const index = getNextIndex(0, options);
       if (index >= 0) setFocused(options[index]);
 
@@ -295,7 +303,7 @@ const Autocomplete = <
         return;
       }
     }
-  }, [focused, getNextIndex, isOpen, multiple, options, setIsOpen, value]);
+  }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: Value) => () => {
@@ -393,23 +401,39 @@ const Autocomplete = <
       const filter =
         filterOptions ||
         (({ options, inputValue }) =>
-          options.filter((opt) => getOptionLabel(opt)?.includes(inputValue)));
+          options.filter(
+            (opt) =>
+              getOptionLabel(opt)
+                ?.toLowerCase()
+                .startsWith(inputValue.toLowerCase()),
+          ));
 
-      const opts = val
+      let options = val
         ? filter({ options: optionsProp, inputValue: val })
         : optionsProp;
 
-      const index = getNextIndex(0, opts);
-      if (index >= 0) setFocused(opts[index]);
+      if (groupBy) {
+        const grouped = getGroupedOptions(options, groupBy);
+
+        options = flatGroupedOptions(grouped);
+        setgroupedOptions(grouped);
+      } else {
+        setgroupedOptions(null);
+      }
+
+      const index = getNextIndex(0, options);
+
+      if (index >= 0) setFocused(options[index]);
       else setFocused(null);
 
-      setOptions(opts);
-      setFocused(opts[index]);
+      setOptions(options);
+      setFocused(options[index]);
     },
     [
       filterOptions,
       getNextIndex,
       getOptionLabel,
+      groupBy,
       optionsProp,
       setInputValue,
       setIsOpen,
@@ -446,27 +470,13 @@ const Autocomplete = <
 
   useEffect(() => {
     if (!groupBy) return;
+    if (!optionsProp?.length) return;
 
-    const grouped = Object.entries(
-      _groupby(options, (opt) => {
-        const by = groupBy(opt);
-
-        if (!isNaN(+by)) return '0-9';
-
-        return by;
-      }),
-    ).sort((a, b) => {
-      const a_key = a[0];
-      const b_key = b[0];
-
-      if (a_key < b_key) return -1;
-      if (a_key > b_key) return 1;
-      return 0;
-    });
+    const grouped = getGroupedOptions(optionsProp, groupBy);
 
     setgroupedOptions(grouped);
-    setOptions(grouped.reduce<Value[]>((acc, ele) => [...acc, ...ele[1]], []));
-  }, [groupBy, options]);
+    setOptions(flatGroupedOptions(grouped));
+  }, [groupBy, optionsProp]);
 
   const styles = autocomplete({
     shadow,
@@ -546,11 +556,29 @@ const Autocomplete = <
                     variant="text"
                     color="neutral"
                     preventFocusOnPress
+                    aria-label="clear value"
                     tabIndex={-1}
                     onPress={() => {
                       setIsOpen(true);
-                      setFocused(null);
                       inputRef.current?.focus();
+
+                      if (optionsProp?.length) {
+                        let options = optionsProp;
+
+                        if (groupBy) {
+                          const grouped = getGroupedOptions(options, groupBy);
+
+                          options = flatGroupedOptions(grouped);
+                          setgroupedOptions(grouped);
+                        } else {
+                          setgroupedOptions(null);
+                        }
+
+                        const index = getNextIndex(0, options);
+
+                        if (index >= 0) setFocused(options[index]);
+                        else setFocused(null);
+                      }
 
                       if (multiple && !disableClearable) {
                         onChange?.([], 'clear');
@@ -670,3 +698,27 @@ export default Autocomplete;
 const isMultiple = <Value,>(value: Value | Value[]): value is Value[] => true;
 
 const isSingle = <Value,>(value: Value | Value[]): value is Value => true;
+
+const getGroupedOptions = <Value,>(
+  options: Value[],
+  groupBy: (option: Value) => string,
+) =>
+  Object.entries(
+    _groupby(options, (opt) => {
+      const by = groupBy(opt);
+
+      if (!isNaN(+by)) return '0-9';
+
+      return by;
+    }),
+  ).sort((a, b) => {
+    const a_key = a[0];
+    const b_key = b[0];
+
+    if (a_key < b_key) return -1;
+    if (a_key > b_key) return 1;
+    return 0;
+  });
+
+const flatGroupedOptions = <Value,>(grouped: [string, Value[]][]) =>
+  grouped.reduce<Value[]>((acc, ele) => [...acc, ...ele[1]], []);

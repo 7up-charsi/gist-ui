@@ -21,7 +21,7 @@ const select = tv({
     inputWrapper: '!cursor-pointer',
     group: 'relative isolate',
     groupHeader:
-      'sticky top-0 bg-white px-1 py-2 z-50 text-sm text-neutral-600',
+      'sticky top-0 bg-white px-3 py-2 z-50 text-sm text-neutral-600',
     groupItems: '',
   },
   variants: {
@@ -33,8 +33,7 @@ const select = tv({
     },
     grouped: {
       true: {
-        group: 'pl-2',
-        groupItems: 'pl-1',
+        option: 'pl-4',
       },
     },
   },
