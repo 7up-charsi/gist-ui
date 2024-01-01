@@ -372,6 +372,43 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
+  packages/components/menu:
+    dependencies:
+      '@gist-ui/context':
+        specifier: workspace:*
+        version: link:../../core/context
+      '@gist-ui/popper':
+        specifier: workspace:*
+        version: link:../popper
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/slot':
+        specifier: workspace:*
+        version: link:../slot
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      '@gist-ui/use-click-outside':
+        specifier: workspace:*
+        version: link:../../hooks/use-click-outside
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
+      '@react-aria/interactions':
+        specifier: ^3.20.0
+        version: 3.20.0(react@18.2.0)
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
   packages/components/popover:
     dependencies:
       '@gist-ui/button':

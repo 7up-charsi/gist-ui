@@ -7,3 +7,4 @@ export * from './dialog';
 export * from './scroll-shadow';
 export * from './select';
 export * from './autocomplete';
+export * from './menu';
