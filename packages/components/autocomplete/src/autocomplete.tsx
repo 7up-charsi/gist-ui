@@ -23,17 +23,17 @@ import {
 } from '@gist-ui/theme';
 
 const OpenIndicator = ({
-  isOpen,
+  open,
   className,
 }: {
-  isOpen: boolean;
+  open: boolean;
   className?: string;
 }) => (
   <svg
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 16 10"
-    style={{ rotate: isOpen ? '180deg' : '0deg' }}
+    style={{ rotate: open ? '180deg' : '0deg' }}
     className={className}
   >
     <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
@@ -64,8 +64,8 @@ export type AutocompleteProps<
      * This prop add distance between `Input` and listbox
      */
     offset?: Popper.FloatingProps['mainOffset'];
-    isOpen?: boolean;
-    onOpenChange?: (isOpen: boolean) => void;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     /**
      * @default false
      */
@@ -157,7 +157,7 @@ const Autocomplete = <
     options: optionsProp,
     classNames,
     offset,
-    isOpen: isOpenProp,
+    open: openProp,
     onOpenChange,
     maxHeight = 300,
     defaultOpen = false,
@@ -202,9 +202,9 @@ const Autocomplete = <
   const lisboxId = useId();
   const listboxRef = useRef<HTMLUListElement>(null);
 
-  const [isOpen, setIsOpen] = useControllableState({
+  const [open, setOpen] = useControllableState({
     defaultValue: defaultOpen,
-    value: isOpenProp,
+    value: openProp,
     onChange: onOpenChange,
   });
 
@@ -215,7 +215,7 @@ const Autocomplete = <
   });
 
   const handleListboxClose = useCallback(() => {
-    setIsOpen(false);
+    setOpen(false);
     setFocused(null);
     setIsInputActive(false);
     setInputValue('');
@@ -228,7 +228,7 @@ const Autocomplete = <
     } else {
       setOptions(optionsProp);
     }
-  }, [groupBy, optionsProp, setInputValue, setIsOpen]);
+  }, [groupBy, optionsProp, setInputValue, setOpen]);
 
   const setListboxOutsideEle = useClickOutside<HTMLUListElement>({
     onEvent: 'pointerdown',
@@ -239,7 +239,7 @@ const Autocomplete = <
   });
 
   const setInputOutsideEle = useClickOutside<HTMLDivElement>({
-    isDisabled: !isOpen && !isInputActive,
+    isDisabled: !open && !isInputActive,
     onEvent: 'pointerdown',
     callback: (e) => {
       if (listboxRef.current?.contains(e.target as Node)) return;
@@ -278,9 +278,9 @@ const Autocomplete = <
   );
 
   const handleListboxOpen = useCallback(() => {
-    if (isOpen) return;
+    if (open) return;
 
-    setIsOpen(true);
+    setOpen(true);
     setIsInputActive(true);
 
     if (!options?.length) return;
@@ -303,7 +303,7 @@ const Autocomplete = <
         return;
       }
     }
-  }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
+  }, [getNextIndex, open, multiple, options, setOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: Value) => () => {
@@ -344,32 +344,32 @@ const Autocomplete = <
 
       if (ArrowDown || ArrowUp) e.preventDefault();
 
-      if (Escape && isOpen) {
-        setIsOpen(false);
+      if (Escape && open) {
+        setOpen(false);
         setFocused(null);
         return;
       }
 
-      if (ArrowDown && !isOpen) {
+      if (ArrowDown && !open) {
         handleListboxOpen();
         return;
       }
 
       if (!options?.length) return;
 
-      if (Enter && isOpen && focused) {
+      if (Enter && open && focused) {
         handleOptionSelect(focused)();
         return;
       }
 
-      if (ArrowDown && isOpen && focused) {
+      if (ArrowDown && open && focused) {
         const index = getNextIndex(options.indexOf(focused) + 1, options);
         if (index >= 0) setFocused(options[index]);
 
         return;
       }
 
-      if (ArrowUp && isOpen && focused) {
+      if (ArrowUp && open && focused) {
         const index = getPreviousIndex(options.indexOf(focused) - 1, options);
         if (index >= 0) setFocused(options[index]);
 
@@ -382,9 +382,9 @@ const Autocomplete = <
       getPreviousIndex,
       handleListboxOpen,
       handleOptionSelect,
-      isOpen,
+      open,
       options,
-      setIsOpen,
+      setOpen,
     ],
   );
 
@@ -392,7 +392,7 @@ const Autocomplete = <
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value;
 
-      setIsOpen(true);
+      setOpen(true);
       setInputValue(val);
       setIsInputActive(true);
 
@@ -436,7 +436,7 @@ const Autocomplete = <
       groupBy,
       optionsProp,
       setInputValue,
-      setIsOpen,
+      setOpen,
     ],
   );
 
@@ -533,7 +533,7 @@ const Autocomplete = <
           inputProps={{
             ...inputProps.inputProps,
             onKeyDown: handleInputKeyDown,
-            'aria-expanded': isOpen,
+            'aria-expanded': open,
             'aria-controls': lisboxId,
             'aria-haspopup': 'listbox',
             'aria-autocomplete': 'list',
@@ -559,7 +559,7 @@ const Autocomplete = <
                     aria-label="clear value"
                     tabIndex={-1}
                     onPress={() => {
-                      setIsOpen(true);
+                      setOpen(true);
                       inputRef.current?.focus();
 
                       if (optionsProp?.length) {
@@ -612,7 +612,7 @@ const Autocomplete = <
                 )}
 
               <OpenIndicator
-                isOpen={isOpen}
+                open={open}
                 className={styles.openIndicator({
                   className: classNames?.openIndicator,
                 })}
@@ -622,7 +622,7 @@ const Autocomplete = <
         />
       </Popper.Reference>
 
-      {isOpen && (
+      {open && (
         <Popper.Floating sticky="always" mainOffset={offset || 5}>
           <ul
             ref={mergeRefs(listboxRef, setListboxOutsideEle)}

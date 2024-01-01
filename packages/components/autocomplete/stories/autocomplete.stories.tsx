@@ -159,7 +159,7 @@ const SingleTemplate = () => (
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
     }
-    defaultValue={options[2]}
+    defaultValue={options[21]}
     getOptionLabel={(opt) => opt.title}
     getOptionId={(opt) => opt.title}
     getOptionKey={(opt) => opt.title}
@@ -178,7 +178,7 @@ const MultipleTemplate = () => (
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
     }
-    defaultValue={[options[2]]}
+    defaultValue={[options[21]]}
     getOptionLabel={(opt) => opt.title}
     getOptionId={(opt) => opt.title}
     getOptionKey={(opt) => opt.title}
@@ -196,7 +196,7 @@ const CustomOptionTemplate = () => (
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
     }
-    defaultValue={options[2]}
+    defaultValue={options[21]}
     getOptionLabel={(opt) => opt.title}
     getOptionId={(opt) => opt.title}
     getOptionKey={(opt) => opt.title}
@@ -228,7 +228,7 @@ const GroupByTemplate = () => (
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
     }
-    defaultValue={options[2]}
+    defaultValue={options[21]}
     groupBy={(option) => option.title[0]}
     getOptionLabel={(opt) => opt.title}
     getOptionId={(opt) => opt.title}

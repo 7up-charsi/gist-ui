@@ -7,19 +7,24 @@ import {
 
 const menu = tv({
   slots: {
-    base: 'pointer-events-none',
+    menu: 'min-w-max bg-white border rounded-md py-2',
+    menuItem:
+      'px-3 h-8 cursor-pointer flex items-center text-neutral-700 data-[hovered=true]:bg-neutral-200',
+    groupTitle:
+      'px-3 h-6 flex items-center text-sm text-neutral-600 [&>span]:first-letter:uppercase',
+    group: '[&>li]:pl-5',
+    separator: 'h-px bg-neutral-300 my-1',
   },
   variants: {
-    fill: { true: { base: 'svg:fill-current' } },
-    size: {
-      lg: { base: 'min-w-[24px] min-h-[24px] h-6 w-6' },
-      md: { base: 'min-w-[20px] min-h-[20px] h-5 w-5' },
-      sm: { base: 'min-w-[16px] min-h-[16px] h-4 w-4' },
+    shadow: {
+      none: { menu: 'shadow-none' },
+      sm: { menu: 'shadow-sm' },
+      md: { menu: 'shadow-md' },
+      lg: { menu: 'shadow-lg' },
     },
   },
   defaultVariants: {
-    fill: false,
-    size: 'md',
+    shadow: 'md',
   },
 });
 

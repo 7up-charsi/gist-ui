@@ -374,6 +374,9 @@ importers:
 
   packages/components/menu:
     dependencies:
+      '@gist-ui/button':
+        specifier: workspace:*
+        version: link:../button
       '@gist-ui/context':
         specifier: workspace:*
         version: link:../../core/context
@@ -389,6 +392,9 @@ importers:
       '@gist-ui/theme':
         specifier: workspace:*
         version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
       '@gist-ui/use-click-outside':
         specifier: workspace:*
         version: link:../../hooks/use-click-outside

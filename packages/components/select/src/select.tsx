@@ -21,17 +21,17 @@ import {
 } from 'react';
 
 const OpenIndicator = ({
-  isOpen,
+  open,
   className,
 }: {
-  isOpen: boolean;
+  open: boolean;
   className?: string;
 }) => (
   <svg
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 16 10"
-    style={{ rotate: isOpen ? '180deg' : '0deg' }}
+    style={{ rotate: open ? '180deg' : '0deg' }}
     className={className}
   >
     <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
@@ -62,8 +62,8 @@ export type SelectProps<
      * This prop add distance between `Input` and listbox
      */
     offset?: Popper.FloatingProps['mainOffset'];
-    isOpen?: boolean;
-    onOpenChange?: (isOpen: boolean) => void;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     /**
      * @default false
      */
@@ -146,7 +146,7 @@ const Select = <
     options: optionsProp,
     classNames,
     offset,
-    isOpen: isOpenProp,
+    open: openProp,
     onOpenChange,
     maxHeight = 300,
     defaultOpen = false,
@@ -192,19 +192,19 @@ const Select = <
     searchedString: '',
   }).current;
 
-  const [isOpen, setIsOpen] = useControllableState({
+  const [open, setOpen] = useControllableState({
     defaultValue: defaultOpen,
-    value: isOpenProp,
+    value: openProp,
     onChange: onOpenChange,
   });
 
   const handleListboxClose = useCallback(() => {
-    setIsOpen(false);
+    setOpen(false);
     setFocused(null);
-  }, [setIsOpen]);
+  }, [setOpen]);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
-    isDisabled: !isOpen,
+    isDisabled: !open,
     onEvent: 'pointerdown',
     callback: (e) => {
       if (inputRef.current?.contains(e.target as Node)) return;
@@ -243,9 +243,9 @@ const Select = <
   );
 
   const handleListboxOpen = useCallback(() => {
-    setIsOpen(true);
+    setOpen(true);
 
-    if (isOpen) return;
+    if (open) return;
 
     if (!value && options) {
       const index = getNextIndex(0);
@@ -265,7 +265,7 @@ const Select = <
         return;
       }
     }
-  }, [getNextIndex, isOpen, multiple, options, setIsOpen, value]);
+  }, [getNextIndex, open, multiple, options, setOpen, value]);
 
   const handleOptionHover = useCallback(
     (option: Value) => () => {
@@ -301,7 +301,7 @@ const Select = <
     (e: React.KeyboardEvent) => {
       // handle any printable character
       if (e.key.length === 1 && options?.length) {
-        setIsOpen(true);
+        setOpen(true);
 
         clearTimeout(state.searchedStringTimer);
 
@@ -359,31 +359,31 @@ const Select = <
       const Home = e.key === 'Home';
       const End = e.key === 'End';
 
-      if (Escape && isOpen) {
+      if (Escape && open) {
         handleListboxClose();
         return;
       }
 
-      if (ArrowDown && !isOpen) {
+      if (ArrowDown && !open) {
         handleListboxOpen();
         return;
       }
 
       if (!options) return;
 
-      if (Enter && isOpen && focused) {
+      if (Enter && open && focused) {
         handleOptionSelect(focused)();
         return;
       }
 
-      if (ArrowDown && isOpen && focused) {
+      if (ArrowDown && open && focused) {
         const index = getNextIndex(options.indexOf(focused) + 1);
         if (index >= 0) setFocused(options[index]);
 
         return;
       }
 
-      if (ArrowUp && isOpen && focused) {
+      if (ArrowUp && open && focused) {
         const index = getPreviousIndex(options.indexOf(focused) - 1);
         if (index >= 0) setFocused(options[index]);
 
@@ -391,7 +391,7 @@ const Select = <
       }
 
       if (Home) {
-        setIsOpen(true);
+        setOpen(true);
 
         const index = getNextIndex(0);
         if (index >= 0) setFocused(options[index]);
@@ -400,7 +400,7 @@ const Select = <
       }
 
       if (End) {
-        setIsOpen(true);
+        setOpen(true);
 
         const index = getPreviousIndex(options.length - 1);
         if (index >= 0) setFocused(options[index]);
@@ -417,9 +417,9 @@ const Select = <
       handleListboxClose,
       handleListboxOpen,
       handleOptionSelect,
-      isOpen,
+      open,
       options,
-      setIsOpen,
+      setOpen,
       state,
     ],
   );
@@ -525,7 +525,7 @@ const Select = <
           inputProps={{
             ...inputProps.inputProps,
             onKeyDown: handleInputKeyDown,
-            'aria-expanded': isOpen,
+            'aria-expanded': open,
             'aria-controls': lisboxId,
             'aria-haspopup': 'listbox',
             'aria-autocomplete': 'none',
@@ -550,7 +550,7 @@ const Select = <
                     preventFocusOnPress
                     tabIndex={-1}
                     onPress={() => {
-                      setIsOpen(true);
+                      setOpen(true);
                       setFocused(null);
                       inputRef.current?.focus();
 
@@ -586,7 +586,7 @@ const Select = <
                 )}
 
               <OpenIndicator
-                isOpen={isOpen}
+                open={open}
                 className={styles.openIndicator({
                   className: classNames?.openIndicator,
                 })}
@@ -596,7 +596,7 @@ const Select = <
         />
       </Popper.Reference>
 
-      {isOpen && (
+      {open && (
         <Popper.Floating sticky="always" mainOffset={offset || 5}>
           <ul
             ref={setOutsideEle}
