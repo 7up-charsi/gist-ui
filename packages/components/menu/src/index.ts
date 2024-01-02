@@ -6,18 +6,21 @@ export type {
   RootProps,
   TriggerProps,
   PortalProps,
-  ItemProps,
   CloseProps,
-  ContentProps,
   GroupProps,
+  MenuProps,
+  MenuItemProps,
+  SeparatorProps,
+  GroupTitleProps,
 } from './menu';
 
 // export component
 export const Root = menu.Root;
 export const Trigger = menu.Trigger;
 export const Portal = menu.Portal;
-export const Item = menu.Item;
-export const Content = menu.Content;
+export const Menu = menu.Menu;
+export const MenuItem = menu.MenuItem;
 export const Close = menu.Close;
+export const GroupTitle = menu.GroupTitle;
 export const Group = menu.Group;
 export const Separator = menu.Separator;

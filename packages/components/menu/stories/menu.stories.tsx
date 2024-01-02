@@ -24,42 +24,36 @@ const Template = (args) => {
   }, []);
 
   return (
-    <div className="h-[200vh] w-[200vw] flex items-center justify-center">
+    <div className="h-[300vh] w-[300vw] flex items-center justify-center">
       <Menu.Root defaultOpen {...args}>
         <Menu.Trigger>
           <Button ref={ref}>open menu</Button>
         </Menu.Trigger>
 
         <Menu.Portal>
-          <Menu.Content>
+          <Menu.Menu>
             <Menu.Arrow />
 
-            <Menu.Group title="active">
-              <Menu.Item onPress={() => console.log('item 1')}>
-                item 1
-              </Menu.Item>
-            </Menu.Group>
+            <Menu.MenuItem onPress={() => console.log('item 1')}>
+              item 1
+            </Menu.MenuItem>
+
+            <Menu.MenuItem onPress={() => console.log('item 2')}>
+              item 2
+            </Menu.MenuItem>
+            <Menu.MenuItem onPress={() => console.log('item 3')}>
+              item 3
+            </Menu.MenuItem>
+            <Menu.MenuItem onPress={() => console.log('item 4')}>
+              item 4
+            </Menu.MenuItem>
 
             <Menu.Separator />
 
-            <Menu.Group title="inactive">
-              <Menu.Item onPress={() => console.log('item 2')}>
-                item 2
-              </Menu.Item>
-              <Menu.Item onPress={() => console.log('item 3')}>
-                item 3
-              </Menu.Item>
-              <Menu.Item onPress={() => console.log('item 4')}>
-                item 4
-              </Menu.Item>
-            </Menu.Group>
-
-            <Menu.Separator />
-
-            <Menu.Item onPress={() => console.log('item 5')}>
+            <Menu.MenuItem onPress={() => console.log('item 5')}>
               item 5 long content
-            </Menu.Item>
-          </Menu.Content>
+            </Menu.MenuItem>
+          </Menu.Menu>
         </Menu.Portal>
       </Menu.Root>
     </div>

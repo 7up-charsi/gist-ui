@@ -13,9 +13,10 @@ import {
 import { useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { mergeProps } from '@gist-ui/react-utils';
-import { MenuClassNames, MenuVariantProps, menu } from '@gist-ui/theme';
+import { MenuVariantProps, menu } from '@gist-ui/theme';
+import { ClassValue } from 'tailwind-variants';
 
-const Menu_Name = 'Menu.Root';
+const Root_Name = 'Menu.Root';
 
 interface MenuContext {
   open: boolean;
@@ -24,7 +25,7 @@ interface MenuContext {
   id: string;
 }
 
-const [Provider, useContext] = createContextScope<MenuContext>(Menu_Name);
+const [Provider, useContext] = createContextScope<MenuContext>(Root_Name);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -66,7 +67,7 @@ export const Root = (props: RootProps) => {
   );
 };
 
-Root.displayName = 'gist-ui.' + Menu_Name;
+Root.displayName = 'gist-ui.' + Root_Name;
 
 // *-*-*-*-* Trigger *-*-*-*-*
 
@@ -141,29 +142,28 @@ export const Portal = ({ children, container }: PortalProps) => {
 
 Portal.displayName = 'gist-ui.' + Portal_Name;
 
-// *-*-*-*-* Content *-*-*-*-*
+// *-*-*-*-* Menu *-*-*-*-*
 
-const Content_Name = 'Menu.Content';
-
-interface StylesContext {
-  menuItem?: string;
-  groupTitle?: string;
-  group?: string;
-  separator?: string;
-}
+const Menu_Name = 'Menu.Menu';
 
 const [StylesProvider, useStylesContext] =
-  createContextScope<StylesContext>(Content_Name);
+  createContextScope<ReturnType<typeof menu>>(Menu_Name);
 
-export interface ContentProps extends Popper.FloatingProps, MenuVariantProps {
+export interface MenuProps extends Popper.FloatingProps, MenuVariantProps {
   children?: React.ReactNode;
-  classNames?: MenuClassNames;
+  className?: ClassValue;
 }
 
-export const Content = (props: ContentProps) => {
-  const { children, classNames, shadow, ...restProps } = props;
+export const Menu = (props: MenuProps) => {
+  const {
+    children,
+    className,
+    shadow,
+    arrowPadding = 10,
+    ...restProps
+  } = props;
 
-  const context = useContext(Content_Name);
+  const context = useContext(Menu_Name);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !context.open,
@@ -173,39 +173,33 @@ export const Content = (props: ContentProps) => {
   const styles = menu({ shadow });
 
   return (
-    <Popper.Floating {...restProps}>
+    <Popper.Floating arrowPadding={arrowPadding} {...restProps}>
       <ul
         id={context.id}
         role="menu"
         ref={setOutsideEle}
-        className={styles.menu({ className: classNames?.menu })}
+        className={styles.menu({ className })}
       >
-        <StylesProvider
-          menuItem={styles.menuItem({ className: classNames?.menuItem })}
-          groupTitle={styles.groupTitle({ className: classNames?.groupTitle })}
-          group={styles.group({ className: classNames?.group })}
-          separator={styles.separator({ className: classNames?.separator })}
-        >
-          {children}
-        </StylesProvider>
+        <StylesProvider {...styles}>{children}</StylesProvider>
       </ul>
     </Popper.Floating>
   );
 };
 
-Content.displayName = 'gist-ui.' + Content_Name;
+Menu.displayName = 'gist-ui.' + Menu_Name;
 
-// *-*-*-*-* Item *-*-*-*-*
+// *-*-*-*-* MenuItem *-*-*-*-*
 
-const Item_Name = 'Menu.Item';
+const MenuItem_Name = 'Menu.MenuItem';
 
-export interface ItemProps extends PressEvents, HoverEvents {
+export interface MenuItemProps extends PressEvents, HoverEvents {
   children?: React.ReactNode;
   isDisabled?: boolean;
   disableCloseOnPress?: boolean;
+  className?: ClassValue;
 }
 
-export const Item = (props: ItemProps) => {
+export const MenuItem = (props: MenuItemProps) => {
   const {
     children,
     isDisabled,
@@ -220,8 +214,8 @@ export const Item = (props: ItemProps) => {
     disableCloseOnPress,
   } = props;
 
-  const context = useContext(Item_Name);
-  const stylesContext = useStylesContext(Item_Name);
+  const context = useContext(MenuItem_Name);
+  const stylesContext = useStylesContext(MenuItem_Name);
 
   const onHoverChange = useCallbackRef(onHoverChangeProp);
   const onHoverEnd = useCallbackRef(onHoverEndProp);
@@ -257,14 +251,37 @@ export const Item = (props: ItemProps) => {
       data-pressed={isPressed}
       data-hovered={isHovered}
       {...mergeProps(pressProps, hoverProps)}
-      className={stylesContext.menuItem}
+      className={stylesContext.menuItem({})}
     >
       {children}
     </li>
   );
 };
 
-Item.displayName = 'gist-ui.' + Item_Name;
+MenuItem.displayName = 'gist-ui.' + MenuItem_Name;
+
+// *-*-*-*-* GroupTitle *-*-*-*-*
+
+const GroupTitle_Name = 'Menu.GroupTitle';
+
+export interface GroupTitleProps {
+  children?: React.ReactNode;
+  className?: ClassValue;
+}
+
+export const GroupTitle = (props: GroupTitleProps) => {
+  const { children, className } = props;
+
+  const stylesContext = useStylesContext(Group_Name);
+
+  return (
+    <div className={stylesContext.groupTitle({ className })}>
+      <span>{children}</span>
+    </div>
+  );
+};
+
+GroupTitle.displayName = 'gist-ui.' + GroupTitle_Name;
 
 // *-*-*-*-* Group *-*-*-*-*
 
@@ -272,24 +289,25 @@ const Group_Name = 'Menu.Group';
 
 export interface GroupProps {
   children?: React.ReactNode;
-  title: string;
+  className?: ClassValue;
+  name: string;
 }
 
 export const Group = (props: GroupProps) => {
-  const { children, title } = props;
+  const { children, className, name } = props;
 
   const stylesContext = useStylesContext(Group_Name);
 
   return (
-    <>
-      <div className={stylesContext.groupTitle}>
-        <span>{title}</span>
-      </div>
-
-      <div role="group" className={stylesContext.group}>
+    <li role="none">
+      <ul
+        role="group"
+        aria-label={name}
+        className={stylesContext.group({ className })}
+      >
         {children}
-      </div>
-    </>
+      </ul>
+    </li>
   );
 };
 
@@ -299,10 +317,21 @@ Group.displayName = 'gist-ui.' + Group_Name;
 
 const Separator_Name = 'Menu.Separator';
 
-export const Separator = () => {
+export interface SeparatorProps {
+  className?: ClassValue;
+}
+
+export const Separator = (props: SeparatorProps) => {
+  const { className } = props;
+
   const stylesContext = useStylesContext(Separator_Name);
 
-  return <div role="separator" className={stylesContext.separator}></div>;
+  return (
+    <div
+      role="separator"
+      className={stylesContext.separator({ className })}
+    ></div>
+  );
 };
 
 Separator.displayName = 'gist-ui.' + Separator_Name;
