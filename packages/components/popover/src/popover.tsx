@@ -190,7 +190,7 @@ export interface ContentProps extends Popper.FloatingProps {
 }
 
 export const Content = (props: ContentProps) => {
-  const { children, ...restProps } = props;
+  const { children, arrowPadding = 10, ...restProps } = props;
 
   const context = useContext(Content_Name);
 
@@ -215,7 +215,7 @@ export const Content = (props: ContentProps) => {
     throw new GistUiError('Content', validChildError);
 
   return (
-    <Popper.Floating {...restProps}>
+    <Popper.Floating arrowPadding={arrowPadding} {...restProps}>
       <FocusTrap ref={setOutsideEle} loop trapped asChild>
         {cloneElement(children, {
           role: 'dialog',
