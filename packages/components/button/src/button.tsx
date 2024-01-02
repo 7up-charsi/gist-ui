@@ -78,16 +78,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const Component = asChild ? Slot : 'button';
 
-  const { rippleProps } = useRipple<HTMLButtonElement>(
-    isDisabled
-      ? { isDisabled: true }
-      : {
-          pointerCenter: !isIconOnly,
-          duration: rippleDuration,
-          timingFunction: rippleTimingFunction,
-          completedFactor: rippleCompletedFactor,
-        },
-  );
+  const { rippleProps } = useRipple<HTMLButtonElement>({
+    isDisabled,
+    pointerCenter: !isIconOnly,
+    duration: rippleDuration,
+    timingFunction: rippleTimingFunction,
+    completedFactor: rippleCompletedFactor,
+  });
 
   const { focusProps, isFocusVisible, isFocused } = useFocusRing();
   const { hoverProps, isHovered } = useHover({ isDisabled });

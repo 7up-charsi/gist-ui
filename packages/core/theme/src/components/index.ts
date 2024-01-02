@@ -8,3 +8,4 @@ export * from './scroll-shadow';
 export * from './select';
 export * from './autocomplete';
 export * from './menu';
+export * from './checkbox';

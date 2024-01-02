@@ -42,7 +42,7 @@ const useRipple = <E extends HTMLElement>({
     (e: React.PointerEvent<E>) => {
       if (isDisabled || e.button !== 0) return;
 
-      const target = e.target as HTMLElement;
+      const target = e.currentTarget as HTMLElement;
 
       const begun = Date.now();
 
@@ -118,7 +118,7 @@ const createRipple = (
     translate: -50% -50%;
     pointer-events: none;
     border-radius: 50%;
-    background-color: var(--rippleBg);
+    background-color: var(--rippleBg, #000000);
     scale: 0;
     transition: scale ${duration}ms ${timingFunction}, opacity ${
       duration * 0.7

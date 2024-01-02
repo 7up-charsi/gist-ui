@@ -7,10 +7,10 @@ import {
 
 const icon = tv({
   slots: {
-    base: 'pointer-events-none',
+    base: 'pointer-events-none text-current',
   },
   variants: {
-    fill: { true: { base: 'svg:fill-current' } },
+    fill: { true: { base: 'fill-current' } },
     size: {
       lg: { base: 'min-w-[24px] min-h-[24px] h-6 w-6' },
       md: { base: 'min-w-[20px] min-h-[20px] h-5 w-5' },
