@@ -11,7 +11,7 @@ export type {
   MenuProps,
   MenuItemProps,
   SeparatorProps,
-  GroupTitleProps,
+  MenuItemCheckboxProps,
 } from './menu';
 
 // export component
@@ -21,6 +21,6 @@ export const Portal = menu.Portal;
 export const Menu = menu.Menu;
 export const MenuItem = menu.MenuItem;
 export const Close = menu.Close;
-export const GroupTitle = menu.GroupTitle;
 export const Group = menu.Group;
 export const Separator = menu.Separator;
+export const MenuItemCheckbox = menu.MenuItemCheckbox;

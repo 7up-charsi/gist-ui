@@ -9,11 +9,15 @@ const menu = tv({
   slots: {
     menu: 'min-w-max bg-white border rounded-md py-2',
     menuItem:
-      'px-3 h-8 cursor-pointer flex items-center gap-2 text-neutral-800 data-[hovered=true]:bg-neutral-200',
-    groupTitle:
-      'px-3 h-6 flex items-center text-sm font-medium text-neutral-600 [&>span]:first-letter:uppercase',
+      'px-6 h-8 cursor-pointer flex items-center text-neutral-800 data-[hovered=true]:bg-neutral-200',
+    label:
+      'px-4 h-6 flex items-center text-sm font-medium text-neutral-600 [&>span]:first-letter:uppercase',
     group: '',
     separator: 'h-px bg-neutral-300 my-1',
+    menuItemCheckbox:
+      'pr-6 h-8 cursor-pointer flex items-center text-neutral-800 data-[hovered=true]:bg-neutral-200',
+    menuItemCheckboxIcon:
+      'w-6 h-full px-1 flex items-center justify-center overflow-hidden svg:w-3 svg:h-3',
   },
   variants: {
     shadow: {

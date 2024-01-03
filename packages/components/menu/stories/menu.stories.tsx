@@ -34,25 +34,30 @@ const Template = (args) => {
           <Menu.Menu>
             <Menu.Arrow />
 
-            <Menu.MenuItem onPress={() => console.log('item 1')}>
-              item 1
-            </Menu.MenuItem>
+            <Menu.Group label="tools">
+              <Menu.MenuItem onPress={() => console.log('item 1')}>
+                item 1
+              </Menu.MenuItem>
 
-            <Menu.MenuItem onPress={() => console.log('item 2')}>
-              item 2
-            </Menu.MenuItem>
-            <Menu.MenuItem onPress={() => console.log('item 3')}>
-              item 3
-            </Menu.MenuItem>
-            <Menu.MenuItem onPress={() => console.log('item 4')}>
-              item 4
-            </Menu.MenuItem>
+              <Menu.MenuItem onPress={() => console.log('item 2')}>
+                item 2
+              </Menu.MenuItem>
+              <Menu.MenuItem onPress={() => console.log('item 3')}>
+                item 3
+              </Menu.MenuItem>
+              <Menu.MenuItem onPress={() => console.log('item 4')}>
+                item 4
+              </Menu.MenuItem>
+            </Menu.Group>
 
             <Menu.Separator />
 
-            <Menu.MenuItem onPress={() => console.log('item 5')}>
-              item 5 long content
-            </Menu.MenuItem>
+            <Menu.Group label="advance">
+              <Menu.MenuItemCheckbox>item long content</Menu.MenuItemCheckbox>
+              <Menu.MenuItemCheckbox>item long content</Menu.MenuItemCheckbox>
+              <Menu.MenuItemCheckbox>item long content</Menu.MenuItemCheckbox>
+              <Menu.MenuItemCheckbox>item long content</Menu.MenuItemCheckbox>
+            </Menu.Group>
           </Menu.Menu>
         </Menu.Portal>
       </Menu.Root>
