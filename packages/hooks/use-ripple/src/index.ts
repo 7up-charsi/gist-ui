@@ -117,7 +117,7 @@ const createRipple = (
     translate: -50% -50%;
     pointer-events: none;
     border-radius: 50%;
-    background-color: var(--rippleBg, #000000);
+    background-color: var(--rippleBg);
     `;
 
   element.animate([{ scale: 0 }, { scale: 1 }], {

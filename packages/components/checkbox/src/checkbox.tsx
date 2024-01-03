@@ -108,6 +108,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
       data-hovered={isHovered}
       data-focus-visible={isFocusVisible}
       data-disabled={isDisabled}
+      data-checked={checked}
       className={styles.base()}
     >
       <div
