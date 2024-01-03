@@ -60,22 +60,21 @@ const useRipple = <E extends HTMLElement>({
         const now = Date.now();
         const diff = now - begun;
 
-        setTimeout(
-          () => {
-            ripple.style.opacity = '0';
-
-            ripple.addEventListener(
-              'transitionend',
-              (e) => {
-                if (e.propertyName === 'opacity') ripple.remove();
-              },
-              { once: true },
-            );
-          },
+        const timeoutDuration =
           diff > completedFactor * duration
             ? 0
-            : completedFactor * duration - diff,
-        );
+            : completedFactor * duration - diff;
+
+        setTimeout(() => {
+          const animation = ripple.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: duration * 0.7,
+            easing: 'ease-in-out',
+          });
+
+          animation.addEventListener('finish', () => {
+            ripple.remove();
+          });
+        }, timeoutDuration);
       };
 
       document.addEventListener('pointerup', removeRipple, {
@@ -119,14 +118,11 @@ const createRipple = (
     pointer-events: none;
     border-radius: 50%;
     background-color: var(--rippleBg, #000000);
-    scale: 0;
-    transition: scale ${duration}ms ${timingFunction}, opacity ${
-      duration * 0.7
-    }ms ease-in-out;
     `;
 
-  requestAnimationFrame(() => {
-    element.style.scale = '1';
+  element.animate([{ scale: 0 }, { scale: 1 }], {
+    duration,
+    easing: timingFunction,
   });
 
   return element;
