@@ -8,36 +8,21 @@ import { PressEvents, useHover, usePress } from '@react-aria/interactions';
 import { useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { mergeProps } from '@gist-ui/react-utils';
-import { MenuClassNames, MenuVariantProps, menu } from '@gist-ui/theme';
+import { useRipple } from '@gist-ui/use-ripple';
+import { MenuVariantProps, menu } from '@gist-ui/theme';
 import { ClassValue } from 'tailwind-variants';
-
-const checkIcon = (
-  <svg
-    aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 16 12"
-  >
-    <path
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M1 5.917 5.724 10.5 15 1.5"
-    />
-  </svg>
-);
 
 const Root_Name = 'Menu.Root';
 
-interface MenuContext {
+interface RootContext {
   open: boolean;
   handleOpen(): void;
   handleClose(): void;
   id: string;
 }
 
-const [Provider, useContext] = createContextScope<MenuContext>(Root_Name);
+const [RootProvider, useRootContext] =
+  createContextScope<RootContext>(Root_Name);
 
 // *-*-*-*-* Root *-*-*-*-*
 
@@ -68,14 +53,14 @@ export const Root = (props: RootProps) => {
   }, [setOpen]);
 
   return (
-    <Provider
+    <RootProvider
       handleOpen={handleOpen}
       handleClose={handleClose}
       open={open}
       id={id}
     >
       <Popper.Root>{children}</Popper.Root>
-    </Provider>
+    </RootProvider>
   );
 };
 
@@ -92,7 +77,7 @@ export interface TriggerProps {
 export const Trigger = (props: TriggerProps) => {
   const { children } = props;
 
-  const context = useContext(Trigger_Name);
+  const context = useRootContext(Trigger_Name);
 
   const { pressProps } = usePress({
     onPress: context.handleOpen,
@@ -126,7 +111,7 @@ export interface CloseProps {
 export const Close = (props: CloseProps) => {
   const { children } = props;
 
-  const context = useContext(Close_Name);
+  const context = useRootContext(Close_Name);
 
   const { pressProps } = usePress({ onPress: context.handleClose });
 
@@ -145,7 +130,7 @@ export interface PortalProps {
 }
 
 export const Portal = ({ children, container }: PortalProps) => {
-  const context = useContext(Portal_Name);
+  const context = useRootContext(Portal_Name);
 
   return (
     <>{context.open && createPortal(children, container || document.body)}</>
@@ -175,7 +160,7 @@ export const Menu = (props: MenuProps) => {
     ...restProps
   } = props;
 
-  const context = useContext(Menu_Name);
+  const context = useRootContext(Menu_Name);
 
   const setOutsideEle = useClickOutside<HTMLUListElement>({
     isDisabled: !context.open,
@@ -200,11 +185,11 @@ export const Menu = (props: MenuProps) => {
 
 Menu.displayName = 'gist-ui.' + Menu_Name;
 
-// *-*-*-*-* MenuItem *-*-*-*-*
+// *-*-*-*-* Item *-*-*-*-*
 
-const MenuItem_Name = 'Menu.MenuItem';
+const Item_Name = 'Menu.Item';
 
-export interface MenuItemProps {
+export interface ItemProps {
   children?: React.ReactNode;
   isDisabled?: boolean;
   disableCloseOnPress?: boolean;
@@ -212,7 +197,7 @@ export interface MenuItemProps {
   className?: ClassValue;
 }
 
-export const MenuItem = (props: MenuItemProps) => {
+export const Item = (props: ItemProps) => {
   const {
     children,
     isDisabled,
@@ -221,8 +206,8 @@ export const MenuItem = (props: MenuItemProps) => {
     className,
   } = props;
 
-  const context = useContext(MenuItem_Name);
-  const stylesContext = useStylesContext(MenuItem_Name);
+  const context = useRootContext(Item_Name);
+  const stylesContext = useStylesContext(Item_Name);
 
   const onPress = useCallbackRef(onPressProp);
 
@@ -241,15 +226,41 @@ export const MenuItem = (props: MenuItemProps) => {
       role="menuitem"
       data-pressed={isPressed}
       data-hovered={isHovered}
+      data-disabled={!!isDisabled}
+      aria-disabled={isDisabled}
       {...mergeProps(pressProps, hoverProps)}
-      className={stylesContext.menuItem({ className })}
+      className={stylesContext.item({ className })}
     >
+      <span></span>
       {children}
     </li>
   );
 };
 
-MenuItem.displayName = 'gist-ui.' + MenuItem_Name;
+Item.displayName = 'gist-ui.' + Item_Name;
+
+// *-*-*-*-* Group *-*-*-*-*
+
+const Label_Name = 'Menu.Label';
+
+export interface LabelProps {
+  children?: React.ReactNode;
+  className?: ClassValue;
+}
+
+export const Label = (props: LabelProps) => {
+  const { children, className } = props;
+
+  const stylesContext = useStylesContext(Label_Name);
+
+  return (
+    <li role="none" className={stylesContext.label({ className })}>
+      {children}
+    </li>
+  );
+};
+
+Label.displayName = 'gist-ui.' + Label_Name;
 
 // *-*-*-*-* Group *-*-*-*-*
 
@@ -257,24 +268,21 @@ const Group_Name = 'Menu.Group';
 
 export interface GroupProps {
   children?: React.ReactNode;
-  classNames?: { label?: ClassValue; group?: ClassValue };
-  label: string;
+  className?: ClassValue;
+  accessibleLabel?: string;
 }
 
 export const Group = (props: GroupProps) => {
-  const { children, classNames, label } = props;
+  const { children, className, accessibleLabel } = props;
 
   const stylesContext = useStylesContext(Group_Name);
 
   return (
     <li role="none">
-      <div className={stylesContext.label({ className: classNames?.label })}>
-        <span>{label}</span>
-      </div>
       <ul
         role="group"
-        aria-label={label}
-        className={stylesContext.group({ className: classNames?.group })}
+        aria-label={accessibleLabel}
+        className={stylesContext.group({ className })}
       >
         {children}
       </ul>
@@ -307,73 +315,77 @@ export const Separator = (props: SeparatorProps) => {
 
 Separator.displayName = 'gist-ui.' + Separator_Name;
 
-// *-*-*-*-* MenuItemCheckbox *-*-*-*-*
+// *-*-*-*-* CheckboxItem *-*-*-*-*
 
-const MenuItemCheckbox_Name = 'Menu.MenuItemCheckbox';
+const CheckboxItem_Name = 'Menu.CheckboxItem';
 
-export interface MenuItemCheckboxProps {
+export interface CheckboxItemProps {
   children?: React.ReactNode;
   isDisabled?: boolean;
+  /**
+   * @default true
+   */
   disableCloseOnPress?: boolean;
-  defaultChecked?: boolean;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  icon?: React.ReactNode;
-  classNames?: {
-    menuItemCheckbox?: MenuClassNames['menuItemCheckbox'];
-    menuItemCheckboxIcon?: MenuClassNames['menuItemCheckboxIcon'];
-  };
+  className?: ClassValue;
 }
 
-export const MenuItemCheckbox = (props: MenuItemCheckboxProps) => {
+export const CheckboxItem = (props: CheckboxItemProps) => {
   const {
     children,
     isDisabled,
-    disableCloseOnPress,
-    classNames,
+    disableCloseOnPress = true,
+    className,
+    checked,
     onChange,
-    checked: checkedProp,
-    defaultChecked,
-    icon = checkIcon,
   } = props;
 
-  const context = useContext(MenuItemCheckbox_Name);
-  const stylesContext = useStylesContext(MenuItemCheckbox_Name);
-
-  const [checked, setChecked] = useControllableState({
-    value: checkedProp || false,
-    defaultValue: defaultChecked,
-    onChange,
-  });
+  const context = useRootContext(CheckboxItem_Name);
+  const stylesContext = useStylesContext(CheckboxItem_Name);
 
   const { pressProps, isPressed } = usePress({
     isDisabled,
     onPress: () => {
       if (!disableCloseOnPress) context.handleClose();
-      setChecked((p) => !p);
+      onChange?.(!checked);
     },
   });
 
   const { hoverProps, isHovered } = useHover({ isDisabled });
+
+  const { rippleProps } = useRipple({ isDisabled });
 
   return (
     <li
       role="menuitemcheckbox"
       data-pressed={isPressed}
       data-hovered={isHovered}
+      data-disabled={!!isDisabled}
       data-checked={checked}
       aria-checked={checked}
-      {...mergeProps(pressProps, hoverProps)}
-      className={stylesContext.menuItemCheckbox({
-        className: classNames?.menuItemCheckbox,
-      })}
+      aria-disabled={isDisabled}
+      {...mergeProps(rippleProps, pressProps, hoverProps)}
+      className={stylesContext.item({ className })}
     >
-      <span
-        className={stylesContext.menuItemCheckboxIcon({
-          className: classNames?.menuItemCheckboxIcon,
-        })}
-      >
-        {icon}
+      <span>
+        {!checked ? null : (
+          <svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 12"
+            style={{ height: 11, width: 11 }}
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 5.917 5.724 10.5 15 1.5"
+            />
+          </svg>
+        )}
       </span>
 
       {children}
@@ -381,4 +393,109 @@ export const MenuItemCheckbox = (props: MenuItemCheckboxProps) => {
   );
 };
 
-MenuItemCheckbox.displayName = 'gist-ui.' + MenuItemCheckbox_Name;
+CheckboxItem.displayName = 'gist-ui.' + CheckboxItem_Name;
+
+// *-*-*-*-* RadioGroup *-*-*-*-*
+
+const RadioGroup_Name = 'Menu.RadioGroup';
+
+interface RadioGroupContext {
+  onChange?: (value: string) => void;
+  value?: string;
+}
+
+const [RadioGroupProvider, useRadioGroupContext] =
+  createContextScope<RadioGroupContext>(RadioGroup_Name);
+
+export interface RadioGroupProps extends GroupProps {
+  children?: React.ReactNode;
+  onChange?: (value: string) => void;
+  value?: string;
+}
+
+export const RadioGroup = (props: RadioGroupProps) => {
+  const { children, onChange, value, accessibleLabel, className } = props;
+
+  return (
+    <RadioGroupProvider onChange={onChange} value={value}>
+      <Group accessibleLabel={accessibleLabel} className={className}>
+        {children}
+      </Group>
+    </RadioGroupProvider>
+  );
+};
+
+RadioGroup.displayName = 'gist-ui.' + RadioGroup_Name;
+
+// *-*-*-*-* RadioItem *-*-*-*-*
+
+const RadioItem_Name = 'Menu.RadioItem';
+
+export interface RadioItemProps {
+  children?: React.ReactNode;
+  isDisabled?: boolean;
+  /**
+   * @default true
+   */
+  disableCloseOnPress?: boolean;
+  value: string;
+  className?: ClassValue;
+}
+
+export const RadioItem = (props: RadioItemProps) => {
+  const {
+    children,
+    isDisabled,
+    disableCloseOnPress = true,
+    className,
+    value,
+  } = props;
+
+  const context = useRootContext(RadioItem_Name);
+  const stylesContext = useStylesContext(RadioItem_Name);
+  const groupContext = useRadioGroupContext(RadioItem_Name);
+
+  const { pressProps, isPressed } = usePress({
+    isDisabled,
+    onPress: () => {
+      if (!disableCloseOnPress) context.handleClose();
+      groupContext.onChange?.(value);
+    },
+  });
+
+  const { hoverProps, isHovered } = useHover({ isDisabled });
+
+  const { rippleProps } = useRipple({ isDisabled });
+
+  const checked = value === groupContext.value;
+
+  return (
+    <li
+      role="menuitemradio"
+      data-pressed={isPressed}
+      data-hovered={isHovered}
+      data-disabled={!!isDisabled}
+      data-checked={checked}
+      aria-checked={checked}
+      aria-disabled={isDisabled}
+      {...mergeProps(rippleProps, pressProps, hoverProps)}
+      className={stylesContext.item({ className })}
+    >
+      <span>
+        {!checked ? null : (
+          <svg
+            viewBox="0 0 512 512"
+            fill="currentColor"
+            style={{ width: 6, height: 6 }}
+          >
+            <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0 0 114.6 0 256s114.6 256 256 256zm0-160c-53" />
+          </svg>
+        )}
+      </span>
+
+      {children}
+    </li>
+  );
+};
+
+RadioItem.displayName = 'gist-ui.' + RadioItem_Name;

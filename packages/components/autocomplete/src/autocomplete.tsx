@@ -635,6 +635,7 @@ const Autocomplete = <
               focused ? getOptionId(focused)?.replaceAll(' ', '-') : undefined
             }
             aria-roledescription="single select"
+            aria-multiselectable={multiple}
             style={{ maxHeight }}
           >
             {options?.length

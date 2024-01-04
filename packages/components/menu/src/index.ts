@@ -3,24 +3,30 @@ export { Arrow } from '@gist-ui/popper';
 
 // export types
 export type {
-  RootProps,
-  TriggerProps,
-  PortalProps,
+  CheckboxItemProps,
   CloseProps,
   GroupProps,
+  ItemProps,
   MenuProps,
-  MenuItemProps,
+  PortalProps,
+  RadioGroupProps,
+  TriggerProps,
   SeparatorProps,
-  MenuItemCheckboxProps,
+  RootProps,
+  RadioItemProps,
+  LabelProps,
 } from './menu';
 
 // export component
 export const Root = menu.Root;
 export const Trigger = menu.Trigger;
+export const Close = menu.Close;
 export const Portal = menu.Portal;
 export const Menu = menu.Menu;
-export const MenuItem = menu.MenuItem;
-export const Close = menu.Close;
+export const Item = menu.Item;
 export const Group = menu.Group;
+export const Label = menu.Label;
+export const CheckboxItem = menu.CheckboxItem;
+export const RadioGroup = menu.RadioGroup;
+export const RadioItem = menu.RadioItem;
 export const Separator = menu.Separator;
-export const MenuItemCheckbox = menu.MenuItemCheckbox;
