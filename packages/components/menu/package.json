@@ -46,6 +46,7 @@
     "@gist-ui/theme": "workspace:*",
     "@gist-ui/slot": "workspace:*",
     "@gist-ui/use-ripple": "workspace:*",
+    "@gist-ui/use-scroll-lock": "workspace:*",
     "@gist-ui/context": "workspace:*",
     "@gist-ui/button": "workspace:*",
     "@react-aria/interactions": "^3.20.0"

@@ -40,8 +40,8 @@ const Template = (args) => {
             <div style={{ width: 170 }}>
               <Menu.Group accessibleLabel="tools">
                 <Menu.Item>item 1</Menu.Item>
-                <Menu.Item>item 2</Menu.Item>
-                <Menu.Item isDisabled>item 3</Menu.Item>
+                <Menu.Item isDisabled>item 2</Menu.Item>
+                <Menu.Item>item 3</Menu.Item>
               </Menu.Group>
 
               <Menu.Separator />
@@ -67,7 +67,7 @@ const Template = (args) => {
                 <Menu.RadioItem value="radio item 1">
                   radio item 1
                 </Menu.RadioItem>
-                <Menu.RadioItem value="radio item 2">
+                <Menu.RadioItem value="radio item 2" isDisabled>
                   radio item 2
                 </Menu.RadioItem>
                 <Menu.RadioItem value="radio item 3">
