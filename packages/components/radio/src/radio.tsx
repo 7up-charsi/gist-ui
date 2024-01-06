@@ -3,30 +3,70 @@ import { useControllableState } from '@gist-ui/use-controllable-state';
 import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
+import { createContextScope } from '@gist-ui/context';
 import { useFocusVisible, useHover, usePress } from '@react-aria/interactions';
-import {
-  CheckboxClassNames,
-  CheckboxVariantProps,
-  checkbox,
-} from '@gist-ui/theme';
+import { RadioClassNames, RadioVariantProps, radio } from '@gist-ui/theme';
 
 const icon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-3a5" />
   </svg>
 );
 
 const checkIcon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <path fill="none" d="M0 0h24v24H0z" />
+      <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-3a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" />
+    </g>
   </svg>
 );
 
-export interface CheckboxProps extends CheckboxVariantProps {
-  defaultChecked?: boolean;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  classNames?: Omit<CheckboxClassNames, 'input' | 'ripple'>;
+// *-*-*-*-* Group *-*-*-*-*
+
+const Group_Name = 'Radio.Group';
+
+interface GroupContext {
+  value: string;
+  onChange: (value: string) => void;
+  name: string;
+}
+
+const [RootProvider, useRootContext] =
+  createContextScope<GroupContext>(Group_Name);
+
+export interface GroupProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  defaultValue?: string;
+  children?: React.ReactNode;
+  name: string;
+}
+
+export const Group = (props: GroupProps) => {
+  const { children, defaultValue, value: valueProp, onChange, name } = props;
+
+  const [value, setValue] = useControllableState({
+    defaultValue,
+    value: valueProp,
+    onChange,
+  });
+
+  return (
+    <RootProvider value={value} onChange={setValue} name={name}>
+      {children}
+    </RootProvider>
+  );
+};
+
+Group.displayName = 'gist-ui.' + Group_Name;
+
+// *-*-*-*-* Radio *-*-*-*-*
+
+const Radio_Name = 'Radio.Radio';
+
+export interface RadioProps extends RadioVariantProps {
+  classNames?: Omit<RadioClassNames, 'input' | 'ripple'>;
   isDisabled?: boolean;
   icon?: React.ReactNode;
   checkIcon?: React.ReactNode;
@@ -35,18 +75,17 @@ export interface CheckboxProps extends CheckboxVariantProps {
   rippleDuration?: UseRippleProps['duration'];
   rippleTimingFunction?: UseRippleProps['timingFunction'];
   rippleCompletedFactor?: UseRippleProps['completedFactor'];
+  value: string;
 }
 
-const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
+export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
   const {
-    defaultChecked,
-    checked: checkedProp,
-    onChange,
     isDisabled,
     classNames,
     icon = icon_svg,
     checkIcon = checkIcon_svg,
     label,
+    value,
     color,
     rippleDuration = 450,
     rippleTimingFunction,
@@ -55,13 +94,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     size = 'md',
   } = props;
 
-  const id = useId();
+  const rootContext = useRootContext(Radio_Name);
 
-  const [checked, setChecked] = useControllableState({
-    defaultValue: defaultChecked || false,
-    value: checkedProp,
-    onChange,
-  });
+  const id = useId();
 
   const { isFocusVisible } = useFocusVisible();
 
@@ -82,7 +117,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     completedFactor: rippleCompletedFactor,
   });
 
-  const styles = checkbox({ size, isDisabled, labelPlacement, color });
+  const styles = radio({ size, isDisabled, labelPlacement, color });
+
+  const selected = rootContext.value === value;
 
   return (
     <div
@@ -90,28 +127,29 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
       data-hovered={isHovered}
       data-focus-visible={isFocusVisible}
       data-disabled={isDisabled}
-      data-checked={checked}
+      data-selected={selected}
       className={styles.base()}
     >
       <div
-        className={styles.checkbox({ className: classNames?.base })}
+        className={styles.radio({ className: classNames?.base })}
         {...rippleProps}
       >
         <input
           id={id}
           ref={ref}
-          type="checkbox"
-          checked={checked}
+          type="radio"
+          value={value}
+          name={rootContext.name}
           className={styles.nativeInput()}
           disabled={isDisabled}
           {...mergeProps(pressProps, hoverProps)}
           onChange={(e) => {
-            setChecked(e.target.checked);
+            rootContext.onChange(e.target.value);
           }}
         />
 
         <Icon size={size} fill>
-          {checked ? checkIcon : icon}
+          {selected ? checkIcon : icon}
         </Icon>
       </div>
 
@@ -127,6 +165,4 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   );
 });
 
-Checkbox.displayName = 'gist-ui.Checkbox';
-
-export default Checkbox;
+Radio.displayName = 'gist-ui.' + Radio_Name;

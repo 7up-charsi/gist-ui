@@ -535,6 +535,43 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
 
+  packages/components/radio:
+    dependencies:
+      '@gist-ui/context':
+        specifier: workspace:*
+        version: link:../../core/context
+      '@gist-ui/icon':
+        specifier: workspace:*
+        version: link:../icon
+      '@gist-ui/react-utils':
+        specifier: workspace:*
+        version: link:../../utilities/react-utils
+      '@gist-ui/theme':
+        specifier: workspace:*
+        version: link:../../core/theme
+      '@gist-ui/use-callback-ref':
+        specifier: workspace:*
+        version: link:../../hooks/use-callback-ref
+      '@gist-ui/use-controllable-state':
+        specifier: workspace:*
+        version: link:../../hooks/use-controllable-state
+      '@gist-ui/use-ripple':
+        specifier: workspace:*
+        version: link:../../hooks/use-ripple
+      '@react-aria/interactions':
+        specifier: ^3.20.0
+        version: 3.20.0(react@18.2.0)
+      react:
+        specifier: '>=18'
+        version: 18.2.0
+      react-dom:
+        specifier: '>=18'
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      clean-package:
+        specifier: ^2.2.0
+        version: 2.2.0
+
   packages/components/scroll-shadow:
     dependencies:
       '@gist-ui/react-utils':

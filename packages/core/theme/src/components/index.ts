@@ -9,3 +9,4 @@ export * from './select';
 export * from './autocomplete';
 export * from './menu';
 export * from './checkbox';
+export * from './radio';
