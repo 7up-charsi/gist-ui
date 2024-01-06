@@ -1,4 +1,4 @@
-import { forwardRef, useId } from 'react';
+import { forwardRef, useId, useRef } from 'react';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
@@ -12,14 +12,34 @@ import {
 } from '@gist-ui/theme';
 
 const icon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 20 20"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m13 7-6 6m0-6 6 6m6-3a9"
+    />
   </svg>
 );
 
 const checkIcon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
-    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 20 20"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m7 10 2 2 4-4m6 2a9"
+    />
   </svg>
 );
 
@@ -57,6 +77,7 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
   } = props;
 
   const id = useId();
+  const thumbRef = useRef<HTMLDivElement>(null);
 
   const [checked, setChecked] = useControllableState({
     defaultValue: defaultChecked || false,
@@ -76,6 +97,7 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
   const { hoverProps, isHovered } = useHover({ isDisabled });
 
   const { rippleProps } = useRipple({
+    ref: thumbRef,
     isDisabled,
     pointerCenter: false,
     duration: rippleDuration,
@@ -92,10 +114,10 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
       data-focus-visible={isFocusVisible}
       data-disabled={isDisabled}
       data-checked={checked}
-      className={styles.base()}
+      className={styles.base({ className: classNames?.base })}
     >
       <div
-        className={styles.checkbox({ className: classNames?.base })}
+        className={styles.switch({ className: classNames?.switch })}
         {...rippleProps}
       >
         <input
@@ -103,7 +125,7 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
           ref={ref}
           type="checkbox"
           checked={checked}
-          className={styles.nativeInput()}
+          className={styles.nativeInput({ className: classNames?.nativeInput })}
           disabled={isDisabled}
           {...mergeProps(focusProps, pressProps, hoverProps)}
           onChange={(e) => {
@@ -111,9 +133,13 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
           }}
         />
 
-        <Icon size={size} fill>
-          {checked ? checkIcon : icon}
-        </Icon>
+        <div className={styles.track({ className: classNames?.track })}></div>
+        <div
+          ref={thumbRef}
+          className={styles.thumb({ className: classNames?.thumb })}
+        >
+          <Icon size={size}>{checked ? checkIcon : icon}</Icon>
+        </div>
       </div>
 
       {label && (

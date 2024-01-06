@@ -149,9 +149,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
           }}
         />
 
-        <Icon size={size} fill>
-          {selected ? checkIcon : icon}
-        </Icon>
+        <Icon size={size}>{selected ? checkIcon : icon}</Icon>
       </div>
 
       {label && (

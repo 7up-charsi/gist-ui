@@ -4,55 +4,62 @@ import {
   tv,
   VariantProps,
 } from 'tailwind-variants';
+import { groupDataFocusVisible } from '../classes';
 
 const _switch = tv({
   slots: {
-    base: 'inline-flex gap-1 group',
-    checkbox:
-      'rounded-full relative inline-flex items-center justify-center overflow-hidden transition-colors group-data-[pressed=true]:group-data-[focus-visible=true]:scale-90 group-data-[checked=false]:text-neutral-700 group-data-[checked=false]:[--rippleBg:theme(colors.neutral-800/20%)] group-data-[checked=false]:group-data-[hovered=true]:bg-neutral-200 group-data-[focus-visible=true]:bg-neutral-200',
+    base: 'inline-flex gap-2 group',
+    switch: [
+      'rounded-full relative flex items-center transition-colors group-data-[checked=false]:text-neutral-700 group-data-[checked=false]:[--rippleBg:theme(colors.neutral-800/20%)] isolate cursor-pointer',
+      ...groupDataFocusVisible,
+    ],
+    track:
+      'rounded-full absolute inset-0 group-data-[checked=false]:bg-neutral-200',
+    thumb:
+      'absolute z-10 bg-white shadow-md rounded-full left-1 translate-x-0 group-data-[checked=true]:left-[calc(100%-4px)] group-data-[checked=true]:-translate-x-full transition-[left,transform]',
     nativeInput:
-      'outline-none w-full h-full border-test opacity-0 absolute inset-0 cursor-pointer',
-    label: 'cursor-pointer select-none',
+      'absolute z-50 outline-none w-full h-full border-test opacity-0 absolute inset-0 cursor-pointer',
+    label: 'cursor-pointer select-none text-neutral-700 first-letter:uppercase',
   },
   variants: {
     color: {
       primary: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.primary-800/20%)] group-data-[checked=true]:text-primary-700 group-data-[checked=true]:group-data-[hovered=true]:bg-primary-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.primary-800/20%)] group-data-[checked=true]:text-primary-700 group-data-[checked=true]:bg-primary-400',
       },
       secondary: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.secondary-800/20%)] group-data-[checked=true]:text-secondary-700 group-data-[checked=true]:group-data-[hovered=true]:bg-secondary-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.secondary-800/20%)] group-data-[checked=true]:text-secondary-700 group-data-[checked=true]:bg-secondary-400',
       },
       success: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.success-800/20%)] group-data-[checked=true]:text-success-700 group-data-[checked=true]:group-data-[hovered=true]:bg-success-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.success-800/20%)] group-data-[checked=true]:text-success-700 group-data-[checked=true]:bg-success-400',
       },
       info: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.info-800/20%)] group-data-[checked=true]:text-info-700 group-data-[checked=true]:group-data-[hovered=true]:bg-info-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.info-800/20%)] group-data-[checked=true]:text-info-700 group-data-[checked=true]:bg-info-400',
       },
       warning: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.warning-800/20%)] group-data-[checked=true]:text-warning-700 group-data-[checked=true]:group-data-[hovered=true]:bg-warning-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.warning-800/20%)] group-data-[checked=true]:text-warning-700 group-data-[checked=true]:bg-warning-400',
       },
       danger: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.danger-800/20%)] group-data-[checked=true]:text-danger-700 group-data-[checked=true]:group-data-[hovered=true]:bg-danger-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.danger-800/20%)] group-data-[checked=true]:text-danger-700 group-data-[checked=true]:bg-danger-400',
       },
       neutral: {
-        checkbox:
-          'group-data-[checked=true]:[--rippleBg:theme(colors.neutral-800/20%)] group-data-[checked=true]:text-neutral-700 group-data-[checked=true]:group-data-[hovered=true]:bg-neutral-100',
+        switch:
+          'group-data-[checked=true]:[--rippleBg:theme(colors.neutral-800/20%)] group-data-[checked=true]:text-neutral-700 group-data-[checked=true]:bg-neutral-400',
       },
     },
     size: {
-      sm: { checkbox: 'min-w-[32px] min-h-[32px] w-8 h-8' },
-      md: { checkbox: 'min-w-[40px] min-h-[40px] w-10 h-10' },
-      lg: { checkbox: 'min-w-[48px] min-h-[48px] w-12 h-12' },
+      sm: { switch: 'w-10 h-6', thumb: 'w-4 h-4' },
+      md: { switch: 'w-12 h-7', thumb: 'w-5 h-5' },
+      lg: { switch: 'w-14 h-8', thumb: 'w-6 h-6' },
     },
     isDisabled: {
       true: {
-        checkbox: 'disabled',
+        switch: 'disabled',
       },
     },
     labelPlacement: {

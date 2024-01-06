@@ -1,21 +1,22 @@
 import { ReactNode, forwardRef } from 'react';
-import { IconClassNames, IconVariantProps, icon } from '@gist-ui/theme';
+import { IconVariantProps, icon } from '@gist-ui/theme';
 import { Slot } from '@gist-ui/slot';
+import { ClassValue } from 'tailwind-variants';
 
 export interface IconProps extends IconVariantProps {
-  classNames?: IconClassNames;
+  className?: ClassValue;
   children?: ReactNode;
 }
 
 const Icon = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
-  const { fill, size, children, classNames } = props;
+  const { size, children, className } = props;
 
-  const styles = icon({ size, fill });
+  const styles = icon({ size, className });
 
   return (
     <Slot<SVGSVGElement, React.SVGAttributes<SVGSVGElement>>
       ref={ref}
-      className={styles.base({ className: classNames?.base })}
+      className={styles}
     >
       {children}
     </Slot>

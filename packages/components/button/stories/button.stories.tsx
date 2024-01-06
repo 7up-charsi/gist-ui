@@ -110,16 +110,12 @@ const WithConentTemplate = (args: ButtonProps) => (
                   color={color}
                   startContent={
                     position !== 'end' && (
-                      <Icon fill size={args.size}>
-                        {reactIcon}
-                      </Icon>
+                      <Icon size={args.size}>{reactIcon}</Icon>
                     )
                   }
                   endContent={
                     position !== 'start' && (
-                      <Icon fill size={args.size}>
-                        {reactIcon}
-                      </Icon>
+                      <Icon size={args.size}>{reactIcon}</Icon>
                     )
                   }
                 >
@@ -167,9 +163,7 @@ const IconOnlyTemplate = (args: ButtonProps) => (
               color={color}
               isIconOnly
             >
-              <Icon fill size={args.size}>
-                {reactIcon}
-              </Icon>
+              <Icon size={args.size}>{reactIcon}</Icon>
             </Button>
           ))}
         </div>
