@@ -4,7 +4,8 @@ import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
 import { createContextScope } from '@gist-ui/context';
-import { useFocusVisible, useHover, usePress } from '@react-aria/interactions';
+import { useHover, usePress } from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
 import { RadioClassNames, RadioVariantProps, radio } from '@gist-ui/theme';
 
 const icon_svg = (
@@ -98,7 +99,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
 
   const id = useId();
 
-  const { isFocusVisible } = useFocusVisible();
+  const { isFocusVisible, focusProps } = useFocusRing();
 
   const { pressProps, isPressed } = usePress({
     isDisabled,
@@ -142,7 +143,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
           name={rootContext.name}
           className={styles.nativeInput()}
           disabled={isDisabled}
-          {...mergeProps(pressProps, hoverProps)}
+          {...mergeProps(focusProps, pressProps, hoverProps)}
           onChange={(e) => {
             rootContext.onChange(e.target.value);
           }}

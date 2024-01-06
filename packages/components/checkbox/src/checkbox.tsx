@@ -3,7 +3,8 @@ import { useControllableState } from '@gist-ui/use-controllable-state';
 import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
-import { useFocusVisible, useHover, usePress } from '@react-aria/interactions';
+import { useHover, usePress } from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
 import {
   CheckboxClassNames,
   CheckboxVariantProps,
@@ -63,7 +64,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     onChange,
   });
 
-  const { isFocusVisible } = useFocusVisible();
+  const { isFocusVisible, focusProps } = useFocusRing();
 
   const { pressProps, isPressed } = usePress({
     isDisabled,
@@ -104,7 +105,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
           checked={checked}
           className={styles.nativeInput()}
           disabled={isDisabled}
-          {...mergeProps(pressProps, hoverProps)}
+          {...mergeProps(focusProps, pressProps, hoverProps)}
           onChange={(e) => {
             setChecked(e.target.checked);
           }}

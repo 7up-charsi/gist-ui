@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
-import { useHover, useFocus, useFocusVisible } from '@react-aria/interactions';
+import { useHover, useFocus } from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
 import { mergeProps } from '@gist-ui/react-utils';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { Slot } from '@gist-ui/slot';
@@ -248,7 +249,7 @@ export const Trigger = ({ children }: TriggerProps) => {
     context.handleHide(true);
   };
 
-  const { isFocusVisible } = useFocusVisible();
+  const { isFocusVisible, focusProps: focusRingProps } = useFocusRing();
   const { focusProps } = useFocus({
     onFocus: () => {
       if (context.trigger === 'hover') return;
@@ -274,8 +275,9 @@ export const Trigger = ({ children }: TriggerProps) => {
         ref={ref}
         aria-describedby={context.isOpen ? context.id : undefined}
         {...mergeProps(
-          { ...hoverProps },
-          { ...focusProps },
+          focusRingProps,
+          hoverProps,
+          focusProps,
           { onPointerDown: handlePointerDown },
           { tabIndex: 0 },
         )}

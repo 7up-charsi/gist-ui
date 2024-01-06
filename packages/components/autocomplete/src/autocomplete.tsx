@@ -2,11 +2,11 @@ import * as Popper from '@gist-ui/popper';
 import { Input, InputProps } from '@gist-ui/input';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
-import { mergeRefs } from '@gist-ui/react-utils';
+import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
 import { Option } from './option';
 import _groupby from 'lodash.groupby';
 import { Button } from '@gist-ui/button';
-import { useFocusVisible } from '@react-aria/interactions';
+import { useFocusRing } from '@react-aria/focus';
 import {
   Fragment,
   useCallback,
@@ -197,7 +197,7 @@ const Autocomplete = <
     [string, Value[]][] | null
   >(null);
   const [isInputActive, setIsInputActive] = useState(false);
-  const { isFocusVisible } = useFocusVisible({ isTextInput: true });
+  const { isFocusVisible, focusProps } = useFocusRing({ isTextInput: true });
 
   const lisboxId = useId();
   const listboxRef = useRef<HTMLUListElement>(null);
@@ -440,13 +440,13 @@ const Autocomplete = <
     ],
   );
 
-  const handleOnFocus = useCallback(() => {
+  const handleInputFocus = useCallback(() => {
     if (isFocusVisible) {
       setIsInputActive(true);
     }
   }, [isFocusVisible]);
 
-  const handleOnBlur = useCallback(() => {
+  const handleInputBlur = useCallback(() => {
     if (isFocusVisible) {
       handleListboxClose();
     }
@@ -523,9 +523,11 @@ const Autocomplete = <
           onChange={handleInputChange}
           isDisabled={isDisabled}
           ref={mergeRefs(inputRef, setInputOutsideEle)}
+          {...mergeProps(focusProps, {
+            onFocus: handleInputFocus,
+            onBlur: handleInputBlur,
+          })}
           onPointerDown={handleListboxOpen}
-          onFocus={handleOnFocus}
-          onBlur={handleOnBlur}
           classNames={{
             ...classNames,
             input: styles.input({ className: classNames?.input }),
