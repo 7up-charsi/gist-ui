@@ -4,7 +4,6 @@ export { Arrow } from '@gist-ui/popper';
 // export types
 export type {
   CheckboxItemProps,
-  CloseProps,
   GroupProps,
   ItemProps,
   MenuProps,
@@ -20,7 +19,6 @@ export type {
 // export component
 export const Root = menu.Root;
 export const Trigger = menu.Trigger;
-export const Close = menu.Close;
 export const Portal = menu.Portal;
 export const Menu = menu.Menu;
 export const Item = menu.Item;

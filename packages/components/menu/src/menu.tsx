@@ -108,26 +108,6 @@ export const Trigger = (props: TriggerProps) => {
 
 Trigger.displayName = 'gist-ui.' + Trigger_Name;
 
-// *-*-*-*-* Close *-*-*-*-*
-
-const Close_Name = 'Menu.Close';
-
-export interface CloseProps {
-  children: React.ReactNode;
-}
-
-export const Close = (props: CloseProps) => {
-  const { children } = props;
-
-  const rootContext = useRootContext(Close_Name);
-
-  const { pressProps } = usePress({ onPress: rootContext.handleClose });
-
-  return <Slot {...pressProps}>{children}</Slot>;
-};
-
-Close.displayName = 'gist-ui.' + Close_Name;
-
 // *-*-*-*-* Portal *-*-*-*-*
 
 const Portal_Name = 'Menu.Portal';
