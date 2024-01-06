@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-export interface UseRippleProps {
+export interface UseRippleProps<E = HTMLElement> {
   /**
    * this is used as css transition duration for ripple popup animation and popup duration depends on `completedFactor` prop
    *
@@ -27,22 +27,24 @@ export interface UseRippleProps {
    * @default true
    */
   pointerCenter?: boolean;
+  ref?: React.RefObject<E> | React.MutableRefObject<E>;
 }
 
 const useRipple = <E extends HTMLElement>({
+  ref,
   duration = 500,
   timingFunction = 'cubic-bezier(.42,.36,.28,.88)',
   isDisabled = false,
   completedFactor = 0.5,
   pointerCenter = true,
-}: UseRippleProps = {}) => {
+}: UseRippleProps<E> = {}) => {
   //
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent<E>) => {
       if (isDisabled || e.button !== 0) return;
 
-      const target = e.currentTarget as HTMLElement;
+      const target = ref?.current || (e.currentTarget as HTMLElement);
 
       const begun = Date.now();
 
@@ -82,7 +84,7 @@ const useRipple = <E extends HTMLElement>({
         capture: true,
       });
     },
-    [completedFactor, duration, isDisabled, pointerCenter, timingFunction],
+    [completedFactor, duration, isDisabled, pointerCenter, ref, timingFunction],
   );
 
   return {
