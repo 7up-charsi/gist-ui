@@ -166,10 +166,11 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
         {...mergeProps(hoverProps, inputWrapperProps, {
-          onPointerUp: (e: React.PointerEvent) => {
+          onPointerDown: (e: React.PointerEvent) => {
             if (isDisabled) return;
             if (e.button !== 0) return;
-            if (e.currentTarget === e.target) inputRef.current?.focus();
+            if (e.target !== inputRef.current) e.preventDefault();
+            inputRef.current?.focus();
           },
         })}
       >
