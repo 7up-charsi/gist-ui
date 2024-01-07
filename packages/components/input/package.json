@@ -45,7 +45,6 @@
     "@gist-ui/use-controllable-state": "workspace:*",
     "@gist-ui/use-callback-ref": "workspace:*",
     "@gist-ui/error": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
     "@react-aria/interactions": "^3.20.0",
     "@gist-ui/button": "workspace:*"
   },

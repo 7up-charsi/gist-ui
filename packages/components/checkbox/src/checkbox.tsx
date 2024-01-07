@@ -1,6 +1,5 @@
 import { forwardRef, useId } from 'react';
 import { useControllableState } from '@gist-ui/use-controllable-state';
-import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
 import { useHover, usePress } from '@react-aria/interactions';
@@ -12,13 +11,25 @@ import {
 } from '@gist-ui/theme';
 
 const icon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24">
+  <svg
+    aria-hidden="true"
+    width={20}
+    height={20}
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
     <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
   </svg>
 );
 
 const checkIcon_svg = (
-  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    aria-hidden="true"
+    width={20}
+    height={20}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
   </svg>
 );
@@ -111,7 +122,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
           }}
         />
 
-        <Icon size={size}>{checked ? checkIcon : icon}</Icon>
+        {checked ? checkIcon : icon}
       </div>
 
       {label && (

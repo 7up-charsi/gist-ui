@@ -40,7 +40,6 @@
   "dependencies": {
     "@gist-ui/button": "workspace:*",
     "@gist-ui/error": "workspace:*",
-    "@gist-ui/icon": "workspace:*",
     "@gist-ui/input": "workspace:*",
     "@gist-ui/popper": "workspace:*",
     "@gist-ui/react-utils": "workspace:*",

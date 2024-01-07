@@ -4,14 +4,11 @@ import { useFocusRing } from '@react-aria/focus';
 import { mergeProps } from '@gist-ui/react-utils';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { Slot } from '@gist-ui/slot';
-import {
-  TooltipClassNames,
-  TooltipVariantProps,
-  tooltip,
-} from '@gist-ui/theme';
+import { TooltipVariantProps, tooltip } from '@gist-ui/theme';
 import { useIsDisabled } from '@gist-ui/use-is-disabled';
 import { createContextScope } from '@gist-ui/context';
 import * as Popper from '@gist-ui/popper';
+import { ClassValue } from 'tailwind-variants';
 import {
   Dispatch,
   MutableRefObject,
@@ -318,19 +315,14 @@ export interface ContentProps
     Popper.FloatingProps {
   children?: ReactNode;
   asChild?: boolean;
-  classNames?: TooltipClassNames;
+  className?: ClassValue;
   disableInteractive?: boolean;
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>(
   (props, ref) => {
-    const {
-      children,
-      asChild,
-      disableInteractive,
-      classNames,
-      ...popperProps
-    } = props;
+    const { children, asChild, disableInteractive, className, ...popperProps } =
+      props;
 
     const context = useContext(Content_Name);
 
@@ -354,14 +346,14 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [children]);
 
-    const styles = tooltip();
+    const styles = tooltip({ className });
 
     return (
       <Popper.Floating {...popperProps}>
         <Component
           ref={ref}
           role="tooltip"
-          className={styles.base({ className: classNames?.base })}
+          className={styles}
           {...tooltipHoverProps}
           id={context.id}
         >

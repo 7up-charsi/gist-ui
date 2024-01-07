@@ -2,7 +2,6 @@ import { forwardRef, useCallback, useRef } from 'react';
 import Input, { InputProps } from './input';
 import { mergeRefs } from '@gist-ui/react-utils';
 import { NumberInputClassNames, numberInput } from '@gist-ui/theme';
-import { Icon } from '@gist-ui/icon';
 import { Button } from '@gist-ui/button';
 import { __DEV__ } from '@gist-ui/shared-utils';
 import { GistUiError } from '@gist-ui/error';
@@ -225,13 +224,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       },
     });
 
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
-      },
-      [setValue],
-    );
-
     const styles = numberInput();
 
     const buttons = (
@@ -250,22 +242,19 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           color="neutral"
           preventFocusOnPress
           {...stepUpLongPressProps}
-          classNames={{
-            base: styles.button({ className: classNames?.stepButton.button }),
-          }}
+          className={styles.button({
+            className: classNames?.stepButton.button,
+          })}
         >
-          <Icon
+          <svg
             className={styles.icon({ className: classNames?.stepButton.icon })}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 10"
+            fill="currentColor"
           >
-            <svg
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 10"
-              fill="currentColor"
-            >
-              <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
-            </svg>
-          </Icon>
+            <path d="M9.207 1A2 2 0 0 0 6.38 1L.793 6.586A2 2 0 0 0 2.207 10H13.38a2 2 0 0 0 1.414-3.414L9.207 1Z" />
+          </svg>
         </Button>
 
         {/* step down */}
@@ -279,25 +268,21 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
           color="neutral"
           preventFocusOnPress
           {...stepDownLongPressProps}
-          classNames={{
-            base: styles.button({ className: classNames?.stepButton.button }),
-          }}
+          className={styles.button({
+            className: classNames?.stepButton.button,
+          })}
         >
-          <Icon
-            className={styles.icon({ className: classNames?.stepButton.icon })}
+          <svg
+            className={styles.icon({
+              className: classNames?.stepButton.icon,
+            })}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 10"
+            fill="currentColor"
           >
-            <svg
-              className={styles.icon({
-                className: classNames?.stepButton.icon,
-              })}
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 10"
-              fill="currentColor"
-            >
-              <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
-            </svg>
-          </Icon>
+            <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+          </svg>
         </Button>
       </div>
     );
@@ -317,7 +302,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
         ref={mergeRefs(ref, innerRef)}
         type="number"
         value={value}
-        onChange={handleChange}
+        onChange={setValue}
         endContent={
           <>
             {endContent}

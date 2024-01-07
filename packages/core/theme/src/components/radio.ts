@@ -9,7 +9,7 @@ const radio = tv({
   slots: {
     base: 'inline-flex gap-1 group',
     radio:
-      'rounded-full relative inline-flex items-center justify-center overflow-hidden transition-colors group-data-[pressed=true]:group-data-[focus-visible=true]:scale-90 group-data-[selected=false]:text-neutral-700 group-data-[selected=false]:[--rippleBg:theme(colors.neutral-800/20%)] group-data-[selected=false]:group-data-[hovered=true]:bg-neutral-200 group-data-[focus-visible=true]:bg-neutral-200',
+      'rounded-full relative inline-flex items-center justify-center overflow-hidden transition-colors group-data-[selected=false]:text-neutral-300 group-data-[selected=false]:[--rippleBg:theme(colors.neutral-800/20%)] group-data-[selected=false]:group-data-[hovered=true]:bg-neutral-200 group-data-[focus-visible=true]:bg-neutral-200',
     nativeInput:
       'outline-none w-full h-full border-test opacity-0 absolute inset-0 cursor-pointer',
     label: 'cursor-pointer select-none',

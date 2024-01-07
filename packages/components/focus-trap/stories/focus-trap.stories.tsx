@@ -28,7 +28,7 @@ const DefaultTemplate = (args: FocusTrapProps) => {
         </div>
       </FocusTrap>
 
-      <Button variant="flat" color="secondary" classNames={{ base: 'm-3' }}>
+      <Button variant="flat" color="secondary" className="m-3">
         you cannot focus me when trapped is true
       </Button>
     </>

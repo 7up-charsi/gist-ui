@@ -1,4 +1,4 @@
-import { button, ButtonClassNames, ButtonVariantProps } from '@gist-ui/theme';
+import { button, ButtonVariantProps } from '@gist-ui/theme';
 import { __DEV__ } from '@gist-ui/shared-utils';
 import { Slot } from '@gist-ui/slot';
 import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
@@ -6,6 +6,7 @@ import { useRipple, UseRippleProps } from '@gist-ui/use-ripple';
 import { mergeRefs, mergeProps } from '@gist-ui/react-utils';
 import { useFocusRing } from '@react-aria/focus';
 import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { ClassValue } from 'tailwind-variants';
 import {
   usePress,
   useHover,
@@ -33,7 +34,7 @@ export interface ButtonProps
     HoverEvents {
   startContent?: ReactNode;
   endContent?: ReactNode;
-  classNames?: ButtonClassNames;
+  className?: ClassValue;
   children?: ReactNode;
   asChild?: boolean;
   rippleDuration?: UseRippleProps['duration'];
@@ -45,7 +46,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
     startContent,
     endContent,
-    classNames,
+    className,
     asChild,
     children,
     onPress: onPressProp,
@@ -117,6 +118,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     isIconOnly,
     size,
     variant,
+    className,
   });
 
   if (asChild) {
@@ -143,7 +145,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       data-focus-visible={isFocusVisible && isFocused}
       disabled={isDisabled}
       ref={mergeRefs(ref, innerRef)}
-      className={styles.base({ className: classNames?.base })}
+      className={styles}
       role={asChild ? 'button' : undefined}
       aria-disabled={asChild ? isDisabled : undefined}
     >

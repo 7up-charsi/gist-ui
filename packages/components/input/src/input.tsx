@@ -5,17 +5,20 @@ import { HoverProps, useFocus, useHover } from '@react-aria/interactions';
 import { useFocusRing } from '@react-aria/focus';
 import { NativeInputProps } from './types';
 import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { useControllableState } from '@gist-ui/use-controllable-state';
 import {
   forwardRef,
   useEffect,
   useId,
   useImperativeHandle,
   useRef,
-  useState,
 } from 'react';
 
 export interface InputProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color' | 'className'>,
+  extends Omit<
+      React.HTMLAttributes<HTMLDivElement>,
+      'color' | 'className' | 'onChange'
+    >,
     Omit<InputVariantProps, 'error'>,
     HoverProps {
   type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
@@ -25,7 +28,7 @@ export interface InputProps
   defaultValue?: string;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: (value: string) => void;
   required?: boolean;
   name?: string;
   label?: string;
@@ -53,7 +56,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     startContent,
     endContent,
     placeholder,
-    value,
+    value: valueProp,
     defaultValue,
     onBlur: onBlurProp,
     onFocus: onFocusProp,
@@ -83,14 +86,11 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
 
   const onBlur = useCallbackRef(onBlurProp);
   const onFocus = useCallbackRef(onFocusProp);
-  const onChange = useCallbackRef(onChangeProp);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const inputBaseRef = useRef<HTMLDivElement>(null);
   const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
-
-  const [hasValue, setHasValue] = useState(false);
 
   useEffect(() => {
     if (__DEV__ && !label)
@@ -110,6 +110,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     },
     [],
   );
+
+  const [value, setValue] = useControllableState({
+    defaultValue,
+    value: valueProp,
+    onChange: onChangeProp,
+  });
 
   const {
     focusProps: focusRingProps,
@@ -131,7 +137,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     },
     onBlur: (e) => {
       onBlur?.(e);
-      setHasValue(!!e.target.value);
       focusRingProps.onBlur?.(e);
     },
   });
@@ -146,16 +151,14 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     variant,
   });
 
-  const filled = !!value || hasValue || !!defaultValue;
-
   return (
     <div
       ref={inputBaseRef}
       className={styles.base({ className: classNames?.base })}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
-      data-filled={filled}
-      data-filled-within={isFocused || filled || !!startContent}
+      data-filled={!!value}
+      data-shrink={isFocused || !!value || !!startContent}
       data-hovered={isHovered}
       data-disabled={isDisabled}
     >
@@ -198,7 +201,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
           defaultValue={defaultValue}
           placeholder={placeholder}
           type={type}
-          onChange={onChange}
+          onChange={(e) => setValue(e.target.value)}
           aria-label={hideLabel ? label : undefined}
           aria-describedby={helperText ? helperTextId : undefined}
           aria-errormessage={error && errorMessage ? errorMessageId : undefined}

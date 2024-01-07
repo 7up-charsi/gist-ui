@@ -154,7 +154,7 @@ const options = [
 
 const SingleTemplate = () => (
   <Autocomplete
-    label="single select"
+    label="top movies"
     options={options}
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
@@ -172,7 +172,7 @@ export const Single: StoryObj = {
 
 const MultipleTemplate = () => (
   <Autocomplete
-    label="single select"
+    label="top movies"
     multiple
     options={options}
     getOptionDisabled={(option) =>
@@ -191,7 +191,7 @@ export const Multiple: StoryObj = {
 
 const CustomOptionTemplate = () => (
   <Autocomplete
-    label="custom option"
+    label="top movies"
     options={options}
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')
@@ -223,7 +223,7 @@ export const CutomOption: StoryObj = {
 
 const GroupByTemplate = () => (
   <Autocomplete
-    label="single select"
+    label="top movies"
     options={options}
     getOptionDisabled={(option) =>
       option.title.startsWith('1') || option.title.startsWith('The')

@@ -64,7 +64,7 @@ export const Option = (props: OptionProps) => {
       data-focused={isFocused}
       role="option"
       className={className}
-      aria-checked={isDisabled ? undefined : isSelected}
+      aria-selected={isDisabled ? undefined : isSelected}
       {...mergeProps(pressProps, hoverProps)}
     >
       {children}

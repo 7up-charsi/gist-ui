@@ -1,6 +1,5 @@
 import { forwardRef, useId, useRef } from 'react';
 import { useControllableState } from '@gist-ui/use-controllable-state';
-import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
 import { useHover, usePress } from '@react-aria/interactions';
@@ -10,38 +9,6 @@ import {
   SwitchVariantProps,
   switch as switchStyles,
 } from '@gist-ui/theme';
-
-const icon_svg = (
-  <svg
-    aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 20 20"
-  >
-    <path
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m13 7-6 6m0-6 6 6m6-3a9"
-    />
-  </svg>
-);
-
-const checkIcon_svg = (
-  <svg
-    aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 20 20"
-  >
-    <path
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m7 10 2 2 4-4m6 2a9"
-    />
-  </svg>
-);
 
 export interface SwitchProps extends SwitchVariantProps {
   defaultChecked?: boolean;
@@ -65,8 +32,8 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
     onChange,
     isDisabled,
     classNames,
-    icon = icon_svg,
-    checkIcon = checkIcon_svg,
+    icon,
+    checkIcon,
     label,
     color,
     rippleDuration = 450,
@@ -138,7 +105,7 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
           ref={thumbRef}
           className={styles.thumb({ className: classNames?.thumb })}
         >
-          <Icon size={size}>{checked ? checkIcon : icon}</Icon>
+          {checked ? checkIcon : icon}
         </div>
       </div>
 

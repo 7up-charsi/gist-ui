@@ -1,6 +1,5 @@
 import { forwardRef, useId } from 'react';
 import { useControllableState } from '@gist-ui/use-controllable-state';
-import { Icon } from '@gist-ui/icon';
 import { UseRippleProps, useRipple } from '@gist-ui/use-ripple';
 import { mergeProps } from '@gist-ui/react-utils';
 import { createContextScope } from '@gist-ui/context';
@@ -9,13 +8,25 @@ import { useFocusRing } from '@react-aria/focus';
 import { RadioClassNames, RadioVariantProps, radio } from '@gist-ui/theme';
 
 const icon_svg = (
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 24 24"
+    width={20}
+    height={20}
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+  >
     <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-3a5" />
   </svg>
 );
 
 const checkIcon_svg = (
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 24 24"
+    width={20}
+    height={20}
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+  >
     <g>
       <path fill="none" d="M0 0h24v24H0z" />
       <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-3a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" />
@@ -149,7 +160,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
           }}
         />
 
-        <Icon size={size}>{selected ? checkIcon : icon}</Icon>
+        {selected ? checkIcon : icon}
       </div>
 
       {label && (

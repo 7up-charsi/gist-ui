@@ -6,9 +6,7 @@ import {
 } from 'tailwind-variants';
 
 const tooltip = tv({
-  slots: {
-    base: 'px-2 py-1 cursor-pointer text-sm relative group rounded-full bg-neutral text-neutral-foreground',
-  },
+  base: 'px-2 py-1 cursor-pointer text-sm relative group rounded-full bg-neutral text-neutral-foreground',
   variants: {},
   defaultVariants: {},
 });

@@ -11,7 +11,7 @@ const input = tv({
     label: 'first-letter:uppercase',
     inputWrapper: 'relative',
     input:
-      'appearance-none bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:opacity-0 placeholder:text-neutral-400 group-data-[filled-within=true]:placeholder:opacity-100',
+      'appearance-none bg-transparent outline-none h-full grow w-0 text-neutral-700 placeholder:opacity-0 placeholder:text-neutral-400 group-data-[shrink=true]:placeholder:opacity-100',
     helperText: 'px-2 text-sm text-neutral',
     startContent: 'h-[0.01px] flex items-center mr-2',
     endContent: 'h-[0.01px] flex items-center ml-2',
@@ -29,7 +29,7 @@ const input = tv({
           'after:absolute after:left-1/2 after:bottom-0 after:border-b-2 after:w-full after:scale-x-0 after:-translate-x-1/2 group-data-[focused=true]:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center',
         ],
         label:
-          'absolute top-1/2 left-3 -translate-y-1/2 text-base group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
+          'absolute top-1/2 left-3 -translate-y-1/2 text-base group-data-[shrink=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
       },
       border: {
         inputWrapper:
@@ -37,9 +37,9 @@ const input = tv({
         fieldset:
           'absolute left-0 right-0 bottom-0 -top-[10px] m-0 pointer-events-none rounded border border-neutral-300 group-data-[focused=true]:border-2 group-data-[focused=false]:group-data-[hovered=true]:border-neutral',
         legend:
-          'invisible w-0 ml-[10px] group-data-[filled-within=true]:pl-[2px] group-data-[filled-within=true]:pr-1 group-data-[filled-within=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
+          'invisible w-0 ml-[10px] group-data-[shrink=true]:pl-[2px] group-data-[shrink=true]:pr-1 group-data-[shrink=true]:w-auto text-sm first-letter:uppercase whitespace-nowrap',
         label:
-          'absolute top-1/2 left-[14px] -translate-y-1/2 text-base group-data-[filled-within=true]:top-0 group-data-[filled-within=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
+          'absolute top-1/2 left-[14px] -translate-y-1/2 text-base group-data-[shrink=true]:top-0 group-data-[shrink=true]:text-sm transition-all text-neutral origin-top-left pointer-events-none',
       },
     },
     color: {
@@ -82,7 +82,7 @@ const input = tv({
       size: 'sm',
       hideLabel: false,
       class: {
-        label: 'group-data-[filled-within=true]:top-3',
+        label: 'group-data-[shrink=true]:top-3',
         startContent: 'mt-[17px]',
         input: 'pt-[21px] pb-1',
       },
@@ -92,7 +92,7 @@ const input = tv({
       size: 'md',
       hideLabel: false,
       class: {
-        label: 'group-data-[filled-within=true]:top-4',
+        label: 'group-data-[shrink=true]:top-4',
         startContent: 'mt-[17px]',
         input: 'pt-[25px] pb-2',
       },
