@@ -19,6 +19,7 @@ import {
   useState,
 } from 'react';
 import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { useIsDisabled } from '@gist-ui/use-is-disabled';
 
 const Root_Name = 'Menu.Root';
 
@@ -87,13 +88,17 @@ export const Trigger = (props: TriggerProps) => {
 
   const rootContext = useRootContext(Trigger_Name);
 
+  const { setElement, isDisabled } = useIsDisabled();
+
   const { pressProps } = usePress({
+    isDisabled,
     onPress: rootContext.handleOpen,
   });
 
   return (
     <Popper.Reference>
       <Slot
+        ref={setElement}
         role="button"
         aria-haspopup="menu"
         aria-expanded={rootContext.open}

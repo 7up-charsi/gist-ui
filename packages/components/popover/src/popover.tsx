@@ -15,7 +15,6 @@ import {
   useCallback,
   useEffect,
   useId,
-  useRef,
   useState,
 } from 'react';
 
@@ -115,21 +114,15 @@ export const Trigger = (props: TriggerProps) => {
   const { children } = props;
 
   const context = useContext(Trigger_Name);
-  const ref = useRef<HTMLButtonElement>(null);
 
-  useIsDisabled({
-    ref,
-    callback: (isDisabled) => {
-      if (isDisabled) context.handleClose();
-    },
-  });
+  const { setElement, isDisabled } = useIsDisabled();
 
-  const { pressProps } = usePress({ onPress: context.handleOpen });
+  const { pressProps } = usePress({ isDisabled, onPress: context.handleOpen });
 
   return (
     <Popper.Reference>
       <Slot
-        ref={ref}
+        ref={setElement}
         aria-expanded={context.isOpen}
         aria-controls={context.isOpen ? context.id : undefined}
         {...pressProps}
@@ -155,9 +148,15 @@ export const Close = (props: CloseProps) => {
 
   const context = useContext(Close_Name);
 
-  const { pressProps } = usePress({ onPress: context.handleClose });
+  const { setElement, isDisabled } = useIsDisabled();
 
-  return <Slot {...pressProps}>{children}</Slot>;
+  const { pressProps } = usePress({ isDisabled, onPress: context.handleClose });
+
+  return (
+    <Slot ref={setElement} {...pressProps}>
+      {children}
+    </Slot>
+  );
 };
 
 Close.displayName = 'gist-ui.' + Close_Name;

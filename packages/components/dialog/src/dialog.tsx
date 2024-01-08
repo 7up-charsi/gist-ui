@@ -5,11 +5,11 @@ import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
 import { useClickOutside } from '@gist-ui/use-click-outside';
 import { usePress } from '@react-aria/interactions';
 import { useScrollLock } from '@gist-ui/use-scroll-lock';
-import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import { createPortal } from 'react-dom';
 import { FocusTrap, FocusScope } from '@gist-ui/focus-trap';
 import { VisuallyHidden } from '@gist-ui/visually-hidden';
 import { createContextScope } from '@gist-ui/context';
+import { useIsDisabled } from '@gist-ui/use-is-disabled';
 import {
   Children,
   Dispatch,
@@ -113,7 +113,7 @@ export const Root = (props: RootProps) => {
     isOpen: isOpenProp,
     defaultOpen,
     onOpenChange,
-    onClose: onCloseProp,
+    onClose,
     keepMounted = false,
   } = props;
 
@@ -130,8 +130,6 @@ export const Root = (props: RootProps) => {
       this.paused = false;
     },
   }).current;
-
-  const onClose = useCallbackRef(onCloseProp);
 
   const [isOpen, setOpen] = useControllableState({
     defaultValue: defaultOpen,
@@ -153,7 +151,7 @@ export const Root = (props: RootProps) => {
         eventObj.defaultPrevented = true;
       };
 
-      onClose({ preventDefault }, reason);
+      onClose?.({ preventDefault }, reason);
 
       if (!eventObj.defaultPrevented) setOpen(false);
     },
@@ -208,10 +206,13 @@ export const Trigger = (props: TriggerProps) => {
 
   const context = useContext(Trigger_Name);
 
-  const { pressProps } = usePress({ onPress: context.handleOpen });
+  const { setElement, isDisabled } = useIsDisabled();
+
+  const { pressProps } = usePress({ isDisabled, onPress: context.handleOpen });
 
   return (
     <Slot
+      ref={setElement}
       aria-expanded={context.isOpen}
       aria-controls={context.isOpen ? context.id : undefined}
       {...pressProps}
@@ -238,13 +239,20 @@ export const Close = (props: CloseProps) => {
 
   const handleClose = context.handleClose;
 
+  const { setElement, isDisabled } = useIsDisabled();
+
   const { pressProps } = usePress({
+    isDisabled,
     onPress: () => {
       handleClose('pointer');
     },
   });
 
-  return <Slot {...pressProps}>{children}</Slot>;
+  return (
+    <Slot ref={setElement} {...pressProps}>
+      {children}
+    </Slot>
+  );
 };
 
 Close.displayName = 'gist-ui.' + Close_Name;

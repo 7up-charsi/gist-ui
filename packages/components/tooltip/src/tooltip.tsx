@@ -209,20 +209,11 @@ export interface TriggerProps {
 
 export const Trigger = ({ children }: TriggerProps) => {
   const context = useContext(Trigger_Name);
-  const [disabled, setDisabled] = useState(false);
-  const ref = useRef<HTMLButtonElement>(null);
 
-  useIsDisabled({
-    ref,
-    callback: (isDisabled) => {
-      setDisabled(isDisabled);
-
-      if (!isDisabled) context.handleShow(true);
-    },
-  });
+  const { setElement, isDisabled } = useIsDisabled();
 
   const { hoverProps } = useHover({
-    isDisabled: disabled,
+    isDisabled,
     onHoverStart: () => {
       if (context.trigger === 'focus') return;
 
@@ -247,6 +238,7 @@ export const Trigger = ({ children }: TriggerProps) => {
   };
 
   const { isFocusVisible, focusProps: focusRingProps } = useFocusRing();
+
   const { focusProps } = useFocus({
     onFocus: () => {
       if (context.trigger === 'hover') return;
@@ -269,7 +261,7 @@ export const Trigger = ({ children }: TriggerProps) => {
   return (
     <Popper.Reference>
       <Slot
-        ref={ref}
+        ref={setElement}
         aria-describedby={context.isOpen ? context.id : undefined}
         {...mergeProps(
           focusRingProps,
