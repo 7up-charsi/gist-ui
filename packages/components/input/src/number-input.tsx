@@ -7,9 +7,9 @@ import { __DEV__ } from '@gist-ui/shared-utils';
 import { GistUiError } from '@gist-ui/error';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useLongPress } from '@react-aria/interactions';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
-export interface NumberInputProps
-  extends Omit<InputProps, 'type' | 'onChange' | 'defaultValue'> {
+export interface NumberInputProps extends Omit<InputProps, 'type'> {
   classNames?: InputProps['classNames'] & { stepButton: NumberInputClassNames };
   inputMode?: 'decimal' | 'numeric';
   min?: number;
@@ -18,7 +18,6 @@ export interface NumberInputProps
   largeStep?: number;
   repeatRate?: number;
   threshold?: number;
-  onChange?: (e: { target: { value: string } }) => void;
 }
 
 const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
@@ -26,7 +25,6 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
     const {
       classNames,
       inputMode = 'numeric',
-      inputProps,
       min,
       max,
       step = 1,
@@ -34,19 +32,20 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       repeatRate = 100,
       threshold = 500,
       endContent,
-      onChange,
+      onChange: onChangeProp,
+      defaultValue,
       value: valueProp,
       ...rest
     } = props;
 
     const innerRef = useRef<HTMLDivElement>(null);
 
+    const onChange = useCallbackRef(onChangeProp);
+
     const [value, setValue] = useControllableState({
-      defaultValue: '',
+      defaultValue,
       value: valueProp,
-      onChange: (val) => {
-        onChange?.({ target: { value: val } });
-      },
+      onChange,
     });
 
     const state = useRef<{
@@ -85,7 +84,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       [max, min, setValue, step],
     );
 
-    const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
       const ArrowUp = e.key === 'ArrowUp';
       const ArrowDown = e.key === 'ArrowDown';
       const PageUp = e.key === 'PageUp';
@@ -168,7 +167,7 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
       }
     };
 
-    const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    const handleKeyUp = (e: React.KeyboardEvent) => {
       const ArrowUp = e.key === 'ArrowUp';
       const ArrowDown = e.key === 'ArrowDown';
       const PageUp = e.key === 'PageUp';
@@ -300,30 +299,20 @@ const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(
         {...rest}
         classNames={classNames}
         ref={mergeRefs(ref, innerRef)}
-        type="number"
         value={value}
         onChange={setValue}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        inputMode={inputMode}
+        min={min}
+        max={max}
+        step={step}
         endContent={
           <>
             {endContent}
             {buttons}
           </>
         }
-        inputProps={{
-          ...inputProps,
-          onKeyDown: (e) => {
-            inputProps?.onKeyDown?.(e);
-            handleKeyDown(e);
-          },
-          onKeyUp: (e) => {
-            inputProps?.onKeyUp?.(e);
-            handleKeyUp(e);
-          },
-          inputMode,
-          min,
-          max,
-          step,
-        }}
       />
     );
   },

@@ -1,11 +1,10 @@
 import { input, InputClassNames, InputVariantProps } from '@gist-ui/theme';
 import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
 import { __DEV__ } from '@gist-ui/shared-utils';
-import { HoverProps, useFocus, useHover } from '@react-aria/interactions';
 import { useFocusRing } from '@react-aria/focus';
-import { NativeInputProps } from './types';
-import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import { useControllableState } from '@gist-ui/use-controllable-state';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
+import { HoverEvents, useFocus, useHover } from '@react-aria/interactions';
 import {
   forwardRef,
   useEffect,
@@ -16,21 +15,15 @@ import {
 
 export interface InputProps
   extends Omit<
-      React.HTMLAttributes<HTMLDivElement>,
-      'color' | 'className' | 'onChange'
+      React.InputHTMLAttributes<HTMLInputElement>,
+      'onChange' | 'color' | 'size' | 'type'
     >,
     Omit<InputVariantProps, 'error'>,
-    HoverProps {
-  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
-  id?: string;
-  placeholder?: string;
-  value?: string;
+    HoverEvents {
+  type?: 'text' | 'number' | 'password';
   defaultValue?: string;
-  onFocus?: React.FocusEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  value?: string;
   onChange?: (value: string) => void;
-  required?: boolean;
-  name?: string;
   label?: string;
   helperText?: string;
   error?: boolean;
@@ -43,28 +36,22 @@ export interface InputProps
    * @default polite
    */
   a11yFeedback?: 'polite' | 'assertive';
-  inputProps?: NativeInputProps;
 }
 
 const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const {
     label,
-    type = 'text',
     id,
     helperText,
     errorMessage,
     startContent,
     endContent,
-    placeholder,
     value: valueProp,
     defaultValue,
-    onBlur: onBlurProp,
-    onFocus: onFocusProp,
+    onBlur,
+    onFocus,
     classNames,
-    name,
     required,
-    a11yFeedback = 'polite',
-    inputProps,
     onChange: onChangeProp,
     onHoverChange,
     onHoverEnd,
@@ -75,8 +62,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     fullWidth,
     hideLabel,
     size,
+    type = 'text',
+    a11yFeedback = 'polite',
     variant = 'filled',
-    ...inputWrapperProps
+    ...inputProps
   } = props;
 
   const labelId = useId();
@@ -84,19 +73,18 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const errorMessageId = useId();
   const inputId = id || labelId;
 
-  const onBlur = useCallbackRef(onBlurProp);
-  const onFocus = useCallbackRef(onFocusProp);
-
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const inputBaseRef = useRef<HTMLDivElement>(null);
-  const inputLabelRef = useRef<HTMLLabelElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 
+  const onChange = useCallbackRef(onChangeProp);
+
   useEffect(() => {
-    if (__DEV__ && !label)
-      console.warn(
-        '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
-      );
+    if (__DEV__) {
+      if (!label)
+        console.warn(
+          '`Input` "label" prop is optional but recommended. if you want to hide label then pass "hideLabel" prop as well',
+        );
+    }
   }, [label]);
 
   useImperativeHandle(
@@ -112,9 +100,9 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   );
 
   const [value, setValue] = useControllableState({
-    defaultValue,
+    defaultValue: defaultValue || '',
     value: valueProp,
-    onChange: onChangeProp,
+    onChange,
   });
 
   const {
@@ -130,16 +118,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     onHoverStart,
   });
 
-  const { focusProps } = useFocus<HTMLInputElement>({
-    onFocus: (e) => {
-      onFocus?.(e);
-      focusRingProps.onFocus?.(e);
-    },
-    onBlur: (e) => {
-      onBlur?.(e);
-      focusRingProps.onBlur?.(e);
-    },
-  });
+  const { focusProps } = useFocus<HTMLInputElement>({ onFocus, onBlur });
 
   const styles = input({
     isDisabled,
@@ -153,7 +132,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
 
   return (
     <div
-      ref={inputBaseRef}
       className={styles.base({ className: classNames?.base })}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
@@ -165,18 +143,18 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       <div
         ref={mergeRefs(ref, inputWrapperRef)}
         className={styles.inputWrapper({ className: classNames?.inputWrapper })}
-        {...mergeProps(hoverProps, inputWrapperProps, {
-          onPointerDown: (e: React.PointerEvent) => {
-            if (isDisabled) return;
-            if (e.button !== 0) return;
-            if (e.target !== inputRef.current) e.preventDefault();
+        {...hoverProps}
+        onPointerDown={(e) => {
+          if (isDisabled) return;
+          if (e.button !== 0) return;
+          if (e.target !== inputRef.current) {
+            e.preventDefault();
             inputRef.current?.focus();
-          },
-        })}
+          }
+        }}
       >
         {!hideLabel && !!label && (
           <label
-            ref={inputLabelRef}
             htmlFor={inputId}
             className={styles.label({ className: classNames?.label })}
           >
@@ -196,12 +174,9 @@ const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
 
         <input
           {...inputProps}
-          {...focusProps}
-          value={value}
-          name={name}
-          defaultValue={defaultValue}
-          placeholder={placeholder}
+          {...mergeProps(focusProps, focusRingProps)}
           type={type}
+          value={value}
           onChange={(e) => setValue(e.target.value)}
           aria-label={hideLabel ? label : undefined}
           aria-describedby={helperText ? helperTextId : undefined}
