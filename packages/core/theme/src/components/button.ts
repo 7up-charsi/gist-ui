@@ -19,7 +19,6 @@ const button = tv({
     'appearance-none',
     'select-none',
     'whitespace-nowrap',
-    'min-w-max',
     'font-normal',
     'subpixel-antialiased',
     'overflow-hidden',
@@ -49,9 +48,9 @@ const button = tv({
       neutral: '',
     },
     size: {
-      sm: 'px-3 h-8 min-w-[64px] text-sm gap-2',
-      md: 'px-4 h-10 min-w-[80px] gap-2',
-      lg: 'px-6 h-12 min-w-[96px] text-lg gap-3',
+      sm: '',
+      md: '',
+      lg: '',
     },
     fullWidth: {
       true: 'w-full',
@@ -71,6 +70,39 @@ const button = tv({
     isDisabled: false,
   },
   compoundVariants: [
+    {
+      isIconOnly: false,
+      size: 'sm',
+      className: 'px-3 h-8 min-w-[64px] text-sm gap-2',
+    },
+    {
+      isIconOnly: false,
+      size: 'md',
+      className: 'px-4 h-10 min-w-[80px] gap-2',
+    },
+    {
+      isIconOnly: false,
+      size: 'lg',
+      className: 'px-6 h-12 min-w-[96px] text-lg gap-3',
+    },
+
+    // isIconOnly
+    {
+      isIconOnly: true,
+      size: 'sm',
+      class: 'w-8 h-8',
+    },
+    {
+      isIconOnly: true,
+      size: 'md',
+      class: 'w-10 h-10',
+    },
+    {
+      isIconOnly: true,
+      size: 'lg',
+      class: 'w-12 h-12',
+    },
+
     // color / solid
     {
       variant: 'solid',
@@ -289,23 +321,6 @@ const button = tv({
       color: 'neutral',
       class:
         'border-neutral-700 text-neutral-800 [--rippleBg:theme(colors.neutral-800/20%)]',
-    },
-
-    // icIconOnly
-    {
-      isIconOnly: true,
-      size: 'sm',
-      class: 'min-w-[32px] min-h-[32px] w-8 h-8',
-    },
-    {
-      isIconOnly: true,
-      size: 'md',
-      class: 'min-w-[40px] min-h-[40px] w-10 h-10',
-    },
-    {
-      isIconOnly: true,
-      size: 'lg',
-      class: 'min-w-[48px] min-h-[48px] w-12 h-12',
     },
   ],
 });
