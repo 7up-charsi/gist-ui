@@ -1,11 +1,9 @@
 import { button, ButtonVariantProps } from '@gist-ui/theme';
 import { __DEV__ } from '@gist-ui/shared-utils';
-import { Slot } from '@gist-ui/slot';
-import { GistUiError, onlyChildError, validChildError } from '@gist-ui/error';
 import { useRipple, UseRippleProps } from '@gist-ui/use-ripple';
-import { mergeRefs, mergeProps } from '@gist-ui/react-utils';
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useEffect } from 'react';
+import { mergeProps } from '@gist-ui/react-utils';
 import { useFocusRing } from '@react-aria/focus';
-import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import { ClassValue } from 'tailwind-variants';
 import {
   usePress,
@@ -13,16 +11,7 @@ import {
   HoverEvents,
   PressProps,
 } from '@react-aria/interactions';
-import {
-  ButtonHTMLAttributes,
-  Children,
-  cloneElement,
-  forwardRef,
-  isValidElement,
-  ReactNode,
-  useEffect,
-  useRef,
-} from 'react';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 
 export interface ButtonProps
   extends ButtonVariantProps,
@@ -36,7 +25,6 @@ export interface ButtonProps
   endContent?: ReactNode;
   className?: ClassValue;
   children?: ReactNode;
-  asChild?: boolean;
   rippleDuration?: UseRippleProps['duration'];
   rippleTimingFunction?: UseRippleProps['timingFunction'];
   rippleCompletedFactor?: UseRippleProps['completedFactor'];
@@ -47,14 +35,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     startContent,
     endContent,
     className,
-    asChild,
     children,
     onPress: onPressProp,
-    onPressEnd: onPressEndProp,
-    onPressStart: onPressStartProp,
-    onPressUp: onPressUpProp,
-    onPressChange: onPressChangeProp,
-    isIconOnly,
+    onPressEnd,
+    onPressStart,
+    onPressUp,
+    onPressChange,
+    isIconOnly = false,
     rippleDuration = isIconOnly ? 450 : 500,
     rippleTimingFunction,
     rippleCompletedFactor,
@@ -70,14 +57,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   } = props;
 
   const onPress = useCallbackRef(onPressProp);
-  const onPressEnd = useCallbackRef(onPressEndProp);
-  const onPressStart = useCallbackRef(onPressStartProp);
-  const onPressUp = useCallbackRef(onPressUpProp);
-  const onPressChange = useCallbackRef(onPressChangeProp);
-
-  const innerRef = useRef<HTMLButtonElement>(null);
-
-  const Component = asChild ? Slot : 'button';
 
   const { rippleProps } = useRipple<HTMLButtonElement>({
     isDisabled,
@@ -121,16 +100,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     className,
   });
 
-  if (asChild) {
-    const countChild = Children.count(children);
-    if (!countChild) return;
-    if (countChild > 1) throw new GistUiError('button', onlyChildError);
-    if (!isValidElement(children))
-      throw new GistUiError('button', validChildError);
-  }
-
   return (
-    <Component
+    <button
       {...mergeProps(
         rippleProps,
         pressProps,
@@ -138,35 +109,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         hoverProps,
         buttonProps,
       )}
-      data-pointer-pressed={isPressed}
-      data-keyboard-pressed={isFocusVisible && isPressed}
+      data-pressed={isPressed}
       data-hovered={isHovered}
       data-focused={isFocused}
       data-focus-visible={isFocusVisible && isFocused}
       disabled={isDisabled}
-      ref={mergeRefs(ref, innerRef)}
+      ref={ref}
       className={styles}
-      role={asChild ? 'button' : undefined}
-      aria-disabled={asChild ? isDisabled : undefined}
     >
-      {asChild && isValidElement(children) ? (
-        cloneElement(children, {
-          children: (
-            <>
-              {!isIconOnly && startContent}
-              {children.props.children}
-              {!isIconOnly && endContent}
-            </>
-          ),
-        } as Partial<unknown>)
-      ) : (
-        <>
-          {!isIconOnly && startContent}
-          {children}
-          {!isIconOnly && endContent}
-        </>
-      )}
-    </Component>
+      {!isIconOnly && startContent}
+      {children}
+      {!isIconOnly && endContent}
+    </button>
   );
 });
 

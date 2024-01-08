@@ -154,7 +154,7 @@ const IconOnlyTemplate = (args: ButtonProps) => (
               color={color}
               isIconOnly
             >
-              <div>{reactIcon}</div>
+              {reactIcon}
             </Button>
           ))}
         </div>
