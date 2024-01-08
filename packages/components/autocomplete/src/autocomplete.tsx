@@ -2,11 +2,12 @@ import * as Popper from '@gist-ui/popper';
 import { Input, InputProps } from '@gist-ui/input';
 import { useControllableState } from '@gist-ui/use-controllable-state';
 import { useClickOutside } from '@gist-ui/use-click-outside';
-import { mergeProps, mergeRefs } from '@gist-ui/react-utils';
+import { mergeRefs } from '@gist-ui/react-utils';
 import { Option } from './option';
 import _groupby from 'lodash.groupby';
 import { Button } from '@gist-ui/button';
-import { useFocusRing } from '@react-aria/focus';
+import { GistUiError } from '@gist-ui/error';
+import { useCallbackRef } from '@gist-ui/use-callback-ref';
 import {
   Fragment,
   useCallback,
@@ -21,7 +22,7 @@ import {
   AutocompleteVariantProps,
   autocomplete,
 } from '@gist-ui/theme';
-import { GistUiError } from '@gist-ui/error';
+import { useFocusVisible } from '@react-aria/interactions';
 
 export type Reason = 'select' | 'clear' | 'escape';
 
@@ -148,7 +149,7 @@ const Autocomplete = <
     defaultOpen = false,
     defaultValue,
     value: valueProp,
-    onChange,
+    onChange: onChangeProp,
     renderOption,
     shadow,
     isDisabled,
@@ -173,6 +174,8 @@ const Autocomplete = <
     ...inputProps
   } = props;
 
+  const onChange = useCallbackRef(onChangeProp);
+
   const [value, setValue] = useControllableState<
     Value | Value[] | null,
     Reason
@@ -187,18 +190,18 @@ const Autocomplete = <
         );
 
       if (multiple && Array.isArray(value)) {
-        onChange?.(value, reason);
+        onChange(value, reason);
         return;
       }
 
       if (!multiple && !Array.isArray(value)) {
         if (value && disableClearable) {
-          onChange?.(value, reason);
+          onChange(value, reason);
           return;
         }
 
         if (!disableClearable) {
-          onChange?.(value, reason);
+          onChange(value, reason);
           return;
         }
       }
@@ -212,7 +215,7 @@ const Autocomplete = <
     [string, Value[]][] | null
   >(null);
 
-  const { isFocusVisible, focusProps } = useFocusRing({ isTextInput: true });
+  const { isFocusVisible } = useFocusVisible({ isTextInput: true });
 
   const lisboxId = useId();
   const listboxRef = useRef<HTMLUListElement>(null);
@@ -454,12 +457,6 @@ const Autocomplete = <
     ],
   );
 
-  const handleInputBlur = useCallback(() => {
-    if (isFocusVisible) {
-      handleListboxClose();
-    }
-  }, [handleListboxClose, isFocusVisible]);
-
   const handleClearValue = useCallback(() => {
     setOpen(true);
     setInputValue('');
@@ -560,22 +557,23 @@ const Autocomplete = <
           onChange={handleInputChange}
           isDisabled={isDisabled}
           ref={inputRef}
-          {...mergeProps(focusProps, { onBlur: handleInputBlur })}
-          onPointerDown={handleListboxOpen}
-          classNames={classNames}
-          inputProps={{
-            ...inputProps.inputProps,
-            onKeyDown: handleInputKeyDown,
-            'aria-expanded': open,
-            'aria-controls': lisboxId,
-            'aria-haspopup': 'listbox',
-            'aria-autocomplete': 'list',
-            'aria-activedescendant': focused
-              ? getOptionId(focused)?.replaceAll(' ', '-')
-              : undefined,
-            role: 'combobox',
-            autoComplete: 'off',
+          onFocus={() => {
+            if (!isFocusVisible) handleListboxOpen();
           }}
+          onBlur={() => {
+            if (isFocusVisible) handleListboxClose();
+          }}
+          classNames={classNames}
+          onKeyDown={handleInputKeyDown}
+          aria-expanded={open}
+          aria-controls={lisboxId}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          aria-activedescendant={
+            focused ? getOptionId(focused)?.replaceAll(' ', '-') : undefined
+          }
+          role="combobox"
+          autoComplete="off"
           startContent={
             startContent ? (
               <>
@@ -604,28 +602,26 @@ const Autocomplete = <
                       className: classNames?.clearButton,
                     })}
                   >
-                    <div>
-                      {clearIcon || (
-                        <svg
-                          width={18}
-                          height={18}
-                          viewBox="-2.4 -2.4 28.80 28.80"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          stroke="currentColor"
-                          transform="rotate(0)"
-                        >
-                          <g strokeWidth="0"></g>
-                          <g strokeLinecap="round" strokeLinejoin="round"></g>
-                          <g>
-                            <path
-                              d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
-                              fill="currentColor"
-                            ></path>
-                          </g>
-                        </svg>
-                      )}
-                    </div>
+                    {clearIcon || (
+                      <svg
+                        width={18}
+                        height={18}
+                        viewBox="-2.4 -2.4 28.80 28.80"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        stroke="currentColor"
+                        transform="rotate(0)"
+                      >
+                        <g strokeWidth="0"></g>
+                        <g strokeLinecap="round" strokeLinejoin="round"></g>
+                        <g>
+                          <path
+                            d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
+                            fill="currentColor"
+                          ></path>
+                        </g>
+                      </svg>
+                    )}
                   </Button>
                 )}
 
